@@ -1,0 +1,20 @@
+# hidden files
+.idea
+.gradle/
+.vscode/
+*.iml
+
+# output folders
+bin/
+build/
+
+# other folder
+**/gradle/
+**/gradlew
+**/gradlew.bat
+
+# files ignored by extension
+*.class
+*.DS_Store
+**/*.kts
+deleteme/
