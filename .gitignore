@@ -1,6 +1,5 @@
 # hidden files
 .idea
-.gradle/
 .vscode/
 *.iml
 
@@ -8,13 +7,14 @@
 bin/
 build/
 
-# other folder
-**/gradle/
-**/gradlew
-**/gradlew.bat
+# Ignore Gradle project-specific cache directory
+.gradle
 
-# files ignored by extension
-*.class
-*.DS_Store
-**/*.kts
-deleteme/
+# Ignore Gradle build output directory
+build
+
+bin/
+
+.idea
+
+.settings
