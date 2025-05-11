@@ -46,6 +46,7 @@ dependencies {
     }
     // JFreeChart
     implementation("org.jfree:jfreechart:1.5.3")
+    implementation("org.jfree:jfreechart-fx:1.0.1")
     // The BOM (Bill of Materials) synchronizes all the versions of Junit coherently.
     testImplementation(platform("org.junit:junit-bom:5.12.2"))
     // The annotations, assertions and other elements we want to have access when compiling our tests.
