@@ -28,7 +28,7 @@ val javaFXModules = listOf(
 )
 
 val supportedPlatforms = listOf("linux", "mac", "win") // All required for OOP
-
+    
 dependencies {
     // Suppressions for SpotBugs
     compileOnly("com.github.spotbugs:spotbugs-annotations:4.9.3")
@@ -44,7 +44,8 @@ dependencies {
             implementation("org.openjfx:javafx-$module:$javaFxVersion:$platform")
         }
     }
-
+    // JFreeChart
+    implementation("org.jfree:jfreechart:1.5.3")
     // The BOM (Bill of Materials) synchronizes all the versions of Junit coherently.
     testImplementation(platform("org.junit:junit-bom:5.12.2"))
     // The annotations, assertions and other elements we want to have access when compiling our tests.
