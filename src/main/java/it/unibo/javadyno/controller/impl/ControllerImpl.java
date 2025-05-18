@@ -22,7 +22,6 @@ public class ControllerImpl implements Controller {
      */
     @Override
     public void closeApp() {
-        
     }
 
 }
