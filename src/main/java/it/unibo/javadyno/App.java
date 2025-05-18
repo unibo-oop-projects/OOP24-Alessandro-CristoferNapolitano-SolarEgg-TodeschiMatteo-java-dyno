@@ -4,7 +4,8 @@
 
 package it.unibo.javadyno;
 
-import javafx.application.Application;
+import it.unibo.javadyno.controller.api.Controller;
+import it.unibo.javadyno.controller.impl.ControllerImpl;
 
 /** Main application entry-point's class. */
 
@@ -17,10 +18,9 @@ public final class App {
      * @param args passed to JavaFX.
      */
     public static void main(final String[] args) {
-        Application.launch(JavaFXAppWithFXML.class, args);
-        // The following line raises: Error: class it.unibo.javadyno.App is not a subclass of javafx.application.Application
-        // JavaFXApp.launch(args);
-        // While the following would do just fine:
-        // JavaFXApp.run(args)
+        // Application.launch(ViewImpl.class, args);
+        // ViewImpl.run(args);
+        final Controller controller = new ControllerImpl();
+        controller.launchApp(args);
     }
 }
