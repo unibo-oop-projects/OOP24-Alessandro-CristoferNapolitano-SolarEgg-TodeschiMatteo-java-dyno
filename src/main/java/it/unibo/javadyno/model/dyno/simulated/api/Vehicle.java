@@ -1,30 +1,28 @@
 package it.unibo.javadyno.model.dyno.simulated.api;
 
-public interface Vehicle{
-    
+/**
+ * Vehicle Interface.
+ */
+public interface Vehicle {
     /**
-     * @return Engine
+     * @return Engine.
      */
     Engine getEngine();
 
     /**
-     * @return Transmission
+     * @return Transmission.
      */
     Transmission getTransmission();
 
     /**
-     * @return Ecu
+     * @return Ecu.
      */
     Ecu getEcu();
 
     /**
-     * 
-     * @param dt step of simulation of duration dt(s) 
+     * @param dt step of simulation of duration dt(s).
      */
-    default void update(double dt){
-        //TODO: update of single components
-        //TODO: signal ecu for warnings
-        
-    }
+    default void update(final double dt) {
 
+    }
 }
