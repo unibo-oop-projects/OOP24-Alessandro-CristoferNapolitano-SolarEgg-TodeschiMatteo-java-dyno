@@ -1,4 +1,4 @@
-package it.unibo.javadyno.simulatedvehicle;
+package it.unibo.javadyno.model.dyno.simulated.api;
 
 public interface Vehicle{
     
