@@ -5,7 +5,7 @@ import java.util.Optional;
 
 /**
  * RawData interface.
- * 
+ *
  * @param engineRPM the engine revolutions per minute
  * @param engineTemperature the engine coolant temperature
  * @param rollerRPM the roller revolutions per minute (Optional)
