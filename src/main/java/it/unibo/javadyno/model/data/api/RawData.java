@@ -1,4 +1,4 @@
-package it.unibo.javadyno.model.api;
+package it.unibo.javadyno.model.data.api;
 
 /**
  * RawData interface.
