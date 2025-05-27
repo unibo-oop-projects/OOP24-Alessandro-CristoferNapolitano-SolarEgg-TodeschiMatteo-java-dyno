@@ -1,11 +1,53 @@
 package it.unibo.javadyno.model.dyno.simulated.impl;
 
+import java.util.Objects;
 import it.unibo.javadyno.model.dyno.simulated.api.SimulatedDyno;
 
 /**
  * Implementation of the simumlated Dyno.
  */
-public class SimulatedDynoImpl implements SimulatedDyno {
+public class SimulatedDynoImpl implements SimulatedDyno, Runnable {
+
+    private volatile boolean running;
+    private Thread simulationThread;
+
+    /**
+     * Constructor.
+     */
+    public SimulatedDynoImpl() {
+        this.running = false;
+        this.simulationThread = null;
+    }
+
+    /**
+     * Start the simulation in a new Thread.
+     */
+    public void startSimulation() {
+        if (!running) {
+            running = true;
+            simulationThread = new Thread(this);
+            simulationThread.start();
+        }
+    }
+
+    /**
+     * Stop the simulation.
+     */
+    public void stopSimulation() {
+        if (Objects.nonNull(simulationThread)) {
+            simulationThread.interrupt();
+        }
+        running = false;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    @Override
+    public void run() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'run'");
+    }
 
     /**
      * @inheritdoc
