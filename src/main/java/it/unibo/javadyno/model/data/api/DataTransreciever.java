@@ -9,7 +9,7 @@ public interface DataTransreciever {
      *
      * @return the latest raw data
      */
-    RawData geRawData();
+    RawData getRawData();
 
     /**
      * Sets the data source from which to retrieve the raw data.
