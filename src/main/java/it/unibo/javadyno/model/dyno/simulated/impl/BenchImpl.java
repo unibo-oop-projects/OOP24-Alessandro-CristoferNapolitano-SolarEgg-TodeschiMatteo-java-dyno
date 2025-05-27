@@ -7,13 +7,30 @@ import it.unibo.javadyno.model.dyno.simulated.api.Bench;
  */
 public class BenchImpl implements Bench {
 
+    private final int rpm;
+    private final double rollerRadius;
+    private final double rollerInertia;
+    private final double angularSpeed;
+
+    /**
+     * Constructor of the bench implementation.
+     *
+     * @param rollerRadius the roller radius of the simulated bench
+     * @param rollerInertia the roller inertia of the simulated bench
+     */
+    public BenchImpl(final double rollerRadius, final double rollerInertia) {
+        this.rpm = 0;
+        this.rollerRadius = rollerRadius;
+        this.rollerInertia = rollerInertia;
+        this.angularSpeed = 0;
+    }
+
     /**
      * @inheritDoc
      */
     @Override
     public int getRollerRPM() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getRollerRPM'");
+        return this.rpm;
     }
 
     /**
@@ -21,8 +38,7 @@ public class BenchImpl implements Bench {
      */
     @Override
     public double getRollerAngularSpeed() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getRollerAngularSpeed'");
+        return this.angularSpeed;
     }
 
     /**
@@ -30,8 +46,7 @@ public class BenchImpl implements Bench {
      */
     @Override
     public double getRollerInertia() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getRollerInertia'");
+        return this.rollerInertia;
     }
 
     /**
@@ -39,7 +54,6 @@ public class BenchImpl implements Bench {
      */
     @Override
     public double getRollerRadius() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getRollerRadius'");
+        return this.rollerRadius;
     }
 }
