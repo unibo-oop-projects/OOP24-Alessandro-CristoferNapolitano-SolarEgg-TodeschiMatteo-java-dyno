@@ -2,6 +2,7 @@ package it.unibo.javadyno.model.data.communicator.impl;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -45,7 +46,7 @@ public class WebSocketMCUCommunicator implements MCUCommunicator {
      */
     @Override
     public void connect() throws InterruptedException {
-        if (webSocketClient == null || webSocketClient.isClosed()) {
+        if (!this.isConnected()) {
             webSocketClient = new InternalWSClient(this.mcuServerUri);
             webSocketClient.connectBlocking(this.timeOut, TimeUnit.MILLISECONDS);
         }
@@ -55,9 +56,8 @@ public class WebSocketMCUCommunicator implements MCUCommunicator {
      * {@inheritDoc}
      */
     @Override
-    public void disconnect() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'disconnect'");
+    public void disconnect() throws InterruptedException {
+        webSocketClient.closeBlocking();
     }
 
     /**
@@ -65,8 +65,7 @@ public class WebSocketMCUCommunicator implements MCUCommunicator {
      */
     @Override
     public boolean isConnected() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isConnected'");
+        return !Objects.isNull(webSocketClient) || webSocketClient.isOpen();
     }
 
     /**

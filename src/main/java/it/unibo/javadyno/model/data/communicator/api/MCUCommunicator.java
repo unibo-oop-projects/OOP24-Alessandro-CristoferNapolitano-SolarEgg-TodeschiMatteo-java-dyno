@@ -21,7 +21,7 @@ public interface MCUCommunicator {
      * Disconnects from the MCU.
      * If not connected, this can be a no‐op.
      */
-    void disconnect();
+    void disconnect() throws InterruptedException;
 
     /**
      * Checks if the communicator is currently connected to the MCU.
