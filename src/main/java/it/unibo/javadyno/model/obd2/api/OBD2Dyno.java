@@ -1,27 +1,15 @@
 package it.unibo.javadyno.model.obd2.api;
 
+import it.unibo.javadyno.model.data.api.RawData;
+
 /**
  * OBD2Dyno interface.
  */
 public interface OBD2Dyno {
     /**
-     * Retrieves the engine RPM (Revolutions Per Minute).
+     * Retrieves the istantaneous information available stored from the OBD2.
      *
-     * @return the engine RPM.
+     * @return a immutable snapshot of the stored data.
      */
-    Integer getEngineRPM();
-
-    /**
-     * Retrieves the vehicle speed in Km/h.
-     *
-     * @return the vehicle speed.
-     */
-    Integer getSpeed();
-
-    /**
-     * Retrieves the engine coolant temperature.
-     *
-     * @return the engine temperature.
-     */
-    Double getEngineTemperature();
+    RawData getRawData();
 }
