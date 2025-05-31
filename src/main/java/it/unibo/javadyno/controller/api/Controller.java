@@ -15,4 +15,9 @@ public interface Controller {
      */
     void closeApp();
 
+    /**
+     * Start the simulation.
+     */
+    void startSimulation();
+
 }
