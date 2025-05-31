@@ -10,15 +10,15 @@ import java.util.function.Consumer;
 public interface MCUCommunicator {
 
     /**
-     * Establishes (or re‐establishes) the connection to the MCU.
+     * Establishes (or re‐establishes) the connection to the MCU synchronically.
      * If already connected, this can be a no‐op or attempt a reconnect.
-     * 
+     *
      * @throws InterruptedException if connection times out.
      */
     void connect() throws InterruptedException;
 
     /**
-     * Disconnects from the MCU.
+     * Disconnects from the MCU in a synchronous way.
      * If not connected, this can be a no‐op.
      */
     void disconnect() throws InterruptedException;
@@ -31,7 +31,7 @@ public interface MCUCommunicator {
     boolean isConnected();
 
     /**
-     * Sends a JSON formatted message to the MCU.
+     * Sends a formatted message to the MCU.
      * The message format and protocol depend on the specific implementation.
      *
      * @param message the message to send.
