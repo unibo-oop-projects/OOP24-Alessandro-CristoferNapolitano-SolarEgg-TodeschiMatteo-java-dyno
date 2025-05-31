@@ -20,8 +20,9 @@ public class SimulatedDynoImpl implements SimulatedDyno, Runnable {
     }
 
     /**
-     * Start the simulation in a new Thread.
+     * Start the simulation in a new Thread checking if the simulation is already running.
      */
+    @Override
     public void startSimulation() {
         if (!running) {
             running = true;
@@ -31,8 +32,10 @@ public class SimulatedDynoImpl implements SimulatedDyno, Runnable {
     }
 
     /**
-     * Stop the simulation.
+     * This method stops the simulation thread if it is running.
+     * It sets the running flag to false to indicate that the simulation has stopped.
      */
+    @Override
     public void stopSimulation() {
         if (Objects.nonNull(simulationThread)) {
             simulationThread.interrupt();
@@ -41,7 +44,18 @@ public class SimulatedDynoImpl implements SimulatedDyno, Runnable {
     }
 
     /**
+     * Check if the simulation is running.
+     *
+     * @return true if running, false otherwise
+     */
+    @Override
+    public boolean isRunning() {
+        return this.running;
+    }
+
+    /**
      * {@inheritDoc}
+     * This method run the simulation in a separate thread.
      */
     @Override
     public void run() {
