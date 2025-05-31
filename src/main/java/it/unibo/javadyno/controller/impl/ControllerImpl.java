@@ -24,4 +24,13 @@ public class ControllerImpl implements Controller {
     public void closeApp() {
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void startSimulation() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'startSimulation'");
+    }
+
 }

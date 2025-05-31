@@ -1,26 +1,14 @@
 package it.unibo.javadyno.model.dyno.api;
 
+import it.unibo.javadyno.model.data.api.RawData;
+
 /**
  * Global Dyno Interface.
  */
+@SuppressWarnings("PMD.ImplicitFunctionalInterface") // This interface is is not a functional interface
 public interface Dyno {
     /**
-     * @return the engine's RPM
+     * @return the data package containing the raw data.
      */
-    int getEngineRPM();
-
-    /**
-     * @return the roller's RPM
-     */
-    int getRollerRPM();
-
-    /**
-     * @return the engine's temperature
-     */
-    double getEngineTemp();
-
-    /**
-     * @return the value of the force produced by the engine
-     */
-    double getLoadCellValue();
+    RawData getDatas();
 }
