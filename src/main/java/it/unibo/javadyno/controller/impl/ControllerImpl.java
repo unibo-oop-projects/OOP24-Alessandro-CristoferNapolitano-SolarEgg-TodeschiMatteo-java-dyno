@@ -10,7 +10,7 @@ import javafx.application.Application;
 public class ControllerImpl implements Controller {
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void launchApp(final String[] args) {
@@ -18,7 +18,7 @@ public class ControllerImpl implements Controller {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void closeApp() {

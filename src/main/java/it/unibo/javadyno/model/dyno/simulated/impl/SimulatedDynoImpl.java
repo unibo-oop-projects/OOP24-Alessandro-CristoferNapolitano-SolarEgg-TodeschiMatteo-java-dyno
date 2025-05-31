@@ -8,7 +8,7 @@ import it.unibo.javadyno.model.dyno.simulated.api.SimulatedDyno;
 public class SimulatedDynoImpl implements SimulatedDyno {
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
     @Override
     public int getEngineRPM() {
@@ -17,7 +17,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public int getRollerRPM() {
@@ -26,7 +26,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public double getEngineTemp() {
@@ -35,7 +35,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public double getLoadCellValue() {

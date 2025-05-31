@@ -26,7 +26,7 @@ public class BenchImpl implements Bench {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public int getRollerRPM() {
@@ -34,7 +34,7 @@ public class BenchImpl implements Bench {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public double getRollerAngularSpeed() {
@@ -42,7 +42,7 @@ public class BenchImpl implements Bench {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public double getRollerInertia() {
@@ -50,7 +50,7 @@ public class BenchImpl implements Bench {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public double getRollerRadius() {
