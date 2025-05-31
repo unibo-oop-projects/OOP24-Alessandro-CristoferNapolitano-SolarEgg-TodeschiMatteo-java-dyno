@@ -1,7 +1,8 @@
 package it.unibo.javadyno.model.dyno.simulated.impl;
 
 import java.util.Objects;
-import java.util.Optional;
+
+import javax.sql.DataSource;
 
 import it.unibo.javadyno.model.data.api.RawData;
 import it.unibo.javadyno.model.dyno.simulated.api.Bench;
@@ -72,17 +73,17 @@ public class SimulatedDynoImpl implements SimulatedDyno, Runnable {
     @Override
     public void run() {
         while (this.running) {
-            this.datas = new RawData(
-                    ENGINE_RPM,
-                    ENGINE_TEMPERATURE,
-                    Optional.of(this.bench.getRollerRPM()),
-                    Optional.empty(),
-                    Optional.empty(),
-                    Optional.empty(),
-                    Optional.empty(),
-                    Optional.empty(),
-                    Optional.empty()
-            );
+            // this.datas = new RawData(
+            //         ENGINE_RPM,
+            //         ENGINE_TEMPERATURE,
+            //         Optional.of(this.bench.getRollerRPM()),
+            //         Optional.empty(),
+            //         Optional.empty(),
+            //         Optional.empty(),
+            //         Optional.empty(),
+            //         Optional.empty(),
+            //         Optional.empty()
+            // );
             try {
                 Thread.sleep(100);
             } catch (final InterruptedException e) {
@@ -96,7 +97,43 @@ public class SimulatedDynoImpl implements SimulatedDyno, Runnable {
      * {@inheritDoc}
      */
     @Override
-    public RawData getDatas() {
+    public RawData getRawData() {
         return Objects.requireNonNull(this.datas, "RawData not initialized");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public DataSource getDynoType() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getDynoType'");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void begin() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'begin'");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void end() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'end'");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isActive() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'isActive'");
     }
 }
