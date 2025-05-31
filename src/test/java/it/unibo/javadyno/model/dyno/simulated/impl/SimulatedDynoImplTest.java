@@ -32,4 +32,14 @@ class SimulatedDynoImplTest {
         dyno.stopSimulation();
         assertFalse(dyno.isRunning(), "The simulation should now be stopped");
     }
+
+    /**
+     * Test the stop method when the simulation is not running.
+     */
+    @Test
+    void testStopSimulationWhenNotStarted() {
+        final SimulatedDyno dyno = new SimulatedDynoImpl();
+        dyno.stopSimulation(); // Exception should be suppressed
+        assertFalse(dyno.isRunning(), "The simulation should still not be running.");
+    }
 }
