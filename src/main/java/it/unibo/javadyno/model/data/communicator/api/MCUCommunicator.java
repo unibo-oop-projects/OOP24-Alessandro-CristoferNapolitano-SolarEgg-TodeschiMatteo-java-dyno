@@ -12,8 +12,10 @@ public interface MCUCommunicator {
     /**
      * Establishes (or re‐establishes) the connection to the MCU.
      * If already connected, this can be a no‐op or attempt a reconnect.
+     * 
+     * @throws InterruptedException if connection times out.
      */
-    void connect();
+    void connect() throws InterruptedException;
 
     /**
      * Disconnects from the MCU.
