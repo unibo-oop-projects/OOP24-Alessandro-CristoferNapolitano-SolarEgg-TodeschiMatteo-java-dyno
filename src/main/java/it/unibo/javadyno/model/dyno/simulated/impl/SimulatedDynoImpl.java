@@ -41,7 +41,7 @@ public class SimulatedDynoImpl implements SimulatedDyno, Runnable {
     }
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
     @Override
     public void run() {
@@ -50,7 +50,7 @@ public class SimulatedDynoImpl implements SimulatedDyno, Runnable {
     }
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
     @Override
     public int getEngineRPM() {
@@ -59,7 +59,7 @@ public class SimulatedDynoImpl implements SimulatedDyno, Runnable {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public int getRollerRPM() {
@@ -68,7 +68,7 @@ public class SimulatedDynoImpl implements SimulatedDyno, Runnable {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public double getEngineTemp() {
@@ -77,7 +77,7 @@ public class SimulatedDynoImpl implements SimulatedDyno, Runnable {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public double getLoadCellValue() {

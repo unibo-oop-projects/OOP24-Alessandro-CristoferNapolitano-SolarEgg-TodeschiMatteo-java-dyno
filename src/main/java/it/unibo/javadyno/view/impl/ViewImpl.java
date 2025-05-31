@@ -12,7 +12,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
- * @inheritDoc
+ * View interface implementation.
  */
 public class ViewImpl extends Application implements View {
 
@@ -21,7 +21,7 @@ public class ViewImpl extends Application implements View {
     private static final double IMAGE_HEIGHT = 0.4;
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void start(final Stage primaryStage) throws Exception {
