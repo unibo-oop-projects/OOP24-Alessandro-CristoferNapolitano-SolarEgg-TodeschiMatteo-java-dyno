@@ -15,15 +15,10 @@ import it.unibo.javadyno.model.dyno.api.Dyno;
  * It retrieve engine RPM, vehicle speed, and other vehicle data from the OBD2 line
  * packed in a RawData object.
  */
-public class OBD2Dyno implements Dyno, Runnable {
+public class OBD2Dyno implements Dyno {
 
-    private static final int MAX_ENGINE_RPM = 8000;
-    private static final int MAX_VEHICLE_SPEED = 200;
-    private static final double MIN_ENGINE_TEMP = 20.0;
-    private static final double ENGINE_TEMP_RANGE = 80.0;
     private final MCUCommunicator communicator;
     private volatile boolean active;
-    private Thread thread;
     private Optional<Integer> engineRpm;
     private Optional<Integer> vehicleSpeed;
     private Optional<Double> engineTemperature;
@@ -33,7 +28,6 @@ public class OBD2Dyno implements Dyno, Runnable {
      */
     public OBD2Dyno() {
         this.communicator = new WebSocketMCUCommunicator();
-        this.thread = null;
         this.active = false;
         this.engineRpm = Optional.empty();
         this.vehicleSpeed = Optional.empty();
@@ -66,12 +60,13 @@ public class OBD2Dyno implements Dyno, Runnable {
     @Override
     public void begin() {
         if (!this.isActive()) {
-            this.active = true;
-            this.thread = Thread.ofVirtual().unstarted(this);
-            this.thread.start();
-
-            // connect to the communicator
-            this.communicator.addMessageListener(this::messageHandler);
+            try {
+                this.communicator.connect();
+                this.active = true;
+                this.communicator.addMessageListener(this::messageHandler);
+            } catch (final InterruptedException e) {
+                // Tell alert monitor
+            }
         }
     }
 
@@ -80,11 +75,14 @@ public class OBD2Dyno implements Dyno, Runnable {
      */
     @Override
     public void end() {
-        this.active = false;
-        try {
-            this.thread.interrupt();
-        } catch (final SecurityException e) {
-            // already stopping
+        if (this.isActive()) {
+            try {
+                this.communicator.disconnect();
+                this.active = false;
+                this.communicator.removeMessageListener(this::messageHandler);
+            } catch (final InterruptedException e) {
+                // Tell alert monitor
+            }
         }
     }
 
@@ -97,30 +95,8 @@ public class OBD2Dyno implements Dyno, Runnable {
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void run() {
-        while (this.isActive()) {
-            // Simulate reading data from the OBD2 line.
-            this.engineRpm = Optional.of((int) (Math.random() * MAX_ENGINE_RPM)); // Simulated RPM
-            this.vehicleSpeed = Optional.of((int) (Math.random() * MAX_VEHICLE_SPEED)); // Simulated speed
-            this.engineTemperature = Optional.of(MIN_ENGINE_TEMP + Math.random() * ENGINE_TEMP_RANGE); // Simulated temperature
-
-            // Actual reading from OBD2 would go here
-
-            try {
-                Thread.sleep(100); // Sleep for 100 milliseconds
-            } catch (final InterruptedException e) {
-                this.end();
-                break;
-            }
-        }
-    }
-
-    /**
-     * Handles incoming messages from the {@code MCUCommunicator} .
-     * Parses the JSON message and updates the dyno data.
+     * Handles incoming messages from the {@code MCUCommunicator}.
+     * Parses the JSON message and updates the data.
      *
      * @param message the JSON message received from the communicator
      */
@@ -140,7 +116,7 @@ public class OBD2Dyno implements Dyno, Runnable {
                 ? Optional.of(json.getDouble(JsonScheme.ENGINE_TEMPERATURE.getActualName()))
                 : Optional.empty();
         } catch (final JSONException e) {
-            // Tell lert monitor
+            // Tell alert monitor
         }
     }
 }
