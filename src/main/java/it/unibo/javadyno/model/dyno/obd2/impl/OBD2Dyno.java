@@ -1,5 +1,6 @@
 package it.unibo.javadyno.model.dyno.obd2.impl;
 
+import java.time.Instant;
 import java.util.Optional;
 import it.unibo.javadyno.model.data.communicator.api.JsonScheme;
 import org.json.JSONException;
@@ -19,6 +20,7 @@ public class OBD2Dyno extends AbstractPhysicalDyno {
     private Optional<Integer> engineRpm;
     private Optional<Integer> vehicleSpeed;
     private Optional<Double> engineTemperature;
+    private Optional<Instant> timestamp;
 
     /**
      * Initializes the OBD2Dyno with default values.
@@ -39,6 +41,7 @@ public class OBD2Dyno extends AbstractPhysicalDyno {
                 .engineRPM(this.engineRpm)
                 .vehicleSpeed(this.vehicleSpeed)
                 .engineTemperature(this.engineTemperature)
+                .timestamp(this.timestamp)
                 .build();
     }
 
@@ -66,6 +69,10 @@ public class OBD2Dyno extends AbstractPhysicalDyno {
 
             this.engineTemperature = json.has(JsonScheme.ENGINE_TEMPERATURE.getActualName())
                 ? Optional.of(json.getDouble(JsonScheme.ENGINE_TEMPERATURE.getActualName()))
+                : Optional.empty();
+            
+            this.timestamp = json.has(JsonScheme.TIMESTAMP.getActualName())
+                ? Optional.of(Instant.parse(json.getString(JsonScheme.TIMESTAMP.getActualName())))
                 : Optional.empty();
         } catch (final JSONException e) {
             // Tell alert monitor
