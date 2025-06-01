@@ -1,7 +1,6 @@
 package it.unibo.javadyno.model.data.api;
 
 import java.time.Instant;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -18,7 +17,7 @@ import java.util.Optional;
  * @param exhaustGasTemperature the exhaust gas temperature (Optional)
  */
 public record RawData(
-    Integer engineRPM,
+    Optional<Integer> engineRPM,
     Optional<Double> engineTemperature,
     Optional<Integer> rollerRPM,
     Optional<Double> torque,
@@ -50,7 +49,7 @@ public record RawData(
      * Builder class for RawData.
      */
     public static final class Builder {
-        private Integer engineRPM;
+        private Optional<Integer> engineRPM;
         private Optional<Double> engineTemperature = Optional.empty();
         private Optional<Integer> rollerRPM = Optional.empty();
         private Optional<Double> torque = Optional.empty();
@@ -66,7 +65,7 @@ public record RawData(
          * @param valueEngineRPM the engine revolutions per minute
          * @return this builder instance
          */
-        public Builder engineRPM(final Integer valueEngineRPM) {
+        public Builder engineRPM(final Optional<Integer> valueEngineRPM) {
             this.engineRPM = valueEngineRPM;
             return this;
         }
@@ -166,7 +165,7 @@ public record RawData(
          * @throws IllegalArgumentException if required fields are missing
          */
         public RawData build() {
-            if (Objects.isNull(engineRPM) /* timestap too? */) {
+            if (engineRPM.isPresent() /* timestap too? */) {
                 throw new IllegalArgumentException("Engine RPM must not be null");
             }
             return new RawData(

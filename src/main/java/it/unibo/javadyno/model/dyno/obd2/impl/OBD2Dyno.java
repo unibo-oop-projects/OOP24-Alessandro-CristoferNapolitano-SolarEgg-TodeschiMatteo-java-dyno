@@ -12,17 +12,38 @@ import it.unibo.javadyno.model.dyno.api.Dyno;
  */
 public class OBD2Dyno implements Dyno, Runnable {
 
+    private static final int MAX_ENGINE_RPM = 8000;
+    private static final int MAX_VEHICLE_SPEED = 200;
+    private static final double MIN_ENGINE_TEMP = 20.0;
+    private static final double ENGINE_TEMP_RANGE = 80.0;
+    private volatile boolean active;
+    private Thread thread;
     private Optional<Integer> engineRpm;
     private Optional<Integer> vehicleSpeed;
     private Optional<Double> engineTemperature;
+
+    /**
+     * Constructor.
+     * Initializes the OBD2Dyno with default values.
+     */
+    public OBD2Dyno() {
+        this.thread = null;
+        this.active = false;
+        this.engineRpm = Optional.empty();
+        this.vehicleSpeed = Optional.empty();
+        this.engineTemperature = Optional.empty();
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
     public RawData getRawData() {
-        // Build and return a RawData object with the available data.
-        throw new UnsupportedOperationException("Unimplemented method 'getRawData'");
+        return RawData.builder()
+                .engineRPM(this.engineRpm)
+                .vehicleSpeed(this.vehicleSpeed)
+                .engineTemperature(this.engineTemperature)
+                .build();
     }
 
     /**
@@ -39,8 +60,11 @@ public class OBD2Dyno implements Dyno, Runnable {
      */
     @Override
     public void begin() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'begin'");
+        if (!this.isActive()) {
+            this.active = true;
+            this.thread = Thread.ofVirtual().unstarted(this);
+            this.thread.start();
+        }
     }
 
     /**
@@ -48,8 +72,12 @@ public class OBD2Dyno implements Dyno, Runnable {
      */
     @Override
     public void end() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'end'");
+        this.active = false;
+        try {
+            this.thread.interrupt();
+        } catch (final SecurityException e) {
+            // already stopping
+        }
     }
 
     /**
@@ -57,8 +85,7 @@ public class OBD2Dyno implements Dyno, Runnable {
      */
     @Override
     public boolean isActive() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isActive'");
+        return this.active;
     }
 
     /**
@@ -66,17 +93,20 @@ public class OBD2Dyno implements Dyno, Runnable {
      */
     @Override
     public void run() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'run'");
-    }
+        while (this.isActive()) {
+            // Simulate reading data from the OBD2 line.
+            this.engineRpm = Optional.of((int) (Math.random() * MAX_ENGINE_RPM)); // Simulated RPM
+            this.vehicleSpeed = Optional.of((int) (Math.random() * MAX_VEHICLE_SPEED)); // Simulated speed
+            this.engineTemperature = Optional.of(MIN_ENGINE_TEMP + Math.random() * ENGINE_TEMP_RANGE); // Simulated temperature
 
-    /**
-     * Factory method to create a new OBD2Dyno Virtual thread.
-     * Requires Java 21 or --enable-preview option.
-     *
-     * @return a new Thread instance running the OBD2Dyno.
-     */
-    public static Thread make() {
-        return Thread.ofVirtual().unstarted(new OBD2Dyno());
+            // Actual reading from OBD2 would go here
+            
+            try {
+                Thread.sleep(100); // Sleep for 100 milliseconds
+            } catch (final InterruptedException e) {
+                this.end();
+                break;
+            }
+        }
     }
 }
