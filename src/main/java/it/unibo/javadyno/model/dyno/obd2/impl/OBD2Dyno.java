@@ -1,7 +1,7 @@
 package it.unibo.javadyno.model.dyno.obd2.impl;
 
 import java.util.Optional;
-import javax.sql.DataSource;
+import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.api.RawData;
 import it.unibo.javadyno.model.dyno.api.Dyno;
 
@@ -51,8 +51,7 @@ public class OBD2Dyno implements Dyno, Runnable {
      */
     @Override
     public DataSource getDynoType() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getDynoType'");
+        return DataSource.OBD2;
     }
 
     /**
@@ -100,7 +99,7 @@ public class OBD2Dyno implements Dyno, Runnable {
             this.engineTemperature = Optional.of(MIN_ENGINE_TEMP + Math.random() * ENGINE_TEMP_RANGE); // Simulated temperature
 
             // Actual reading from OBD2 would go here
-            
+
             try {
                 Thread.sleep(100); // Sleep for 100 milliseconds
             } catch (final InterruptedException e) {

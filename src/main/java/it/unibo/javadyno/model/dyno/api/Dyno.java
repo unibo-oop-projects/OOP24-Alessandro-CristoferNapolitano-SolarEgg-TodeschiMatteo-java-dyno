@@ -1,6 +1,6 @@
 package it.unibo.javadyno.model.dyno.api;
 
-import javax.sql.DataSource;
+import it.unibo.javadyno.model.data.api.DataSource;
 
 import it.unibo.javadyno.model.data.api.RawData;
 
