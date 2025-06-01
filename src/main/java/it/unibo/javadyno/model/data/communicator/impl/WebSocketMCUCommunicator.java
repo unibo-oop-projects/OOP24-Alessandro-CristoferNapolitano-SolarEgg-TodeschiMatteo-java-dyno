@@ -80,7 +80,13 @@ public class WebSocketMCUCommunicator implements MCUCommunicator {
      */
     @Override
     public void disconnect() throws InterruptedException {
-        webSocketClient.closeBlocking();
+        if (this.isConnected()) {
+            try {
+                webSocketClient.closeBlocking();
+            } catch (final InterruptedException e) {
+                // Tell Alert Monitor
+            }
+        }
     }
 
     /**
@@ -88,7 +94,7 @@ public class WebSocketMCUCommunicator implements MCUCommunicator {
      */
     @Override
     public boolean isConnected() {
-        return !Objects.isNull(webSocketClient) || webSocketClient.isOpen();
+        return !Objects.isNull(webSocketClient) && webSocketClient.isOpen();
     }
 
     /**
@@ -117,7 +123,9 @@ public class WebSocketMCUCommunicator implements MCUCommunicator {
     @Override
     public void removeMessageListener(final Consumer<String> listener) {
         Objects.requireNonNull(listener);
-        this.messageListeners.remove(this.messageListeners.indexOf(listener));
+        if (this.messageListeners.contains(listener)) {
+            this.messageListeners.remove(this.messageListeners.indexOf(listener));
+        }
     }
 
     private final class InternalWSClient extends WebSocketClient {

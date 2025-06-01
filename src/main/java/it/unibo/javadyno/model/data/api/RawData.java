@@ -165,9 +165,6 @@ public record RawData(
          * @throws IllegalArgumentException if required fields are missing
          */
         public RawData build() {
-            if (engineRPM.isPresent() /* timestap too? */) {
-                throw new IllegalArgumentException("Engine RPM must not be null");
-            }
             return new RawData(
                 engineRPM,
                 engineTemperature,

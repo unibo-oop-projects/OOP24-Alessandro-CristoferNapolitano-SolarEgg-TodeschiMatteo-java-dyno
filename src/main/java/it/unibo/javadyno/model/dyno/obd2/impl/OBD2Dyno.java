@@ -1,6 +1,8 @@
 package it.unibo.javadyno.model.dyno.obd2.impl;
 
 import java.util.Optional;
+import java.util.function.Consumer;
+
 import it.unibo.javadyno.model.data.communicator.api.JsonScheme;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,6 +21,7 @@ public class OBD2Dyno implements Dyno {
 
     private final MCUCommunicator communicator;
     private volatile boolean active;
+    private Consumer<String> messageHandler;
     private Optional<Integer> engineRpm;
     private Optional<Integer> vehicleSpeed;
     private Optional<Double> engineTemperature;
@@ -63,7 +66,8 @@ public class OBD2Dyno implements Dyno {
             try {
                 this.communicator.connect();
                 this.active = true;
-                this.communicator.addMessageListener(this::messageHandler);
+                this.messageHandler = this::messageHandler;
+                this.communicator.addMessageListener(this.messageHandler);
             } catch (final InterruptedException e) {
                 // Tell alert monitor
             }
@@ -79,7 +83,7 @@ public class OBD2Dyno implements Dyno {
             try {
                 this.communicator.disconnect();
                 this.active = false;
-                this.communicator.removeMessageListener(this::messageHandler);
+                this.communicator.removeMessageListener(this.messageHandler);
             } catch (final InterruptedException e) {
                 // Tell alert monitor
             }
@@ -103,7 +107,6 @@ public class OBD2Dyno implements Dyno {
     private void messageHandler(final String message) {
         try {
             final var json = new JSONObject(message);
-
             this.engineRpm = json.has(JsonScheme.ENGINE_RPM.getActualName())
                 ? Optional.of(json.getInt(JsonScheme.ENGINE_RPM.getActualName()))
                 : Optional.empty();
