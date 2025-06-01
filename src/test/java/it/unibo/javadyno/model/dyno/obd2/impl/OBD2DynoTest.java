@@ -1,6 +1,7 @@
 package it.unibo.javadyno.model.dyno.obd2.impl;
 
 import it.unibo.javadyno.model.data.api.RawData;
+import it.unibo.javadyno.model.data.communicator.impl.WebSocketMCUCommunicator;
 import it.unibo.javadyno.model.data.api.DataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,7 @@ class OBD2DynoTest {
 
     @BeforeEach
     void setUp() {
-        dyno = new OBD2Dyno();
+        dyno = new OBD2Dyno(new WebSocketMCUCommunicator());
     }
 
     @Test

@@ -24,6 +24,8 @@ public class OBD2Dyno extends AbstractPhysicalDyno {
 
     /**
      * Initializes the OBD2Dyno with default values.
+     *
+     * @param communicator the MCUCommunicator to use for communication.
      */
     public OBD2Dyno(final MCUCommunicator communicator) {
         super(communicator);
@@ -56,6 +58,7 @@ public class OBD2Dyno extends AbstractPhysicalDyno {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void handleMessage(final String message) {
         try {
             final var json = new JSONObject(message);
@@ -70,7 +73,7 @@ public class OBD2Dyno extends AbstractPhysicalDyno {
             this.engineTemperature = json.has(JsonScheme.ENGINE_TEMPERATURE.getActualName())
                 ? Optional.of(json.getDouble(JsonScheme.ENGINE_TEMPERATURE.getActualName()))
                 : Optional.empty();
-            
+
             this.timestamp = json.has(JsonScheme.TIMESTAMP.getActualName())
                 ? Optional.of(Instant.parse(json.getString(JsonScheme.TIMESTAMP.getActualName())))
                 : Optional.empty();

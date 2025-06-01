@@ -1,6 +1,5 @@
 package it.unibo.javadyno.model.dyno.real.api;
 
-import org.json.JSONException;
 import it.unibo.javadyno.model.dyno.api.Dyno;
 
 /**
@@ -14,7 +13,6 @@ public interface RealDyno extends Dyno {
      * Sends configuration to the MCU.
      *
      * @param config the configuration details to send in JSON format.
-     * @throws JSONException if the configuration is not a valid JSON string.
      */
-    void sendConfiguration(String config) throws JSONException;
+    void sendConfiguration(String config);
 }
