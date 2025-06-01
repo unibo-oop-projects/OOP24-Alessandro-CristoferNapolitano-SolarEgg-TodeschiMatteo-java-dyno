@@ -2,8 +2,7 @@ package it.unibo.javadyno.model.dyno.simulated.impl;
 
 import java.util.Objects;
 
-import javax.sql.DataSource;
-
+import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.api.RawData;
 import it.unibo.javadyno.model.dyno.simulated.api.Bench;
 import it.unibo.javadyno.model.dyno.simulated.api.SimulatedDyno;

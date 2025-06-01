@@ -45,6 +45,10 @@ dependencies {
     // WebSocket library for external communication
     val javaWebSocketVersion = "1.6.0"
     implementation("org.java-websocket:Java-WebSocket:$javaWebSocketVersion")
+
+    // JSON library for parsing and generating JSON
+    val jsonVersion = "20250517"
+    implementation("org.json:json:$jsonVersion")
     
     // The BOM (Bill of Materials) synchronizes all the versions of Junit coherently.
     testImplementation(platform("org.junit:junit-bom:5.12.2"))

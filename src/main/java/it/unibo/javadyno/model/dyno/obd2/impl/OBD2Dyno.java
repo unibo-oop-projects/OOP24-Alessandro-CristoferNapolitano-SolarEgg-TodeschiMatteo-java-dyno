@@ -1,8 +1,13 @@
 package it.unibo.javadyno.model.dyno.obd2.impl;
 
 import java.util.Optional;
+import it.unibo.javadyno.model.data.communicator.api.JsonScheme;
+import org.json.JSONException;
+import org.json.JSONObject;
 import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.api.RawData;
+import it.unibo.javadyno.model.data.communicator.api.MCUCommunicator;
+import it.unibo.javadyno.model.data.communicator.impl.WebSocketMCUCommunicator;
 import it.unibo.javadyno.model.dyno.api.Dyno;
 
 /**
@@ -16,6 +21,7 @@ public class OBD2Dyno implements Dyno, Runnable {
     private static final int MAX_VEHICLE_SPEED = 200;
     private static final double MIN_ENGINE_TEMP = 20.0;
     private static final double ENGINE_TEMP_RANGE = 80.0;
+    private final MCUCommunicator communicator;
     private volatile boolean active;
     private Thread thread;
     private Optional<Integer> engineRpm;
@@ -23,10 +29,10 @@ public class OBD2Dyno implements Dyno, Runnable {
     private Optional<Double> engineTemperature;
 
     /**
-     * Constructor.
      * Initializes the OBD2Dyno with default values.
      */
     public OBD2Dyno() {
+        this.communicator = new WebSocketMCUCommunicator();
         this.thread = null;
         this.active = false;
         this.engineRpm = Optional.empty();
@@ -63,6 +69,9 @@ public class OBD2Dyno implements Dyno, Runnable {
             this.active = true;
             this.thread = Thread.ofVirtual().unstarted(this);
             this.thread.start();
+
+            // connect to the communicator
+            this.communicator.addMessageListener(this::messageHandler);
         }
     }
 
@@ -106,6 +115,32 @@ public class OBD2Dyno implements Dyno, Runnable {
                 this.end();
                 break;
             }
+        }
+    }
+
+    /**
+     * Handles incoming messages from the {@code MCUCommunicator} .
+     * Parses the JSON message and updates the dyno data.
+     *
+     * @param message the JSON message received from the communicator
+     */
+    private void messageHandler(final String message) {
+        try {
+            final var json = new JSONObject(message);
+
+            this.engineRpm = json.has(JsonScheme.ENGINE_RPM.getActualName())
+                ? Optional.of(json.getInt(JsonScheme.ENGINE_RPM.getActualName()))
+                : Optional.empty();
+
+            this.vehicleSpeed = json.has(JsonScheme.VEHICLE_SPEED.getActualName())
+                ? Optional.of(json.getInt(JsonScheme.VEHICLE_SPEED.getActualName()))
+                : Optional.empty();
+
+            this.engineTemperature = json.has(JsonScheme.ENGINE_TEMPERATURE.getActualName())
+                ? Optional.of(json.getDouble(JsonScheme.ENGINE_TEMPERATURE.getActualName()))
+                : Optional.empty();
+        } catch (final JSONException e) {
+            // Tell lert monitor
         }
     }
 }

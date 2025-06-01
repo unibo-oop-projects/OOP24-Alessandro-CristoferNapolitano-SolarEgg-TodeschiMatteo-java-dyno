@@ -1,6 +1,7 @@
 package it.unibo.javadyno.model.data.communicator.impl;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -21,27 +22,38 @@ import org.java_websocket.handshake.ServerHandshake;
 public class WebSocketMCUCommunicator implements MCUCommunicator {
 
     private static final long DEFAULT_TIMEOUT = 5000;
-    private final URI mcuServerUri;
+    private static final String DEFAULT_SERVER_URI = "192.168.1.2:8080";
+    private static final String WEBSOCKET_PREFIX = "ws://";
+    private final String mcuServerUri;
     private final long timeOut;
     private final List<Consumer<String>> messageListeners = new ArrayList<>();
     private InternalWSClient webSocketClient;
 
     /**
-     * Constructs a WebSocketMCUCommunicator with the specified server URI.
-     *
-     * @param serverUri the URI of the MCU WebSocket server.
+     * Constructs a WebSocketMCUCommunicator with the default server URI and timeout.
+     * The default server URI is {@value #DEFAULT_SERVER_URI} and the default timeout is {@value #DEFAULT_TIMEOUT} milliseconds.
      */
-    public WebSocketMCUCommunicator(final URI serverUri) {
+    public WebSocketMCUCommunicator() {
+        this(DEFAULT_SERVER_URI, DEFAULT_TIMEOUT); // Default server URI and timeout
+    }
+
+    /**
+     * Constructs a WebSocketMCUCommunicator with the specified server URI
+     * and the default timeout ({@value #DEFAULT_TIMEOUT} milliseconds).
+     *
+     * @param serverUri the URI of the MCU WebSocket server (e.i. {@value #DEFAULT_SERVER_URI}).
+     */
+    public WebSocketMCUCommunicator(final String serverUri) {
         this(serverUri, DEFAULT_TIMEOUT); // Default timeout value
     }
 
     /**
      * Constructs a WebSocketMCUCommunicator with the specified server URI and timeout.
      *
-     * @param serverUri the URI of the MCU WebSocket server.
+     * @param serverUri the URI of the MCU WebSocket server (e.i. {@value #DEFAULT_SERVER_URI}). 
      * @param timeout the timeout in milliseconds for connection attempts.
      */
-    public WebSocketMCUCommunicator(final URI serverUri, final long timeout) {
+    public WebSocketMCUCommunicator(final String serverUri, final long timeout) {
         this.mcuServerUri = serverUri;
         this.timeOut = timeout;
     }
@@ -52,7 +64,13 @@ public class WebSocketMCUCommunicator implements MCUCommunicator {
     @Override
     public void connect() throws InterruptedException {
         if (!this.isConnected()) {
-            webSocketClient = new InternalWSClient(this.mcuServerUri);
+            try {
+                webSocketClient = new InternalWSClient(new URI(
+                    WEBSOCKET_PREFIX + this.mcuServerUri
+                ));
+            } catch (final URISyntaxException e) {
+                throw new IllegalArgumentException("Invalid WebSocket URI: " + mcuServerUri, e);
+            }
             webSocketClient.connectBlocking(this.timeOut, TimeUnit.MILLISECONDS);
         }
     }
