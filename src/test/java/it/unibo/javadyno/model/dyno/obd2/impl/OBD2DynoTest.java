@@ -45,6 +45,7 @@ class OBD2DynoTest {
                 "\"engineTemperature\": 78.9" +
                 "}";
         // Use reflection to call private method for test purposes
+        // https://stackoverflow.com/questions/15595765/invoking-a-private-method-via-jmockit-to-test-result/15612040#15612040
         try {
             var method = OBD2Dyno.class.getDeclaredMethod("messageHandler", String.class);
             method.setAccessible(true);
