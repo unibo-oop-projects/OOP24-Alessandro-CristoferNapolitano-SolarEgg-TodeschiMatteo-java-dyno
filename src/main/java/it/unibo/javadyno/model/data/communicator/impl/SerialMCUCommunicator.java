@@ -41,7 +41,7 @@ public class SerialMCUCommunicator implements MCUCommunicator {
      * {@inheritDoc}
      */
     @Override
-    public void send(String message) {
+    public void send(final String message) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'send'");
     }
@@ -50,7 +50,7 @@ public class SerialMCUCommunicator implements MCUCommunicator {
      * {@inheritDoc}
      */
     @Override
-    public void addMessageListener(Consumer<String> listener) {
+    public void addMessageListener(final Consumer<String> listener) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'addMessageListener'");
     }
@@ -59,7 +59,7 @@ public class SerialMCUCommunicator implements MCUCommunicator {
      * {@inheritDoc}
      */
     @Override
-    public void removeMessageListener(Consumer<String> listener) {
+    public void removeMessageListener(final Consumer<String> listener) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'removeMessageListener'");
     }
