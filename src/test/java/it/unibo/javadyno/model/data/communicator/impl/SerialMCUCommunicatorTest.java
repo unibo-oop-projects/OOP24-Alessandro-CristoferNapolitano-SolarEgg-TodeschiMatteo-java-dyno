@@ -1,9 +1,13 @@
 package it.unibo.javadyno.model.data.communicator.impl;
 
-import com.fazecast.jSerialComm.SerialPort;
-import org.junit.jupiter.api.*;
-import java.util.Objects;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class SerialMCUCommunicatorTest {
     private static final String TEST_PORT = "COM1"; // Use a dummy port for testing
@@ -20,7 +24,7 @@ class SerialMCUCommunicatorTest {
     void testPortInfo() {
         try {
             communicatorAuto.connect();
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
             fail("Connection interrupted: " + e.getMessage());
         }
     }
@@ -48,22 +52,22 @@ class SerialMCUCommunicatorTest {
 
     @Test
     void testAddMessageListenerThrowsUnsupportedOperation() {
-        assertThrows(UnsupportedOperationException.class, () -> communicatorWithPort.addMessageListener(s -> {}));
+        assertThrows(UnsupportedOperationException.class, () -> communicatorWithPort.addMessageListener(s -> { }));
     }
 
     @Test
     void testRemoveMessageListenerThrowsUnsupportedOperation() {
-        assertThrows(UnsupportedOperationException.class, () -> communicatorWithPort.removeMessageListener(s -> {}));
+        assertThrows(UnsupportedOperationException.class, () -> communicatorWithPort.removeMessageListener(s -> { }));
     }
 
     @Test
     void testDisconnectWhenNotConnected() {
-        assertDoesNotThrow(() -> communicatorWithPort.disconnect());
+        assertDoesNotThrow(communicatorWithPort::disconnect);
     }
 
     @Test
     void testConnectWithInvalidPort() {
         // This test expects an exception or no connection, depending on environment
-        assertDoesNotThrow(() -> communicatorWithPort.connect());
+        assertDoesNotThrow(communicatorWithPort::connect);
     }
 }

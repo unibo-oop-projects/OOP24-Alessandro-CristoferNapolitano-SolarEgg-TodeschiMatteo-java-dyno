@@ -15,7 +15,7 @@ public class SerialMCUCommunicator implements MCUCommunicator {
     private static final int INVALID_VENDOR_ID = -1;
     private static final int NEW_WRITE_TIMEOUT = 0;
     private static final int DEFAULT_TIMEOUT = 5000;
-    private static final int DEFAULT_BAUD_RATE = 115200;
+    private static final int DEFAULT_BAUD_RATE = 38_400;
     private SerialPort commPort;
     private final String suppliedPort;
     private final int timeOut;
@@ -32,16 +32,29 @@ public class SerialMCUCommunicator implements MCUCommunicator {
     /**
      * Constructs a SerialMCUCommunicator with the specified serial port.
      *
-     * @param commPort the name of the serial port to be used for communication (as a String)
+     * @param suppliedPort the name of the serial port to be used for communication (as a String)
      */
     public SerialMCUCommunicator(final String suppliedPort) {
         this(DEFAULT_TIMEOUT, DEFAULT_BAUD_RATE, suppliedPort);
     }
 
+    /**
+     * Constructs a SerialMCUCommunicator with the specified timeout and baud rate.
+     *
+     * @param timeOut the timeout in milliseconds for connection attempts
+     * @param baudRate the baud rate for serial communication 
+     */
     public SerialMCUCommunicator(final int timeOut, final int baudRate) {
         this(timeOut, baudRate, null);
     }
 
+    /**
+     * Constructs a SerialMCUCommunicator with the specified timeout, baud rate, and serial port.
+     *
+     * @param timeOut the timeout in milliseconds for connection attempts
+     * @param baudRate the baud rate for serial communication
+     * @param suppliedPort the name of the serial port to be used for communication (as a String)
+     */
     public SerialMCUCommunicator(final int timeOut, final int baudRate, final String suppliedPort) {
         this.suppliedPort = suppliedPort;
         this.timeOut = timeOut;
@@ -60,7 +73,7 @@ public class SerialMCUCommunicator implements MCUCommunicator {
                     throw new IllegalStateException("No serial ports available for connection.");
                     // tell alert monitor
                 }
-                for (SerialPort serialPort : ports) {
+                for (final SerialPort serialPort : ports) {
                     if (serialPort.getVendorID() != INVALID_VENDOR_ID) {
                         this.commPort = serialPort;
                         this.commPort.setBaudRate(this.baudRate);
