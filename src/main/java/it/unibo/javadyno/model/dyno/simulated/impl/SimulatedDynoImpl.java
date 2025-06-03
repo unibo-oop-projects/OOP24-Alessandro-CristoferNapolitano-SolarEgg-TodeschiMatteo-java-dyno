@@ -15,8 +15,6 @@ public class SimulatedDynoImpl implements SimulatedDyno {
 
     private static final int ENGINE_RPM = 2000;
     private static final double ENGINE_TEMPERATURE = 90.0;
-    private static final double ROLLER_INERTIA = 0.01;
-    private static final double ROLLER_RADIUS = 0.1;
     private volatile boolean running;
     private Thread simulationThread;
     private Bench bench;
@@ -38,7 +36,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
     public void begin() {
         if (!running) {
             this.running = true;
-            this.bench = new BenchImpl(ROLLER_RADIUS, ROLLER_INERTIA);
+            this.bench = new BenchImpl();
             this.simulationThread = new Thread(this);
             this.simulationThread.start();
         }
