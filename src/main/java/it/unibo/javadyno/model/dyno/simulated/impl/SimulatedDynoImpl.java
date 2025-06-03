@@ -1,6 +1,7 @@
 package it.unibo.javadyno.model.dyno.simulated.impl;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.api.RawData;
@@ -72,17 +73,11 @@ public class SimulatedDynoImpl implements SimulatedDyno {
     @Override
     public void run() {
         while (this.running) {
-            // this.datas = new RawData(
-            //         ENGINE_RPM,
-            //         ENGINE_TEMPERATURE,
-            //         Optional.of(this.bench.getRollerRPM()),
-            //         Optional.empty(),
-            //         Optional.empty(),
-            //         Optional.empty(),
-            //         Optional.empty(),
-            //         Optional.empty(),
-            //         Optional.empty()
-            // );
+            this.datas = RawData.builder()
+                    .engineRPM(Optional.of(ENGINE_RPM))
+                    .engineTemperature(Optional.of(ENGINE_TEMPERATURE))
+                    .rollerRPM(Optional.of(this.bench.getRollerRPM()))
+                    .build();
             try {
                 Thread.sleep(100);
             } catch (final InterruptedException e) {
