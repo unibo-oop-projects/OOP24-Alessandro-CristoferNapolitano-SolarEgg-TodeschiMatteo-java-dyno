@@ -20,7 +20,7 @@ public abstract class AbstractPhysicalDyno implements Dyno {
      * @param communicator the MCUCommunicator to use for communication.
      */
     public AbstractPhysicalDyno(final MCUCommunicator communicator) {
-        this.communicator = communicator;
+        this.communicator = new InternalMCUCommunicatorWrapper(communicator);
         this.active = false;
     }
 
@@ -37,6 +37,7 @@ public abstract class AbstractPhysicalDyno implements Dyno {
                 this.communicator.addMessageListener(this.messageListener);
             } catch (final InterruptedException e) {
                 // Tell alert monitor
+                Thread.currentThread().interrupt();
             }
         }
     }
@@ -53,6 +54,7 @@ public abstract class AbstractPhysicalDyno implements Dyno {
                 this.communicator.removeMessageListener(this.messageListener);
             } catch (final InterruptedException e) {
                 // Tell alert monitor
+                Thread.currentThread().interrupt();
             }
         }
     }
@@ -72,4 +74,46 @@ public abstract class AbstractPhysicalDyno implements Dyno {
      * @param message the JSON message received from the communicator
      */
     protected abstract void handleMessage(String message);
+
+    /**
+     * Wrapper class for MCUCommunicator to ensure that the
+     * AbstractPhysicalDyno does run into an inconsistent state.
+     */
+    private static class InternalMCUCommunicatorWrapper implements MCUCommunicator {
+        private final MCUCommunicator communicator;
+
+        InternalMCUCommunicatorWrapper(final MCUCommunicator communicator) {
+            this.communicator = communicator;
+        }
+
+        @Override
+        public void connect() throws InterruptedException {
+            this.communicator.connect();
+        }
+
+        @Override
+        public void disconnect() throws InterruptedException {
+            this.communicator.disconnect();
+        }
+
+        @Override
+        public void addMessageListener(final Consumer<String> listener) {
+            this.communicator.addMessageListener(listener);
+        }
+
+        @Override
+        public void removeMessageListener(final Consumer<String> listener) {
+            this.communicator.removeMessageListener(listener);
+        }
+
+        @Override
+        public boolean isConnected() {
+            return this.communicator.isConnected();
+        }
+
+        @Override
+        public void send(final String message) {
+            this.communicator.send(message);
+        }
+    }
 }
