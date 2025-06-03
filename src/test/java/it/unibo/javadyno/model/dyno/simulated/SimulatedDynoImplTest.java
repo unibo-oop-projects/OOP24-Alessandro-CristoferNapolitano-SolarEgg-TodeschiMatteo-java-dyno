@@ -1,8 +1,9 @@
-package it.unibo.javadyno.model.dyno.simulated.impl;
+package it.unibo.javadyno.model.dyno.simulated;
 
 import org.junit.jupiter.api.Test;
 
 import it.unibo.javadyno.model.dyno.simulated.api.SimulatedDyno;
+import it.unibo.javadyno.model.dyno.simulated.impl.SimulatedDynoImpl;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
