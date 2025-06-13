@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
+import com.fazecast.jSerialComm.SerialPortMessageListener;
 
 import it.unibo.javadyno.model.data.communicator.api.MCUCommunicator;
 
@@ -93,7 +94,6 @@ public class SerialMCUCommunicator implements MCUCommunicator {
             }
 
             this.commPort.setBaudRate(this.baudRate);
-            this.commPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, this.timeOut, NEW_WRITE_TIMEOUT);
             this.commPort.addDataListener(new DataListener());
             this.commPort.addDataListener(new DisconnectListener());
         }
@@ -128,8 +128,7 @@ public class SerialMCUCommunicator implements MCUCommunicator {
      */
     @Override
     public void send(final String message) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'send'");
+        this.commPort.writeBytes(message.getBytes(), message.length());
     }
 
     /**
@@ -155,11 +154,22 @@ public class SerialMCUCommunicator implements MCUCommunicator {
     /**
      * Internal listener for serial port data events.
      */
-    private final class DataListener implements SerialPortDataListener {
+    private final class DataListener implements SerialPortMessageListener {
 
         @Override
         public int getListeningEvents() {
             return SerialPort.LISTENING_EVENT_DATA_AVAILABLE;
+        }
+
+        @Override
+        public byte[] getMessageDelimiter() {
+            // TODO add OBD2 PID
+            throw new UnsupportedOperationException("Unimplemented method 'getMessageDelimiter'");
+        }
+
+        @Override
+        public boolean delimiterIndicatesEndOfMessage() {
+            return true;
         }
 
         @Override
@@ -187,12 +197,15 @@ public class SerialMCUCommunicator implements MCUCommunicator {
 
         @Override
         public void serialEvent(final SerialPortEvent event) {
-            try {
-                disconnect();
-            } catch (final InterruptedException e) {
-                // tell alter monitor
-                throw new IllegalStateException("Interrupted while disconnecting from serial port", e);
+            if (event.getEventType() == SerialPort.LISTENING_EVENT_PORT_DISCONNECTED) {
+                try {
+                    disconnect();
+                } catch (final InterruptedException e) {
+                    // tell alter monitor
+                    throw new IllegalStateException("Interrupted while disconnecting from serial port", e);
+                }
             }
+            
         }
     }
 }
