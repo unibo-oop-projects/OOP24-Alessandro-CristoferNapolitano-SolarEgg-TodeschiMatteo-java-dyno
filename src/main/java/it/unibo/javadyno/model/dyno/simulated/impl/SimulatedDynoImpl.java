@@ -15,6 +15,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
 
     private static final int ENGINE_RPM = 2000;
     private static final double ENGINE_TEMPERATURE = 90.0;
+    private static final int UPDATE_TIME_DELTA = 100;
     private volatile boolean running;
     private Thread simulationThread;
     private Bench bench;
@@ -77,7 +78,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
                     .rollerRPM(Optional.of(this.bench.getRollerRPM()))
                     .build();
             try {
-                Thread.sleep(100); // frequency setted by user
+                Thread.sleep(UPDATE_TIME_DELTA); // frequency setted by user
             } catch (final InterruptedException e) {
                 this.end();
                 break;
