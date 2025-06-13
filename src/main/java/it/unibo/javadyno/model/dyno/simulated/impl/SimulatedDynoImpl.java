@@ -77,7 +77,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
                     .rollerRPM(Optional.of(this.bench.getRollerRPM()))
                     .build();
             try {
-                Thread.sleep(100);
+                Thread.sleep(100); // frequency setted by user
             } catch (final InterruptedException e) {
                 this.end();
                 break;

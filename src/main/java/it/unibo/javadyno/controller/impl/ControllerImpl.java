@@ -33,4 +33,13 @@ public class ControllerImpl implements Controller {
         throw new UnsupportedOperationException("Unimplemented method 'startSimulation'");
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void stopSimulation() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'stopSimulation'");
+    }
+
 }
