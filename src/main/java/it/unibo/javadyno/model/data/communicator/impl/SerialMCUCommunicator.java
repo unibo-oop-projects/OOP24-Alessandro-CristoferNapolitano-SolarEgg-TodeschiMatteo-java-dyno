@@ -1,9 +1,14 @@
 package it.unibo.javadyno.model.data.communicator.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import com.fazecast.jSerialComm.SerialPort;
+import com.fazecast.jSerialComm.SerialPortDataListener;
+import com.fazecast.jSerialComm.SerialPortEvent;
+
 import it.unibo.javadyno.model.data.communicator.api.MCUCommunicator;
 
 /**
@@ -16,10 +21,11 @@ public class SerialMCUCommunicator implements MCUCommunicator {
     private static final int NEW_WRITE_TIMEOUT = 0;
     private static final int DEFAULT_TIMEOUT = 5000;
     private static final int DEFAULT_BAUD_RATE = 38_400;
-    private SerialPort commPort;
     private final String suppliedPort;
     private final int timeOut;
     private final int baudRate;
+    private final List<Consumer<String>> messageListeners = new ArrayList<>();
+    private SerialPort commPort;
 
     /**
      * Constructs a SerialMCUCommunicator auto-detecting the
@@ -76,14 +82,20 @@ public class SerialMCUCommunicator implements MCUCommunicator {
                 for (final SerialPort serialPort : ports) {
                     if (serialPort.getVendorID() != INVALID_VENDOR_ID) {
                         this.commPort = serialPort;
-                        this.commPort.setBaudRate(this.baudRate);
-                        this.commPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, this.timeOut, NEW_WRITE_TIMEOUT);
                         break;
                     }
                 }
+                throw new IllegalStateException("No valid serial ports.");
+
             } else {
                 this.commPort = SerialPort.getCommPort(this.suppliedPort);
+
             }
+
+            this.commPort.setBaudRate(this.baudRate);
+            this.commPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, this.timeOut, NEW_WRITE_TIMEOUT);
+            this.commPort.addDataListener(new DataListener());
+            this.commPort.addDataListener(new DisconnectListener());
         }
     }
 
@@ -98,6 +110,8 @@ public class SerialMCUCommunicator implements MCUCommunicator {
                 // tell alert monitor
             }
             this.commPort = null;
+            this.messageListeners.clear();
+            this.commPort.removeDataListener();
         }
     }
 
@@ -123,8 +137,8 @@ public class SerialMCUCommunicator implements MCUCommunicator {
      */
     @Override
     public void addMessageListener(final Consumer<String> listener) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addMessageListener'");
+        Objects.requireNonNull(listener);
+        this.messageListeners.add(listener);
     }
 
     /**
@@ -132,7 +146,53 @@ public class SerialMCUCommunicator implements MCUCommunicator {
      */
     @Override
     public void removeMessageListener(final Consumer<String> listener) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removeMessageListener'");
+        Objects.requireNonNull(listener);
+        if (this.messageListeners.contains(listener)) {
+            this.messageListeners.remove(this.messageListeners.indexOf(listener));
+        }
+    }
+
+    /**
+     * Internal listener for serial port data events.
+     */
+    private final class DataListener implements SerialPortDataListener {
+
+        @Override
+        public int getListeningEvents() {
+            return SerialPort.LISTENING_EVENT_DATA_AVAILABLE;
+        }
+
+        @Override
+        public void serialEvent(final SerialPortEvent event) {
+            if (event.getEventType() == SerialPort.LISTENING_EVENT_DATA_AVAILABLE) {
+                final byte[] readBuffer = new byte[commPort.bytesAvailable()];
+                commPort.readBytes(readBuffer, readBuffer.length);
+                final String message = new String(readBuffer);
+                for (final Consumer<String> listener : SerialMCUCommunicator.this.messageListeners) {
+                    listener.accept(message);
+                }
+            }
+        }
+    }
+
+    /**
+     * Internal listener for serial port disconnection events as they cannot be detected otherwise.
+     */
+    private final class DisconnectListener implements SerialPortDataListener {
+
+        @Override
+        public int getListeningEvents() {
+            return SerialPort.LISTENING_EVENT_PORT_DISCONNECTED;
+        }
+
+        @Override
+        public void serialEvent(final SerialPortEvent event) {
+            try {
+                disconnect();
+            } catch (final InterruptedException e) {
+                // tell alter monitor
+                throw new IllegalStateException("Interrupted while disconnecting from serial port", e);
+            }
+        }
     }
 }
