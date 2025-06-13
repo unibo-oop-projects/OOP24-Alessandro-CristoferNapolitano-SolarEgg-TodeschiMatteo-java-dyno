@@ -5,19 +5,19 @@ package it.unibo.javadyno.model.dyno.simulated.api;
  */
 public interface Transmission {
     /**
-     * Current gear ratio
-     *  
+     * Current gear ratio.
+     *
      * @return gear ratio
      */
     double getCurrentRatio();
 
     /**
-     * Selects up gear
+     * Selects up gear.
      */
     void shiftUp();
-    
+
     /**
-     * Selects down gear
+     * Selects down gear.
      */
     void shiftDown();
 }
