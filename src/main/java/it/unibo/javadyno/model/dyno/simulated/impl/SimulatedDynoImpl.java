@@ -16,7 +16,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
 
     private static final int ENGINE_RPM = 2000;
     private static final double ENGINE_TEMPERATURE = 90.0;
-    private static final int UPDATE_TIME_DELTA = 100;
+    private static final int UPDATE_TIME_DELTA = 10; // in milliseconds
     private volatile boolean running;
     private Thread simulationThread;
     private Bench bench;
@@ -83,7 +83,6 @@ public class SimulatedDynoImpl implements SimulatedDyno {
                 Thread.sleep(UPDATE_TIME_DELTA); // frequency setted by user
             } catch (final InterruptedException e) {
                 this.end();
-                this.running = false;
             }
         }
     }
@@ -101,7 +100,6 @@ public class SimulatedDynoImpl implements SimulatedDyno {
      */
     @Override
     public DataSource getDynoType() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getDynoType'");
+        return DataSource.SIMULATED_DYNO;
     }
 }
