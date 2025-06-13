@@ -1,6 +1,10 @@
 package it.unibo.javadyno.controller.impl;
 
+import java.util.Objects;
+
 import it.unibo.javadyno.controller.api.Controller;
+import it.unibo.javadyno.model.dyno.api.Dyno;
+import it.unibo.javadyno.model.dyno.simulated.impl.SimulatedDynoImpl;
 import it.unibo.javadyno.view.impl.ViewImpl;
 import javafx.application.Application;
 
@@ -8,6 +12,15 @@ import javafx.application.Application;
  * Controller implementation.
  */
 public class ControllerImpl implements Controller {
+
+    private Dyno dyno;
+
+    /**
+     * Default constructor for ControllerImpl.
+     */
+    public ControllerImpl() {
+        this.dyno = null;
+    }
 
     /**
      * {@inheritDoc}
@@ -29,8 +42,12 @@ public class ControllerImpl implements Controller {
      */
     @Override
     public void startSimulation() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'startSimulation'");
+        if (!this.dyno.isActive()) {
+            this.dyno = new SimulatedDynoImpl();
+            this.dyno.begin();
+        } else {
+            throw new IllegalStateException("Simulation is already running."); // maybe alert box?
+        }
     }
 
     /**
@@ -38,8 +55,11 @@ public class ControllerImpl implements Controller {
      */
     @Override
     public void stopSimulation() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'stopSimulation'");
+        Objects.requireNonNull(this.dyno, "Dyno must be initialized before stopping it."); // maybe alert box?
+        if (this.dyno.isActive()) {
+            this.dyno.end();
+            this.dyno = null;
+        }
     }
 
 }
