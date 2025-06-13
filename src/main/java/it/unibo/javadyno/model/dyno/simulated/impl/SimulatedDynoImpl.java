@@ -2,6 +2,7 @@ package it.unibo.javadyno.model.dyno.simulated.impl;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.time.Instant;
 
 import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.api.RawData;
@@ -9,7 +10,7 @@ import it.unibo.javadyno.model.dyno.simulated.api.Bench;
 import it.unibo.javadyno.model.dyno.simulated.api.SimulatedDyno;
 
 /**
- * Implementation of the simumlated Dyno.
+ * Implementation of the simulated Dyno.
  */
 public class SimulatedDynoImpl implements SimulatedDyno {
 
@@ -76,12 +77,13 @@ public class SimulatedDynoImpl implements SimulatedDyno {
                     .engineRPM(Optional.of(ENGINE_RPM))
                     .engineTemperature(Optional.of(ENGINE_TEMPERATURE))
                     .rollerRPM(Optional.of(this.bench.getRollerRPM()))
+                    .timestamp(Optional.of(Instant.now()))
                     .build();
             try {
                 Thread.sleep(UPDATE_TIME_DELTA); // frequency setted by user
             } catch (final InterruptedException e) {
                 this.end();
-                break;
+                this.running = false;
             }
         }
     }
