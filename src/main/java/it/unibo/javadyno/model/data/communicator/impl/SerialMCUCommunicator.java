@@ -19,11 +19,8 @@ import it.unibo.javadyno.model.data.communicator.api.MCUCommunicator;
 public class SerialMCUCommunicator implements MCUCommunicator {
 
     private static final int INVALID_VENDOR_ID = -1;
-    private static final int NEW_WRITE_TIMEOUT = 0;
-    private static final int DEFAULT_TIMEOUT = 5000;
     private static final int DEFAULT_BAUD_RATE = 38_400;
     private final String suppliedPort;
-    private final int timeOut;
     private final int baudRate;
     private final List<Consumer<String>> messageListeners = new ArrayList<>();
     private SerialPort commPort;
@@ -42,29 +39,26 @@ public class SerialMCUCommunicator implements MCUCommunicator {
      * @param suppliedPort the name of the serial port to be used for communication (as a String)
      */
     public SerialMCUCommunicator(final String suppliedPort) {
-        this(DEFAULT_TIMEOUT, DEFAULT_BAUD_RATE, suppliedPort);
+        this(DEFAULT_BAUD_RATE, suppliedPort);
     }
 
     /**
      * Constructs a SerialMCUCommunicator with the specified timeout and baud rate.
      *
-     * @param timeOut the timeout in milliseconds for connection attempts
      * @param baudRate the baud rate for serial communication 
      */
-    public SerialMCUCommunicator(final int timeOut, final int baudRate) {
-        this(timeOut, baudRate, null);
+    public SerialMCUCommunicator(final int baudRate) {
+        this(baudRate, null);
     }
 
     /**
      * Constructs a SerialMCUCommunicator with the specified timeout, baud rate, and serial port.
      *
-     * @param timeOut the timeout in milliseconds for connection attempts
      * @param baudRate the baud rate for serial communication
      * @param suppliedPort the name of the serial port to be used for communication (as a String)
      */
-    public SerialMCUCommunicator(final int timeOut, final int baudRate, final String suppliedPort) {
+    public SerialMCUCommunicator(final int baudRate, final String suppliedPort) {
         this.suppliedPort = suppliedPort;
-        this.timeOut = timeOut;
         this.baudRate = baudRate;
     }
 
@@ -205,7 +199,6 @@ public class SerialMCUCommunicator implements MCUCommunicator {
                     throw new IllegalStateException("Interrupted while disconnecting from serial port", e);
                 }
             }
-            
         }
     }
 }
