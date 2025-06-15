@@ -7,7 +7,10 @@ import java.time.Instant;
 import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.api.RawData;
 import it.unibo.javadyno.model.dyno.simulated.api.Bench;
+import it.unibo.javadyno.model.dyno.simulated.api.DriveTrain;
 import it.unibo.javadyno.model.dyno.simulated.api.SimulatedDyno;
+import it.unibo.javadyno.model.dyno.simulated.api.Vehicle;
+import it.unibo.javadyno.model.dyno.simulated.api.WeatherStation;
 
 /**
  * Implementation of the simulated Dyno.
@@ -20,6 +23,9 @@ public class SimulatedDynoImpl implements SimulatedDyno {
     private volatile boolean running;
     private Thread simulationThread;
     private Bench bench;
+    private Vehicle vehicle;
+    private DriveTrain driveTrain;
+    private WeatherStation weatherStation;
     private volatile RawData datas;
 
     /**
@@ -29,8 +35,11 @@ public class SimulatedDynoImpl implements SimulatedDyno {
         this.running = false;
         this.simulationThread = null;
         this.bench = null;
-        // Vehicle (with builder for the parameters)
+        this.vehicle = null;
+        this.driveTrain = null;
+        this.weatherStation = null;
         // Bench
+        // Vehicle (with builder for the parameters)
         // Drive Train + call for throttle/timedelta
         // Weather
     }
@@ -43,6 +52,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
         if (!running) {
             this.running = true;
             this.bench = new BenchImpl();
+            // this.vehicle = new VehicleImpl();
             this.simulationThread = new Thread(this);
             this.simulationThread.start();
         }
