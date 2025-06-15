@@ -1,5 +1,6 @@
 package it.unibo.javadyno.model.data.communicator.impl;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -20,6 +21,8 @@ public class SerialMCUCommunicator implements MCUCommunicator {
 
     private static final int INVALID_VENDOR_ID = -1;
     private static final int DEFAULT_BAUD_RATE = 38_400;
+    private static final String SENT_DATA_DELIMITER = "\r";
+    private static final String RECIEVED_DATA_DELIMITER = ">";
     private final String suppliedPort;
     private final int baudRate;
     private final List<Consumer<String>> messageListeners = new ArrayList<>();
@@ -122,7 +125,10 @@ public class SerialMCUCommunicator implements MCUCommunicator {
      */
     @Override
     public void send(final String message) {
-        this.commPort.writeBytes(message.getBytes(), message.length());
+        if (this.isConnected()) {
+            final byte[] bytes = (message + SENT_DATA_DELIMITER).getBytes(StandardCharsets.UTF_8);
+            this.commPort.writeBytes(bytes, bytes.length);
+        }
     }
 
     /**
@@ -157,8 +163,7 @@ public class SerialMCUCommunicator implements MCUCommunicator {
 
         @Override
         public byte[] getMessageDelimiter() {
-            // TODO add OBD2 PID
-            throw new UnsupportedOperationException("Unimplemented method 'getMessageDelimiter'");
+            return RECIEVED_DATA_DELIMITER.getBytes(StandardCharsets.UTF_8);
         }
 
         @Override

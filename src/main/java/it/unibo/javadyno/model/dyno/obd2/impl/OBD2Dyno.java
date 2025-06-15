@@ -1,26 +1,25 @@
 package it.unibo.javadyno.model.dyno.obd2.impl;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
-
-import it.unibo.javadyno.model.data.communicator.api.JsonScheme;
-import org.json.JSONException;
-import org.json.JSONObject;
 import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.api.RawData;
 import it.unibo.javadyno.model.data.communicator.api.MCUCommunicator;
-import it.unibo.javadyno.model.data.communicator.impl.WebSocketMCUCommunicator;
+import it.unibo.javadyno.model.data.communicator.impl.SerialMCUCommunicator;
 import it.unibo.javadyno.model.dyno.api.Dyno;
 
 /**
  * Implementation of the Dyno interface.
  * It retrieve engine RPM, vehicle speed, and other vehicle data from the OBD2 line
- * packed in a RawData object.
+ * and packets them in a RawData object when requested.
  */
-public class OBD2Dyno implements Dyno {
+public final class OBD2Dyno implements Dyno, Runnable {
 
+    private static final int DEFAULT_POLLING = 100;
     private final MCUCommunicator communicator;
     private volatile boolean active;
+    private final int polling;
     private Consumer<String> messageHandler;
     private Optional<Integer> engineRpm;
     private Optional<Integer> vehicleSpeed;
@@ -30,8 +29,37 @@ public class OBD2Dyno implements Dyno {
      * Initializes the OBD2Dyno with default values.
      */
     public OBD2Dyno() {
-        this.communicator = new WebSocketMCUCommunicator();
-        this.active = false;
+        this(DEFAULT_POLLING);
+    }
+
+    /**
+     * Initializes the OBD2Dyno with a specified communicator and default polling interval.
+     *
+     * @param communicator the MCUCommunicator to use for communication
+     */
+    public OBD2Dyno(final MCUCommunicator communicator) {
+        this(communicator, DEFAULT_POLLING);
+    }
+
+    /**
+     * Initializes the OBD2Dyno with a specified polling interval and a default communicator.
+     *
+     * @param polling the polling interval in milliseconds
+     */
+    public OBD2Dyno(final int polling) {
+        this(new SerialMCUCommunicator(), polling);
+    }
+
+    /**
+     * Initializes the OBD2Dyno with a specified communicator and polling interval.
+     *
+     * @param communicator the MCUCommunicator to use for communication
+     * @param polling the polling interval in milliseconds
+     */
+    public OBD2Dyno(final MCUCommunicator communicator, final int polling) {
+        Objects.requireNonNull(communicator, "Communicator cannot be null");
+        this.communicator = communicator;
+        this.polling = polling;
         this.engineRpm = Optional.empty();
         this.vehicleSpeed = Optional.empty();
         this.engineTemperature = Optional.empty();
@@ -66,10 +94,14 @@ public class OBD2Dyno implements Dyno {
             try {
                 this.communicator.connect();
                 this.active = true;
+                Thread.ofVirtual()
+                    .name("OBD2Dyno-MessageHandler")
+                    .start(this);
                 this.messageHandler = this::messageHandler;
                 this.communicator.addMessageListener(this.messageHandler);
             } catch (final InterruptedException e) {
                 // Tell alert monitor
+                throw new IllegalStateException("Failed to connect the communicator", e);
             }
         }
     }
@@ -85,6 +117,7 @@ public class OBD2Dyno implements Dyno {
                 this.active = false;
                 this.communicator.removeMessageListener(this.messageHandler);
             } catch (final InterruptedException e) {
+                throw new IllegalStateException("Failed to disconnect the communicator", e);
                 // Tell alert monitor
             }
         }
@@ -98,28 +131,20 @@ public class OBD2Dyno implements Dyno {
         return this.active;
     }
 
-    /**
-     * Handles incoming messages from the {@code MCUCommunicator}.
-     * Parses the JSON message and updates the data.
-     *
-     * @param message the JSON message received from the communicator
-     */
     private void messageHandler(final String message) {
-        try {
-            final var json = new JSONObject(message);
-            this.engineRpm = json.has(JsonScheme.ENGINE_RPM.getActualName())
-                ? Optional.of(json.getInt(JsonScheme.ENGINE_RPM.getActualName()))
-                : Optional.empty();
+        
+    }
 
-            this.vehicleSpeed = json.has(JsonScheme.VEHICLE_SPEED.getActualName())
-                ? Optional.of(json.getInt(JsonScheme.VEHICLE_SPEED.getActualName()))
-                : Optional.empty();
+    @Override
+    public void run() {
+        while (this.isActive()) {
 
-            this.engineTemperature = json.has(JsonScheme.ENGINE_TEMPERATURE.getActualName())
-                ? Optional.of(json.getDouble(JsonScheme.ENGINE_TEMPERATURE.getActualName()))
-                : Optional.empty();
-        } catch (final JSONException e) {
-            // Tell alert monitor
+            try {
+                Thread.sleep(this.polling);
+            } catch (final InterruptedException e) {
+                // Tell alert monitor
+                Thread.currentThread().interrupt();
+            }
         }
     }
 }
