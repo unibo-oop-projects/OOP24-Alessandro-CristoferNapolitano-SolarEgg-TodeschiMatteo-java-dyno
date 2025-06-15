@@ -29,6 +29,10 @@ public class SimulatedDynoImpl implements SimulatedDyno {
         this.running = false;
         this.simulationThread = null;
         this.bench = null;
+        // Vehicle (with builder for the parameters)
+        // Bench
+        // Drive Train + call for throttle/timedelta
+        // Weather
     }
 
     /**
@@ -74,10 +78,10 @@ public class SimulatedDynoImpl implements SimulatedDyno {
     public void run() {
         while (this.running) {
             this.datas = RawData.builder()
+                    .timestamp(Optional.of(Instant.now()))
                     .engineRPM(Optional.of(ENGINE_RPM))
                     .engineTemperature(Optional.of(ENGINE_TEMPERATURE))
                     .rollerRPM(Optional.of(this.bench.getRollerRPM()))
-                    .timestamp(Optional.of(Instant.now()))
                     .build();
             try {
                 Thread.sleep(UPDATE_TIME_DELTA); // frequency setted by user
