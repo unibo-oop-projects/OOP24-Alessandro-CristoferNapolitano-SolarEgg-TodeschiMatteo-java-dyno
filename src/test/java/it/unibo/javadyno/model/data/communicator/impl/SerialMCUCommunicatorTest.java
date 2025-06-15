@@ -56,7 +56,6 @@ class SerialMCUCommunicatorTest {
         communicatorAuto.addMessageListener(message -> {
             assertNotNull(message);
             assertFalse(message.isEmpty());
-            System.out.println("Received message: " + message);
         });
     }
 

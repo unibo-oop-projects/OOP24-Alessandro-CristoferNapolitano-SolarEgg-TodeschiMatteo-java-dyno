@@ -23,6 +23,9 @@ public class SerialMCUCommunicator implements MCUCommunicator {
     private static final int DEFAULT_BAUD_RATE = 38_400;
     private static final String SENT_DATA_DELIMITER = "\r";
     private static final String RECIEVED_DATA_DELIMITER = ">";
+    private static final String SOFT_RESET_COMMAND = "AT WS";
+    private static final String DISABLE_ECHO_COMMAND = "AT E0";
+    private static final int DELAY = 100;
     private final String suppliedPort;
     private final int baudRate;
     private final List<Consumer<String>> messageListeners = new ArrayList<>();
@@ -89,8 +92,9 @@ public class SerialMCUCommunicator implements MCUCommunicator {
                 this.commPort = SerialPort.getCommPort(this.suppliedPort);
 
             }
-
             this.commPort.setBaudRate(this.baudRate);
+            this.commPort.openPort();
+            this.setupChip(this.commPort);
             this.commPort.addDataListener(new DataListener());
             this.commPort.addDataListener(new DisconnectListener());
         }
@@ -151,6 +155,18 @@ public class SerialMCUCommunicator implements MCUCommunicator {
         }
     }
 
+    private void setupChip(final SerialPort port) throws InterruptedException {
+        if (port.isOpen()) {
+            this.send(SOFT_RESET_COMMAND);
+            Thread.sleep(DELAY);
+            this.send(DISABLE_ECHO_COMMAND);
+            Thread.sleep(DELAY);
+        } else {
+            throw new IllegalStateException("Serial port is not open: " + port.getSystemPortName());
+            // tell alert monitor
+        }
+    }
+
     /**
      * Internal listener for serial port data events.
      */
@@ -176,8 +192,8 @@ public class SerialMCUCommunicator implements MCUCommunicator {
             if (event.getEventType() == SerialPort.LISTENING_EVENT_DATA_AVAILABLE) {
                 final byte[] readBuffer = new byte[commPort.bytesAvailable()];
                 commPort.readBytes(readBuffer, readBuffer.length);
-                final String message = new String(readBuffer);
-                for (final Consumer<String> listener : SerialMCUCommunicator.this.messageListeners) {
+                final String message = new String(readBuffer).replace(RECIEVED_DATA_DELIMITER, "").trim();
+                for (final Consumer<String> listener : messageListeners) {
                     listener.accept(message);
                 }
             }
