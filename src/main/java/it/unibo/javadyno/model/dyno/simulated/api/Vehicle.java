@@ -5,24 +5,12 @@ package it.unibo.javadyno.model.dyno.simulated.api;
  */
 public interface Vehicle {
     /**
-     * @return Engine.
+     * @param throttle gas aperture [0.0-1.0]
      */
-    Engine getEngine();
+    void setThrottle(double throttle);
 
     /**
-     * @return Transmission.
+     * @param deltatime simulation step of duration [s].
      */
-    Transmission getTransmission();
-
-    /**
-     * @return Ecu.
-     */
-    Ecu getEcu();
-
-    /**
-     * @param dt step of simulation of duration dt(s).
-     */
-    default void update(final double dt) {
-
-    }
+    void update(double deltatime);
 }

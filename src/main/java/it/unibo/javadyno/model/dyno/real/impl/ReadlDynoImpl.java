@@ -1,37 +1,46 @@
-package it.unibo.javadyno.model.dyno.obd2.impl;
+package it.unibo.javadyno.model.dyno.real.impl;
 
 import java.time.Instant;
 import java.util.Optional;
-import it.unibo.javadyno.model.data.communicator.api.JsonScheme;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.api.RawData;
+import it.unibo.javadyno.model.data.communicator.api.JsonScheme;
 import it.unibo.javadyno.model.data.communicator.api.MCUCommunicator;
 import it.unibo.javadyno.model.dyno.impl.AbstractPhysicalDyno;
+import it.unibo.javadyno.model.dyno.real.api.RealDyno;
 
 /**
- * Implementation of the Dyno interface.
- * It retrieve engine RPM, vehicle speed, and other vehicle data from the OBD2 line
- * packed in a RawData object.
+ * Implementation of the RealDyno interface.
+ * This class extends AbstractPhysicalDyno and provides methods to interact with a real dynamometer.
  */
-public class OBD2Dyno extends AbstractPhysicalDyno {
+public class ReadlDynoImpl extends AbstractPhysicalDyno implements RealDyno {
 
     private Optional<Integer> engineRpm;
-    private Optional<Integer> vehicleSpeed;
     private Optional<Double> engineTemperature;
+    private Optional<Double> torque;
+    private Optional<Double> throttlePosition;
     private Optional<Instant> timestamp;
 
     /**
-     * Initializes the OBD2Dyno with default values.
+     * Initializes the ReadlDynoImpl with the given MCUCommunicator.
      *
      * @param communicator the MCUCommunicator to use for communication.
      */
-    public OBD2Dyno(final MCUCommunicator communicator) {
+    public ReadlDynoImpl(final MCUCommunicator communicator) {
         super(communicator);
-        this.engineRpm = Optional.empty();
-        this.vehicleSpeed = Optional.empty();
-        this.engineTemperature = Optional.empty();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void sendConfiguration(final String config) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'sendConfiguration'");
     }
 
     /**
@@ -41,8 +50,9 @@ public class OBD2Dyno extends AbstractPhysicalDyno {
     public RawData getRawData() {
         return RawData.builder()
                 .engineRPM(this.engineRpm)
-                .vehicleSpeed(this.vehicleSpeed)
                 .engineTemperature(this.engineTemperature)
+                .torque(this.torque)
+                .throttlePosition(this.throttlePosition)
                 .timestamp(this.timestamp)
                 .build();
     }
@@ -52,7 +62,7 @@ public class OBD2Dyno extends AbstractPhysicalDyno {
      */
     @Override
     public DataSource getDynoType() {
-        return DataSource.OBD2;
+        return DataSource.REAL_DYNO;
     }
 
     /**
@@ -66,12 +76,16 @@ public class OBD2Dyno extends AbstractPhysicalDyno {
                 ? Optional.of(json.getInt(JsonScheme.ENGINE_RPM.getActualName()))
                 : Optional.empty();
 
-            this.vehicleSpeed = json.has(JsonScheme.VEHICLE_SPEED.getActualName())
-                ? Optional.of(json.getInt(JsonScheme.VEHICLE_SPEED.getActualName()))
-                : Optional.empty();
-
             this.engineTemperature = json.has(JsonScheme.ENGINE_TEMPERATURE.getActualName())
                 ? Optional.of(json.getDouble(JsonScheme.ENGINE_TEMPERATURE.getActualName()))
+                : Optional.empty();
+
+            this.torque = json.has(JsonScheme.TORQUE.getActualName())
+                ? Optional.of(json.getDouble(JsonScheme.TORQUE.getActualName()))
+                : Optional.empty();
+
+            this.throttlePosition = json.has(JsonScheme.THROTTLE_POSITION.getActualName())
+                ? Optional.of(json.getDouble(JsonScheme.THROTTLE_POSITION.getActualName()))
                 : Optional.empty();
 
             this.timestamp = json.has(JsonScheme.TIMESTAMP.getActualName())
@@ -81,4 +95,5 @@ public class OBD2Dyno extends AbstractPhysicalDyno {
             // Tell alert monitor
         }
     }
+
 }
