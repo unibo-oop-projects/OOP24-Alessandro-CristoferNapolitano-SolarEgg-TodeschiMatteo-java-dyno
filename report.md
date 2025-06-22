@@ -69,6 +69,15 @@ TODO
 ### Name Surname
 TODO
 
+### Name Surname
+TODO
+
+### Name Surname
+TODO
+
+### Name Surname
+TODO
+
 ## 4.2 Difficoltà incontrate e commenti per i docenti
 TODO
 
@@ -77,5 +86,14 @@ TODO
 
 
 # Appendice B - Esercitazioni di laboratorio
+## B.0.1 name.surname@studio.unibo.it
+- Laboratorio XX:
+
+## B.0.1 name.surname@studio.unibo.it
+- Laboratorio XX:
+
+## B.0.1 name.surname@studio.unibo.it
+- Laboratorio XX:
+
 ## B.0.1 name.surname@studio.unibo.it
 - Laboratorio XX:
