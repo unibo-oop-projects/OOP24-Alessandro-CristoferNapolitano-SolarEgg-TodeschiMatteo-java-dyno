@@ -29,7 +29,7 @@ public final class OBD2Dyno implements Dyno, Runnable {
     private final int polling;
     private final List<PID> supportedPIDs;
     private volatile boolean active;
-    private int pidIndex = 0;
+    private int pidIndex;
     private Consumer<String> messageHandler;
     private Optional<Integer> engineRpm;
     private Optional<Integer> vehicleSpeed;
@@ -163,7 +163,7 @@ public final class OBD2Dyno implements Dyno, Runnable {
                 final String tempData = message.substring(HEADER_LENGTH, HEADER_LENGTH + SEGMENTS_LENGTH);
                 this.engineTemperature = Optional.of((double)
                     (Integer.parseInt(tempData, DATA_NUMERICAL_BASE)
-                    - PID.ENGINE_COOLANT_TEMPERATURE.getOffset())
+                    + PID.ENGINE_COOLANT_TEMPERATURE.getOffset())
                 );
             }
         }

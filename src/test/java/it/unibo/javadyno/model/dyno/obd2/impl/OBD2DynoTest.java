@@ -1,27 +1,32 @@
 package it.unibo.javadyno.model.dyno.obd2.impl;
 
-import it.unibo.javadyno.model.data.api.RawData;
-import it.unibo.javadyno.model.data.api.DataSource;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import java.util.Optional;
+import java.util.function.Consumer;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import it.unibo.javadyno.model.data.api.DataSource;
+import it.unibo.javadyno.model.data.api.RawData;
+import it.unibo.javadyno.model.data.communicator.api.MCUCommunicator;
 
 class OBD2DynoTest {
-    private static final int TEST_RPM = 1234;
-    private static final int TEST_SPEED = 56;
-    private static final double TEST_TEMPERATURE = 78.9;
+    private static final int POLLING_INTERVAL = 10;
+    private static final int EXPECTED_RPM = 1674;
+    private static final int EXPECTED_SPEED = 60;
+    private static final int RAW_TEMP_VALUE = 0x5A;
+    private static final int TEMP_OFFSET = 40;
+    private static final double EXPECTED_TEMP = RAW_TEMP_VALUE - TEMP_OFFSET;
+    private static final int THREAD_SLEEP_MS = 50;
+
     private OBD2Dyno dyno;
+    private TestMCUCommunicator testCommunicator;
 
     @BeforeEach
     void setUp() {
-        dyno = new OBD2Dyno();
+        testCommunicator = new TestMCUCommunicator();
+        dyno = new OBD2Dyno(testCommunicator, POLLING_INTERVAL);
     }
 
     @Test
@@ -35,33 +40,73 @@ class OBD2DynoTest {
     }
 
     @Test
-    void testBeginAndEnd() {
-        dyno.begin(); // WILL timeout if no WebSocket server is running
-        assertTrue(dyno.isActive(), "Dyno should be active after begin()");
+    void testBeginAndEnd() throws InterruptedException {
+        assertFalse(dyno.isActive());
+        dyno.begin();
+        assertTrue(dyno.isActive());
+        // Allow the run loop to start
+        Thread.sleep(THREAD_SLEEP_MS);
         dyno.end();
-        assertFalse(dyno.isActive(), "Dyno should not be active after end()");
+        assertFalse(dyno.isActive());
     }
 
     @Test
-    @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
-    void testMessageHandlerUpdatesFields() {
-        final String json = "{"
-                + "\"engineRPM\": " + TEST_RPM + ", "
-                + "\"vehicleSpeed\": " + TEST_SPEED + ", "
-                + "\"engineTemperature\": " + TEST_TEMPERATURE
-                + "}";
-        // Use reflection to call private method for test purposes
-        // https://stackoverflow.com/questions/15595765/invoking-a-private-method-via-jmockit-to-test-result/15612040#15612040
-        try {
-            final var method = OBD2Dyno.class.getDeclaredMethod("messageHandler", String.class);
-            method.setAccessible(true);
-            method.invoke(dyno, json);
-        } catch (final NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            fail("Reflection failed: " + e.getMessage());
+    void testMessageHandler() throws InterruptedException {
+        dyno.begin();
+        Thread.sleep(THREAD_SLEEP_MS);
+
+        testCommunicator.simulateIncomingMessage("410C1A2B");
+        assertEquals(Optional.of(EXPECTED_RPM), dyno.getRawData().engineRPM());
+
+        testCommunicator.simulateIncomingMessage("410D3C");
+        assertEquals(Optional.of(EXPECTED_SPEED), dyno.getRawData().vehicleSpeed());
+
+        testCommunicator.simulateIncomingMessage("41055A");
+        assertEquals(Optional.of(EXPECTED_TEMP), dyno.getRawData().engineTemperature());
+        dyno.end();
+    }
+
+    private static final class TestMCUCommunicator implements MCUCommunicator {
+        private Consumer<String> messageListener;
+        private Runnable sendHook;
+        private boolean connected;
+
+        @Override
+        public void connect() throws InterruptedException {
+            this.connected = true;
         }
-        final RawData data = dyno.getRawData();
-        assertEquals(Optional.of(TEST_RPM), data.engineRPM());
-        assertEquals(Optional.of(TEST_SPEED), data.vehicleSpeed());
-        assertEquals(Optional.of(TEST_TEMPERATURE), data.engineTemperature());
+
+        @Override
+        public void disconnect() throws InterruptedException {
+            this.connected = false;
+        }
+
+        @Override
+        public boolean isConnected() {
+            return this.connected;
+        }
+
+        @Override
+        public void send(final String message) {
+            if (sendHook != null) {
+                sendHook.run();
+            }
+        }
+
+        @Override
+        public void addMessageListener(final Consumer<String> listener) {
+            this.messageListener = listener;
+        }
+
+        @Override
+        public void removeMessageListener(final Consumer<String> listener) {
+            this.messageListener = null;
+        }
+
+        public void simulateIncomingMessage(final String message) {
+            if (messageListener != null) {
+                messageListener.accept(message);
+            }
+        }
     }
 }
