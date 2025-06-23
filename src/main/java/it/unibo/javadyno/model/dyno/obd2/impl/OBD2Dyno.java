@@ -1,5 +1,6 @@
 package it.unibo.javadyno.model.dyno.obd2.impl;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -25,8 +26,10 @@ public final class OBD2Dyno implements Dyno, Runnable {
     private static final int MODE_OFFSET = 40;
     private static final int RPM_MULTIPLIER = 256;
     private final MCUCommunicator communicator;
-    private volatile boolean active;
     private final int polling;
+    private final List<PID> supportedPIDs;
+    private volatile boolean active;
+    private int pidIndex = 0;
     private Consumer<String> messageHandler;
     private Optional<Integer> engineRpm;
     private Optional<Integer> vehicleSpeed;
@@ -70,6 +73,11 @@ public final class OBD2Dyno implements Dyno, Runnable {
         this.engineRpm = Optional.empty();
         this.vehicleSpeed = Optional.empty();
         this.engineTemperature = Optional.empty();
+        this.supportedPIDs = List.of(
+            PID.ENGINE_RPM,
+            PID.VEHICLE_SPEED,
+            PID.ENGINE_COOLANT_TEMPERATURE
+        );
     }
 
     /**
@@ -173,6 +181,12 @@ public final class OBD2Dyno implements Dyno, Runnable {
         this.communicator.addMessageListener(this.messageHandler);
         while (this.isActive()) {
             // send OBD2 commands
+            final String command = String.format(
+                "%02X%02X",
+                Mode.CURRENT_DATA.getCode(),
+                this.supportedPIDs.get(pidIndex).getCode());
+            this.communicator.send(command);
+            this.pidIndex = (this.pidIndex + 1) % this.supportedPIDs.size();
             try {
                 Thread.sleep(this.polling);
             } catch (final InterruptedException e) {
