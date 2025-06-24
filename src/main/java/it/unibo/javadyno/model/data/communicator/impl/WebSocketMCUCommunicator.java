@@ -123,7 +123,7 @@ public class WebSocketMCUCommunicator implements MCUCommunicator {
         @Override
         public void onMessage(final String message) {
             for (final Consumer<String> listener : messageListeners) {
-                listener.accept(message); // inside try-catch block?
+                listener.accept(message);
             }
         }
 
