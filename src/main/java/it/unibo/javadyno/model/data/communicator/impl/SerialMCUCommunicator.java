@@ -72,7 +72,7 @@ public class SerialMCUCommunicator implements MCUCommunicator {
      * {@inheritDoc}
      */
     @Override
-    public void connect() throws InterruptedException {
+    public void connect() {
         if (!this.isConnected()) {
             if (Objects.isNull(this.suppliedPort)) {
                 final Set<SerialPort> ports = Set.of(SerialPort.getCommPorts());
@@ -94,7 +94,12 @@ public class SerialMCUCommunicator implements MCUCommunicator {
             }
             this.commPort.setBaudRate(this.baudRate);
             this.commPort.openPort();
-            this.setupChip(this.commPort);
+            try {
+                this.setupChip(this.commPort);
+            } catch (final InterruptedException e) {
+                throw new IllegalStateException("Failed to setup the chip on port: " + this.commPort.getSystemPortName(), e);
+                // tell alert monitor
+            }
             this.commPort.addDataListener(new DataListener());
             this.commPort.addDataListener(new DisconnectListener());
         }
@@ -104,7 +109,7 @@ public class SerialMCUCommunicator implements MCUCommunicator {
      * {@inheritDoc}
      */
     @Override
-    public void disconnect() throws InterruptedException {
+    public void disconnect() {
         if (this.isConnected()) {
             if (!this.commPort.closePort()) {
                 throw new IllegalStateException("Failed to close the serial port: " + this.commPort.getSystemPortName());
@@ -213,12 +218,7 @@ public class SerialMCUCommunicator implements MCUCommunicator {
         @Override
         public void serialEvent(final SerialPortEvent event) {
             if (event.getEventType() == SerialPort.LISTENING_EVENT_PORT_DISCONNECTED) {
-                try {
-                    disconnect();
-                } catch (final InterruptedException e) {
-                    // tell alter monitor
-                    throw new IllegalStateException("Interrupted while disconnecting from serial port", e);
-                }
+                disconnect();
             }
         }
     }
