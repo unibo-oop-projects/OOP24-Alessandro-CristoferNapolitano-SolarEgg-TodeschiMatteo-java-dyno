@@ -138,6 +138,11 @@ public final class OBD2Dyno implements Dyno, Runnable {
         return this.active;
     }
 
+    /**
+     * Handles incoming messages from the MCU communicator.
+     *
+     * @param message the message received from the communicator to parse
+     */
     private void messageHandler(final String message) {
         // 01 00 (mode 01, PID 00) -> 41 00 0C 1A (data = 0C1A)
         // first 4 digits are "repeated"
