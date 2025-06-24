@@ -60,8 +60,27 @@ public class ControllerImpl implements Controller {
             this.dataCollector.clearData();
             this.dataTransreciever.begin(this.dyno, DataSource.SIMULATED_DYNO);
             this.dyno.begin();
+            simulationPolling();
         } else {
             throw new IllegalStateException("Simulation is already running."); // maybe alert box?
+        }
+    }
+
+    /**
+     * Polling method for the simulation.
+     * This method runs in a loop while the dyno is active, collecting data and updating the graphics.
+     */
+    private void simulationPolling() {
+        while (dyno != null && dyno.isActive()) {
+            //TODO Call the DataCollector to collect data
+            //TODO Update Graphics
+            //Simulation will terminate when dyno is no longer active (Button.setOnAction(e -> stopSimulation()))
+            try {
+                Thread.sleep(100);
+            } catch (final InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
         }
     }
 
