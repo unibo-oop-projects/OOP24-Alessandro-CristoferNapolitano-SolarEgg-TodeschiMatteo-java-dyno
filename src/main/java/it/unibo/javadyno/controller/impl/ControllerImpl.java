@@ -29,9 +29,9 @@ public class ControllerImpl implements Controller {
      */
     public ControllerImpl() {
         this.dyno = null;
-        this.dataCollector = new DataCollectorImpl();
         this.dataTransreciever = null; // This should be initialized with a concrete implementation of DataTransreciever
         this.dataElaborator = new DataElaboratorImpl(this.dataTransreciever);
+        this.dataCollector = new DataCollectorImpl(this.dataElaborator);
     }
 
     /**

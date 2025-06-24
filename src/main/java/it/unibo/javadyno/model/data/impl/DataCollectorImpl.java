@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
 import it.unibo.javadyno.model.data.api.DataCollector;
+import it.unibo.javadyno.model.data.api.DataElaborator;
 import it.unibo.javadyno.model.data.api.ElaboratedData;
 
 /**
@@ -13,6 +14,15 @@ import it.unibo.javadyno.model.data.api.ElaboratedData;
 public class DataCollectorImpl implements DataCollector {
 
     private final Queue<ElaboratedData> datas = new LinkedList<>();
+    private final DataElaborator dataElaborator;
+
+    /**
+     * Constructor for DataCollectorImpl.
+     * @param dataElaborator the reference to data elaborator to use for collecting data
+     */
+    public DataCollectorImpl(final DataElaborator dataElaborator) {
+        this.dataElaborator = dataElaborator;
+    }
 
     /**
      * {@inheritDoc}
@@ -27,8 +37,7 @@ public class DataCollectorImpl implements DataCollector {
      */
     @Override
     public void collectData() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'collectData'");
+        this.datas.add(this.dataElaborator.getElaboratedData());
     }
 
     /**
