@@ -3,6 +3,9 @@ package it.unibo.javadyno.model.dyno.obd2.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import org.junit.jupiter.api.BeforeEach;
@@ -68,8 +71,14 @@ class OBD2DynoTest {
 
     private static final class TestMCUCommunicator implements MCUCommunicator {
         private Consumer<String> messageListener;
-        private Runnable sendHook;
         private boolean connected;
+
+        /**
+         * Constructs a TestMCUCommunicator.
+         */
+        TestMCUCommunicator() {
+            this.messageListener = null;
+        }
 
         @Override
         public void connect() {
@@ -88,9 +97,7 @@ class OBD2DynoTest {
 
         @Override
         public void send(final String message) {
-            if (sendHook != null) {
-                sendHook.run();
-            }
+            assertNotNull(message);
         }
 
         @Override
@@ -104,7 +111,7 @@ class OBD2DynoTest {
         }
 
         public void simulateIncomingMessage(final String message) {
-            if (messageListener != null) {
+            if (Objects.nonNull(this.messageListener)) {
                 messageListener.accept(message);
             }
         }
