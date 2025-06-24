@@ -9,6 +9,7 @@ import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.api.DataTransreciever;
 import it.unibo.javadyno.model.data.impl.DataCollectorImpl;
 import it.unibo.javadyno.model.data.impl.DataElaboratorImpl;
+import it.unibo.javadyno.model.data.impl.DataTransreceiverImpl;
 import it.unibo.javadyno.model.dyno.api.Dyno;
 import it.unibo.javadyno.model.dyno.simulated.impl.SimulatedDynoImpl;
 import it.unibo.javadyno.view.impl.ViewImpl;
@@ -29,7 +30,7 @@ public class ControllerImpl implements Controller {
      */
     public ControllerImpl() {
         this.dyno = null;
-        this.dataTransreciever = null; // This should be initialized with a concrete implementation of DataTransreciever
+        this.dataTransreciever = new DataTransreceiverImpl();
         this.dataElaborator = new DataElaboratorImpl(this.dataTransreciever);
         this.dataCollector = new DataCollectorImpl(this.dataElaborator);
     }
@@ -57,7 +58,7 @@ public class ControllerImpl implements Controller {
         if (!this.dyno.isActive()) {
             this.dyno = new SimulatedDynoImpl();
             this.dataCollector.clearData();
-            this.dataTransreciever.begin(DataSource.SIMULATED_DYNO, this.dyno);
+            this.dataTransreciever.begin(this.dyno, DataSource.SIMULATED_DYNO);
             this.dyno.begin();
         } else {
             throw new IllegalStateException("Simulation is already running."); // maybe alert box?

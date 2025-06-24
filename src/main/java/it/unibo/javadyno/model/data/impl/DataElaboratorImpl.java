@@ -37,7 +37,7 @@ public class DataElaboratorImpl implements DataElaborator {
      */
     void elaborateData() {
         final RawData rawData = this.dataTransreciever.getRawData();
-        //TODO: Implement the logic to elaborate the raw data
+        //TODO Implement the logic to elaborate the raw data
         this.elaboratedData = new ElaboratedData(
             rawData,
             0.0,

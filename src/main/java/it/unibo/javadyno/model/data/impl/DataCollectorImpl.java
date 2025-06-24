@@ -18,6 +18,7 @@ public class DataCollectorImpl implements DataCollector {
 
     /**
      * Constructor for DataCollectorImpl.
+     *
      * @param dataElaborator the reference to data elaborator to use for collecting data
      */
     public DataCollectorImpl(final DataElaborator dataElaborator) {

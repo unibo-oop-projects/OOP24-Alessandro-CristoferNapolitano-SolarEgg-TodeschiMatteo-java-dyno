@@ -19,6 +19,6 @@ public interface DataTransreciever {
      * @param dataSource the data source type to set.
      * @param dyno the dyno instance to associate with the data source
      */
-    void begin(DataSource dataSource, Dyno dyno);
+    void begin(Dyno dyno, DataSource dataSource);
 
 }
