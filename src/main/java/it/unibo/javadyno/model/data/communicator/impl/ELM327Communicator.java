@@ -1,17 +1,7 @@
 package it.unibo.javadyno.model.data.communicator.impl;
 
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 import java.util.function.Consumer;
 import com.fazecast.jSerialComm.SerialPort;
-import com.fazecast.jSerialComm.SerialPortDataListener;
-import com.fazecast.jSerialComm.SerialPortEvent;
-import com.fazecast.jSerialComm.SerialPortMessageListener;
-
-import it.unibo.javadyno.model.data.communicator.api.MCUCommunicator;
 
 /**
  * Implementation of MCUCommunicator for serial communication with a microcontroller unit (MCU).
@@ -30,7 +20,8 @@ public class ELM327Communicator extends SerialCommunicator {
         super(ELM327_BAUD_RATE);
     }
 
-    private void setupChip(final SerialPort port) throws InterruptedException {
+    @Override
+    protected void setupChip(final SerialPort port) throws InterruptedException {
         if (port.isOpen()) {
             this.send(SOFT_RESET_COMMAND);
             Thread.sleep(DELAY);
@@ -40,8 +31,26 @@ public class ELM327Communicator extends SerialCommunicator {
             throw new IllegalStateException("Serial port is not open: " + port.getSystemPortName());
             // tell alert monitor
         }
-        
     }
 
+    @Override
+    protected String getSentDataDelimiter() {
+        return SENT_DATA_DELIMITER;
+    }
 
+    @Override
+    protected String getRecievedDataDelimiter() {
+        return RECIEVED_DATA_DELIMITER;
+    }
+
+    @Override
+    protected void parseMessage() {
+        final SerialPort commPort = super.getCommPort();
+        final byte[] readBuffer = new byte[commPort.bytesAvailable()];
+        commPort.readBytes(readBuffer, readBuffer.length);
+        final String message = new String(readBuffer).replace(getRecievedDataDelimiter(), "").trim();
+        for (final Consumer<String> listener : super.getMessageListeners()) {
+            listener.accept(message);
+        }
+    }
 }

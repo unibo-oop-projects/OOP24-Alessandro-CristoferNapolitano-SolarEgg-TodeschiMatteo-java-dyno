@@ -136,8 +136,22 @@ public abstract class SerialCommunicator implements MCUCommunicator {
         }
     }
 
+    /**
+     * Returns the serial port used for communication.
+     *
+     * @return the SerialPort instance used for communication
+     */
     protected SerialPort getCommPort() {
         return this.commPort;
+    }
+
+    /**
+     * Returns the set of message listeners.
+     *
+     * @return a Set of Consumer<String> that are registered to receive messages
+     */
+    protected Set<Consumer<String>> getMessageListeners() {
+        return this.messageListeners;
     }
 
     protected abstract void setupChip(final SerialPort port) throws InterruptedException;
@@ -145,6 +159,8 @@ public abstract class SerialCommunicator implements MCUCommunicator {
     protected abstract String getSentDataDelimiter();
 
     protected abstract String getRecievedDataDelimiter();
+
+    protected abstract void parseMessage();
 
     /**
      * Internal listener for serial port data events.
@@ -169,12 +185,7 @@ public abstract class SerialCommunicator implements MCUCommunicator {
         @Override
         public void serialEvent(final SerialPortEvent event) {
             if (event.getEventType() == SerialPort.LISTENING_EVENT_DATA_AVAILABLE) {
-                final byte[] readBuffer = new byte[commPort.bytesAvailable()];
-                commPort.readBytes(readBuffer, readBuffer.length);
-                final String message = new String(readBuffer).replace(getRecievedDataDelimiter(), "").trim();
-                for (final Consumer<String> listener : messageListeners) {
-                    listener.accept(message);
-                }
+                parseMessage();
             }
         }
     }
