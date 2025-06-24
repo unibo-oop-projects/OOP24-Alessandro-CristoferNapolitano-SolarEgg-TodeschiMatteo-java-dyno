@@ -30,15 +30,11 @@ public abstract class AbstractPhysicalDyno implements Dyno {
     @Override
     public void begin() {
         if (!this.isActive()) {
-            try {
-                this.communicator.connect();
-                this.active = true;
-                this.messageListener = this::handleMessage;
-                this.communicator.addMessageListener(this.messageListener);
-            } catch (final InterruptedException e) {
-                // Tell alert monitor
-                Thread.currentThread().interrupt();
-            }
+            this.communicator.connect();
+            this.active = true;
+            this.messageListener = this::handleMessage;
+            this.communicator.addMessageListener(this.messageListener);
+
         }
     }
 
@@ -48,14 +44,10 @@ public abstract class AbstractPhysicalDyno implements Dyno {
     @Override
     public void end() {
         if (this.isActive()) {
-            try {
-                this.communicator.disconnect();
-                this.active = false;
-                this.communicator.removeMessageListener(this.messageListener);
-            } catch (final InterruptedException e) {
-                // Tell alert monitor
-                Thread.currentThread().interrupt();
-            }
+            this.communicator.disconnect();
+            this.active = false;
+            this.communicator.removeMessageListener(this.messageListener);
+
         }
     }
 
@@ -87,12 +79,12 @@ public abstract class AbstractPhysicalDyno implements Dyno {
         }
 
         @Override
-        public void connect() throws InterruptedException {
+        public void connect() {
             this.communicator.connect();
         }
 
         @Override
-        public void disconnect() throws InterruptedException {
+        public void disconnect() {
             this.communicator.disconnect();
         }
 

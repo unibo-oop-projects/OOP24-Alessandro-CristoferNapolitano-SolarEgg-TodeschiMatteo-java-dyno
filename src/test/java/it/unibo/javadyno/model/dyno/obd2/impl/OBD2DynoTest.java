@@ -72,12 +72,12 @@ class OBD2DynoTest {
         private boolean connected;
 
         @Override
-        public void connect() throws InterruptedException {
+        public void connect() {
             this.connected = true;
         }
 
         @Override
-        public void disconnect() throws InterruptedException {
+        public void disconnect() {
             this.connected = false;
         }
 

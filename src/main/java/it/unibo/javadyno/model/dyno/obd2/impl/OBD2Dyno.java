@@ -41,8 +41,6 @@ public final class OBD2Dyno implements Dyno, Runnable {
 
     /**
      * Initializes the OBD2Dyno with default values.
-     *
-     * @param communicator the MCUCommunicator to use for communication.
      */
     public OBD2Dyno() {
         this(DEFAULT_POLLING);
@@ -73,6 +71,7 @@ public final class OBD2Dyno implements Dyno, Runnable {
      * @param polling the polling interval in milliseconds
      */
     public OBD2Dyno(final MCUCommunicator communicator, final int polling) {
+        
         Objects.requireNonNull(communicator, "Communicator cannot be null");
         this.communicator = communicator;
         this.polling = polling;
@@ -126,14 +125,10 @@ public final class OBD2Dyno implements Dyno, Runnable {
     @Override
     public void end() {
         if (this.isActive()) {
-            try {
-                this.communicator.disconnect();
-                this.active = false;
-                this.communicator.removeMessageListener(this.messageHandler);
-            } catch (final InterruptedException e) {
-                throw new IllegalStateException("Failed to disconnect the communicator", e);
-                // Tell alert monitor
-            }
+            this.communicator.disconnect();
+            this.active = false;
+            this.communicator.removeMessageListener(this.messageHandler);
+
         }
     }
 
@@ -183,12 +178,7 @@ public final class OBD2Dyno implements Dyno, Runnable {
 
     @Override
     public void run() {
-        try {
-            this.communicator.connect();
-        } catch (final InterruptedException e) {
-            // Tell alert monitor
-            throw new IllegalStateException("Failed to connect the communicator", e);
-        }
+        this.communicator.connect();
         this.messageHandler = this::messageHandler;
         this.communicator.addMessageListener(this.messageHandler);
         while (this.isActive()) {

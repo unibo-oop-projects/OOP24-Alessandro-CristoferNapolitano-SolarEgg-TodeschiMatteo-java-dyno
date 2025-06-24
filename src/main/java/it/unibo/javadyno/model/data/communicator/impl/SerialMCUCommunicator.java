@@ -115,9 +115,9 @@ public class SerialMCUCommunicator implements MCUCommunicator {
                 throw new IllegalStateException("Failed to close the serial port: " + this.commPort.getSystemPortName());
                 // tell alert monitor
             }
-            this.commPort = null;
             this.messageListeners.clear();
             this.commPort.removeDataListener();
+            this.commPort = null;
         }
     }
 
