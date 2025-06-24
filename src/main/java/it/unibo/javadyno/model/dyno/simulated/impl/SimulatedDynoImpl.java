@@ -2,22 +2,30 @@ package it.unibo.javadyno.model.dyno.simulated.impl;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.time.Instant;
 
 import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.api.RawData;
 import it.unibo.javadyno.model.dyno.simulated.api.Bench;
+import it.unibo.javadyno.model.dyno.simulated.api.DriveTrain;
 import it.unibo.javadyno.model.dyno.simulated.api.SimulatedDyno;
+import it.unibo.javadyno.model.dyno.simulated.api.Vehicle;
+import it.unibo.javadyno.model.dyno.simulated.api.WeatherStation;
 
 /**
- * Implementation of the simumlated Dyno.
+ * Implementation of the simulated Dyno.
  */
 public class SimulatedDynoImpl implements SimulatedDyno {
 
     private static final int ENGINE_RPM = 2000;
     private static final double ENGINE_TEMPERATURE = 90.0;
+    private static final int UPDATE_TIME_DELTA = 10; // in milliseconds
     private volatile boolean running;
     private Thread simulationThread;
     private Bench bench;
+    private Vehicle vehicle;
+    private DriveTrain driveTrain;
+    private WeatherStation weatherStation;
     private volatile RawData datas;
 
     /**
@@ -27,6 +35,13 @@ public class SimulatedDynoImpl implements SimulatedDyno {
         this.running = false;
         this.simulationThread = null;
         this.bench = null;
+        this.vehicle = null;
+        this.driveTrain = null;
+        this.weatherStation = null;
+        // Bench
+        // Vehicle (with builder for the parameters)
+        // Drive Train + call for throttle/timedelta
+        // Weather
     }
 
     /**
@@ -37,6 +52,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
         if (!running) {
             this.running = true;
             this.bench = new BenchImpl();
+            // this.vehicle = new VehicleImpl();
             this.simulationThread = new Thread(this);
             this.simulationThread.start();
         }
@@ -72,15 +88,15 @@ public class SimulatedDynoImpl implements SimulatedDyno {
     public void run() {
         while (this.running) {
             this.datas = RawData.builder()
+                    .timestamp(Optional.of(Instant.now()))
                     .engineRPM(Optional.of(ENGINE_RPM))
                     .engineTemperature(Optional.of(ENGINE_TEMPERATURE))
                     .rollerRPM(Optional.of(this.bench.getRollerRPM()))
                     .build();
             try {
-                Thread.sleep(100);
+                Thread.sleep(UPDATE_TIME_DELTA); // frequency setted by user
             } catch (final InterruptedException e) {
                 this.end();
-                break;
             }
         }
     }
@@ -98,7 +114,6 @@ public class SimulatedDynoImpl implements SimulatedDyno {
      */
     @Override
     public DataSource getDynoType() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getDynoType'");
+        return DataSource.SIMULATED_DYNO;
     }
 }

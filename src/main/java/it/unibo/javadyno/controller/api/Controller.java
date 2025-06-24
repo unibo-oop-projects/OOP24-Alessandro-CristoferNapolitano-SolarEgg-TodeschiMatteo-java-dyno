@@ -20,4 +20,9 @@ public interface Controller {
      */
     void startSimulation();
 
+    /**
+     * Stop the simulation.
+     */
+    void stopSimulation();
+
 }
