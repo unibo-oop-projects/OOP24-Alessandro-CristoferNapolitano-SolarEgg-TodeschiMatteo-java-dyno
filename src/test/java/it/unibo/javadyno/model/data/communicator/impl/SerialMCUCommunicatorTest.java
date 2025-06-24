@@ -8,11 +8,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.AfterEach;
 
 class SerialMCUCommunicatorTest {
-    private SerialMCUCommunicator communicatorAuto;
+    private ELM327Communicator communicatorAuto;
 
     @BeforeEach
     void setUp() {
-        communicatorAuto = new SerialMCUCommunicator();
+        communicatorAuto = new ELM327Communicator();
     }
 
     @AfterEach

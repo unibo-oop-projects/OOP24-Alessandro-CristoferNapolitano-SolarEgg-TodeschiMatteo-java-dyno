@@ -8,7 +8,8 @@ import java.util.function.Consumer;
 import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.api.RawData;
 import it.unibo.javadyno.model.data.communicator.api.MCUCommunicator;
-import it.unibo.javadyno.model.data.communicator.impl.SerialMCUCommunicator;
+import it.unibo.javadyno.model.data.communicator.impl.ELM327Communicator;
+import it.unibo.javadyno.model.dyno.impl.AbstractPhysicalDyno;
 import it.unibo.javadyno.model.dyno.api.Dyno;
 import it.unibo.javadyno.model.dyno.obd2.api.Mode;
 import it.unibo.javadyno.model.dyno.obd2.api.PID;
@@ -18,7 +19,7 @@ import it.unibo.javadyno.model.dyno.obd2.api.PID;
  * It retrieve engine RPM, vehicle speed, and other vehicle data from the OBD2 line
  * and packets them in a RawData object when requested.
  */
-public final class OBD2Dyno implements Dyno, Runnable {
+public final class OBD2Dyno extends AbstractPhysicalDyno implements Runnable {
 
     private static final int DEFAULT_POLLING = 100;
     private static final int DATA_NUMERICAL_BASE = 16;
@@ -61,7 +62,7 @@ public final class OBD2Dyno implements Dyno, Runnable {
      * @param polling the polling interval in milliseconds
      */
     public OBD2Dyno(final int polling) {
-        this(new SerialMCUCommunicator(), polling);
+        this(new ELM327Communicator(), polling);
     }
 
     /**
@@ -196,5 +197,11 @@ public final class OBD2Dyno implements Dyno, Runnable {
                 Thread.currentThread().interrupt();
             }
         }
+    }
+
+    @Override
+    protected void handleMessage(String message) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'handleMessage'");
     }
 }
