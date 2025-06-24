@@ -6,7 +6,10 @@ package it.unibo.javadyno.model.data.communicator.api;
 public enum JsonScheme {
     ENGINE_RPM("engineRPM"),
     VEHICLE_SPEED("vehicleSpeed"),
-    ENGINE_TEMPERATURE("engineTemperature"),;
+    ENGINE_TEMPERATURE("engineTemperature"),
+    TORQUE("torque"),
+    THROTTLE_POSITION("throttlePosition"),
+    TIMESTAMP("timestamp");
 
     private final String actualName;
 

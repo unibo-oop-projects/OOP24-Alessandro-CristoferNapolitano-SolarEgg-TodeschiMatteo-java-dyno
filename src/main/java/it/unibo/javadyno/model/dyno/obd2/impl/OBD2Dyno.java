@@ -34,9 +34,12 @@ public final class OBD2Dyno implements Dyno, Runnable {
     private Optional<Integer> engineRpm;
     private Optional<Integer> vehicleSpeed;
     private Optional<Double> engineTemperature;
+    private Optional<Instant> timestamp;
 
     /**
      * Initializes the OBD2Dyno with default values.
+     *
+     * @param communicator the MCUCommunicator to use for communication.
      */
     public OBD2Dyno() {
         this(DEFAULT_POLLING);
@@ -89,6 +92,7 @@ public final class OBD2Dyno implements Dyno, Runnable {
                 .engineRPM(this.engineRpm)
                 .vehicleSpeed(this.vehicleSpeed)
                 .engineTemperature(this.engineTemperature)
+                .timestamp(this.timestamp)
                 .build();
     }
 
