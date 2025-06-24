@@ -6,6 +6,12 @@ import java.util.Queue;
  * Interface for collecting data.
  */
 public interface DataCollector {
+
+    /**
+     * Clear all datas form Queue.
+     */
+    void clearData();
+
     /**
      * @return a queue of all the datas collected by simulation.
      */

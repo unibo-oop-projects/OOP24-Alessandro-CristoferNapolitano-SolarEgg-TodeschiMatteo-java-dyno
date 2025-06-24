@@ -18,6 +18,14 @@ public class DataCollectorImpl implements DataCollector {
      * {@inheritDoc}
      */
     @Override
+    public void clearData() {
+        this.datas.clear();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void collectData() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'collectData'");
