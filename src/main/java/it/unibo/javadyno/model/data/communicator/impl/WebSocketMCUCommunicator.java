@@ -81,11 +81,7 @@ public class WebSocketMCUCommunicator implements MCUCommunicator {
     @Override
     public void disconnect() throws InterruptedException {
         if (this.isConnected()) {
-            try {
-                webSocketClient.closeBlocking();
-            } catch (final InterruptedException e) {
-                // Tell Alert Monitor
-            }
+            webSocketClient.closeBlocking();
         }
     }
 
