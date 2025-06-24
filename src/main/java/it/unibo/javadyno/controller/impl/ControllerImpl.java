@@ -12,7 +12,7 @@ import it.unibo.javadyno.model.data.impl.DataElaboratorImpl;
 import it.unibo.javadyno.model.data.impl.DataTransreceiverImpl;
 import it.unibo.javadyno.model.dyno.api.Dyno;
 import it.unibo.javadyno.model.dyno.simulated.impl.SimulatedDynoImpl;
-import it.unibo.javadyno.view.impl.ViewImpl;
+import it.unibo.javadyno.view.impl.MainMenu;
 import javafx.application.Application;
 
 /**
@@ -40,7 +40,7 @@ public class ControllerImpl implements Controller {
      */
     @Override
     public void launchApp(final String[] args) {
-        Application.launch(ViewImpl.class, args);
+        Application.launch(MainMenu.class, args);
     }
 
     /**

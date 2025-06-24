@@ -1,0 +1,54 @@
+package it.unibo.javadyno.view.impl;
+
+import it.unibo.javadyno.view.api.View;
+import javafx.application.Application;
+import javafx.beans.binding.Bindings;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
+import javafx.geometry.Rectangle2D;
+
+/**
+ * Main GUI class for the JavaDyno application.
+ */
+public class MainMenu extends Application implements View {
+
+    private static final String CSS_FILE = "/css/style.css";
+    private static final String HOME_IMAGE = "/images/homecar.png";
+    private static final double WIDTH_RATIO = 0.3;
+    private static final double HEIGHT_RATIO = 0.5;
+    private static final double IMAGE_WIDTH = 0.6;
+    private static final double IMAGE_HEIGHT = 0.4;
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void start(final Stage primaryStage) throws Exception {
+        final Button simulatedDynoButton = new Button("Simulated Dyno");
+        final Button realDynoButton = new Button("Real Dyno");
+        final Button settingsButton = new Button("Settings");
+
+        final Rectangle2D screenBounds = Screen.getPrimary().getBounds();
+        final double width = screenBounds.getWidth() * WIDTH_RATIO;
+        final double height = screenBounds.getHeight() * HEIGHT_RATIO;
+        final ImageView image = new ImageView(new Image(ClassLoader.getSystemResource(HOME_IMAGE).toExternalForm()));
+        final VBox vbox = new VBox(15, image, simulatedDynoButton, realDynoButton, settingsButton);
+        vbox.setAlignment(Pos.CENTER);
+        final Scene scene = new Scene(vbox, width, height);
+
+        image.fitWidthProperty().bind(Bindings.multiply(scene.widthProperty(), IMAGE_WIDTH));
+        image.fitHeightProperty().bind(Bindings.multiply(scene.heightProperty(), IMAGE_HEIGHT));
+        image.setPreserveRatio(true);
+
+        scene.getStylesheets().add(getClass().getResource(CSS_FILE).toExternalForm());
+        primaryStage.setTitle("JavaDyno");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+}
