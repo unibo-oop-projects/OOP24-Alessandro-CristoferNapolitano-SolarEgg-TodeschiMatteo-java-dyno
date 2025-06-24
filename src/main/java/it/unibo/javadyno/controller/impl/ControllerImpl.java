@@ -13,7 +13,9 @@ import it.unibo.javadyno.model.data.impl.DataTransreceiverImpl;
 import it.unibo.javadyno.model.dyno.api.Dyno;
 import it.unibo.javadyno.model.dyno.simulated.impl.SimulatedDynoImpl;
 import it.unibo.javadyno.view.impl.MainMenu;
+import it.unibo.javadyno.view.impl.SimulationView;
 import javafx.application.Application;
+import javafx.stage.Stage;
 
 /**
  * Controller implementation.
@@ -41,6 +43,15 @@ public class ControllerImpl implements Controller {
     @Override
     public void launchApp(final String[] args) {
         Application.launch(MainMenu.class, args);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void showSimulationView(final Stage stage) {
+        final SimulationView simulationView = new SimulationView();
+        simulationView.start(stage);
     }
 
     /**

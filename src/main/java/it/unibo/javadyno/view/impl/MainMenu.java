@@ -1,5 +1,6 @@
 package it.unibo.javadyno.view.impl;
 
+import it.unibo.javadyno.controller.api.Controller;
 import it.unibo.javadyno.view.api.View;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
@@ -19,11 +20,21 @@ import javafx.geometry.Rectangle2D;
 public class MainMenu extends Application implements View {
 
     private static final String CSS_FILE = "/css/style.css";
-    private static final String HOME_IMAGE = "/images/homecar.png";
-    private static final double WIDTH_RATIO = 0.3;
-    private static final double HEIGHT_RATIO = 0.5;
+    private static final String HOME_IMAGE = "images/homecar.png";
+    private static final double WIDTH_RATIO = 0.3; //percentage of screen width
+    private static final double HEIGHT_RATIO = 0.5; //percentage of screen height
     private static final double IMAGE_WIDTH = 0.6;
     private static final double IMAGE_HEIGHT = 0.4;
+    private static Controller controller;
+
+    /**
+     * Sets the controller for the GUI test.
+     *
+     * @param ctrl the controller instance to set
+     */
+    public static void setController(final Controller ctrl) {
+        controller = ctrl;
+    }
 
     /**
      * {@inheritDoc}
@@ -33,6 +44,10 @@ public class MainMenu extends Application implements View {
         final Button simulatedDynoButton = new Button("Simulated Dyno");
         final Button realDynoButton = new Button("Real Dyno");
         final Button settingsButton = new Button("Settings");
+        simulatedDynoButton.setOnAction(e -> {
+            final Stage stage = (Stage) simulatedDynoButton.getScene().getWindow();
+            controller.showSimulationView(stage);
+        });
 
         final Rectangle2D screenBounds = Screen.getPrimary().getBounds();
         final double width = screenBounds.getWidth() * WIDTH_RATIO;

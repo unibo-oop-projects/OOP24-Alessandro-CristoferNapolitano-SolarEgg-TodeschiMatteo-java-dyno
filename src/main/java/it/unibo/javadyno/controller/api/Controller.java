@@ -1,5 +1,7 @@
 package it.unibo.javadyno.controller.api;
 
+import javafx.stage.Stage;
+
 /**
  * Controller interface.
  */
@@ -9,6 +11,13 @@ public interface Controller {
      * @param args passed to JavaFX.
      */
     void launchApp(String[] args);
+
+    /**
+     * Shows the simulation view.
+     *
+     * @param stage the primary stage to show the simulation view on
+     */
+    void showSimulationView(Stage stage);
 
     /**
      * Closes the application.
