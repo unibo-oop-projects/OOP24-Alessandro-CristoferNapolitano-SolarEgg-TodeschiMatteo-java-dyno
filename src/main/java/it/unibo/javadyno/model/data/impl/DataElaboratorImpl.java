@@ -12,7 +12,7 @@ import it.unibo.javadyno.model.data.api.RawData;
 public class DataElaboratorImpl implements DataElaborator {
 
     private ElaboratedData elaboratedData;
-    private DataTransreciever dataTransreciever;
+    private final DataTransreciever dataTransreciever;
 
     /**
      * Constructor for DataElaboratorImpl.
