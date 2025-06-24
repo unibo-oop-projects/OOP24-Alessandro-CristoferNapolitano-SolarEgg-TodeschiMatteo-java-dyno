@@ -1,5 +1,6 @@
 package it.unibo.javadyno.model.dyno.obd2.impl;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -25,6 +26,8 @@ public final class OBD2Dyno implements Dyno, Runnable {
     private static final int SEGMENTS_LENGTH = 2;
     private static final int MODE_OFFSET = 40;
     private static final int RPM_MULTIPLIER = 256;
+    private static final String THREAD_NAME = "OBD2Dyno-MessageHandler";
+    private static final String COMMAND_FORMAT = "%02X%02X";
     private final MCUCommunicator communicator;
     private final int polling;
     private final List<PID> supportedPIDs;
@@ -112,7 +115,7 @@ public final class OBD2Dyno implements Dyno, Runnable {
         if (!this.isActive()) {
             this.active = true;
             Thread.ofVirtual()
-                .name("OBD2Dyno-MessageHandler")
+                .name(THREAD_NAME)
                 .start(this);
         }
     }
@@ -191,7 +194,7 @@ public final class OBD2Dyno implements Dyno, Runnable {
         while (this.isActive()) {
             // send OBD2 commands
             final String command = String.format(
-                "%02X%02X",
+                COMMAND_FORMAT,
                 Mode.CURRENT_DATA.getCode(),
                 this.supportedPIDs.get(pidIndex).getCode());
             this.communicator.send(command);
