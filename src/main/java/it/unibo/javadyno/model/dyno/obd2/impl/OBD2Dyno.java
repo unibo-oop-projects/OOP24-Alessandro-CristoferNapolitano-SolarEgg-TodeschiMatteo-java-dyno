@@ -35,7 +35,6 @@ public final class OBD2Dyno extends AbstractPhysicalDyno implements Runnable {
     private Optional<Integer> engineRpm;
     private Optional<Integer> vehicleSpeed;
     private Optional<Double> engineTemperature;
-    private Optional<Instant> timestamp;
 
     /**
      * Initializes the OBD2Dyno with default values.
@@ -90,7 +89,7 @@ public final class OBD2Dyno extends AbstractPhysicalDyno implements Runnable {
                 .engineRPM(this.engineRpm)
                 .vehicleSpeed(this.vehicleSpeed)
                 .engineTemperature(this.engineTemperature)
-                .timestamp(this.timestamp)
+                .timestamp(Optional.of(Instant.now()))
                 .build();
     }
 
