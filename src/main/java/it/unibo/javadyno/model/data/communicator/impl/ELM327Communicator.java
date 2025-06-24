@@ -7,7 +7,7 @@ import com.fazecast.jSerialComm.SerialPort;
  * Implementation of MCUCommunicator for serial communication with a microcontroller unit (MCU).
  * It is designed to work over USB with ELM327 compatible MCUs.
  */
-public class ELM327Communicator extends SerialCommunicator {
+public final class ELM327Communicator extends AbstractSerialCommunicator {
 
     private static final int ELM327_BAUD_RATE = 13_200;
     private static final String SENT_DATA_DELIMITER = "\r";
@@ -16,6 +16,9 @@ public class ELM327Communicator extends SerialCommunicator {
     private static final String DISABLE_ECHO_COMMAND = "AT E0";
     private static final int DELAY = 100;
 
+    /**
+     * Constructs an ELM327Communicator with the specific baud rate.
+     */
     public ELM327Communicator() {
         super(ELM327_BAUD_RATE);
     }

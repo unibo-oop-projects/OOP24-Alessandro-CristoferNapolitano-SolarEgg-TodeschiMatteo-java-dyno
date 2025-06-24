@@ -11,7 +11,12 @@ import com.fazecast.jSerialComm.SerialPortEvent;
 import com.fazecast.jSerialComm.SerialPortMessageListener;
 import it.unibo.javadyno.model.data.communicator.api.MCUCommunicator;
 
-public abstract class SerialCommunicator implements MCUCommunicator {
+/**
+ * Abstract class for serial communication with a MCU .
+ * It provides methods to connect, disconnect, send messages, and manage message listeners.
+ * This class is designed to be extended by specific implementations for different MCU types.
+ */
+public abstract class AbstractSerialCommunicator implements MCUCommunicator {
 
     private static final int INVALID_VENDOR_ID = -1;
     private static final int DEFAULT_BAUD_RATE = 9200;
@@ -24,7 +29,7 @@ public abstract class SerialCommunicator implements MCUCommunicator {
      * Constructs a SerialCommunicator auto-detecting the
      * serial port to use.
      */
-    public SerialCommunicator() {
+    public AbstractSerialCommunicator() {
         this(null);
     }
 
@@ -33,7 +38,7 @@ public abstract class SerialCommunicator implements MCUCommunicator {
      *
      * @param suppliedPort the name of the serial port to be used for communication (as a String)
      */
-    public SerialCommunicator(final String suppliedPort) {
+    public AbstractSerialCommunicator(final String suppliedPort) {
         this(DEFAULT_BAUD_RATE, suppliedPort);
     }
 
@@ -42,7 +47,7 @@ public abstract class SerialCommunicator implements MCUCommunicator {
      *
      * @param baudRate the baud rate for serial communication 
      */
-    public SerialCommunicator(final int baudRate) {
+    public AbstractSerialCommunicator(final int baudRate) {
         this(baudRate, null);
     }
 
@@ -52,12 +57,14 @@ public abstract class SerialCommunicator implements MCUCommunicator {
      * @param baudRate the baud rate for serial communication
      * @param suppliedPort the name of the serial port to be used for communication (as a String)
      */
-    public SerialCommunicator(final int baudRate, final String suppliedPort) {
+    public AbstractSerialCommunicator(final int baudRate, final String suppliedPort) {
         this.suppliedPort = suppliedPort;
         this.baudRate = baudRate;
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void connect() {
         if (!this.isConnected()) {
@@ -92,7 +99,9 @@ public abstract class SerialCommunicator implements MCUCommunicator {
         }
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void disconnect() {
         if (this.isConnected()) {
@@ -106,12 +115,17 @@ public abstract class SerialCommunicator implements MCUCommunicator {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isConnected() {
         return !Objects.isNull(this.commPort) && this.commPort.isOpen();
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void send(final String message) {
         if (this.isConnected()) {
@@ -120,14 +134,18 @@ public abstract class SerialCommunicator implements MCUCommunicator {
         }
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addMessageListener(final Consumer<String> listener) {
         Objects.requireNonNull(listener);
         this.messageListeners.add(listener);
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void removeMessageListener(final Consumer<String> listener) {
         Objects.requireNonNull(listener);
@@ -148,18 +166,41 @@ public abstract class SerialCommunicator implements MCUCommunicator {
     /**
      * Returns the set of message listeners.
      *
-     * @return a Set of Consumer<String> that are registered to receive messages
+     * @return a Set of Consumer that are registered to receive messages
      */
     protected Set<Consumer<String>> getMessageListeners() {
         return this.messageListeners;
     }
 
-    protected abstract void setupChip(final SerialPort port) throws InterruptedException;
+    /**
+     * Sets up the chip on the serial port.
+     * This method should be implemented by subclasses to perform specific setup actions.
+     *
+     * @param port the SerialPort instance to set up
+     * @throws InterruptedException if the setup process is interrupted
+     */
+    protected abstract void setupChip(SerialPort port) throws InterruptedException;
 
+    /**
+     * Returns the delimiter used to send data to the MCU.
+     * This method should be implemented by subclasses to specify the delimiter
+     *
+     * @return the delimiter as a String
+     */
     protected abstract String getSentDataDelimiter();
 
+    /**
+     * Returns the delimiter used to truncate received data from the MCU.
+     * This method should be implemented by subclasses to specify the delimiter
+     *
+     * @return the delimiter as a String
+     */
     protected abstract String getRecievedDataDelimiter();
 
+    /**
+     * Parses the incoming message from the MCU.
+     * This method should be implemented by subclasses to process the received message.
+     */
     protected abstract void parseMessage();
 
     /**

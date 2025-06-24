@@ -141,7 +141,7 @@ public final class OBD2Dyno extends AbstractPhysicalDyno implements Runnable {
      * {@inheritDoc}
      */
     @Override
-    protected void handleMessage(String message) {
+    protected void handleMessage(final String message) {
         // 01 00 (mode 01, PID 00) -> 41 00 0C 1A (data = 0C1A)
         // first 4 digits are "repeated"
         final String header = message.substring(0, HEADER_LENGTH);
