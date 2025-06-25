@@ -1,10 +1,11 @@
 package it.unibo.javadyno.model.dyno.simulated.impl;
 
+import it.unibo.javadyno.model.dyno.simulated.api.DriveTrain;
 import it.unibo.javadyno.model.dyno.simulated.api.Vehicle;
 import it.unibo.javadyno.model.dyno.simulated.api.WeatherStation;
 
 public class VehicleImpl implements Vehicle{
-    private final RigidDriveTrainSim drivetrain;
+    private final DriveTrain drivetrain;
     private final WeatherStation weather;
     private final double wheelRadius;
     private double currentThrottle;
@@ -16,7 +17,7 @@ public class VehicleImpl implements Vehicle{
      * @param wheelRadius wheel radius, used to compute vehicle speed [m]
      * @param currentThrottle
      */
-    public VehicleImpl(RigidDriveTrainSim drivetrain, WeatherStation weather,
+    public VehicleImpl(DriveTrain drivetrain, WeatherStation weather,
             double wheelRadius, double currentThrottle) {
         this.drivetrain   = java.util.Objects.requireNonNull(drivetrain, "drivetrain");
         this.weather      = java.util.Objects.requireNonNull(weather,  "weather");
