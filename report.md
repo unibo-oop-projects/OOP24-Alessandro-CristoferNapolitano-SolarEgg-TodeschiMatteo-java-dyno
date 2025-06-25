@@ -1,6 +1,15 @@
 # Capitolo 1 - Analisi
 ## 1.1 Requisiti
-TODO
+Il software si presenta come un ambiente per la gestione e simulazione di un dinamometro per motori di varia natura.
+
+Un dinamometro è un dispositivo che, collegato ad un asse rotante connesso al relativo motore, permette di misurarne la potenza sprigionata a diversi regimi di rotazione.
+
+L’utente ha la libertà di decidere se interagire con la parte di simulazione, se avviare una prova con strumentazione fisica oppure se acquisire i dati della prova dalla propria autovettura.
+
+La simulazione comprende un minigioco per poter prendere dimestichezza con le operazioni che potranno poi essere effettuate nel mondo reale.
+
+Il software comprende diverse opzioni per la personalizzazione della GUI e per il confronto di grafici salvati, in modo da poter lavorare in qualsiasi momento sui dati raccolti.
+
 ### Requisiti funzionali
 - TODO
 ### Requisiti non funzionali
