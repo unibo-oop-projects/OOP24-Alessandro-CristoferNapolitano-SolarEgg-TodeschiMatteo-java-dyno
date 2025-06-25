@@ -58,4 +58,16 @@ public final class RealDynoImpl extends AbstractPhysicalDyno<Pair<JsonScheme, Do
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'handleMessage'");
     }
+
+    @Override
+    protected String getOutgoingMessage() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getOutgoingMessage'");
+    }
+
+    @Override
+    protected String getThreadName() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getThreadName'");
+    }
 }
