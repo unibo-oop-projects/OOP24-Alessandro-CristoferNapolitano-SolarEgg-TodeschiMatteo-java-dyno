@@ -87,20 +87,16 @@ jobs:
       - name: Build fat JAR
         run: ./gradlew shadowJar
 
-      - name: Extract tag name
-        id: tag
-        run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-
       - name: Rename JAR
         run: |
           mkdir -p release
-          cp build/libs/*-all.jar release/JavaDyno-${{ env.TAG_NAME }}.jar
+          cp build/libs/*-all.jar release/JavaDyno-${{ github.ref_name }}.jar
 
       - name: Upload JAR to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: release/JavaDyno-${{ env.TAG_NAME }}.jar
-          tag_name: ${{ env.TAG_NAME }}
+          files: release/JavaDyno-${{ github.ref_name }}.jar
+          tag_name: ${{ github.ref_name }}
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
