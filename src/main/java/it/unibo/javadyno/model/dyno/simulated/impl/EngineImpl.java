@@ -69,4 +69,15 @@ public class EngineImpl implements Engine {
         return map.getTorque(throttle, omega);
 
     }
+
+    /**
+     * method used only to set angular velocity during shift of gears.
+     */
+    @Override
+    public void setAngularVelocity(double newEngineOmega) {
+        if (omega < 0) {
+            throw new IllegalArgumentException("omega >= 0");
+        }
+        this.omega = newEngineOmega;
+    }
 }
