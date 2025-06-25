@@ -40,7 +40,7 @@ public class MainMenu extends Application implements View {
      * {@inheritDoc}
      */
     @Override
-    public void start(final Stage primaryStage) throws Exception {
+    public void start(final Stage primaryStage) {
         final Button simulatedDynoButton = new Button("Simulated Dyno");
         final Button realDynoButton = new Button("Real Dyno");
         final Button settingsButton = new Button("Settings");
@@ -65,5 +65,6 @@ public class MainMenu extends Application implements View {
         primaryStage.setTitle("JavaDyno");
         primaryStage.setScene(scene);
         primaryStage.show();
+        primaryStage.centerOnScreen();
     }
 }

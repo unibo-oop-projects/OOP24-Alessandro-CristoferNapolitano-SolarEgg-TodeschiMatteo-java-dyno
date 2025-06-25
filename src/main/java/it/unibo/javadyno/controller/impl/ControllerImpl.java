@@ -50,6 +50,14 @@ public class ControllerImpl implements Controller {
      * {@inheritDoc}
      */
     @Override
+    public void showMainMenu(final Stage stage) {
+        new MainMenu().start(stage);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void showSimulationView(final Stage stage) {
         this.dyno = new SimulatedDynoImpl();
         final SimulationView simulationView = new SimulationView(this);

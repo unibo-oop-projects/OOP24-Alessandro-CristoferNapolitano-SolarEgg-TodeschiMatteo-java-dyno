@@ -115,6 +115,7 @@ public class SimulationView extends Application implements View {
         final Button backToMenuButton = new Button("Back to menu");
         startSimulationButton.setOnAction(e -> controller.startSimulation());
         stopSimulationButton.setOnAction(e -> controller.stopSimulation());
+        backToMenuButton.setOnAction(e -> controller.showMainMenu((Stage) backToMenuButton.getScene().getWindow()));
 
         leftColumn.getChildren().addAll(startSimulationButton, stopSimulationButton, backToMenuButton);
         mainContainer.getChildren().addAll(leftColumn, centerColumn, rightColumn);
