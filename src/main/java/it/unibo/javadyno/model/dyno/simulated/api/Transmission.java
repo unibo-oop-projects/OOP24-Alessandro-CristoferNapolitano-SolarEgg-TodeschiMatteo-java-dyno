@@ -20,4 +20,10 @@ public interface Transmission {
      * Selects down gear.
      */
     void shiftDown();
+
+    /**
+     * get current gear number
+     * @return actual gear number
+     */
+    int getCurrentGear();
 }
