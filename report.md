@@ -86,7 +86,14 @@ TODO
 
 
 # Appendice B - Esercitazioni di laboratorio
-## B.0.1 matteo.todeschi@studio.unibo.it
+## B.0.1 alessandro.porcheddu@studio.unibo.it
+- Laboratorio 07: https://virtuale.unibo.it/mod/forum/discuss.php?d=177162#p246062
+- Laboratorio 08: https://virtuale.unibo.it/mod/forum/discuss.php?d=178723#p247255
+- Laboratorio 09: https://virtuale.unibo.it/mod/forum/discuss.php?d=179154#p248270
+- Laboratorio 10: https://virtuale.unibo.it/mod/forum/discuss.php?d=180101#p248857
+- Laboratorio 11: https://virtuale.unibo.it/mod/forum/discuss.php?d=181206#p250774
+
+## B.0.2 matteo.todeschi@studio.unibo.it
 
 - Laboratorio 06: https://virtuale.unibo.it/mod/forum/discuss.php?d=176282#p244944
 - Laboratorio 07: https://virtuale.unibo.it/mod/forum/discuss.php?d=177162#p245974
@@ -96,11 +103,8 @@ TODO
 - Laboratorio 11: https://virtuale.unibo.it/mod/forum/discuss.php?d=181206#p250772
 - Laboratorio 12: https://github.com/TodeschiMatteo/oop-lab12.git
 
-## B.0.1 name.surname@studio.unibo.it
+## B.0.3 name.surname@studio.unibo.it
 - Laboratorio XX:
 
-## B.0.1 name.surname@studio.unibo.it
-- Laboratorio XX:
-
-## B.0.1 name.surname@studio.unibo.it
+## B.0.4 name.surname@studio.unibo.it
 - Laboratorio XX:

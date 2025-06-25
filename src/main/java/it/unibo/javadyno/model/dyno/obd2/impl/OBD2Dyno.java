@@ -2,14 +2,13 @@ package it.unibo.javadyno.model.dyno.obd2.impl;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.api.RawData;
 import it.unibo.javadyno.model.data.communicator.api.MCUCommunicator;
-import it.unibo.javadyno.model.data.communicator.impl.SerialMCUCommunicator;
-import it.unibo.javadyno.model.dyno.api.Dyno;
+import it.unibo.javadyno.model.data.communicator.impl.ELM327Communicator;
+import it.unibo.javadyno.model.dyno.impl.AbstractPhysicalDyno;
 import it.unibo.javadyno.model.dyno.obd2.api.Mode;
 import it.unibo.javadyno.model.dyno.obd2.api.PID;
 
@@ -18,7 +17,7 @@ import it.unibo.javadyno.model.dyno.obd2.api.PID;
  * It retrieve engine RPM, vehicle speed, and other vehicle data from the OBD2 line
  * and packets them in a RawData object when requested.
  */
-public final class OBD2Dyno implements Dyno, Runnable {
+public final class OBD2Dyno extends AbstractPhysicalDyno implements Runnable {
 
     private static final int DEFAULT_POLLING = 100;
     private static final int DATA_NUMERICAL_BASE = 16;
@@ -28,12 +27,11 @@ public final class OBD2Dyno implements Dyno, Runnable {
     private static final int RPM_MULTIPLIER = 256;
     private static final String THREAD_NAME = "OBD2Dyno-MessageHandler";
     private static final String COMMAND_FORMAT = "%02X%02X";
-    private final MCUCommunicator communicator;
     private final int polling;
     private final List<PID> supportedPIDs;
     private volatile boolean active;
     private int pidIndex;
-    private Consumer<String> messageHandler;
+    private Consumer<String> messageListener;
     private Optional<Integer> engineRpm;
     private Optional<Integer> vehicleSpeed;
     private Optional<Double> engineTemperature;
@@ -41,8 +39,6 @@ public final class OBD2Dyno implements Dyno, Runnable {
 
     /**
      * Initializes the OBD2Dyno with default values.
-     *
-     * @param communicator the MCUCommunicator to use for communication.
      */
     public OBD2Dyno() {
         this(DEFAULT_POLLING);
@@ -63,7 +59,7 @@ public final class OBD2Dyno implements Dyno, Runnable {
      * @param polling the polling interval in milliseconds
      */
     public OBD2Dyno(final int polling) {
-        this(new SerialMCUCommunicator(), polling);
+        this(new ELM327Communicator(), polling);
     }
 
     /**
@@ -73,8 +69,7 @@ public final class OBD2Dyno implements Dyno, Runnable {
      * @param polling the polling interval in milliseconds
      */
     public OBD2Dyno(final MCUCommunicator communicator, final int polling) {
-        Objects.requireNonNull(communicator, "Communicator cannot be null");
-        this.communicator = communicator;
+        super(communicator);
         this.polling = polling;
         this.engineRpm = Optional.empty();
         this.vehicleSpeed = Optional.empty();
@@ -126,14 +121,11 @@ public final class OBD2Dyno implements Dyno, Runnable {
     @Override
     public void end() {
         if (this.isActive()) {
-            try {
-                this.communicator.disconnect();
-                this.active = false;
-                this.communicator.removeMessageListener(this.messageHandler);
-            } catch (final InterruptedException e) {
-                throw new IllegalStateException("Failed to disconnect the communicator", e);
-                // Tell alert monitor
-            }
+            final MCUCommunicator communicator = super.getCommunicator();
+            communicator.disconnect();
+            this.active = false;
+            communicator.removeMessageListener(this.messageListener);
+
         }
     }
 
@@ -146,11 +138,10 @@ public final class OBD2Dyno implements Dyno, Runnable {
     }
 
     /**
-     * Handles incoming messages from the MCU communicator.
-     *
-     * @param message the message received from the communicator to parse
+     * {@inheritDoc}
      */
-    private void messageHandler(final String message) {
+    @Override
+    protected void handleMessage(final String message) {
         // 01 00 (mode 01, PID 00) -> 41 00 0C 1A (data = 0C1A)
         // first 4 digits are "repeated"
         final String header = message.substring(0, HEADER_LENGTH);
@@ -183,21 +174,18 @@ public final class OBD2Dyno implements Dyno, Runnable {
 
     @Override
     public void run() {
-        try {
-            this.communicator.connect();
-        } catch (final InterruptedException e) {
-            // Tell alert monitor
-            throw new IllegalStateException("Failed to connect the communicator", e);
-        }
-        this.messageHandler = this::messageHandler;
-        this.communicator.addMessageListener(this.messageHandler);
+        final MCUCommunicator communicator = super.getCommunicator();
+        communicator.connect();
+        this.active = true;
+        this.messageListener = this::handleMessage;
+        communicator.addMessageListener(this.messageListener);
         while (this.isActive()) {
             // send OBD2 commands
             final String command = String.format(
                 COMMAND_FORMAT,
                 Mode.CURRENT_DATA.getCode(),
                 this.supportedPIDs.get(pidIndex).getCode());
-            this.communicator.send(command);
+            communicator.send(command);
             this.pidIndex = (this.pidIndex + 1) % this.supportedPIDs.size();
             try {
                 Thread.sleep(this.polling);

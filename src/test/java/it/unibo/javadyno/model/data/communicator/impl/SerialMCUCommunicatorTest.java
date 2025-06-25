@@ -5,27 +5,20 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import org.junit.jupiter.api.AfterEach;
 
 class SerialMCUCommunicatorTest {
-    private SerialMCUCommunicator communicatorAuto;
+    private ELM327Communicator communicatorAuto;
 
     @BeforeEach
     void setUp() {
-        communicatorAuto = new SerialMCUCommunicator();
+        communicatorAuto = new ELM327Communicator();
     }
 
     @AfterEach
     void tearDown() {
         if (communicatorAuto.isConnected()) {
-            try {
-                communicatorAuto.disconnect();
-            } catch (final InterruptedException e) {
-                fail("Failed to disconnect: " + e.getMessage()); 
-            }
-
+            communicatorAuto.disconnect();
         }
         communicatorAuto = null;
     }
@@ -44,8 +37,6 @@ class SerialMCUCommunicatorTest {
     void testConnection() {
         try {
             communicatorAuto.connect();
-        } catch (final InterruptedException e) {
-            fail("Connection interrupted: " + e.getMessage());
         } catch (final IllegalStateException e) {
             assertFalse(communicatorAuto.isConnected()); // This is expected if no port is available
         }
