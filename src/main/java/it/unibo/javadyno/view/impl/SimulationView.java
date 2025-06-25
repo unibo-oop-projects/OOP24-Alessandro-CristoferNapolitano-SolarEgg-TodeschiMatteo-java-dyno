@@ -1,10 +1,12 @@
 package it.unibo.javadyno.view.impl;
 
+import it.unibo.javadyno.controller.api.Controller;
 import it.unibo.javadyno.view.api.View;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -18,9 +20,20 @@ public class SimulationView extends Application implements View {
 
     private static final int CONTAINER_SPACING = 20;
     private static final int COLUMN_SPACING = 5;
-    private static final String CSS_FILE = "/css/style.css";
+    private static final String CSS_FILE = "/css/simulationStyle.css";
     private static final double WIDTH_RATIO = 0.8; //percentage of screen width
     private static final double HEIGHT_RATIO = 0.8; //percentage of screen height
+
+    private final Controller controller;
+
+    /**
+     * Constructor for SimulationView that imports the controller.
+     *
+     * @param controller the controller to be used
+     */
+    public SimulationView(final Controller controller) {
+        this.controller = controller;
+    }
 
     /**
      * Draw the simulation view interface.
@@ -45,10 +58,18 @@ public class SimulationView extends Application implements View {
         leftColumn.getStyleClass().add("left-column");
         centerColumn.getStyleClass().add("center-column");
         rightColumn.getStyleClass().add("right-column");
+
+        final Button startSimulationButton = new Button("Start Simulation");
+        final Button stopSimulationButton = new Button("Stop Simulation");
+        final Button backToMenuButton = new Button("Back to menu");
+        startSimulationButton.setOnAction(e -> controller.startSimulation());
+        stopSimulationButton.setOnAction(e -> controller.stopSimulation());
+
+        leftColumn.getChildren().addAll(startSimulationButton, stopSimulationButton, backToMenuButton);
         mainContainer.getChildren().addAll(leftColumn, centerColumn, rightColumn);
 
         final Scene scene = new Scene(mainContainer, width, height);
-        scene.getStylesheets().add(getClass().getResource(CSS_FILE).toExternalForm());
+        scene.getStylesheets().add(SimulationView.class.getResource(CSS_FILE).toExternalForm());
         primaryStage.setTitle("JavaDyno - Simulation");
         primaryStage.setScene(scene);
         primaryStage.show();

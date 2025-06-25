@@ -53,7 +53,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
             this.running = true;
             this.bench = new BenchImpl();
             // this.vehicle = new VehicleImpl();
-            this.simulationThread = new Thread(this);
+            this.simulationThread = new Thread(this, "SimulatedDynoThread");
             this.simulationThread.start();
         }
     }

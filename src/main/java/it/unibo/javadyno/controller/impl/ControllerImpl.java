@@ -22,7 +22,8 @@ import javafx.stage.Stage;
  */
 public class ControllerImpl implements Controller {
 
-    private Dyno dyno;
+    private static final String SIMULATION_POLLING_THREAD_NAME = "SimulationPollingThread";
+    private Dyno dyno; // Initialize with a simulated dyno
     private final DataCollector dataCollector;
     private final DataTransreciever dataTransreciever;
     private final DataElaborator dataElaborator;
@@ -50,7 +51,8 @@ public class ControllerImpl implements Controller {
      */
     @Override
     public void showSimulationView(final Stage stage) {
-        final SimulationView simulationView = new SimulationView();
+        this.dyno = new SimulatedDynoImpl();
+        final SimulationView simulationView = new SimulationView(this);
         simulationView.start(stage);
     }
 
@@ -66,12 +68,13 @@ public class ControllerImpl implements Controller {
      */
     @Override
     public void startSimulation() {
-        if (!this.dyno.isActive()) {
-            this.dyno = new SimulatedDynoImpl();
+        if (!Objects.nonNull(this.dyno) || !this.dyno.isActive()) {
             this.dataCollector.clearData();
             this.dataTransreciever.begin(this.dyno, DataSource.SIMULATED_DYNO);
             this.dyno.begin();
-            simulationPolling();
+            Thread.ofVirtual()
+                .start(this::simulationPolling)
+                .setName(SIMULATION_POLLING_THREAD_NAME);
         } else {
             throw new IllegalStateException("Simulation is already running."); // maybe alert box?
         }
@@ -82,10 +85,9 @@ public class ControllerImpl implements Controller {
      * This method runs in a loop while the dyno is active, collecting data and updating the graphics.
      */
     private void simulationPolling() {
-        while (dyno != null && dyno.isActive()) {
+        while (Objects.nonNull(dyno) && dyno.isActive()) {
             //TODO Call the DataCollector to collect data
             //TODO Update Graphics
-            //Simulation will terminate when dyno is no longer active (Button.setOnAction(e -> stopSimulation()))
             try {
                 Thread.sleep(100);
             } catch (final InterruptedException e) {
