@@ -28,7 +28,7 @@ public final class OBD2Dyno extends AbstractPhysicalDyno<String> {
     private static final String THREAD_NAME = "OBD2Dyno-MessageHandler";
     private static final String COMMAND_FORMAT = "%02X%02X";
     private final List<PID> supportedPIDs;
-    private final LoopingIterator<PID> LoopingIterator;
+    private final LoopingIterator<PID> loopingIterator;
     private Optional<Integer> engineRpm;
     private Optional<Integer> vehicleSpeed;
     private Optional<Double> engineTemperature;
@@ -75,7 +75,7 @@ public final class OBD2Dyno extends AbstractPhysicalDyno<String> {
             PID.VEHICLE_SPEED,
             PID.ENGINE_COOLANT_TEMPERATURE
         );
-        this.LoopingIterator = new LoopingIterator<>(this.supportedPIDs);
+        this.loopingIterator = new LoopingIterator<>(this.supportedPIDs);
     }
 
     /**
@@ -133,7 +133,7 @@ public final class OBD2Dyno extends AbstractPhysicalDyno<String> {
         return String.format(
             COMMAND_FORMAT,
             Mode.CURRENT_DATA.getCode(),
-            this.LoopingIterator.next().getCode());
+            this.loopingIterator.next().getCode());
     }
 
     @Override

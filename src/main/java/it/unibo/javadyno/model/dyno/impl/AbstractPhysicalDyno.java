@@ -81,14 +81,8 @@ public abstract class AbstractPhysicalDyno<T> implements Dyno, Runnable {
     }
 
     /**
-     * Returns the MCUCommunicator used.
-     *
-     * @return the MCUCommunicator instance
+     * {@inheritDoc}
      */
-    public MCUCommunicator<T> getCommunicator() {
-        return this.communicator;
-    }
-
     @Override
     public void run() {
         while (this.isActive()) {
@@ -130,6 +124,5 @@ public abstract class AbstractPhysicalDyno<T> implements Dyno, Runnable {
      * @return the name of the thread
      */
     protected abstract String getThreadName();
-
 
 }

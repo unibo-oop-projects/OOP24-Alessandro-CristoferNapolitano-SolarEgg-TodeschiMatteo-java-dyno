@@ -7,14 +7,13 @@ import it.unibo.javadyno.model.data.api.RawData;
 import it.unibo.javadyno.model.data.communicator.api.JsonScheme;
 import it.unibo.javadyno.model.data.communicator.api.MCUCommunicator;
 import it.unibo.javadyno.model.dyno.impl.AbstractPhysicalDyno;
-import it.unibo.javadyno.model.dyno.real.api.RealDyno;
 import javafx.util.Pair;
 
 /**
  * Implementation of the RealDyno interface.
  * This class extends AbstractPhysicalDyno and provides methods to interact with a real dynamometer.
  */
-public final class RealDynoImpl extends AbstractPhysicalDyno<Pair<JsonScheme, Double>> implements RealDyno {
+public final class RealDynoImpl extends AbstractPhysicalDyno<Pair<JsonScheme, Double>> {
 
     private Optional<Integer> engineRpm;
     private Optional<Double> engineTemperature;
@@ -29,12 +28,6 @@ public final class RealDynoImpl extends AbstractPhysicalDyno<Pair<JsonScheme, Do
      */
     public RealDynoImpl(final MCUCommunicator<Pair<JsonScheme, Double>> communicator) {
         super(communicator);
-    }
-
-    @Override
-    public void sendConfiguration(final String config) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'sendConfiguration'");
     }
 
     @Override
