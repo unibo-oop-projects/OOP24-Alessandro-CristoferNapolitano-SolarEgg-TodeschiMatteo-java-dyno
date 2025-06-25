@@ -13,4 +13,14 @@ public interface Vehicle {
      * @param deltatime simulation step of duration [s].
      */
     void update(double deltatime);
+
+    /**
+     * method to shift gear up.
+     */
+    void shiftUp();
+
+    /**
+     * method to shift gear down.
+     */
+    void shiftDown();
 }
