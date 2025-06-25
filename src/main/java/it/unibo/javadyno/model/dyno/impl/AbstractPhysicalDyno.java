@@ -35,11 +35,10 @@ public abstract class AbstractPhysicalDyno<T> implements Dyno, Runnable {
      * @param polling      the polling interval in milliseconds.
      */
     public AbstractPhysicalDyno(final MCUCommunicator<T> communicator, final int polling) {
-        Objects.requireNonNull(communicator, "Communicator cannot be null");
+        this.communicator = new WrapperCommunicator(Objects.requireNonNull(communicator, "Communicator cannot be null"));
         if (polling <= 0) {
             throw new IllegalArgumentException("Polling interval must be greater than zero");
         }
-        this.communicator = communicator;
         this.polling = polling;
     }
 
@@ -124,5 +123,43 @@ public abstract class AbstractPhysicalDyno<T> implements Dyno, Runnable {
      * @return the name of the thread
      */
     protected abstract String getThreadName();
+
+    private class WrapperCommunicator implements MCUCommunicator<T> {
+        private final MCUCommunicator<T> wrapped;
+
+        WrapperCommunicator(final MCUCommunicator<T> wrapped) {
+            this.wrapped = Objects.requireNonNull(wrapped, "Wrapped communicator cannot be null");
+        }
+
+        @Override
+        public void connect() {
+            wrapped.connect();
+        }
+
+        @Override
+        public void disconnect() {
+            wrapped.disconnect();
+        }
+
+        @Override
+        public void send(final String message) {
+            wrapped.send(message);
+        }
+
+        @Override
+        public void addMessageListener(final Consumer<T> listener) {
+            wrapped.addMessageListener(listener);
+        }
+
+        @Override
+        public void removeMessageListener(final Consumer<T> listener) {
+            wrapped.removeMessageListener(listener);
+        }
+
+        @Override
+        public boolean isConnected() {
+            return wrapped.isConnected();
+        }
+    }
 
 }
