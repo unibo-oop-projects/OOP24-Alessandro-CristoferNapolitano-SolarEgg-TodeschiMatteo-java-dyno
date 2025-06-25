@@ -2,35 +2,34 @@ package it.unibo.javadyno.model.data.communicator.impl;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Consumer;
 import it.unibo.javadyno.model.data.communicator.api.MCUCommunicator;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
 /**
- * A WebSocket‐based implementation of MCUCommunicator.
- * This class implements a communication layer with an MCU WebSocket Server endpoint
- * (e.g. ws://192.168.4.1:8080). It establishes a connection to receive
- * information messages from the MCU, broadcasts incoming payloads to all
- * registered listeners, and enables sending information to the MCU through
- * the send method. Connection is NOT secure (does not use wss://).
+ * This class establishes a connection to receive information messages from the MCU
+ * and broadcasts incoming payloads to all registered listeners after the parsing has been
+ * applied and enables sending information to the MCU through the send method.
+ * Connection is NOT secure (does not use wss://).
  */
-public class WebSocketMCUCommunicator implements MCUCommunicator {
+public abstract class AbstractWebSocketCommunicator<T> implements MCUCommunicator<T> {
 
-    private static final String DEFAULT_SERVER_URI = "192.168.1.2:8080";
+    private static final String DEFAULT_SERVER_URI = "192.168.1.1:8080";
     private static final String WEBSOCKET_PREFIX = "ws://";
     private final String mcuServerUri;
-    private final List<Consumer<String>> messageListeners = new ArrayList<>();
+    private final Set<Consumer<T>> messageListeners = new HashSet<>();
     private InternalWSClient webSocketClient;
 
     /**
      * Constructs a WebSocketMCUCommunicator with the default server URI and timeout.
      * The default server URI is {@value #DEFAULT_SERVER_URI}.
      */
-    public WebSocketMCUCommunicator() {
+    public AbstractWebSocketCommunicator() {
         this(DEFAULT_SERVER_URI); // Default server URI and timeout
     }
 
@@ -39,7 +38,7 @@ public class WebSocketMCUCommunicator implements MCUCommunicator {
      *
      * @param serverUri the URI of the MCU WebSocket server (e.i. {@value #DEFAULT_SERVER_URI}).
      */
-    public WebSocketMCUCommunicator(final String serverUri) {
+    public AbstractWebSocketCommunicator(final String serverUri) {
         this.mcuServerUri = serverUri;
     }
 
@@ -93,7 +92,7 @@ public class WebSocketMCUCommunicator implements MCUCommunicator {
      * {@inheritDoc}
      */
     @Override
-    public void addMessageListener(final Consumer<String> listener) {
+    public void addMessageListener(final Consumer<T> listener) {
         Objects.requireNonNull(listener);
         this.messageListeners.add(listener);
     }
@@ -102,12 +101,19 @@ public class WebSocketMCUCommunicator implements MCUCommunicator {
      * {@inheritDoc}
      */
     @Override
-    public void removeMessageListener(final Consumer<String> listener) {
+    public void removeMessageListener(final Consumer<T> listener) {
         Objects.requireNonNull(listener);
-        if (this.messageListeners.contains(listener)) {
-            this.messageListeners.remove(this.messageListeners.indexOf(listener));
-        }
+        this.messageListeners.remove(listener);
     }
+
+    /**
+     * Parses the incoming message from the MCU.
+     * This method should be implemented by subclasses to process the received message.
+     *
+     * @param message the raw message received from the MCU
+     * @return a list of parsed messages where each entry consists of a pair parameter-value
+     */
+    protected abstract List<T> parseMessage(String message);
 
     private final class InternalWSClient extends WebSocketClient {
 
@@ -122,8 +128,10 @@ public class WebSocketMCUCommunicator implements MCUCommunicator {
 
         @Override
         public void onMessage(final String message) {
-            for (final Consumer<String> listener : messageListeners) {
-                listener.accept(message);
+            for (final Consumer<T> listener : messageListeners) {
+                for (final T parsedMessage : parseMessage(message)) {
+                    listener.accept(parsedMessage);
+                }
             }
         }
 

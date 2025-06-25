@@ -17,7 +17,7 @@ import it.unibo.javadyno.model.dyno.obd2.api.PID;
  * It retrieve engine RPM, vehicle speed, and other vehicle data from the OBD2 line
  * and packets them in a RawData object when requested.
  */
-public final class OBD2Dyno extends AbstractPhysicalDyno implements Runnable {
+public final class OBD2Dyno extends AbstractPhysicalDyno<String> implements Runnable {
 
     private static final int DEFAULT_POLLING = 100;
     private static final int DATA_NUMERICAL_BASE = 16;
@@ -49,7 +49,7 @@ public final class OBD2Dyno extends AbstractPhysicalDyno implements Runnable {
      *
      * @param communicator the MCUCommunicator to use for communication
      */
-    public OBD2Dyno(final MCUCommunicator communicator) {
+    public OBD2Dyno(final MCUCommunicator<String> communicator) {
         this(communicator, DEFAULT_POLLING);
     }
 
@@ -68,7 +68,7 @@ public final class OBD2Dyno extends AbstractPhysicalDyno implements Runnable {
      * @param communicator the MCUCommunicator to use for communication
      * @param polling the polling interval in milliseconds
      */
-    public OBD2Dyno(final MCUCommunicator communicator, final int polling) {
+    public OBD2Dyno(final MCUCommunicator<String> communicator, final int polling) {
         super(communicator);
         this.polling = polling;
         this.engineRpm = Optional.empty();
@@ -121,7 +121,7 @@ public final class OBD2Dyno extends AbstractPhysicalDyno implements Runnable {
     @Override
     public void end() {
         if (this.isActive()) {
-            final MCUCommunicator communicator = super.getCommunicator();
+            final MCUCommunicator<String> communicator = super.getCommunicator();
             communicator.disconnect();
             this.active = false;
             communicator.removeMessageListener(this.messageListener);
@@ -174,7 +174,7 @@ public final class OBD2Dyno extends AbstractPhysicalDyno implements Runnable {
 
     @Override
     public void run() {
-        final MCUCommunicator communicator = super.getCommunicator();
+        final MCUCommunicator<String> communicator = super.getCommunicator();
         communicator.connect();
         this.active = true;
         this.messageListener = this::handleMessage;

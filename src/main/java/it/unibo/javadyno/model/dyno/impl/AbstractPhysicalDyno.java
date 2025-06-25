@@ -9,18 +9,18 @@ import it.unibo.javadyno.model.dyno.api.Dyno;
  * This class implements the Dyno interface and provides common functionality
  * for physical dynamometers that communicate with an MCU (Microcontroller Unit).
  */
-public abstract class AbstractPhysicalDyno implements Dyno {
+public abstract class AbstractPhysicalDyno<T> implements Dyno {
 
-    private final MCUCommunicator communicator;
+    private final MCUCommunicator<T> communicator;
     private volatile boolean active;
-    private Consumer<String> messageListener;
+    private Consumer<T> messageListener;
 
     /**
      * Initializes the AbstractPhysicalDyno with the given MCUCommunicator.
      *
      * @param communicator the MCUCommunicator to use for communication.
      */
-    public AbstractPhysicalDyno(final MCUCommunicator communicator) {
+    public AbstractPhysicalDyno(final MCUCommunicator<T> communicator) {
         Objects.requireNonNull(communicator, "Communicator cannot be null");
         this.communicator = new InternalMCUCommunicatorWrapper(communicator);
         this.active = false;
@@ -66,7 +66,7 @@ public abstract class AbstractPhysicalDyno implements Dyno {
      *
      * @return the MCUCommunicator instance
      */
-    public MCUCommunicator getCommunicator() {
+    public MCUCommunicator<T> getCommunicator() {
         return this.communicator;
     }
 
@@ -76,16 +76,16 @@ public abstract class AbstractPhysicalDyno implements Dyno {
      *
      * @param message the message received from the communicator
      */
-    protected abstract void handleMessage(String message);
+    protected abstract void handleMessage(T message);
 
     /**
      * Wrapper class for MCUCommunicator to ensure that the
      * AbstractPhysicalDyno does run into an inconsistent state.
      */
-    private static class InternalMCUCommunicatorWrapper implements MCUCommunicator {
-        private final MCUCommunicator communicator;
+    private class InternalMCUCommunicatorWrapper implements MCUCommunicator<T> {
+        private final MCUCommunicator<T> communicator;
 
-        InternalMCUCommunicatorWrapper(final MCUCommunicator communicator) {
+        InternalMCUCommunicatorWrapper(final MCUCommunicator<T> communicator) {
             this.communicator = communicator;
         }
 
@@ -100,12 +100,12 @@ public abstract class AbstractPhysicalDyno implements Dyno {
         }
 
         @Override
-        public void addMessageListener(final Consumer<String> listener) {
+        public void addMessageListener(final Consumer<T> listener) {
             this.communicator.addMessageListener(listener);
         }
 
         @Override
-        public void removeMessageListener(final Consumer<String> listener) {
+        public void removeMessageListener(final Consumer<T> listener) {
             this.communicator.removeMessageListener(listener);
         }
 
