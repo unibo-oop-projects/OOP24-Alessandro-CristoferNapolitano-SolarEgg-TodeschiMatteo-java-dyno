@@ -1,3 +1,6 @@
+.button {
+    -fx-pref-width: 200;
+}
 .left-column {
     -fx-border-color: red;
     -fx-border-width: 2;
