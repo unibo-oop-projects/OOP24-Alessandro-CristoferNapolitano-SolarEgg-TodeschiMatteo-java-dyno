@@ -2,6 +2,8 @@ package it.unibo.javadyno.model.dyno.impl;
 
 import java.util.Objects;
 import java.util.function.Consumer;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.javadyno.model.data.communicator.api.MCUCommunicator;
 import it.unibo.javadyno.model.dyno.api.Dyno;
 

@@ -13,6 +13,12 @@ public interface Controller {
     void launchApp(String[] args);
 
     /**
+     * Shows the main menu of the application.
+     * @param stage the primary stage to show the main menu on
+     */
+    void showMainMenu(final Stage stage);
+
+    /**
      * Shows the simulation view.
      *
      * @param stage the primary stage to show the simulation view on
