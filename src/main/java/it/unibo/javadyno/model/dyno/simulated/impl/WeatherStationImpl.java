@@ -6,9 +6,9 @@ import it.unibo.javadyno.model.dyno.simulated.api.WeatherStation;
  * Weather Station to simulate various ambient conditions
  */
 public class WeatherStationImpl implements WeatherStation{
-    private double temperature;
-    private double pressure;
-    private int humidity;
+    private final double temperature;
+    private final double pressure;
+    private final int humidity;
 
     /**
      * simple constructor for WeatherStationImpl.
@@ -17,7 +17,7 @@ public class WeatherStationImpl implements WeatherStation{
      * @param pressure value in [mbar]
      * @param humidity value between [0-100]
      */
-    public WeatherStationImpl(double temperature, double pressure, int humidity) {
+    public WeatherStationImpl(final double temperature, final double pressure, final int humidity) {
         
         this.temperature = temperature;
         this.pressure = pressure;
