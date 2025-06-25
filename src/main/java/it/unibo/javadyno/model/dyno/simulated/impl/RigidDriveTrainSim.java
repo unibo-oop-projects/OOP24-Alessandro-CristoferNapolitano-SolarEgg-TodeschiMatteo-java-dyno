@@ -67,4 +67,9 @@ public class RigidDriveTrainSim implements DriveTrain{
         double newEngineOmega   = oldWheelOmega / newRatio;
         engine.setAngularVelocity(newEngineOmega);
     }
+
+    @Override
+    public int getCurrentGear() {
+        return transmission.getCurrentGear();
+    }
 }
