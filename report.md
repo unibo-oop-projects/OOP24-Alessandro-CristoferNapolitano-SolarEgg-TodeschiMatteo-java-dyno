@@ -26,10 +26,38 @@ TODO
 UML TODO
 ```
 ## 2.2 Design dettagliato
-TODO
+### 2.2.1 Porcheddu Alessandro
+#### Subject
+
+```mermaid
+UML TODO
+
+```
+
+**Problema:** TODO. 
+
+**Soluzione:** TODO. 
 
 ---
-### Name Surname
+#### Subject
+
+```mermaid
+UML TODO
+
+```
+
+**Problema:** TODO.
+
+**Soluzione:** TODO.
+
+```mermaid
+UML TODO
+
+```
+
+TODO
+
+### 2.2.1 Surname Name
 #### Subject
 
 ```mermaid
@@ -85,7 +113,7 @@ Esempio di estensione e implementazione: https://github.com/TodeschiMatteo/OOP24
 #### Utilizzo di `JSONObject` dalla libreria **[JSON-java](https://github.com/stleary/JSON-java)**
 Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/3ca4f9147495bf1de3cde73578cc8f701ab812c9/src/main/java/it/unibo/javadyno/model/dyno/real/impl/RealDynoImpl.java#L19
 
-### 3.2.2 Name Surname
+### 3.2.2 Surname Name
 #### Subject
 
 TODO
@@ -95,16 +123,16 @@ TODO
 
 # Capitolo 4 - Commenti finali
 ## 4.1 Autovalutazione e lavori futuri
-### Name Surname
+### Surname Name
 TODO
 
-### Name Surname
+### Surname Name
 TODO
 
-### Name Surname
+### Surname Name
 TODO
 
-### Name Surname
+### Surname Name
 TODO
 
 ## 4.2 Difficoltà incontrate e commenti per i docenti
