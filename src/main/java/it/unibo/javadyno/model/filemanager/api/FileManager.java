@@ -1,6 +1,6 @@
 package it.unibo.javadyno.model.filemanager.api;
 
-import it.unibo.javadyno.model.ElaboratedData;
+import it.unibo.javadyno.model.data.api.ElaboratedData;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
