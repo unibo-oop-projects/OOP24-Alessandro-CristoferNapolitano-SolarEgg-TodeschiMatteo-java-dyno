@@ -14,9 +14,10 @@ public interface Controller {
 
     /**
      * Shows the main menu of the application.
+     *
      * @param stage the primary stage to show the main menu on
      */
-    void showMainMenu(final Stage stage);
+    void showMainMenu(Stage stage);
 
     /**
      * Shows the simulation view.
