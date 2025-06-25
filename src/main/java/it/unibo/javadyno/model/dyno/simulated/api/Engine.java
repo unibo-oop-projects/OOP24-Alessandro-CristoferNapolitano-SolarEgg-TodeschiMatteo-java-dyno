@@ -33,4 +33,13 @@ public interface Engine {
      * @return Generated Torque in [Nm]
      */
     double getGeneratedTorque();
+
+    /**
+     * method used to regulate shifts of gears.
+     *
+     * @param newEngineOmega new engine omega [rad/s]
+     */
+    void setAngularVelocity(double newEngineOmega);
+
+    
 }
