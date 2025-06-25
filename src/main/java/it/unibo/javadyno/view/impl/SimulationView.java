@@ -1,5 +1,7 @@
 package it.unibo.javadyno.view.impl;
 
+import eu.hansolo.medusa.Gauge;
+import eu.hansolo.medusa.GaugeBuilder;
 import it.unibo.javadyno.controller.api.Controller;
 import it.unibo.javadyno.view.api.View;
 import javafx.application.Application;
@@ -18,6 +20,10 @@ import javafx.stage.Stage;
  */
 public class SimulationView extends Application implements View {
 
+    private static final int MAX_RPM_RANGE = 8000;
+    private static final int RPM_TICK_SPACE = 1000;
+    private static final int MAX_SPEED_RANGE = 300;
+    private static final int SPEED_TICK_SPACE = 50;
     private static final int CONTAINER_SPACING = 20;
     private static final int COLUMN_SPACING = 5;
     private static final String CSS_FILE = "/css/simulationStyle.css";
@@ -58,6 +64,29 @@ public class SimulationView extends Application implements View {
         leftColumn.getStyleClass().add("left-column");
         centerColumn.getStyleClass().add("center-column");
         rightColumn.getStyleClass().add("right-column");
+
+        final Gauge rpmGauge = GaugeBuilder.create()
+                .title("Tachometer")
+                .unit("RPM")
+                .minValue(0)
+                .maxValue(MAX_RPM_RANGE)
+                .majorTickSpace(RPM_TICK_SPACE)
+                .minorTickSpace(100)
+                .animated(true)
+                .decimals(0)
+                .build();
+        final Gauge speedGauge = GaugeBuilder.create()
+                .title("Speedometer")
+                .unit("KM/H")
+                .minValue(0)
+                .maxValue(MAX_SPEED_RANGE)
+                .majorTickSpace(SPEED_TICK_SPACE)
+                .minorTickSpace(10)
+                .animated(true)
+                .decimals(0)
+                .build();
+        rightColumn.getChildren().add(rpmGauge);
+        rightColumn.getChildren().add(speedGauge);
 
         final Button startSimulationButton = new Button("Start Simulation");
         final Button stopSimulationButton = new Button("Stop Simulation");
