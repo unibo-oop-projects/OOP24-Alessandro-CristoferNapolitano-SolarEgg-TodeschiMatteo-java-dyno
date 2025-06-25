@@ -1,8 +1,10 @@
 package it.unibo.javadyno.model.data.communicator.impl;
 
 import java.util.List;
+import java.util.Objects;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONStringer;
 
 import it.unibo.javadyno.model.data.communicator.api.JsonScheme;
 import javafx.util.Pair;
@@ -14,6 +16,7 @@ import javafx.util.Pair;
 public final class JsonWebSocketCommunicator extends AbstractWebSocketCommunicator<Pair<JsonScheme, Double>> {
 
     private static final String SERVER_URI = "192.168.100.1:8080";
+    private static final String PAYLOAD_STRING = "payload";
 
     /**
      * Constructs a JsonWebSocketCommunicator with the server URI usually used with Aruino-like MCUs.
@@ -30,6 +33,17 @@ public final class JsonWebSocketCommunicator extends AbstractWebSocketCommunicat
      */
     public JsonWebSocketCommunicator(final String serverUri) {
         super(serverUri);
+    }
+
+    @Override
+    public void send(final String message) {
+        Objects.requireNonNull(message, "Message cannot be null");
+        final String jsonMessage = new JSONStringer()
+            .object()
+            .key(PAYLOAD_STRING)
+            .value(message)
+            .toString();
+        super.send(jsonMessage);
     }
 
     @Override

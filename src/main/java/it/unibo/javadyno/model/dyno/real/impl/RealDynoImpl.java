@@ -2,6 +2,7 @@ package it.unibo.javadyno.model.dyno.real.impl;
 
 import java.time.Instant;
 import java.util.Optional;
+import org.json.JSONObject;
 import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.api.RawData;
 import it.unibo.javadyno.model.data.communicator.api.JsonScheme;
@@ -15,11 +16,19 @@ import javafx.util.Pair;
  */
 public final class RealDynoImpl extends AbstractPhysicalDyno<Pair<JsonScheme, Double>> {
 
-    private Optional<Integer> engineRpm;
-    private Optional<Double> engineTemperature;
-    private Optional<Double> torque;
-    private Optional<Double> throttlePosition;
-    private Optional<Instant> timestamp;
+    private static final JSONObject CONFIGURATION_MESSAGE = new JSONObject()
+        .put("command", "configure")
+        .put("parameters", new JSONObject()
+            .put("engineRpm", true)
+            .put("engineTemperature", true)
+            .put("torque", true)
+            .put("throttlePosition", true));
+    private static final String THREAD_NAME = "RealDyno";
+    private boolean mcuConfigured;
+    private Optional<Integer> engineRpm = Optional.empty();
+    private Optional<Double> engineTemperature = Optional.empty();
+    private Optional<Double> torque = Optional.empty();
+    private Optional<Double> throttlePosition = Optional.empty();
 
     /**
      * Initializes the ReadlDynoImpl with the given MCUCommunicator.
@@ -37,7 +46,7 @@ public final class RealDynoImpl extends AbstractPhysicalDyno<Pair<JsonScheme, Do
             .engineTemperature(this.engineTemperature)
             .torque(this.torque)
             .throttlePosition(this.throttlePosition)
-            .timestamp(this.timestamp)
+            .timestamp(Optional.of(Instant.now()))
             .build();
     }
 
@@ -48,19 +57,31 @@ public final class RealDynoImpl extends AbstractPhysicalDyno<Pair<JsonScheme, Do
 
     @Override
     protected void handleMessage(final Pair<JsonScheme, Double> message) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'handleMessage'");
+        switch (message.getKey()) {
+            case ENGINE_RPM -> this.engineRpm = Optional.of(message.getValue().intValue());
+            case ENGINE_TEMPERATURE -> this.engineTemperature = Optional.of(message.getValue());
+            case TORQUE -> this.torque = Optional.of(message.getValue());
+            case THROTTLE_POSITION -> this.throttlePosition = Optional.of(message.getValue());
+            default -> throw new IllegalArgumentException("Unknown message type: " + message.getKey());
+        }
     }
 
+    /**
+     * Returns the configuration message to be sent to the MCU.
+     * After the first call, it returns an empty string.
+     */
     @Override
     protected String getOutgoingMessage() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getOutgoingMessage'");
+        if (!this.mcuConfigured) {
+            this.mcuConfigured = true;
+            return CONFIGURATION_MESSAGE.toString();
+        }
+        return "";
     }
 
     @Override
     protected String getThreadName() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getThreadName'");
+        return THREAD_NAME;
     }
+
 }

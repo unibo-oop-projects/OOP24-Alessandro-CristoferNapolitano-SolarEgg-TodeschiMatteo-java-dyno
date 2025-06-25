@@ -25,14 +25,13 @@ public final class OBD2Dyno extends AbstractPhysicalDyno<String> {
     private static final int SEGMENTS_LENGTH = 2;
     private static final int MODE_OFFSET = 40;
     private static final int RPM_MULTIPLIER = 256;
-    private static final String THREAD_NAME = "OBD2Dyno-MessageHandler";
+    private static final String THREAD_NAME = "OBD2Dyno";
     private static final String COMMAND_FORMAT = "%02X%02X";
     private final List<PID> supportedPIDs;
     private final LoopingIterator<PID> loopingIterator;
-    private Optional<Integer> engineRpm;
-    private Optional<Integer> vehicleSpeed;
-    private Optional<Double> engineTemperature;
-    private Optional<Instant> timestamp;
+    private Optional<Integer> engineRpm = Optional.empty();
+    private Optional<Integer> vehicleSpeed = Optional.empty();
+    private Optional<Double> engineTemperature = Optional.empty();
 
     /**
      * Initializes the OBD2Dyno with default values.
@@ -67,9 +66,6 @@ public final class OBD2Dyno extends AbstractPhysicalDyno<String> {
      */
     public OBD2Dyno(final MCUCommunicator<String> communicator, final int polling) {
         super(communicator, polling);
-        this.engineRpm = Optional.empty();
-        this.vehicleSpeed = Optional.empty();
-        this.engineTemperature = Optional.empty();
         this.supportedPIDs = List.of(
             PID.ENGINE_RPM,
             PID.VEHICLE_SPEED,
@@ -87,7 +83,7 @@ public final class OBD2Dyno extends AbstractPhysicalDyno<String> {
                 .engineRPM(this.engineRpm)
                 .vehicleSpeed(this.vehicleSpeed)
                 .engineTemperature(this.engineTemperature)
-                .timestamp(this.timestamp)
+                .timestamp(Optional.of(Instant.now()))
                 .build();
     }
 
