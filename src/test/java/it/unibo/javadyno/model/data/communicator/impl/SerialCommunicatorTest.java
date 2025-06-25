@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.AfterEach;
 
-class SerialMCUCommunicatorTest {
+class SerialCommunicatorTest {
     private ELM327Communicator communicatorAuto;
 
     @BeforeEach
