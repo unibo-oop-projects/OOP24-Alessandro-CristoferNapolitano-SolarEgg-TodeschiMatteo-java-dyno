@@ -1,5 +1,6 @@
 package it.unibo.javadyno.model.data.communicator.impl;
 
+import java.nio.charset.Charset;
 import java.util.function.Consumer;
 import com.fazecast.jSerialComm.SerialPort;
 
@@ -10,6 +11,7 @@ import com.fazecast.jSerialComm.SerialPort;
 public final class ELM327Communicator extends AbstractSerialCommunicator {
 
     private static final int ELM327_BAUD_RATE = 13_200;
+    private static final String ENCODING = "UTF-8";
     private static final String SENT_DATA_DELIMITER = "\r";
     private static final String RECIEVED_DATA_DELIMITER = ">";
     private static final String SOFT_RESET_COMMAND = "AT WS";
@@ -51,7 +53,7 @@ public final class ELM327Communicator extends AbstractSerialCommunicator {
         final SerialPort commPort = super.getCommPort();
         final byte[] readBuffer = new byte[commPort.bytesAvailable()];
         commPort.readBytes(readBuffer, readBuffer.length);
-        final String message = new String(readBuffer).replace(getRecievedDataDelimiter(), "").trim();
+        final String message = new String(readBuffer, Charset.forName(ENCODING)).replace(getRecievedDataDelimiter(), "").trim();
         for (final Consumer<String> listener : super.getMessageListeners()) {
             listener.accept(message);
         }
