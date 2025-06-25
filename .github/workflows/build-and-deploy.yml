@@ -6,6 +6,12 @@ on:
       - 'main'
     tags:
       - '*'          # Run on any tag push (for release)
+    paths-ignore:
+      - 'CHANGELOG.md'
+      - 'LICENSE'
+      - 'README.md'
+      - 'report.md'
+      - 'renovate.json'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
