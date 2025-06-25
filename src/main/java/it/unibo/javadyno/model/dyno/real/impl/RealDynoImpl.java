@@ -17,7 +17,7 @@ import it.unibo.javadyno.model.dyno.real.api.RealDyno;
  * Implementation of the RealDyno interface.
  * This class extends AbstractPhysicalDyno and provides methods to interact with a real dynamometer.
  */
-public class ReadlDynoImpl extends AbstractPhysicalDyno implements RealDyno {
+public class RealDynoImpl extends AbstractPhysicalDyno implements RealDyno {
 
     private Optional<Integer> engineRpm;
     private Optional<Double> engineTemperature;
@@ -30,7 +30,7 @@ public class ReadlDynoImpl extends AbstractPhysicalDyno implements RealDyno {
      *
      * @param communicator the MCUCommunicator to use for communication.
      */
-    public ReadlDynoImpl(final MCUCommunicator communicator) {
+    public RealDynoImpl(final MCUCommunicator communicator) {
         super(communicator);
     }
 
@@ -93,6 +93,7 @@ public class ReadlDynoImpl extends AbstractPhysicalDyno implements RealDyno {
                 : Optional.empty();
         } catch (final JSONException e) {
             // Tell alert monitor
+            throw new IllegalArgumentException("Invalid JSON message received: " + message, e);
         }
     }
 

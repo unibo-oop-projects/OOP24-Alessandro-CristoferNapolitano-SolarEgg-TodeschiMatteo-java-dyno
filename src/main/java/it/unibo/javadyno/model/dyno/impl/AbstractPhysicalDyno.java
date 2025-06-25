@@ -1,6 +1,9 @@
 package it.unibo.javadyno.model.dyno.impl;
 
+import java.util.Objects;
 import java.util.function.Consumer;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.javadyno.model.data.communicator.api.MCUCommunicator;
 import it.unibo.javadyno.model.dyno.api.Dyno;
 
@@ -20,6 +23,7 @@ public abstract class AbstractPhysicalDyno implements Dyno {
      * @param communicator the MCUCommunicator to use for communication.
      */
     public AbstractPhysicalDyno(final MCUCommunicator communicator) {
+        Objects.requireNonNull(communicator, "Communicator cannot be null");
         this.communicator = new InternalMCUCommunicatorWrapper(communicator);
         this.active = false;
     }
@@ -30,15 +34,11 @@ public abstract class AbstractPhysicalDyno implements Dyno {
     @Override
     public void begin() {
         if (!this.isActive()) {
-            try {
-                this.communicator.connect();
-                this.active = true;
-                this.messageListener = this::handleMessage;
-                this.communicator.addMessageListener(this.messageListener);
-            } catch (final InterruptedException e) {
-                // Tell alert monitor
-                Thread.currentThread().interrupt();
-            }
+            this.communicator.connect();
+            this.active = true;
+            this.messageListener = this::handleMessage;
+            this.communicator.addMessageListener(this.messageListener);
+
         }
     }
 
@@ -48,14 +48,10 @@ public abstract class AbstractPhysicalDyno implements Dyno {
     @Override
     public void end() {
         if (this.isActive()) {
-            try {
-                this.communicator.disconnect();
-                this.active = false;
-                this.communicator.removeMessageListener(this.messageListener);
-            } catch (final InterruptedException e) {
-                // Tell alert monitor
-                Thread.currentThread().interrupt();
-            }
+            this.communicator.disconnect();
+            this.active = false;
+            this.communicator.removeMessageListener(this.messageListener);
+
         }
     }
 
@@ -68,10 +64,20 @@ public abstract class AbstractPhysicalDyno implements Dyno {
     }
 
     /**
+     * Returns the MCUCommunicator used.
+     *
+     * @return the MCUCommunicator instance
+     */
+    @SuppressFBWarnings("EI_EXPOSE_REP") // Exposing the communicator is intentional for internal use
+    public MCUCommunicator getCommunicator() {
+        return this.communicator;
+    }
+
+    /**
      * Parses incoming messages from the MCUCommunicator and updates the stored data.
      * This method should be implemented by subclasses to process the message.
      *
-     * @param message the JSON message received from the communicator
+     * @param message the message received from the communicator
      */
     protected abstract void handleMessage(String message);
 
@@ -87,12 +93,12 @@ public abstract class AbstractPhysicalDyno implements Dyno {
         }
 
         @Override
-        public void connect() throws InterruptedException {
+        public void connect() {
             this.communicator.connect();
         }
 
         @Override
-        public void disconnect() throws InterruptedException {
+        public void disconnect() {
             this.communicator.disconnect();
         }
 

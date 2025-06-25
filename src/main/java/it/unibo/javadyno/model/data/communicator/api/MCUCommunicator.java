@@ -11,17 +11,15 @@ public interface MCUCommunicator {
 
     /**
      * Establishes (or re‐establishes) the connection to the MCU synchronically.
-     * If already connected, this can be a no‐op or attempt a reconnect.
-     *
-     * @throws InterruptedException if connection times out.
+     * If already connected, this can be a no‐op.
      */
-    void connect() throws InterruptedException;
+    void connect();
 
     /**
      * Disconnects from the MCU in a synchronous way.
      * If not connected, this can be a no‐op.
      */
-    void disconnect() throws InterruptedException;
+    void disconnect();
 
     /**
      * Checks if the communicator is currently connected to the MCU.
