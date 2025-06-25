@@ -20,15 +20,18 @@ import javafx.stage.Stage;
  */
 public class SimulationView extends Application implements View {
 
-    private static final int MAX_RPM_RANGE = 8000;
-    private static final int RPM_TICK_SPACE = 1000;
-    private static final int MAX_SPEED_RANGE = 300;
-    private static final int SPEED_TICK_SPACE = 50;
+    private static final int TEMPERATURE_TICK_SPACE = 20;
     private static final int CONTAINER_SPACING = 20;
     private static final int COLUMN_SPACING = 5;
     private static final String CSS_FILE = "/css/simulationStyle.css";
     private static final double WIDTH_RATIO = 0.8; //percentage of screen width
     private static final double HEIGHT_RATIO = 0.8; //percentage of screen height
+
+    private static final int MAX_RPM_RANGE = 8000;
+    private static final int RPM_TICK_SPACE = 1000;
+    private static final int MAX_SPEED_RANGE = 300;
+    private static final int SPEED_TICK_SPACE = 50;
+    private static final int MAX_TEMPERATURE_RANGE = 120;
 
     private final Controller controller;
 
@@ -85,8 +88,19 @@ public class SimulationView extends Application implements View {
                 .animated(true)
                 .decimals(0)
                 .build();
+        final Gauge tempGauge = GaugeBuilder.create()
+                .title("Temperature")
+                .unit("°C")
+                .minValue(0)
+                .maxValue(MAX_TEMPERATURE_RANGE)
+                .majorTickSpace(TEMPERATURE_TICK_SPACE)
+                .minorTickSpace(5)
+                .animated(true)
+                .decimals(0)
+                .build();
         rightColumn.getChildren().add(rpmGauge);
         rightColumn.getChildren().add(speedGauge);
+        rightColumn.getChildren().add(tempGauge);
 
         final Button startSimulationButton = new Button("Start Simulation");
         final Button stopSimulationButton = new Button("Stop Simulation");
