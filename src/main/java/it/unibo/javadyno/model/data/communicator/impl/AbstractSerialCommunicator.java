@@ -15,6 +15,8 @@ import it.unibo.javadyno.model.data.communicator.api.MCUCommunicator;
  * Abstract class for serial communication with a MCU .
  * It provides methods to connect, disconnect, send messages, and manage message listeners.
  * This class is designed to be extended by specific implementations for different MCU types.
+ *
+ * @param <T> the type of parsed messages that will be delivered to registered listeners
  */
 public abstract class AbstractSerialCommunicator<T> implements MCUCommunicator<T> {
 

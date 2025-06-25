@@ -16,6 +16,8 @@ import org.java_websocket.handshake.ServerHandshake;
  * and broadcasts incoming payloads to all registered listeners after the parsing has been
  * applied and enables sending information to the MCU through the send method.
  * Connection is NOT secure (does not use wss://).
+ *
+ * @param <T> the type of parsed messages that will be delivered to registered listeners
  */
 public abstract class AbstractWebSocketCommunicator<T> implements MCUCommunicator<T> {
 

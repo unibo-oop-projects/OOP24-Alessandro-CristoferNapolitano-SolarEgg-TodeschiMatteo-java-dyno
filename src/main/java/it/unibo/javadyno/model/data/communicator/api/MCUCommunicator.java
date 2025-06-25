@@ -6,6 +6,8 @@ import java.util.function.Consumer;
  * Interface for communicating with a microcontroller unit (MCU).
  * Provides methods to connect, disconnect, send messages, and manage message listeners.
  * Abstracts the communication layer for different types of MCUs and communication protocols.
+ *
+ * @param <T> the type of parsed messages that will be delivered to registered listeners
  */
 public interface MCUCommunicator<T> {
 

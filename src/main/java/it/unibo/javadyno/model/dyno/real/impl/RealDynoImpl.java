@@ -14,7 +14,7 @@ import javafx.util.Pair;
  * Implementation of the RealDyno interface.
  * This class extends AbstractPhysicalDyno and provides methods to interact with a real dynamometer.
  */
-public class RealDynoImpl extends AbstractPhysicalDyno<Pair<JsonScheme, Double>> implements RealDyno {
+public final class RealDynoImpl extends AbstractPhysicalDyno<Pair<JsonScheme, Double>> implements RealDyno {
 
     private Optional<Integer> engineRpm;
     private Optional<Double> engineTemperature;
@@ -54,7 +54,7 @@ public class RealDynoImpl extends AbstractPhysicalDyno<Pair<JsonScheme, Double>>
     }
 
     @Override
-    protected void handleMessage(Pair<JsonScheme, Double> message) {
+    protected void handleMessage(final Pair<JsonScheme, Double> message) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'handleMessage'");
     }

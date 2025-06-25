@@ -8,6 +8,8 @@ import it.unibo.javadyno.model.dyno.api.Dyno;
 /**
  * This class implements the Dyno interface and provides common functionality
  * for physical dynamometers that communicate with an MCU (Microcontroller Unit).
+ *
+ * @param <T> the type of parsed messages that will be delivered to registered listeners
  */
 public abstract class AbstractPhysicalDyno<T> implements Dyno {
 
