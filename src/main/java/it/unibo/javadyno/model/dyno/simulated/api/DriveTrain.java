@@ -12,4 +12,29 @@ public interface DriveTrain {
      * @param deltatime step of duration in [s]
      */
     void step(double throttle, double deltatime);
+
+    /**
+     * to shift transmission gear up.
+     */
+    void shiftUp();
+
+    /**
+     * to shift transmission gear down.
+     */
+    void shiftDown();
+
+    /**
+     * to get engine angular velocity.
+     *
+     * @return engine angular velocity [rad/s]
+     */
+    double getEngineOmega();
+
+    /**
+     * to get wheel angular velocity.
+     *
+     * @return wheel angular velocity [rad/s]
+     */
+    double getWheelOmega();
+    
 }
