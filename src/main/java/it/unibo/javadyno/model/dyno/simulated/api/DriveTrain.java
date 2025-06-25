@@ -14,27 +14,32 @@ public interface DriveTrain {
     void step(double throttle, double deltatime);
 
     /**
-     * to shift transmission gear up.
+     * shift transmission gear up.
      */
     void shiftUp();
 
     /**
-     * to shift transmission gear down.
+     * shift transmission gear down.
      */
     void shiftDown();
 
     /**
-     * to get engine angular velocity.
+     * get engine angular velocity.
      *
      * @return engine angular velocity [rad/s]
      */
     double getEngineOmega();
 
     /**
-     * to get wheel angular velocity.
+     * get wheel angular velocity.
      *
      * @return wheel angular velocity [rad/s]
      */
     double getWheelOmega();
+
+    /**
+     * get current transmission gear.
+     */
+    int getCurrentGear();
     
 }
