@@ -21,32 +21,33 @@ import java.util.function.Function;
 /**
  * CSV Strategy implementation for file management.
  * Handles the reading and writing of Raw and Elaborated data to and from CSV files.
+ * This class is not designed for extension.
  */
-public class CsvStrategy implements FileStrategy {
+public final class CsvStrategy implements FileStrategy {
 
-    //Defines the header of the CSV file
-     private static final String[] HEADER = {
+    // Defines the header of the CSV file.
+    private static final String[] HEADER = {
         // RawData fields
         "timestamp", "engineRPM", "engineTemperature", "rollerRPM", "torque",
         "vehicleSpeed", "throttlePosition", "boostPressure", "exhaustGasTemperature",
         // ElaboratedData fields
-        "enginePowerKW", "enginePowerHP", "engineCorrectedTorque"
+        "enginePowerKW", "enginePowerHP", "engineCorrectedTorque",
     };
 
     /**
      * {@inheritDoc}
-     */    
+     */
     @Override
-    public void exportData(java.util.List<it.unibo.javadyno.model.data.api.ElaboratedData> data, java.io.File file) throws java.io.IOException {
+    public void exportData(final List<ElaboratedData> data, final File file) throws IOException {
        try (CSVWriter writer = new CSVWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
         writer.writeNext(HEADER); // Writes the header as the first row
 
-        // Writes each field of ElavoratedData (and its nested RawData) as a row in the CSV file
-        for(final ElaboratedData elaborated : data) {
+        // Writes each field of ElaboratedData (and its nested RawData) as a row in the CSV file.
+        for (final ElaboratedData elaborated : data) {
             final RawData raw = elaborated.rawData();
-                final String[] row = new String[]{
+                final String[] row = {
                     // RawData fields
-                    // Converts the field to string or uses an empty string if the Optional is empty
+                    // Converts the field to string or uses an empty string if the Optional is empty.
                     raw.timestamp().map(Object::toString).orElse(""),
                     raw.engineRPM().map(Object::toString).orElse(""),
                     raw.engineTemperature().map(Object::toString).orElse(""),
@@ -59,15 +60,18 @@ public class CsvStrategy implements FileStrategy {
                     // ElaboratedData fields
                     String.valueOf(elaborated.enginePowerKW()),
                     String.valueOf(elaborated.enginePowerHP()),
-                    String.valueOf(elaborated.engineCorrectedTorque())
+                    String.valueOf(elaborated.engineCorrectedTorque()),
                 };
                 writer.writeNext(row);
         }
        }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public java.util.List<it.unibo.javadyno.model.data.api.ElaboratedData> importData(java.io.File file) throws java.io.IOException {
+    public List<ElaboratedData> importData(final File file) throws IOException {
         // Implementation for importing data from CSV file
         return null; // Placeholder return statement
     }
