@@ -5,7 +5,7 @@
     -fx-border-color: red;
     -fx-border-width: 2;
 }
-.center-column {
+.charts-panel {
     -fx-border-color: green;
     -fx-border-width: 2;
 }
