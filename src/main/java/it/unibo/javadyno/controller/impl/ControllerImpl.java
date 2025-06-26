@@ -28,7 +28,6 @@ public class ControllerImpl implements Controller {
     private final DataElaborator dataElaborator;
 
     private Dyno dyno;
-    private SimulationView simulationView;
 
     /**
      * Default constructor for ControllerImpl.
@@ -61,7 +60,7 @@ public class ControllerImpl implements Controller {
      */
     @Override
     public void showSimulationView(final Stage stage) {
-        this.simulationView = new SimulationView(this);
+        final SimulationView simulationView = new SimulationView(this);
         simulationView.start(stage);
     }
 

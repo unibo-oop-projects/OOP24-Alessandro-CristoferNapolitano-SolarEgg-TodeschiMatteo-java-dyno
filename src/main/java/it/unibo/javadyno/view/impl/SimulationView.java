@@ -82,7 +82,13 @@ public class SimulationView extends Application implements View {
         primaryStage.centerOnScreen();
     }
 
-    public void updateGraph(Number xValue, Number yValue) {
+    /**
+     * Updates the graph with new data points.
+     *
+     * @param xValue the x-axis value to be added to the graph
+     * @param yValue the y-axis value to be added to the graph
+     */
+    public void updateGraph(final Number xValue, final Number yValue) {
         this.centerColumn.addPointToChart(xValue, yValue);
     }
 }

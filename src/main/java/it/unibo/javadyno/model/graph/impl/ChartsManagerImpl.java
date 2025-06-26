@@ -21,14 +21,17 @@ public class ChartsManagerImpl<X, Y> implements ChartsManager<X, Y> {
         lineChart.getData().add(series);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void addPointToSeries(LineChart<X, Y> chart, String seriesName, X xValue, Y yValue) {
+    public void addPointToSeries(final LineChart<X, Y> chart, final String seriesName, final X xValue, final Y yValue) {
         chart.getData().stream()
             .filter(series -> series.getName().equals(seriesName))
             .findFirst()
             .ifPresent(series -> {
-                XYChart.Data<X, Y> dataPoint = new XYChart.Data<>(xValue, yValue);
-                series.getData().add(dataPoint);
+                final XYChart.Data<X, Y> point = new XYChart.Data<>(xValue, yValue);
+                series.getData().add(point);
             });
     }
 }
