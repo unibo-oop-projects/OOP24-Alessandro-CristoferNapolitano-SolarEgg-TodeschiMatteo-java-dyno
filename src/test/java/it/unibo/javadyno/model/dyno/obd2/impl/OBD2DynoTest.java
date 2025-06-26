@@ -66,7 +66,7 @@ class OBD2DynoTest {
         dyno.end();
     }
 
-    private static final class TestMCUCommunicator implements MCUCommunicator {
+    private static final class TestMCUCommunicator implements MCUCommunicator<String> {
         private Consumer<String> messageListener;
         private Runnable sendHook;
         private boolean connected;

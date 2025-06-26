@@ -15,15 +15,17 @@ import it.unibo.javadyno.model.data.communicator.api.MCUCommunicator;
  * Abstract class for serial communication with a MCU .
  * It provides methods to connect, disconnect, send messages, and manage message listeners.
  * This class is designed to be extended by specific implementations for different MCU types.
+ *
+ * @param <T> the type of parsed messages that will be delivered to registered listeners
  */
-public abstract class AbstractSerialCommunicator implements MCUCommunicator {
+public abstract class AbstractSerialCommunicator<T> implements MCUCommunicator<T> {
 
     private static final int INVALID_VENDOR_ID = -1;
     private static final int DEFAULT_BAUD_RATE = 9200;
     private final String suppliedPort;
     private final int baudRate;
     private SerialPort commPort;
-    private final Set<Consumer<String>> messageListeners = new HashSet<>();
+    private final Set<Consumer<T>> messageListeners = new HashSet<>();
 
     /**
      * Constructs a SerialCommunicator auto-detecting the
@@ -138,7 +140,7 @@ public abstract class AbstractSerialCommunicator implements MCUCommunicator {
      * {@inheritDoc}
      */
     @Override
-    public void addMessageListener(final Consumer<String> listener) {
+    public void addMessageListener(final Consumer<T> listener) {
         Objects.requireNonNull(listener);
         this.messageListeners.add(listener);
     }
@@ -147,11 +149,9 @@ public abstract class AbstractSerialCommunicator implements MCUCommunicator {
      * {@inheritDoc}
      */
     @Override
-    public void removeMessageListener(final Consumer<String> listener) {
+    public void removeMessageListener(final Consumer<T> listener) {
         Objects.requireNonNull(listener);
-        if (this.messageListeners.contains(listener)) {
-            this.messageListeners.remove(listener);
-        }
+        this.messageListeners.remove(listener);
     }
 
     /**
@@ -168,7 +168,7 @@ public abstract class AbstractSerialCommunicator implements MCUCommunicator {
      *
      * @return a Set of Consumer that are registered to receive messages
      */
-    protected Set<Consumer<String>> getMessageListeners() {
+    protected Set<Consumer<T>> getMessageListeners() {
         return this.messageListeners;
     }
 
