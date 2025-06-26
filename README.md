@@ -1,1 +1,3 @@
-# OOP24-java-dyno
+# JavaDyno
+
+![](src/main/resources/images/logo.png)

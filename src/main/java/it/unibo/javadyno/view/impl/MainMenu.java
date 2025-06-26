@@ -18,8 +18,9 @@ import javafx.geometry.Rectangle2D;
  * Main GUI class for the JavaDyno application.
  */
 public class MainMenu extends Application implements View {
+    // final Parent root = FXMLLoader.load(ClassLoader.getSystemResource("layouts/SimpleGui.fxml"));
 
-    private static final String CSS_FILE = "/css/style.css";
+    private static final String CSS_FILE = "/css/MenuStyle.css";
     private static final String HOME_IMAGE = "images/homecar.png";
     private static final double WIDTH_RATIO = 0.3; //percentage of screen width
     private static final double HEIGHT_RATIO = 0.5; //percentage of screen height
@@ -40,7 +41,7 @@ public class MainMenu extends Application implements View {
      * {@inheritDoc}
      */
     @Override
-    public void start(final Stage primaryStage) throws Exception {
+    public void start(final Stage primaryStage) {
         final Button simulatedDynoButton = new Button("Simulated Dyno");
         final Button realDynoButton = new Button("Real Dyno");
         final Button settingsButton = new Button("Settings");
@@ -61,9 +62,18 @@ public class MainMenu extends Application implements View {
         image.fitHeightProperty().bind(Bindings.multiply(scene.heightProperty(), IMAGE_HEIGHT));
         image.setPreserveRatio(true);
 
-        scene.getStylesheets().add(getClass().getResource(CSS_FILE).toExternalForm());
+        scene.getStylesheets().add(MainMenu.class.getResource(CSS_FILE).toExternalForm());
         primaryStage.setTitle("JavaDyno");
         primaryStage.setScene(scene);
         primaryStage.show();
+        primaryStage.centerOnScreen();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void stop() {
+        controller.closeApp();
     }
 }

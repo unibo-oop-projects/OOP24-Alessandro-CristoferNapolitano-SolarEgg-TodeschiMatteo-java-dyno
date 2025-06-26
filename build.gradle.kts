@@ -52,6 +52,11 @@ dependencies {
 
     // Serial communication library for USB multiplatform communication 
     implementation("com.fazecast:jSerialComm:[2.0.0,3.0.0)")
+
+    // GUI library for JavaFX Gauge components
+    implementation("eu.hansolo:Medusa:11.7")
+    //GUI library for JavaFX Charts
+    implementation("org.jfree:jfreechart:1.5.4")
     
     // The BOM (Bill of Materials) synchronizes all the versions of Junit coherently.
     testImplementation(platform("org.junit:junit-bom:5.12.2"))

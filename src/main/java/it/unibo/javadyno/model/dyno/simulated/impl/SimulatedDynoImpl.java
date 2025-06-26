@@ -17,6 +17,7 @@ import it.unibo.javadyno.model.dyno.simulated.api.WeatherStation;
  */
 public class SimulatedDynoImpl implements SimulatedDyno {
 
+    private static final String SIMULATED_DYNO_THREAD_NAME = "SimulatedDynoThread";
     private static final int ENGINE_RPM = 2000;
     private static final double ENGINE_TEMPERATURE = 90.0;
     private static final int UPDATE_TIME_DELTA = 10; // in milliseconds
@@ -53,7 +54,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
             this.running = true;
             this.bench = new BenchImpl();
             // this.vehicle = new VehicleImpl();
-            this.simulationThread = new Thread(this);
+            this.simulationThread = new Thread(this, SIMULATED_DYNO_THREAD_NAME);
             this.simulationThread.start();
         }
     }

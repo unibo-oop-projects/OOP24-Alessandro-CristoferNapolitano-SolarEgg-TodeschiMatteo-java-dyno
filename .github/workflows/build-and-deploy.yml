@@ -1,22 +1,24 @@
-name: CI
+name: Test and Release
+
 on:
   push:
-    tags: '*'
-    branches-ignore:
-      - 'autodelivery**'
-      - 'bump-**'
-      - 'renovate/**'
+    tags:
+      - '*'          # Run on any tag push (for release)
     paths-ignore:
       - 'CHANGELOG.md'
       - 'LICENSE'
       - 'README.md'
+      - 'report.md'
       - 'renovate.json'
-  pull_request:
-  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  build:
-    if: contains(github.repository, 'sample-javafx-project') && !github.event.repository.fork
+  test:
+    name: Run Tests on All Platforms
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
@@ -24,26 +26,81 @@ jobs:
           - windows-2025
           - macos-14
           - ubuntu-24.04
-        jvm_version: [21, 23]
-    runs-on: ${{ matrix.os }}
+        jvm_version:
+            - 21
     steps:
-      - name: Checkout
-        uses: DanySK/action-checkout@0.2.22
-      - uses: DanySK/build-check-deploy-gradle-action@3.7.18
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
         with:
+          distribution: 'temurin'
           java-version: ${{ matrix.jvm_version }}
-          should-run-codecov: false
-          should-deploy: false
-          should-validate-wrapper: ${{ matrix.os == 'ubuntu' && matrix.jvm_version == '17' }}
-  success:
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            gradle-${{ runner.os }}-
+
+      - name: Grant execute permissions to gradlew (Linux/macOS only)
+        if: runner.os != 'Windows'
+        run: chmod +x ./gradlew
+
+      - name: Run tests (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: ./gradlew test
+
+      - name: Run tests (Windows)
+        if: runner.os == 'Windows'
+        run: .\gradlew test
+
+  release:
+    name: Build and Release JavaDyno Fat JAR
     runs-on: ubuntu-24.04
-    needs:
-      - build
-    if: >-
-      always() && (
-        contains(join(needs.*.result, ','), 'failure')
-        || !contains(join(needs.*.result, ','), 'cancelled')
-      )
+    needs: test
+    if: startsWith(github.ref, 'refs/tags/')  # Run release only on tag pushes
     steps:
-      - name: Verify that there were no failures
-        run: ${{ !contains(join(needs.*.result, ','), 'failure') }}
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            gradle-${{ runner.os }}-
+
+      - name: Grant execute permissions to gradlew
+        run: chmod +x ./gradlew
+
+      - name: Build fat JAR
+        run: ./gradlew shadowJar
+
+      - name: Rename JAR
+        run: |
+          mkdir -p release
+          cp build/libs/*-all.jar release/JavaDyno-${{ github.ref_name }}.jar
+
+      - name: Upload JAR to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release/JavaDyno-${{ github.ref_name }}.jar
+          tag_name: ${{ github.ref_name }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
