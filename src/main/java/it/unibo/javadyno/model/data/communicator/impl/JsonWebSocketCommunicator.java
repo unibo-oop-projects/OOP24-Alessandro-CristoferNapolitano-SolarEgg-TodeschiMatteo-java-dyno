@@ -49,8 +49,7 @@ public final class JsonWebSocketCommunicator extends AbstractWebSocketCommunicat
     @Override
     protected List<Pair<JsonScheme, Double>> parseMessage(final String message) {
         try {
-            final var jsonMessage = new JSONObject(message);
-            return jsonMessage.toMap().entrySet().stream()
+            return new JSONObject(message).toMap().entrySet().stream()
                 .map(entry -> new Pair<>(JsonScheme.valueOf(entry.getKey()), (Double) entry.getValue()))
                 .toList();
         } catch (final JSONException e) {
