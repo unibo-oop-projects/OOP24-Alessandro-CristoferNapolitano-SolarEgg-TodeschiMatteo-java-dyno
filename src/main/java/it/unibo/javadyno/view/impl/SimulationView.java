@@ -1,7 +1,7 @@
 package it.unibo.javadyno.view.impl;
 
 import it.unibo.javadyno.controller.api.Controller;
-import it.unibo.javadyno.model.graph.api.DefaultGaugePanel;
+import it.unibo.javadyno.model.graph.impl.GaugePanel;
 import it.unibo.javadyno.view.api.View;
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -58,7 +58,7 @@ public class SimulationView extends Application implements View {
         leftColumn.setAlignment(Pos.CENTER);
         final VBox centerColumn = new VBox(COLUMN_SPACING);
         centerColumn.setAlignment(Pos.CENTER);
-        final VBox rightColumn = new DefaultGaugePanel();
+        final VBox rightColumn = new GaugePanel();
         HBox.setHgrow(leftColumn, Priority.ALWAYS);
         HBox.setHgrow(centerColumn, Priority.ALWAYS);
         HBox.setHgrow(rightColumn, Priority.ALWAYS);

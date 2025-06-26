@@ -1,14 +1,14 @@
-package it.unibo.javadyno.model.graph.api;
+package it.unibo.javadyno.model.graph.impl;
 
-import it.unibo.javadyno.model.graph.impl.DefaultGaugeFactory;
 import eu.hansolo.medusa.Gauge;
+import it.unibo.javadyno.model.graph.api.GaugeFactory;
 import javafx.geometry.Pos;
 import javafx.scene.layout.VBox;
 
 /**
  * GaugePanel class that extends VBox to create a panel with multiple gauges.
  */
-public final class DefaultGaugePanel extends VBox {
+public final class GaugePanel extends VBox {
     private static final int COLUMN_SPACING = 5;
 
     // Constants for the gauges
@@ -38,7 +38,7 @@ public final class DefaultGaugePanel extends VBox {
     /**
      * Constructor for GaugePanel.
      */
-    public DefaultGaugePanel() {
+    public GaugePanel() {
         super(COLUMN_SPACING);
         this.setAlignment(Pos.CENTER);
         this.getStyleClass().add("gauge-panel");
