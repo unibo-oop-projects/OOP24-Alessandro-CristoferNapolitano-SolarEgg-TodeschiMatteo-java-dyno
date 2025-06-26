@@ -1,9 +1,9 @@
 package it.unibo.javadyno.view.impl;
 
 import it.unibo.javadyno.controller.api.Controller;
-import it.unibo.javadyno.model.graph.impl.ChartsPanel;
-import it.unibo.javadyno.model.graph.impl.GaugePanel;
 import it.unibo.javadyno.view.api.View;
+import it.unibo.javadyno.view.impl.component.ChartsPanel;
+import it.unibo.javadyno.view.impl.component.GaugePanel;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
@@ -19,10 +19,10 @@ import javafx.stage.Stage;
  * Simulation view class for the JavaDyno application.
  */
 public class SimulationView extends Application implements View {
-
     private static final int CONTAINER_SPACING = 20;
     private static final int COLUMN_SPACING = 5;
     private static final String CSS_FILE = "/css/simulationStyle.css";
+    private static final String CSS_SETTINGS_PANEL_TAG = "left-column";
     private static final double WIDTH_RATIO = 0.8; //percentage of screen width
     private static final double HEIGHT_RATIO = 0.8; //percentage of screen height
 
@@ -50,6 +50,7 @@ public class SimulationView extends Application implements View {
         final VBox leftColumn = new VBox(COLUMN_SPACING);
         leftColumn.setAlignment(Pos.CENTER);
         HBox.setHgrow(leftColumn, Priority.ALWAYS);
+        leftColumn.getStyleClass().add(CSS_SETTINGS_PANEL_TAG);
 
         // Create center column for charts
         final VBox centerColumn = new ChartsPanel();
@@ -58,7 +59,6 @@ public class SimulationView extends Application implements View {
         // Create right column for gauges
         final VBox rightColumn = new GaugePanel();
         HBox.setHgrow(rightColumn, Priority.ALWAYS);
-        leftColumn.getStyleClass().add("left-column");
 
         // Setting up buttons for the left column
         final Button startSimulationButton = new Button("Start Simulation");

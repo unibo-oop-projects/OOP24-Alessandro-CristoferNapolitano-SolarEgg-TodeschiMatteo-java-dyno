@@ -1,7 +1,8 @@
-package it.unibo.javadyno.model.graph.impl;
+package it.unibo.javadyno.view.impl.component;
 
 import eu.hansolo.medusa.Gauge;
 import it.unibo.javadyno.model.graph.api.GaugeFactory;
+import it.unibo.javadyno.model.graph.impl.DefaultGaugeFactory;
 import javafx.geometry.Pos;
 import javafx.scene.layout.VBox;
 
@@ -9,9 +10,8 @@ import javafx.scene.layout.VBox;
  * GaugePanel class that extends VBox to create a panel with multiple gauges.
  */
 public final class GaugePanel extends VBox {
-    private static final String CSS_GAUGE_PANEL_TAG = "gauge-panel";
-
     private static final int COLUMN_SPACING = 5;
+    private static final String CSS_GAUGE_PANEL_TAG = "gauge-panel";
 
     // Constants for the gauges
     private static final String RPM_CHARTS_TITLE = "Tachometer";
