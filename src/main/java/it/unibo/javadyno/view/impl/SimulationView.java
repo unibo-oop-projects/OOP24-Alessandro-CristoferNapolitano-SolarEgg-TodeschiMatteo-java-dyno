@@ -2,6 +2,8 @@ package it.unibo.javadyno.view.impl;
 
 import it.unibo.javadyno.controller.api.Controller;
 import it.unibo.javadyno.model.graph.api.ChartsFactory;
+import it.unibo.javadyno.model.graph.api.ChartsManager;
+import it.unibo.javadyno.model.graph.impl.ChartsManagerImpl;
 import it.unibo.javadyno.model.graph.impl.DefaultChartsFactory;
 import it.unibo.javadyno.model.graph.impl.GaugePanel;
 import it.unibo.javadyno.view.api.View;
@@ -10,7 +12,6 @@ import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -23,9 +24,10 @@ import javafx.stage.Stage;
  */
 public class SimulationView extends Application implements View {
 
-    private static final String CHARTS_NAME = "Torque Curve";
-    private static final String X_AXIS_LABEL = "Engine Performance";
-    private static final String Y_AXIS_LABEL = "Torque (Nm)";
+    private static final String CHARTS_NAME = "Speed";
+    private static final String X_AXIS_LABEL = "Time (h)";
+    private static final String Y_AXIS_LABEL = "Position (Km)";
+    private static final String SERIES_NAME = "Speed (Km/h)";
     private static final int CONTAINER_SPACING = 20;
     private static final int COLUMN_SPACING = 5;
     private static final String CSS_FILE = "/css/simulationStyle.css";
@@ -34,6 +36,7 @@ public class SimulationView extends Application implements View {
 
     private final Controller controller;
     private final ChartsFactory chartsFactory = new DefaultChartsFactory();
+    private final ChartsManager<Number, Number> chartManager = new ChartsManagerImpl<>();
 
     /**
      * Constructor for SimulationView that imports the controller.
@@ -80,11 +83,8 @@ public class SimulationView extends Application implements View {
             X_AXIS_LABEL,
             Y_AXIS_LABEL
         );
-        final XYChart.Series<Number, Number> torqueSeries = new XYChart.Series<>();
-        torqueSeries.setName(CHARTS_NAME);
-        lineChart.getData().add(torqueSeries);
+        chartManager.addNewSeries(lineChart, SERIES_NAME);
         centerColumn.getChildren().add(lineChart);
-
         leftColumn.getChildren().addAll(startSimulationButton, stopSimulationButton, backToMenuButton);
         mainContainer.getChildren().addAll(leftColumn, centerColumn, rightColumn);
 
