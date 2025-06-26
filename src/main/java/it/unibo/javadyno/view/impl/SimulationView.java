@@ -1,6 +1,8 @@
 package it.unibo.javadyno.view.impl;
 
 import it.unibo.javadyno.controller.api.Controller;
+import it.unibo.javadyno.model.graph.api.ChartsFactory;
+import it.unibo.javadyno.model.graph.impl.DefaultChartsFactory;
 import it.unibo.javadyno.model.graph.impl.GaugePanel;
 import it.unibo.javadyno.view.api.View;
 import javafx.application.Application;
@@ -8,7 +10,6 @@ import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
@@ -22,17 +23,17 @@ import javafx.stage.Stage;
  */
 public class SimulationView extends Application implements View {
 
-    private static final String TORQUE_CURVE = "Torque Curve";
-    private static final String ENGINE_PERFORMANCE = "Engine Performance";
-    private static final String TORQUE_CHARTS_UNIT = "Torque (Nm)";
+    private static final String CHARTS_NAME = "Torque Curve";
+    private static final String X_AXIS_LABEL = "Engine Performance";
+    private static final String Y_AXIS_LABEL = "Torque (Nm)";
     private static final int CONTAINER_SPACING = 20;
     private static final int COLUMN_SPACING = 5;
     private static final String CSS_FILE = "/css/simulationStyle.css";
     private static final double WIDTH_RATIO = 0.8; //percentage of screen width
     private static final double HEIGHT_RATIO = 0.8; //percentage of screen height
-    private static final String RPM_CHARTS_UNIT = "RPM";
 
     private final Controller controller;
+    private final ChartsFactory chartsFactory = new DefaultChartsFactory();
 
     /**
      * Constructor for SimulationView that imports the controller.
@@ -74,15 +75,13 @@ public class SimulationView extends Application implements View {
         backToMenuButton.setOnAction(e -> controller.showMainMenu((Stage) backToMenuButton.getScene().getWindow()));
 
         // Create an XY Chart for the center column
-        final NumberAxis xAxis = new NumberAxis();
-        xAxis.setLabel(RPM_CHARTS_UNIT);
-        final NumberAxis yAxis = new NumberAxis();
-        yAxis.setLabel(TORQUE_CHARTS_UNIT);
-        final LineChart<Number, Number> lineChart = new LineChart<>(xAxis, yAxis);
-        lineChart.setTitle(ENGINE_PERFORMANCE);
-        lineChart.setCreateSymbols(false);
+        final LineChart<Number, Number> lineChart = chartsFactory.createEmptyTorqueCharts(
+            CHARTS_NAME,
+            X_AXIS_LABEL,
+            Y_AXIS_LABEL
+        );
         final XYChart.Series<Number, Number> torqueSeries = new XYChart.Series<>();
-        torqueSeries.setName(TORQUE_CURVE);
+        torqueSeries.setName(CHARTS_NAME);
         lineChart.getData().add(torqueSeries);
         centerColumn.getChildren().add(lineChart);
 
