@@ -23,10 +23,12 @@ import javafx.stage.Stage;
 public class ControllerImpl implements Controller {
 
     private static final String SIMULATION_POLLING_THREAD_NAME = "SimulationPollingThread";
-    private Dyno dyno; // Initialize with a simulated dyno
     private final DataCollector dataCollector;
     private final DataTransreciever dataTransreciever;
     private final DataElaborator dataElaborator;
+
+    private Dyno dyno;
+    private SimulationView simulationView;
 
     /**
      * Default constructor for ControllerImpl.
@@ -59,8 +61,7 @@ public class ControllerImpl implements Controller {
      */
     @Override
     public void showSimulationView(final Stage stage) {
-        this.dyno = new SimulatedDynoImpl();
-        final SimulationView simulationView = new SimulationView(this);
+        this.simulationView = new SimulationView(this);
         simulationView.start(stage);
     }
 
@@ -76,6 +77,7 @@ public class ControllerImpl implements Controller {
      */
     @Override
     public void startSimulation() {
+        this.dyno = new SimulatedDynoImpl();
         if (!Objects.nonNull(this.dyno) || !this.dyno.isActive()) {
             this.dataCollector.clearData();
             this.dataTransreciever.begin(this.dyno, DataSource.SIMULATED_DYNO);

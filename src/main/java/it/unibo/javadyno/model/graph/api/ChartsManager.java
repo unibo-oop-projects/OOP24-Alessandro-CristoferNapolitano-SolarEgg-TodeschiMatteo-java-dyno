@@ -17,4 +17,13 @@ public interface ChartsManager<X, Y> {
      * @param seriesName the name of the series to be added
      */
     void addNewSeries(LineChart<X, Y> chart, String seriesName);
+
+    /**
+     * Adds a point to the specified series in the chart.
+     * @param chart
+     * @param seriesName
+     * @param xValue
+     * @param yValue
+     */
+    void addPointToSeries(LineChart<X, Y> chart, String seriesName, X xValue, Y yValue);
 }

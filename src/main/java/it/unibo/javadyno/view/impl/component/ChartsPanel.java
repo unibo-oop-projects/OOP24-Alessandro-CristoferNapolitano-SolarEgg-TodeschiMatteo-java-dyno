@@ -19,6 +19,7 @@ public final class ChartsPanel extends VBox {
     private static final String Y_AXIS_LABEL = "Position (Km)";
     private static final String SERIES_NAME = "Speed (Km/h)";
 
+    private LineChart<Number, Number> lineChart;
     private final ChartsFactory chartsFactory = new DefaultChartsFactory();
     private final ChartsManager<Number, Number> chartManager = new ChartsManagerImpl<>();
 
@@ -29,12 +30,27 @@ public final class ChartsPanel extends VBox {
         super(COLUMN_SPACING);
         this.setAlignment(Pos.CENTER);
         this.getStyleClass().add(CSS_CHARTS_PANEL_TAG);
-        final LineChart<Number, Number> lineChart = chartsFactory.createEmptyTorqueCharts(
+        lineChart = chartsFactory.createEmptyTorqueCharts(
             CHARTS_NAME,
             X_AXIS_LABEL,
             Y_AXIS_LABEL
         );
         chartManager.addNewSeries(lineChart, SERIES_NAME);
         this.getChildren().add(lineChart);
+    }
+
+    /**
+     * Adds a point to the speed chart.
+     *
+     * @param xValue the x-axis value (time in hours)
+     * @param yValue the y-axis value (position in Km)
+     */
+    public void addPointToChart(final Number xValue, final Number yValue) {
+        chartManager.addPointToSeries(
+            this.lineChart,
+            SERIES_NAME,
+            xValue,
+            yValue
+        );
     }
 }

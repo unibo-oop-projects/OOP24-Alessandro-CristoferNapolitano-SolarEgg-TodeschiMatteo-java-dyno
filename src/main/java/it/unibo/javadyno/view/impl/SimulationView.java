@@ -27,6 +27,9 @@ public class SimulationView extends Application implements View {
     private static final double HEIGHT_RATIO = 0.8; //percentage of screen height
 
     private final Controller controller;
+    private final VBox leftColumn = new VBox(COLUMN_SPACING);
+    private final ChartsPanel centerColumn = new ChartsPanel();
+    private final VBox rightColumn = new GaugePanel();
 
     /**
      * Constructor for SimulationView that imports the controller.
@@ -47,17 +50,14 @@ public class SimulationView extends Application implements View {
         final double height = screenBounds.getHeight() * HEIGHT_RATIO;
 
         // Create left columns with buttons and settings
-        final VBox leftColumn = new VBox(COLUMN_SPACING);
         leftColumn.setAlignment(Pos.CENTER);
         HBox.setHgrow(leftColumn, Priority.ALWAYS);
         leftColumn.getStyleClass().add(CSS_SETTINGS_PANEL_TAG);
 
         // Create center column for charts
-        final VBox centerColumn = new ChartsPanel();
         HBox.setHgrow(centerColumn, Priority.ALWAYS);
 
         // Create right column for gauges
-        final VBox rightColumn = new GaugePanel();
         HBox.setHgrow(rightColumn, Priority.ALWAYS);
 
         // Setting up buttons for the left column
@@ -80,5 +80,9 @@ public class SimulationView extends Application implements View {
         primaryStage.setScene(scene);
         primaryStage.show();
         primaryStage.centerOnScreen();
+    }
+
+    public void updateGraph(Number xValue, Number yValue) {
+        this.centerColumn.addPointToChart(xValue, yValue);
     }
 }
