@@ -18,6 +18,7 @@ import javafx.geometry.Rectangle2D;
  * Main GUI class for the JavaDyno application.
  */
 public class MainMenu extends Application implements View {
+    // final Parent root = FXMLLoader.load(ClassLoader.getSystemResource("layouts/SimpleGui.fxml"));
 
     private static final String CSS_FILE = "/css/MenuStyle.css";
     private static final String HOME_IMAGE = "images/homecar.png";
@@ -66,5 +67,13 @@ public class MainMenu extends Application implements View {
         primaryStage.setScene(scene);
         primaryStage.show();
         primaryStage.centerOnScreen();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void stop() {
+        controller.closeApp();
     }
 }
