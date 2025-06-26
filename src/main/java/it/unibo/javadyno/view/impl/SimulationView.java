@@ -9,6 +9,9 @@ import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -21,6 +24,9 @@ import javafx.stage.Stage;
  */
 public class SimulationView extends Application implements View {
 
+    private static final String TORQUE_CURVE = "Torque Curve";
+    private static final String ENGINE_PERFORMANCE = "Engine Performance";
+    private static final String TORQUE_CHARTS_UNIT = "Torque (Nm)";
     private static final int CONTAINER_SPACING = 20;
     private static final int COLUMN_SPACING = 5;
     private static final String CSS_FILE = "/css/simulationStyle.css";
@@ -82,6 +88,28 @@ public class SimulationView extends Application implements View {
         centerColumn.getStyleClass().add("center-column");
         rightColumn.getStyleClass().add("right-column");
 
+        // Create buttons for the left column
+        final Button startSimulationButton = new Button("Start Simulation");
+        final Button stopSimulationButton = new Button("Stop Simulation");
+        final Button backToMenuButton = new Button("Back to menu");
+        startSimulationButton.setOnAction(e -> controller.startSimulation());
+        stopSimulationButton.setOnAction(e -> controller.stopSimulation());
+        backToMenuButton.setOnAction(e -> controller.showMainMenu((Stage) backToMenuButton.getScene().getWindow()));
+
+        // Create an XY Chart for the center column
+        final NumberAxis xAxis = new NumberAxis();
+        xAxis.setLabel(RPM_CHARTS_UNIT);
+        final NumberAxis yAxis = new NumberAxis();
+        yAxis.setLabel(TORQUE_CHARTS_UNIT);
+        final LineChart<Number, Number> lineChart = new LineChart<>(xAxis, yAxis);
+        lineChart.setTitle(ENGINE_PERFORMANCE);
+        lineChart.setCreateSymbols(false);
+        final XYChart.Series<Number, Number> torqueSeries = new XYChart.Series<>();
+        torqueSeries.setName(TORQUE_CURVE);
+        lineChart.getData().add(torqueSeries);
+        centerColumn.getChildren().add(lineChart);
+
+        // Create and add gauges to the right column
         final Gauge rpmGauge = gaugeFactory.createGaugeChart(
                 RPM_CHARTS_TITLE,
                 RPM_CHARTS_UNIT,
@@ -109,13 +137,6 @@ public class SimulationView extends Application implements View {
         rightColumn.getChildren().add(rpmGauge);
         rightColumn.getChildren().add(speedGauge);
         rightColumn.getChildren().add(tempGauge);
-
-        final Button startSimulationButton = new Button("Start Simulation");
-        final Button stopSimulationButton = new Button("Stop Simulation");
-        final Button backToMenuButton = new Button("Back to menu");
-        startSimulationButton.setOnAction(e -> controller.startSimulation());
-        stopSimulationButton.setOnAction(e -> controller.stopSimulation());
-        backToMenuButton.setOnAction(e -> controller.showMainMenu((Stage) backToMenuButton.getScene().getWindow()));
 
         leftColumn.getChildren().addAll(startSimulationButton, stopSimulationButton, backToMenuButton);
         mainContainer.getChildren().addAll(leftColumn, centerColumn, rightColumn);
