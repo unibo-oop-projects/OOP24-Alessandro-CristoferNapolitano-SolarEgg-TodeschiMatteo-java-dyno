@@ -41,5 +41,11 @@ public interface Engine {
      */
     void setAngularVelocity(double newEngineOmega);
 
+    /**
+     * getter for engine temperature.
+     *
+     * @return engine temperature [°C]
+     */
+    double getEngineTemperature();
     
 }
