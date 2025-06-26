@@ -5,12 +5,7 @@ import java.util.Random;
 
 import it.unibo.javadyno.controller.api.Controller;
 import it.unibo.javadyno.model.data.api.DataCollector;
-import it.unibo.javadyno.model.data.api.DataElaborator;
-import it.unibo.javadyno.model.data.api.DataSource;
-import it.unibo.javadyno.model.data.api.DataTransreciever;
 import it.unibo.javadyno.model.data.impl.DataCollectorImpl;
-import it.unibo.javadyno.model.data.impl.DataElaboratorImpl;
-import it.unibo.javadyno.model.data.impl.DataTransreceiverImpl;
 import it.unibo.javadyno.model.dyno.api.Dyno;
 import it.unibo.javadyno.model.dyno.simulated.impl.SimulatedDynoImpl;
 import it.unibo.javadyno.view.impl.MainMenu;
@@ -26,11 +21,8 @@ public class ControllerImpl implements Controller {
     private static final int RANDOM_DATA_MULTIPLIER = 100;
     private static final int RPM_MULTIPLIER = 800;
     private static final String SIMULATION_POLLING_THREAD_NAME = "SimulationPollingThread";
-    private final DataCollector dataCollector;
-    private final DataTransreciever dataTransreciever;
-    private final DataElaborator dataElaborator;
     private final Random random = new Random();
-
+    private final DataCollector dataCollector;
     private Dyno dyno;
     private SimulationView simulationView;
 
@@ -38,11 +30,7 @@ public class ControllerImpl implements Controller {
      * Default constructor for ControllerImpl.
      */
     public ControllerImpl() {
-        this.dyno = null;
-        this.dataTransreciever = new DataTransreceiverImpl();
-        this.dataElaborator = new DataElaboratorImpl(this.dataTransreciever);
-        this.dataCollector = new DataCollectorImpl(this.dataElaborator);
-        this.simulationView = null;
+        this.dataCollector = new DataCollectorImpl();
     }
 
     /**
@@ -87,8 +75,7 @@ public class ControllerImpl implements Controller {
     public void startSimulation() {
         this.dyno = new SimulatedDynoImpl();
         if (!Objects.nonNull(this.dyno) || !this.dyno.isActive()) {
-            this.dataCollector.clearData();
-            this.dataTransreciever.begin(this.dyno, DataSource.SIMULATED_DYNO);
+            this.dataCollector.initialize(this.dyno);
             this.dyno.begin();
             Thread.ofVirtual()
                 .start(this::simulationPolling)

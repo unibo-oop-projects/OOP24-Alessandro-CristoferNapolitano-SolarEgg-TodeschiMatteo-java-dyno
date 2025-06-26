@@ -49,7 +49,7 @@ public record RawData(
      * Builder class for RawData.
      */
     public static final class Builder {
-        private Optional<Integer> engineRPM;
+        private Optional<Integer> engineRPM = Optional.empty();
         private Optional<Double> engineTemperature = Optional.empty();
         private Optional<Integer> rollerRPM = Optional.empty();
         private Optional<Double> torque = Optional.empty();

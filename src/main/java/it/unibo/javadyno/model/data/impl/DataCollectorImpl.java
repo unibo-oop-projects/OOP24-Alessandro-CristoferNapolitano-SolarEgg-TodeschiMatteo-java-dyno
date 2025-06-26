@@ -2,10 +2,12 @@ package it.unibo.javadyno.model.data.impl;
 
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.Objects;
 import java.util.Queue;
 import it.unibo.javadyno.model.data.api.DataCollector;
 import it.unibo.javadyno.model.data.api.DataElaborator;
 import it.unibo.javadyno.model.data.api.ElaboratedData;
+import it.unibo.javadyno.model.dyno.api.Dyno;
 
 /**
  * Implementation of the DataCollector interface.
@@ -13,37 +15,27 @@ import it.unibo.javadyno.model.data.api.ElaboratedData;
  */
 public final class DataCollectorImpl implements DataCollector {
 
-    private final Queue<ElaboratedData> datas = new LinkedList<>();
-    private final DataElaborator dataElaborator;
+    private final Queue<ElaboratedData> datas;
+    private DataElaborator dataElaborator;
 
     /**
-     * Constructor for DataCollectorImpl.
-     *
-     * @param dataElaborator the reference to data elaborator to use for collecting data
+     * Creates a new DataCollectorImpl instance.
      */
-    public DataCollectorImpl(final DataElaborator dataElaborator) {
-        this.dataElaborator = dataElaborator;
+    public DataCollectorImpl() {
+        this.datas = new LinkedList<>();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void clearData() {
+    public void initialize(final Dyno dynoSource) {
         this.datas.clear();
+        this.dataElaborator = new DataElaboratorImpl(Objects.requireNonNull(dynoSource, "Dyno source cannot be null"));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void collectData() {
         this.datas.add(this.dataElaborator.getElaboratedData());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Queue<ElaboratedData> getFullData() {
         return (Queue<ElaboratedData>) Collections.unmodifiableCollection(datas);
