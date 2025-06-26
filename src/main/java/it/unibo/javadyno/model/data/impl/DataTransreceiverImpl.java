@@ -1,5 +1,7 @@
 package it.unibo.javadyno.model.data.impl;
 
+import java.util.Objects;
+
 import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.api.DataTransreciever;
 import it.unibo.javadyno.model.data.api.RawData;
@@ -8,7 +10,7 @@ import it.unibo.javadyno.model.dyno.api.Dyno;
 /**
  * Implementation of the Data Transreceiver Component.
  */
-public class DataTransreceiverImpl implements DataTransreciever {
+public final class DataTransreceiverImpl implements DataTransreciever {
 
     private Dyno dyno;
     private DataSource dataSource;
@@ -18,7 +20,7 @@ public class DataTransreceiverImpl implements DataTransreciever {
      */
     @Override
     public RawData getRawData() {
-        if (this.dyno == null || this.dataSource == null) {
+        if (Objects.isNull(this.dyno) || Objects.isNull(this.dataSource)) {
             throw new IllegalStateException("DataTransreceiver not initialized with a DataSource and Dyno.");
         }
         return this.dyno.getRawData();

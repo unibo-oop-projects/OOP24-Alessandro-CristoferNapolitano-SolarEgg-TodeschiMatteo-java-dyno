@@ -9,7 +9,7 @@ import it.unibo.javadyno.model.data.api.RawData;
  * Implementation of the Data Elaborator Component.
  * This class is responsible for processing raw data and producing elaborated data.
  */
-public class DataElaboratorImpl implements DataElaborator {
+public final class DataElaboratorImpl implements DataElaborator {
 
     private ElaboratedData elaboratedData;
     private final DataTransreciever dataTransreciever;

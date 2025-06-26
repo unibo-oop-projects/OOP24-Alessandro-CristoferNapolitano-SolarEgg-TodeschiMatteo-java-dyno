@@ -11,7 +11,7 @@ import it.unibo.javadyno.model.data.api.ElaboratedData;
  * Implementation of the DataCollector interface.
  * This class collects and stores elaborated data in a queue.
  */
-public class DataCollectorImpl implements DataCollector {
+public final class DataCollectorImpl implements DataCollector {
 
     private final Queue<ElaboratedData> datas = new LinkedList<>();
     private final DataElaborator dataElaborator;
