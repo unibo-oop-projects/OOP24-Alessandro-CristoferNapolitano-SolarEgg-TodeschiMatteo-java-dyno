@@ -1,9 +1,7 @@
 package it.unibo.javadyno.view.impl;
 
-import eu.hansolo.medusa.Gauge;
 import it.unibo.javadyno.controller.api.Controller;
-import it.unibo.javadyno.model.graph.api.GaugeFactory;
-import it.unibo.javadyno.model.graph.impl.DefaultGaugeFactory;
+import it.unibo.javadyno.model.graph.api.DefaultGaugePanel;
 import it.unibo.javadyno.view.api.View;
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -32,28 +30,9 @@ public class SimulationView extends Application implements View {
     private static final String CSS_FILE = "/css/simulationStyle.css";
     private static final double WIDTH_RATIO = 0.8; //percentage of screen width
     private static final double HEIGHT_RATIO = 0.8; //percentage of screen height
-
-    // Constants for the gauges
-    private static final String RPM_CHARTS_TITLE = "Tachometer";
     private static final String RPM_CHARTS_UNIT = "RPM";
-    private static final int RPM_MAX_RANGE = 8000;
-    private static final int RPM_MAJOR_TICK_SPACE = 1000;
-    private static final int RPM_MINOR_TICK_SPACE = 200;
-
-    private static final String SPEEDOMETER_TITLE = "Speedometer";
-    private static final String SPEEDOMETER_UNIT = "KM/H";
-    private static final int SPEEDOMETER_MAX_RANGE = 300;
-    private static final int SPEEDOMETER_MAJOR_TICK_SPACE = 20;
-    private static final int SPEEDOMETER_MINOR_TICK_SPACE = 5;
-
-    private static final String TEMPERATURE_TITLE = "Temperature";
-    private static final String TEMPERATURE_UNIT = "°C";
-    private static final int TEMPERATURE_MAX_RANGE = 120;
-    private static final int TEMPERATURE_MAJOR_TICK_SPACE = 20;
-    private static final int TEMPERATURE_MINOR_TICK_SPACE = 5;
 
     private final Controller controller;
-    private final GaugeFactory gaugeFactory = new DefaultGaugeFactory();
 
     /**
      * Constructor for SimulationView that imports the controller.
@@ -79,14 +58,12 @@ public class SimulationView extends Application implements View {
         leftColumn.setAlignment(Pos.CENTER);
         final VBox centerColumn = new VBox(COLUMN_SPACING);
         centerColumn.setAlignment(Pos.CENTER);
-        final VBox rightColumn = new VBox(COLUMN_SPACING);
-        rightColumn.setAlignment(Pos.CENTER);
+        final VBox rightColumn = new DefaultGaugePanel();
         HBox.setHgrow(leftColumn, Priority.ALWAYS);
         HBox.setHgrow(centerColumn, Priority.ALWAYS);
         HBox.setHgrow(rightColumn, Priority.ALWAYS);
         leftColumn.getStyleClass().add("left-column");
         centerColumn.getStyleClass().add("center-column");
-        rightColumn.getStyleClass().add("right-column");
 
         // Create buttons for the left column
         final Button startSimulationButton = new Button("Start Simulation");
@@ -108,35 +85,6 @@ public class SimulationView extends Application implements View {
         torqueSeries.setName(TORQUE_CURVE);
         lineChart.getData().add(torqueSeries);
         centerColumn.getChildren().add(lineChart);
-
-        // Create and add gauges to the right column
-        final Gauge rpmGauge = gaugeFactory.createGaugeChart(
-                RPM_CHARTS_TITLE,
-                RPM_CHARTS_UNIT,
-                0,
-                RPM_MAX_RANGE,
-                RPM_MAJOR_TICK_SPACE,
-                RPM_MINOR_TICK_SPACE
-        );
-        final Gauge speedGauge = gaugeFactory.createGaugeChart(
-                SPEEDOMETER_TITLE,
-                SPEEDOMETER_UNIT,
-                0,
-                SPEEDOMETER_MAX_RANGE,
-                SPEEDOMETER_MAJOR_TICK_SPACE,
-                SPEEDOMETER_MINOR_TICK_SPACE
-        );
-        final Gauge tempGauge = gaugeFactory.createGaugeChart(
-                TEMPERATURE_TITLE,
-                TEMPERATURE_UNIT,
-                0,
-                TEMPERATURE_MAX_RANGE,
-                TEMPERATURE_MAJOR_TICK_SPACE,
-                TEMPERATURE_MINOR_TICK_SPACE
-        );
-        rightColumn.getChildren().add(rpmGauge);
-        rightColumn.getChildren().add(speedGauge);
-        rightColumn.getChildren().add(tempGauge);
 
         leftColumn.getChildren().addAll(startSimulationButton, stopSimulationButton, backToMenuButton);
         mainContainer.getChildren().addAll(leftColumn, centerColumn, rightColumn);
