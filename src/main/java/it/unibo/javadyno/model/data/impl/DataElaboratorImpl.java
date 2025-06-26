@@ -5,6 +5,7 @@ import it.unibo.javadyno.model.data.api.DataElaborator;
 import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.api.ElaboratedData;
 import it.unibo.javadyno.model.data.api.RawData;
+import it.unibo.javadyno.model.data.api.UserSettings;
 import it.unibo.javadyno.model.dyno.api.Dyno;
 
 /**
@@ -13,6 +14,8 @@ import it.unibo.javadyno.model.dyno.api.Dyno;
  */
 public final class DataElaboratorImpl implements DataElaborator {
     
+    private static final double KW_TO_HP_DIVISOR = 1.3596;
+    private static final int ENGINE_POWER_KW_DIVISOR = 9549;
     private final Dyno dyno;
     private final DataSource dataSource;
 
@@ -62,11 +65,17 @@ public final class DataElaboratorImpl implements DataElaborator {
     }
 
     private ElaboratedData processDynoData(final RawData rawData) {
+        if (!rawData.torque().isPresent() || !rawData.engineRPM().isPresent()) {
+            throw new IllegalStateException("Raw data must contain both torque and RPM values.");
+        }
+        final Double engineCorrectedTorque = rawData.torque().get() * (Double) UserSettings.LOADCELL_LEVER_LENGTH.getDefaultValue();
+        final Double enginePowerKW = (engineCorrectedTorque * rawData.engineRPM().get()) / ENGINE_POWER_KW_DIVISOR;
+        final Double enginePowerHP = enginePowerKW * KW_TO_HP_DIVISOR;
         return new ElaboratedData(
             rawData,
-            0.0,
-            0.0,
-            0.0
+            enginePowerKW,
+            enginePowerHP,
+            engineCorrectedTorque
         );
     };
 }
