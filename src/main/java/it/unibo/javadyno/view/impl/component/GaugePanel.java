@@ -71,4 +71,16 @@ public final class GaugePanel extends VBox {
         this.getChildren().addAll(rpmGauge, speedGauge, tempGauge);
     }
 
+    /**
+     * Updates the gauges with new values.
+     *
+     * @param rpm the current RPM value
+     * @param speed the current speed value
+     * @param temperature the current temperature value
+     */
+    public void updateGauges(final int rpm, final int speed, final int temperature) {
+        this.rpmGauge.setValue(rpm);
+        this.speedGauge.setValue(speed);
+        this.tempGauge.setValue(temperature);
+    }
 }

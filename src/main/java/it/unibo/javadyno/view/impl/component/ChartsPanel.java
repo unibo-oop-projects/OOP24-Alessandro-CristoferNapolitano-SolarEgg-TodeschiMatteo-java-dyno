@@ -19,7 +19,7 @@ public final class ChartsPanel extends VBox {
     private static final String Y_AXIS_LABEL = "Position (Km)";
     private static final String SERIES_NAME = "Speed (Km/h)";
 
-    final private LineChart<Number, Number> lineChart;
+    private final LineChart<Number, Number> lineChart;
     private final ChartsFactory chartsFactory = new DefaultChartsFactory();
     private final ChartsManager<Number, Number> chartManager = new ChartsManagerImpl<>();
 

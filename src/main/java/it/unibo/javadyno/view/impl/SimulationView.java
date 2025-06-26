@@ -29,7 +29,7 @@ public class SimulationView extends Application implements View {
     private final Controller controller;
     private final VBox leftColumn = new VBox(COLUMN_SPACING);
     private final ChartsPanel centerColumn = new ChartsPanel();
-    private final VBox rightColumn = new GaugePanel();
+    private final GaugePanel rightColumn = new GaugePanel();
 
     /**
      * Constructor for SimulationView that imports the controller.
@@ -90,5 +90,16 @@ public class SimulationView extends Application implements View {
      */
     public void updateGraph(final Number xValue, final Number yValue) {
         this.centerColumn.addPointToChart(xValue, yValue);
+    }
+
+    /**
+     * Updates the gauges with new values.
+     *
+     * @param rpm the current RPM value
+     * @param speed the current speed value
+     * @param temperature the current temperature value
+     */
+    public void updateGauges(final int rpm, final int speed, final int temperature) {
+        this.rightColumn.updateGauges(rpm, speed, temperature);
     }
 }
