@@ -6,11 +6,24 @@ import it.unibo.javadyno.model.dyno.simulated.api.Bench;
  * Simulated bench implementation.
  */
 public class BenchImpl implements Bench {
+    private static final double DEFAULT_ROLLER_INERTIA = 0.01;
+    private static final double DEFAULT_ROLLER_RADIUS = 0.1;
 
     private final int rpm;
     private final double rollerRadius;
     private final double rollerInertia;
     private final double angularSpeed;
+
+    /**
+     * Default constructor of the bench implementation.
+     * Initializes the bench with default values.
+     */
+    public BenchImpl() {
+        this.rpm = 0;
+        this.rollerRadius = DEFAULT_ROLLER_RADIUS;
+        this.rollerInertia = DEFAULT_ROLLER_INERTIA;
+        this.angularSpeed = 0;
+    }
 
     /**
      * Constructor of the bench implementation.
@@ -26,7 +39,7 @@ public class BenchImpl implements Bench {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public int getRollerRPM() {
@@ -34,7 +47,7 @@ public class BenchImpl implements Bench {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public double getRollerAngularSpeed() {
@@ -42,7 +55,7 @@ public class BenchImpl implements Bench {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public double getRollerInertia() {
@@ -50,7 +63,7 @@ public class BenchImpl implements Bench {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public double getRollerRadius() {

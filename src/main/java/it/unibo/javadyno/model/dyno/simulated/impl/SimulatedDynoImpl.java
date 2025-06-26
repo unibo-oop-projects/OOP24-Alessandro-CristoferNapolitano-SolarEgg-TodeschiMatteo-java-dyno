@@ -1,45 +1,120 @@
 package it.unibo.javadyno.model.dyno.simulated.impl;
 
+import java.util.Objects;
+import java.util.Optional;
+import java.time.Instant;
+
+import it.unibo.javadyno.model.data.api.DataSource;
+import it.unibo.javadyno.model.data.api.RawData;
+import it.unibo.javadyno.model.dyno.simulated.api.Bench;
+import it.unibo.javadyno.model.dyno.simulated.api.DriveTrain;
 import it.unibo.javadyno.model.dyno.simulated.api.SimulatedDyno;
+import it.unibo.javadyno.model.dyno.simulated.api.Vehicle;
+import it.unibo.javadyno.model.dyno.simulated.api.WeatherStation;
 
 /**
- * Implementation of the simumlated Dyno.
+ * Implementation of the simulated Dyno.
  */
 public class SimulatedDynoImpl implements SimulatedDyno {
 
+    private static final String SIMULATED_DYNO_THREAD_NAME = "SimulatedDynoThread";
+    private static final int ENGINE_RPM = 2000;
+    private static final double ENGINE_TEMPERATURE = 90.0;
+    private static final int UPDATE_TIME_DELTA = 10; // in milliseconds
+    private volatile boolean running;
+    private Thread simulationThread;
+    private Bench bench;
+    private Vehicle vehicle;
+    private DriveTrain driveTrain;
+    private WeatherStation weatherStation;
+    private volatile RawData datas;
+
     /**
-     * @inheritdoc
+     * Constructor.
      */
-    @Override
-    public int getEngineRPM() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getEngineRPM'");
+    public SimulatedDynoImpl() {
+        this.running = false;
+        this.simulationThread = null;
+        this.bench = null;
+        this.vehicle = null;
+        this.driveTrain = null;
+        this.weatherStation = null;
+        // Bench
+        // Vehicle (with builder for the parameters)
+        // Drive Train + call for throttle/timedelta
+        // Weather
     }
 
     /**
-     * @inheritDoc
+     * Start the simulation in a new Thread checking if the simulation is already running.
      */
     @Override
-    public int getRollerRPM() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getRollerRPM'");
+    public void begin() {
+        if (!running) {
+            this.running = true;
+            this.bench = new BenchImpl();
+            // this.vehicle = new VehicleImpl();
+            this.simulationThread = new Thread(this, SIMULATED_DYNO_THREAD_NAME);
+            this.simulationThread.start();
+        }
     }
 
     /**
-     * @inheritDoc
+     * This method stops the simulation thread if it is running.
+     * It sets the running flag to false to indicate that the simulation has stopped.
      */
     @Override
-    public double getEngineTemp() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getEngineTemp'");
+    public void end() {
+        if (Objects.nonNull(simulationThread)) {
+            this.simulationThread.interrupt();
+        }
+        this.running = false;
     }
 
     /**
-     * @inheritDoc
+     * Check if the simulation is running.
+     *
+     * @return true if running, false otherwise
      */
     @Override
-    public double getLoadCellValue() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getLoadCellValue'");
+    public boolean isActive() {
+        return this.running;
+    }
+
+    /**
+     * {@inheritDoc}
+     * This method run the simulation in a separate thread.
+     */
+    @Override
+    public void run() {
+        while (this.running) {
+            this.datas = RawData.builder()
+                    .timestamp(Optional.of(Instant.now()))
+                    .engineRPM(Optional.of(ENGINE_RPM))
+                    .engineTemperature(Optional.of(ENGINE_TEMPERATURE))
+                    .rollerRPM(Optional.of(this.bench.getRollerRPM()))
+                    .build();
+            try {
+                Thread.sleep(UPDATE_TIME_DELTA); // frequency setted by user
+            } catch (final InterruptedException e) {
+                this.end();
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public RawData getRawData() {
+        return Objects.requireNonNull(this.datas, "RawData not initialized");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public DataSource getDynoType() {
+        return DataSource.SIMULATED_DYNO;
     }
 }

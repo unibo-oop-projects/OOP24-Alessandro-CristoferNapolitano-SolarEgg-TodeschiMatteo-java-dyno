@@ -1,0 +1,15 @@
+.button {
+    -fx-pref-width: 200;
+}
+.left-column {
+    -fx-border-color: red;
+    -fx-border-width: 2;
+}
+.charts-panel {
+    -fx-border-color: green;
+    -fx-border-width: 2;
+}
+.gauge-panel {
+    -fx-border-color: blue;
+    -fx-border-width: 2;
+}

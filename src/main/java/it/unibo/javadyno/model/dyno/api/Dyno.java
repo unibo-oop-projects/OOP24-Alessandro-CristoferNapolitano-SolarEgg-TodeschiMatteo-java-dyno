@@ -1,26 +1,38 @@
 package it.unibo.javadyno.model.dyno.api;
 
+import it.unibo.javadyno.model.data.api.DataSource;
+
+import it.unibo.javadyno.model.data.api.RawData;
+
 /**
  * Global Dyno Interface.
  */
 public interface Dyno {
     /**
-     * @return the engine's RPM
+     * @return the data package containing the raw data.
      */
-    int getEngineRPM();
+    RawData getRawData();
 
     /**
-     * @return the roller's RPM
+     * @return the type of dyno as a DataSource.
      */
-    int getRollerRPM();
+    DataSource getDynoType();
 
     /**
-     * @return the engine's temperature
+     * Starts the dyno.
+     * Data will be collectable after this method is called.
      */
-    double getEngineTemp();
+    void begin();
 
     /**
-     * @return the value of the force produced by the engine
+     * Stops the dyno.
      */
-    double getLoadCellValue();
+    void end();
+
+    /**
+     * Checks if the dyno has been already started and can provide data.
+     *
+     * @return true if the dyno is active, false otherwise.
+     */
+    boolean isActive();
 }

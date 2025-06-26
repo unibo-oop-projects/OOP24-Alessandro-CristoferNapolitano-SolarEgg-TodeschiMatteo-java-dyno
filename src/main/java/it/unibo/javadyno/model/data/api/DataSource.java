@@ -6,7 +6,7 @@ package it.unibo.javadyno.model.data.api;
 public enum DataSource {
     OBD2("OBD2"),
     SIMULATED_DYNO("Simulated Dyno"),
-    READL_DYNO("Real Dyno");
+    REAL_DYNO("Real Dyno");
 
     private final String actualName;
 
