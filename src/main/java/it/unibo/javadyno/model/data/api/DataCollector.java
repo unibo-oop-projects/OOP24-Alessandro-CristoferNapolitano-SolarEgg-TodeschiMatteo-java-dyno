@@ -10,6 +10,8 @@ public interface DataCollector {
 
     /**
      * Clear all datas form Queue.
+     *
+     * @param dynoSource the source of the dynamometer data.
      */
     void initialize(Dyno dynoSource);
 

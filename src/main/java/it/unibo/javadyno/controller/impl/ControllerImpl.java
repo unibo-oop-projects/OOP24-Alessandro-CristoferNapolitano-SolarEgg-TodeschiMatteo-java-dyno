@@ -30,6 +30,8 @@ public class ControllerImpl implements Controller {
      * Default constructor for ControllerImpl.
      */
     public ControllerImpl() {
+        this.dyno = null;
+        this.simulationView = null;
         this.dataCollector = new DataCollectorImpl();
     }
 

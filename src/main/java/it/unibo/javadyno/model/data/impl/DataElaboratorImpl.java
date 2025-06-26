@@ -13,7 +13,7 @@ import it.unibo.javadyno.model.dyno.api.Dyno;
  * This class is responsible for processing raw data and producing elaborated data.
  */
 public final class DataElaboratorImpl implements DataElaborator {
-    
+
     private static final double KW_TO_HP_DIVISOR = 1.3596;
     private static final int ENGINE_POWER_KW_DIVISOR = 9549;
     private final Dyno dyno;
@@ -22,7 +22,7 @@ public final class DataElaboratorImpl implements DataElaborator {
     /**
      * Constructor for DataElaboratorImpl.
      *
-     * @param dataTransreciever the data transreceiver to use
+     * @param dynoSource the source of the dynamometer data
      */
     public DataElaboratorImpl(final Dyno dynoSource) {
         this.dyno = Objects.requireNonNull(dynoSource, "Dyno source cannot be null");
@@ -44,15 +44,16 @@ public final class DataElaboratorImpl implements DataElaborator {
 
             case DataSource.REAL_DYNO:
                 return processDynoData(rawData);
-        
-            default:
-                throw new IllegalStateException("Unsupported Data Source" + this.dataSource.getActualName());
         }
 
+        throw new IllegalStateException("Unknown data source: " + this.dataSource);
     }
 
     /**
      * Elaborates the raw data received from the DataTransreciever.
+     *
+     * @param rawData the raw data to be processed
+     * @return an ElaboratedData object containing the processed data
      */
     private ElaboratedData processOBD2Data(final RawData rawData) {
         //TODO Implement the logic to elaborate the raw data
@@ -68,8 +69,10 @@ public final class DataElaboratorImpl implements DataElaborator {
         if (!rawData.torque().isPresent() || !rawData.engineRPM().isPresent()) {
             throw new IllegalStateException("Raw data must contain both torque and RPM values.");
         }
-        final Double engineCorrectedTorque = rawData.torque().get() * (Double) UserSettings.LOADCELL_LEVER_LENGTH.getDefaultValue();
-        final Double enginePowerKW = (engineCorrectedTorque * rawData.engineRPM().get()) / ENGINE_POWER_KW_DIVISOR;
+        final Double engineCorrectedTorque =
+            rawData.torque().get()
+            * (Double) UserSettings.LOADCELL_LEVER_LENGTH.getDefaultValue();
+        final Double enginePowerKW = engineCorrectedTorque * rawData.engineRPM().get() / ENGINE_POWER_KW_DIVISOR;
         final Double enginePowerHP = enginePowerKW * KW_TO_HP_DIVISOR;
         return new ElaboratedData(
             rawData,
@@ -77,5 +80,5 @@ public final class DataElaboratorImpl implements DataElaborator {
             enginePowerHP,
             engineCorrectedTorque
         );
-    };
+    }
 }
