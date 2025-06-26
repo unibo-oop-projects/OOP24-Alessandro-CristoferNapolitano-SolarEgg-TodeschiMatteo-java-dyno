@@ -1,6 +1,7 @@
 package it.unibo.javadyno.controller.impl;
 
 import java.util.Objects;
+import java.util.Random;
 
 import it.unibo.javadyno.controller.api.Controller;
 import it.unibo.javadyno.model.data.api.DataCollector;
@@ -22,12 +23,16 @@ import javafx.stage.Stage;
  */
 public class ControllerImpl implements Controller {
 
+    private static final int RANDOM_DATA_MULTIPLIER = 100;
+    private static final int RPM_MULTIPLIER = 800;
     private static final String SIMULATION_POLLING_THREAD_NAME = "SimulationPollingThread";
     private final DataCollector dataCollector;
     private final DataTransreciever dataTransreciever;
     private final DataElaborator dataElaborator;
+    private final Random random = new Random();
 
     private Dyno dyno;
+    private SimulationView simulationView;
 
     /**
      * Default constructor for ControllerImpl.
@@ -37,6 +42,7 @@ public class ControllerImpl implements Controller {
         this.dataTransreciever = new DataTransreceiverImpl();
         this.dataElaborator = new DataElaboratorImpl(this.dataTransreciever);
         this.dataCollector = new DataCollectorImpl(this.dataElaborator);
+        this.simulationView = null;
     }
 
     /**
@@ -60,7 +66,7 @@ public class ControllerImpl implements Controller {
      */
     @Override
     public void showSimulationView(final Stage stage) {
-        final SimulationView simulationView = new SimulationView(this);
+        this.simulationView = new SimulationView(this);
         simulationView.start(stage);
     }
 
@@ -97,6 +103,16 @@ public class ControllerImpl implements Controller {
         while (Objects.nonNull(dyno) && dyno.isActive()) {
             //TODO Call the DataCollector to collect data
             //TODO Update Graphics
+            //RANDOM NUMER GENERATION FOR TESTING
+            simulationView.updateGauges(
+                this.random.nextInt(RPM_MULTIPLIER),
+                this.random.nextInt(RANDOM_DATA_MULTIPLIER),
+                this.random.nextInt(RANDOM_DATA_MULTIPLIER)
+            );
+            simulationView.updateGraph(
+                this.random.nextInt(RANDOM_DATA_MULTIPLIER),
+                this.random.nextInt(RANDOM_DATA_MULTIPLIER)
+            );
             try {
                 Thread.sleep(100);
             } catch (final InterruptedException e) {
