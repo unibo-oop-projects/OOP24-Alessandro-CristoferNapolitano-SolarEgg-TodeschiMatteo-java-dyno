@@ -102,4 +102,12 @@ public class SimulationView extends Application implements View {
     public void updateGauges(final int rpm, final int speed, final int temperature) {
         this.rightColumn.updateGauges(rpm, speed, temperature);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void stop() {
+        controller.closeApp();
+    }
 }

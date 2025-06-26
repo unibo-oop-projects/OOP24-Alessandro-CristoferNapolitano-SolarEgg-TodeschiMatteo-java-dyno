@@ -75,6 +75,9 @@ public class ControllerImpl implements Controller {
      */
     @Override
     public void closeApp() {
+        if (Objects.nonNull(this.dyno)) {
+            this.stopSimulation();
+        }
     }
 
     /**

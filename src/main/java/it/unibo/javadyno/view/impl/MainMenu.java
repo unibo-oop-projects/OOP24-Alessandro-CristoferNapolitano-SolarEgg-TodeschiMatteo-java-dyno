@@ -68,4 +68,12 @@ public class MainMenu extends Application implements View {
         primaryStage.show();
         primaryStage.centerOnScreen();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void stop() {
+        controller.closeApp();
+    }
 }
