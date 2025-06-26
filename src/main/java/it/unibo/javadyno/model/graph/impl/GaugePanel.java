@@ -9,6 +9,8 @@ import javafx.scene.layout.VBox;
  * GaugePanel class that extends VBox to create a panel with multiple gauges.
  */
 public final class GaugePanel extends VBox {
+    private static final String CSS_GAUGE_PANEL_TAG = "gauge-panel";
+
     private static final int COLUMN_SPACING = 5;
 
     // Constants for the gauges
@@ -41,7 +43,7 @@ public final class GaugePanel extends VBox {
     public GaugePanel() {
         super(COLUMN_SPACING);
         this.setAlignment(Pos.CENTER);
-        this.getStyleClass().add("gauge-panel");
+        this.getStyleClass().add(CSS_GAUGE_PANEL_TAG);
         this.rpmGauge = gaugeFactory.createGaugeChart(
                 RPM_CHARTS_TITLE,
                 RPM_CHARTS_UNIT,

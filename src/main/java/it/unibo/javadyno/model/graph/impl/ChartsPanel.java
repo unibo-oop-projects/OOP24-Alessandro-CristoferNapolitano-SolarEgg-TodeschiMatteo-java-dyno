@@ -10,6 +10,8 @@ import javafx.scene.layout.VBox;
  * ChartsPanel class for displaying charts in the JavaDyno application.
  */
 public class ChartsPanel extends VBox {
+    private static final String CSS_CHARTS_PANEL_TAG = "charts-panel";
+
     private static final int COLUMN_SPACING = 5;
 
     private final ChartsFactory chartsFactory = new DefaultChartsFactory();
@@ -26,7 +28,7 @@ public class ChartsPanel extends VBox {
     public ChartsPanel() {
         super(COLUMN_SPACING);
         this.setAlignment(Pos.CENTER);
-        this.getStyleClass().add("charts-panel");
+        this.getStyleClass().add(CSS_CHARTS_PANEL_TAG);
         final LineChart<Number, Number> lineChart = chartsFactory.createEmptyTorqueCharts(
             CHARTS_NAME,
             X_AXIS_LABEL,
