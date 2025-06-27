@@ -3,12 +3,15 @@ package it.unibo.javadyno.model.data.communicator.impl;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
 import com.fazecast.jSerialComm.SerialPortMessageListener;
+
+import it.unibo.javadyno.controller.impl.AlertMonitor;
 import it.unibo.javadyno.model.data.communicator.api.MCUCommunicator;
 
 /**
@@ -73,8 +76,11 @@ public abstract class AbstractSerialCommunicator<T> implements MCUCommunicator<T
             if (Objects.isNull(this.suppliedPort)) {
                 final Set<SerialPort> ports = Set.of(SerialPort.getCommPorts());
                 if (ports.isEmpty()) {
-                    throw new IllegalStateException("No serial ports available for connection.");
-                    // tell alert monitor
+                    AlertMonitor.warningNotify(
+                        "No serial ports available for connection",
+                        Optional.empty()
+                    );
+                    //throw new IllegalStateException("No serial ports available for connection.");
                 }
                 for (final SerialPort serialPort : ports) {
                     if (serialPort.getVendorID() != INVALID_VENDOR_ID) {
@@ -82,7 +88,11 @@ public abstract class AbstractSerialCommunicator<T> implements MCUCommunicator<T
                         break;
                     }
                 }
-                throw new IllegalStateException("No valid serial ports.");
+                AlertMonitor.warningNotify(
+                    "No valid serial ports", 
+                    Optional.empty()
+                );
+                //throw new IllegalStateException("No valid serial ports.");
 
             } else {
                 this.commPort = SerialPort.getCommPort(this.suppliedPort);
@@ -93,8 +103,11 @@ public abstract class AbstractSerialCommunicator<T> implements MCUCommunicator<T
             try {
                 this.setupChip(this.commPort);
             } catch (final InterruptedException e) {
-                throw new IllegalStateException("Failed to setup the chip on port: " + this.commPort.getSystemPortName(), e);
-                // tell alert monitor
+                AlertMonitor.warningNotify(
+                    "Failed to setup the chip on port: " + this.commPort.getSystemPortName(),
+                    Optional.of(e.getMessage())
+                );
+                //throw new IllegalStateException("Failed to setup the chip on port: " + this.commPort.getSystemPortName(), e);
             }
             this.commPort.addDataListener(new DataListener());
             this.commPort.addDataListener(new DisconnectListener());
@@ -108,8 +121,11 @@ public abstract class AbstractSerialCommunicator<T> implements MCUCommunicator<T
     public void disconnect() {
         if (this.isConnected()) {
             if (!this.commPort.closePort()) {
-                throw new IllegalStateException("Failed to close the serial port: " + this.commPort.getSystemPortName());
-                // tell alert monitor
+                AlertMonitor.warningNotify(
+                    "Failed to close the serial port: " + this.commPort.getSystemPortName(),
+                    Optional.empty()
+                    );
+                //throw new IllegalStateException("Failed to close the serial port: " + this.commPort.getSystemPortName());
             }
             this.messageListeners.clear();
             this.commPort.removeDataListener();

@@ -3,6 +3,8 @@ package it.unibo.javadyno.model.dyno.real.impl;
 import java.time.Instant;
 import java.util.Optional;
 import org.json.JSONObject;
+
+import it.unibo.javadyno.controller.impl.AlertMonitor;
 import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.api.RawData;
 import it.unibo.javadyno.model.data.communicator.api.JsonScheme;
@@ -71,7 +73,11 @@ public final class RealDynoImpl extends AbstractPhysicalDyno<Pair<JsonScheme, Do
             case ENGINE_TEMPERATURE -> this.engineTemperature = Optional.of(message.getValue());
             case TORQUE -> this.torque = Optional.of(message.getValue());
             case THROTTLE_POSITION -> this.throttlePosition = Optional.of(message.getValue());
-            default -> throw new IllegalArgumentException("Unknown message type: " + message.getKey());
+            default -> AlertMonitor.errorNotify(
+                "Unknown message type",
+                Optional.of(message.getKey().toString())
+            );
+            //throw new IllegalArgumentException("Unknown message type: " + message.getKey());
         }
     }
 
