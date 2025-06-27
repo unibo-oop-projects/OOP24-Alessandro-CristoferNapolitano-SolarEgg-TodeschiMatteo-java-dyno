@@ -72,8 +72,39 @@ public final class CsvStrategy implements FileStrategy {
      */
     @Override
     public List<ElaboratedData> importData(final File file) throws IOException {
-        // Implementation for importing data from CSV file
-        return null; // Placeholder return statement
+        final List<ElaboratedData> importedData = new ArrayList<>();
+        // Use try-with-resources for the reader.
+        try (CSVReader reader = new CSVReader(new FileReader(file, StandardCharsets.UTF_8))) {
+            reader.skip(1); // Skip the header row.
+            String[] fields;
+            while ((fields = reader.readNext()) != null) {
+                if (fields.length < HEADER.length) {
+                    continue; // Skip malformed lines.
+                }
+
+                final RawData rawData = RawData.builder()
+                    .timestamp(parseOptional(fields[0], Instant::parse))
+                    .engineRPM(parseOptional(fields[1], Integer::parseInt))
+                    .engineTemperature(parseOptional(fields[2], Double::parseDouble))
+                    .rollerRPM(parseOptional(fields[3], Integer::parseInt))
+                    .torque(parseOptional(fields[4], Double::parseDouble))
+                    .vehicleSpeed(parseOptional(fields[5], Integer::parseInt))
+                    .throttlePosition(parseOptional(fields[6], Double::parseDouble))
+                    .boostPressure(parseOptional(fields[7], Double::parseDouble))
+                    .exhaustGasTemperature(parseOptional(fields[8], Double::parseDouble))
+                    .build();
+
+                final double powerKW = Double.parseDouble(fields[9]);
+                final double powerHP = Double.parseDouble(fields[10]);
+                final double correctedTorque = Double.parseDouble(fields[11]);
+
+                importedData.add(new ElaboratedData(rawData, powerKW, powerHP, correctedTorque));
+            }
+        } catch (CsvException e) {
+            // Wrap opencsv's specific exception in a standard IOException.
+            throw new IOException("Error reading CSV file", e);
+        }
+        return importedData;
     }
 
     /**
