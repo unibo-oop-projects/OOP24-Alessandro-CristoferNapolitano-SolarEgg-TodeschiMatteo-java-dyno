@@ -2,10 +2,13 @@ package it.unibo.javadyno.model.data.communicator.impl;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 
+import it.unibo.javadyno.controller.impl.AlertMonitor;
 import it.unibo.javadyno.model.data.communicator.api.JsonScheme;
 import javafx.util.Pair;
 
@@ -53,7 +56,7 @@ public final class JsonWebSocketCommunicator extends AbstractWebSocketCommunicat
                 .map(entry -> new Pair<>(JsonScheme.valueOf(entry.getKey()), (Double) entry.getValue()))
                 .toList();
         } catch (final JSONException e) {
-            // Tell alert monitor
+            AlertMonitor.alertNotify("Invalid JSON message received: " + message, Optional.of(e.getMessage()));
             throw new IllegalArgumentException("Invalid JSON message received: " + message, e);
         }
     }
