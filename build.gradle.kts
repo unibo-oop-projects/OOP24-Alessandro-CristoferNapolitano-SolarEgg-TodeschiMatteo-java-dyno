@@ -50,6 +50,9 @@ dependencies {
     val jsonVersion = "20250517"
     implementation("org.json:json:$jsonVersion")
 
+    // CSV library for parsing and generating CSV
+    implementation("com.opencsv:opencsv:5.9")
+
     // Serial communication library for USB multiplatform communication 
     implementation("com.fazecast:jSerialComm:[2.0.0,3.0.0)")
 
