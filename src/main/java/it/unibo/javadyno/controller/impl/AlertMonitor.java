@@ -2,7 +2,7 @@ package it.unibo.javadyno.controller.impl;
 
 import java.util.Optional;
 
-import it.unibo.javadyno.controller.api.AlertType;
+import it.unibo.javadyno.controller.api.NotificationType;
 import it.unibo.javadyno.controller.api.Controller;
 
 /**
@@ -33,7 +33,7 @@ public final class AlertMonitor {
      * @param explanation the explanation of the alert
      */
     public static void infoNotify(final String message, final Optional<String> explanation) {
-        controller.showAlert(AlertType.INFORMATION.getType(), message, explanation);
+        controller.showAlert(NotificationType.INFORMATION, message, explanation);
     }
 
     /**
@@ -43,7 +43,7 @@ public final class AlertMonitor {
      * @param explanation the explanation of the alert
      */
     public static void warningNotify(final String message, final Optional<String> explanation) {
-        controller.showAlert(AlertType.WARNING.getType(), message, explanation);
+        controller.showAlert(NotificationType.WARNING, message, explanation);
     }
 
     /**
@@ -53,6 +53,6 @@ public final class AlertMonitor {
      * @param explanation the explanation of the alert
      */
     public static void errorNotify(final String message, final Optional<String> explanation) {
-        controller.showAlert(AlertType.INFORMATION.getType(), message, explanation);
+        controller.showAlert(NotificationType.ERROR, message, explanation);
     }
 }

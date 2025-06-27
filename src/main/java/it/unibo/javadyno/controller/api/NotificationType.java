@@ -3,7 +3,7 @@ package it.unibo.javadyno.controller.api;
 /**
  * Enum representing different types of alerts that can be shown in the application.
  */
-public enum AlertType {
+public enum NotificationType {
 
     INFORMATION("Information"),
     WARNING("Warning"),
@@ -16,7 +16,7 @@ public enum AlertType {
      *
      * @param type the alert type
      */
-    AlertType(final String type) {
+    NotificationType(final String type) {
         this.type = type;
     }
 

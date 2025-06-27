@@ -46,10 +46,10 @@ public interface Controller {
     /**
      * Shows an alert dialog with a given message.
      *
-     * @param title the title of the alert dialog
+     * @param type the type of notification
      * @param message the message to display in the alert dialog
      * @param explanation the explanation of the alert
      */
-    void showAlert(String title, String message, Optional<String> explanation);
+    void showAlert(NotificationType type, String message, Optional<String> explanation);
 
 }
