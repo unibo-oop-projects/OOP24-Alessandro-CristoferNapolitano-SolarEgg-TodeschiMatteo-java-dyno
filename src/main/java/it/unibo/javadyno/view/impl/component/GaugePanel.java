@@ -73,26 +73,7 @@ public final class GaugePanel extends VBox {
                 TEMPERATURE_MAJOR_TICK_SPACE,
                 TEMPERATURE_MINOR_TICK_SPACE
         );
-        applyGaugeStyle(rpmGauge);
-        applyGaugeStyle(speedGauge);
-        applyGaugeStyle(tempGauge);
         this.getChildren().addAll(rpmGauge, speedGauge, tempGauge);
-    }
-
-    /**
-     * Applies the style to the gauges.
-     *
-     * @param gauge the Gauge to style
-     */
-    private void applyGaugeStyle(final Gauge gauge) {
-        gauge.setBackgroundPaint(Color.WHITE);
-        gauge.setBorderPaint(Color.BLACK);
-        gauge.setValueColor(Color.BLACK);
-        gauge.setTitleColor(Color.BLACK);
-        gauge.setUnitColor(Color.BLACK);
-        gauge.setMajorTickMarkColor(Color.BLACK);
-        gauge.setMinorTickMarkColor(Color.BLACK);
-        gauge.setNeedleColor(Color.RED);
     }
 
     /**
