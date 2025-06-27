@@ -58,6 +58,7 @@ dependencies {
 
     // GUI library for JavaFX Gauge components
     implementation("eu.hansolo:Medusa:11.7")
+    implementation("eu.hansolo.fx:charts:21.0.21")
 
     // Apache Commons Lang for additional Java Collections utilities
     implementation("org.apache.commons:commons-collections4:4.5.0")
