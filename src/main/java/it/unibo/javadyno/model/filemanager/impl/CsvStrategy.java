@@ -19,20 +19,32 @@ import java.util.Optional;
 import java.util.function.Function;
 
 /**
- * CSV Strategy implementation for file management.
- * Handles the reading and writing of Raw and Elaborated data to and from CSV files.
+ * CSV Strategy implementation using the opencsv library.
+ * Handles reading and writing of Raw and Elaborated data to and from CSV files.
  * This class is not designed for extension.
  */
 public final class CsvStrategy implements FileStrategy {
 
     // Defines the header of the CSV file.
     private static final String[] HEADER = {
-        // RawData fields
         "timestamp", "engineRPM", "engineTemperature", "rollerRPM", "torque",
         "vehicleSpeed", "throttlePosition", "boostPressure", "exhaustGasTemperature",
-        // ElaboratedData fields
-        "enginePowerKW", "enginePowerHP", "engineCorrectedTorque",
+        "enginePowerKW", "enginePowerHP", "engineCorrectedTorque", // Trailing comma
     };
+
+    // Column indices constants to avoid magic numbers.
+    private static final int INDEX_TIMESTAMP = 0;
+    private static final int INDEX_ENGINE_RPM = 1;
+    private static final int INDEX_ENGINE_TEMPERATURE = 2;
+    private static final int INDEX_ROLLER_RPM = 3;
+    private static final int INDEX_TORQUE = 4;
+    private static final int INDEX_VEHICLE_SPEED = 5;
+    private static final int INDEX_THROTTLE_POSITION = 6;
+    private static final int INDEX_BOOST_PRESSURE = 7;
+    private static final int INDEX_EXHAUST_GAS_TEMPERATURE = 8;
+    private static final int INDEX_ENGINE_POWER_KW = 9;
+    private static final int INDEX_ENGINE_POWER_HP = 10;
+    private static final int INDEX_ENGINE_CORRECTED_TORQUE = 11;
 
     /**
      * {@inheritDoc}
@@ -40,14 +52,11 @@ public final class CsvStrategy implements FileStrategy {
     @Override
     public void exportData(final List<ElaboratedData> data, final File file) throws IOException {
        try (CSVWriter writer = new CSVWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
-        writer.writeNext(HEADER); // Writes the header as the first row
+        writer.writeNext(HEADER);
 
-        // Writes each field of ElaboratedData (and its nested RawData) as a row in the CSV file.
         for (final ElaboratedData elaborated : data) {
             final RawData raw = elaborated.rawData();
                 final String[] row = {
-                    // RawData fields
-                    // Converts the field to string or uses an empty string if the Optional is empty.
                     raw.timestamp().map(Object::toString).orElse(""),
                     raw.engineRPM().map(Object::toString).orElse(""),
                     raw.engineTemperature().map(Object::toString).orElse(""),
@@ -57,7 +66,6 @@ public final class CsvStrategy implements FileStrategy {
                     raw.throttlePosition().map(Object::toString).orElse(""),
                     raw.boostPressure().map(Object::toString).orElse(""),
                     raw.exhaustGasTemperature().map(Object::toString).orElse(""),
-                    // ElaboratedData fields
                     String.valueOf(elaborated.enginePowerKW()),
                     String.valueOf(elaborated.enginePowerHP()),
                     String.valueOf(elaborated.engineCorrectedTorque()),
@@ -73,7 +81,6 @@ public final class CsvStrategy implements FileStrategy {
     @Override
     public List<ElaboratedData> importData(final File file) throws IOException {
         final List<ElaboratedData> importedData = new ArrayList<>();
-        // Use try-with-resources for the reader.
         try (CSVReader reader = new CSVReader(new FileReader(file, StandardCharsets.UTF_8))) {
             reader.skip(1); // Skip the header row.
             String[] fields;
@@ -83,25 +90,24 @@ public final class CsvStrategy implements FileStrategy {
                 }
 
                 final RawData rawData = RawData.builder()
-                    .timestamp(parseOptional(fields[0], Instant::parse))
-                    .engineRPM(parseOptional(fields[1], Integer::parseInt))
-                    .engineTemperature(parseOptional(fields[2], Double::parseDouble))
-                    .rollerRPM(parseOptional(fields[3], Integer::parseInt))
-                    .torque(parseOptional(fields[4], Double::parseDouble))
-                    .vehicleSpeed(parseOptional(fields[5], Integer::parseInt))
-                    .throttlePosition(parseOptional(fields[6], Double::parseDouble))
-                    .boostPressure(parseOptional(fields[7], Double::parseDouble))
-                    .exhaustGasTemperature(parseOptional(fields[8], Double::parseDouble))
+                    .timestamp(parseOptional(fields[INDEX_TIMESTAMP], Instant::parse))
+                    .engineRPM(parseOptional(fields[INDEX_ENGINE_RPM], Integer::parseInt))
+                    .engineTemperature(parseOptional(fields[INDEX_ENGINE_TEMPERATURE], Double::parseDouble))
+                    .rollerRPM(parseOptional(fields[INDEX_ROLLER_RPM], Integer::parseInt))
+                    .torque(parseOptional(fields[INDEX_TORQUE], Double::parseDouble))
+                    .vehicleSpeed(parseOptional(fields[INDEX_VEHICLE_SPEED], Integer::parseInt))
+                    .throttlePosition(parseOptional(fields[INDEX_THROTTLE_POSITION], Double::parseDouble))
+                    .boostPressure(parseOptional(fields[INDEX_BOOST_PRESSURE], Double::parseDouble))
+                    .exhaustGasTemperature(parseOptional(fields[INDEX_EXHAUST_GAS_TEMPERATURE], Double::parseDouble))
                     .build();
 
-                final double powerKW = Double.parseDouble(fields[9]);
-                final double powerHP = Double.parseDouble(fields[10]);
-                final double correctedTorque = Double.parseDouble(fields[11]);
+                final double powerKW = Double.parseDouble(fields[INDEX_ENGINE_POWER_KW]);
+                final double powerHP = Double.parseDouble(fields[INDEX_ENGINE_POWER_HP]);
+                final double correctedTorque = Double.parseDouble(fields[INDEX_ENGINE_CORRECTED_TORQUE]);
 
                 importedData.add(new ElaboratedData(rawData, powerKW, powerHP, correctedTorque));
             }
-        } catch (CsvException e) {
-            // Wrap opencsv's specific exception in a standard IOException.
+        } catch (final CsvException e) {
             throw new IOException("Error reading CSV file", e);
         }
         return importedData;
@@ -109,6 +115,12 @@ public final class CsvStrategy implements FileStrategy {
 
     /**
      * A helper method to safely parse a string from the CSV into an Optional.
+     *
+     * @param <T> The target type of the parsed value.
+     * @param value The string value to parse.
+     * @param parser A function that can parse the string into the target type.
+     * @return An Optional containing the parsed value, or an empty Optional if the
+     *         string is null, empty, or a parsing error occurs.
      */
     private <T> Optional<T> parseOptional(final String value, final Function<String, T> parser) {
         if (value == null || value.isEmpty()) {
@@ -116,8 +128,8 @@ public final class CsvStrategy implements FileStrategy {
         }
         try {
             return Optional.of(parser.apply(value));
-        } catch (final Exception e) {
-            // In case of a parsing error, treat it as missing data.
+        } catch (final IllegalArgumentException e) {
+            // Catching a more specific exception for parsing errors (e.g., NumberFormatException).
             return Optional.empty();
         }
     }
