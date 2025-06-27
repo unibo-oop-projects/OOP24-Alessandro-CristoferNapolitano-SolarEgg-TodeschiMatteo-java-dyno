@@ -1,5 +1,7 @@
 package it.unibo.javadyno.controller.api;
 
+import java.util.Optional;
+
 import javafx.stage.Stage;
 
 /**
@@ -40,5 +42,14 @@ public interface Controller {
      * Stop the simulation.
      */
     void stopSimulation();
+
+    /**
+     * Shows an alert dialog with a given message.
+     *
+     * @param type the type of notification
+     * @param message the message to display in the alert dialog
+     * @param explanation the explanation of the alert
+     */
+    void showAlert(NotificationType type, String message, Optional<String> explanation);
 
 }

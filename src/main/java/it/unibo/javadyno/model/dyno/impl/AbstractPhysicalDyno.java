@@ -1,7 +1,10 @@
 package it.unibo.javadyno.model.dyno.impl;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
+
+import it.unibo.javadyno.controller.impl.AlertMonitor;
 import it.unibo.javadyno.model.data.communicator.api.MCUCommunicator;
 import it.unibo.javadyno.model.dyno.api.Dyno;
 
@@ -11,9 +14,11 @@ import it.unibo.javadyno.model.dyno.api.Dyno;
  *
  * @param <T> the type of parsed messages that will be delivered to registered listeners
  */
-public abstract class AbstractPhysicalDyno<T> implements Dyno {
+public abstract class AbstractPhysicalDyno<T> implements Dyno, Runnable {
 
+    private static final int DEFAULT_POLLING = 100;
     private final MCUCommunicator<T> communicator;
+    private final int polling;
     private volatile boolean active;
     private Consumer<T> messageListener;
 
@@ -23,9 +28,25 @@ public abstract class AbstractPhysicalDyno<T> implements Dyno {
      * @param communicator the MCUCommunicator to use for communication.
      */
     public AbstractPhysicalDyno(final MCUCommunicator<T> communicator) {
-        Objects.requireNonNull(communicator, "Communicator cannot be null");
-        this.communicator = new InternalMCUCommunicatorWrapper(communicator);
-        this.active = false;
+        this(communicator, DEFAULT_POLLING);
+    }
+
+    /**
+     * Initializes the AbstractPhysicalDyno with the given MCUCommunicator and polling interval.
+     *
+     * @param communicator the MCUCommunicator to use for communication.
+     * @param polling      the polling interval in milliseconds.
+     */
+    public AbstractPhysicalDyno(final MCUCommunicator<T> communicator, final int polling) {
+        this.communicator = new WrapperCommunicator(Objects.requireNonNull(communicator, "Communicator cannot be null"));
+        if (polling <= 0) {
+            AlertMonitor.warningNotify(
+                "Polling interval must be greater than zero",
+                Optional.empty()
+            );
+            //throw new IllegalArgumentException("Polling interval must be greater than zero");
+        }
+        this.polling = polling;
     }
 
     /**
@@ -35,10 +56,12 @@ public abstract class AbstractPhysicalDyno<T> implements Dyno {
     public void begin() {
         if (!this.isActive()) {
             this.communicator.connect();
-            this.active = true;
             this.messageListener = this::handleMessage;
             this.communicator.addMessageListener(this.messageListener);
-
+            this.active = true;
+            Thread.ofVirtual()
+                .name(getThreadName())
+                .start(this);
         }
     }
 
@@ -64,12 +87,24 @@ public abstract class AbstractPhysicalDyno<T> implements Dyno {
     }
 
     /**
-     * Returns the MCUCommunicator used.
-     *
-     * @return the MCUCommunicator instance
+     * {@inheritDoc}
      */
-    public MCUCommunicator<T> getCommunicator() {
-        return this.communicator;
+    @Override
+    public void run() {
+        while (this.isActive()) {
+            final String outgoingMessage = this.getOutgoingMessage();
+            Objects.requireNonNull(outgoingMessage, "Outgoing message cannot be null");
+            if (!outgoingMessage.isBlank()) {
+                this.communicator.send(outgoingMessage);
+            }
+
+            try {
+                Thread.sleep(this.polling);
+            } catch (final InterruptedException e) {
+                // Tell alert monitor
+                Thread.currentThread().interrupt();
+            }
+        }
     }
 
     /**
@@ -81,44 +116,57 @@ public abstract class AbstractPhysicalDyno<T> implements Dyno {
     protected abstract void handleMessage(T message);
 
     /**
-     * Wrapper class for MCUCommunicator to ensure that the
-     * AbstractPhysicalDyno does run into an inconsistent state.
+     * Returns the message to be sent to the MCU.
+     * This method should be implemented by subclasses to provide a specific outgoing message.
+     *
+     * @return the outgoing message as a String
      */
-    private class InternalMCUCommunicatorWrapper implements MCUCommunicator<T> {
-        private final MCUCommunicator<T> communicator;
+    protected abstract String getOutgoingMessage();
 
-        InternalMCUCommunicatorWrapper(final MCUCommunicator<T> communicator) {
-            this.communicator = communicator;
+    /**
+     * Returns the name of the thread used for running the dyno.
+     * This method should be implemented by subclasses to provide a specific thread name.
+     *
+     * @return the name of the thread
+     */
+    protected abstract String getThreadName();
+
+    private class WrapperCommunicator implements MCUCommunicator<T> {
+        private final MCUCommunicator<T> wrapped;
+
+        WrapperCommunicator(final MCUCommunicator<T> wrapped) {
+            this.wrapped = Objects.requireNonNull(wrapped, "Wrapped communicator cannot be null");
         }
 
         @Override
         public void connect() {
-            this.communicator.connect();
+            wrapped.connect();
         }
 
         @Override
         public void disconnect() {
-            this.communicator.disconnect();
-        }
-
-        @Override
-        public void addMessageListener(final Consumer<T> listener) {
-            this.communicator.addMessageListener(listener);
-        }
-
-        @Override
-        public void removeMessageListener(final Consumer<T> listener) {
-            this.communicator.removeMessageListener(listener);
-        }
-
-        @Override
-        public boolean isConnected() {
-            return this.communicator.isConnected();
+            wrapped.disconnect();
         }
 
         @Override
         public void send(final String message) {
-            this.communicator.send(message);
+            wrapped.send(message);
+        }
+
+        @Override
+        public void addMessageListener(final Consumer<T> listener) {
+            wrapped.addMessageListener(listener);
+        }
+
+        @Override
+        public void removeMessageListener(final Consumer<T> listener) {
+            wrapped.removeMessageListener(listener);
+        }
+
+        @Override
+        public boolean isConnected() {
+            return wrapped.isConnected();
         }
     }
+
 }

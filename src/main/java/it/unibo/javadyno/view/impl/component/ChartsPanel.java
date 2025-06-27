@@ -35,6 +35,7 @@ public final class ChartsPanel extends VBox {
             X_AXIS_LABEL,
             Y_AXIS_LABEL
         );
+        lineChart.setAnimated(false); // HAndle animation?
         chartManager.addNewSeries(lineChart, SERIES_NAME);
         this.getChildren().add(lineChart);
     }
