@@ -1,6 +1,9 @@
 package it.unibo.javadyno.model.data.impl;
 
 import java.util.Objects;
+import java.util.Optional;
+
+import it.unibo.javadyno.controller.impl.AlertMonitor;
 import it.unibo.javadyno.model.data.api.DataElaborator;
 import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.api.ElaboratedData;
@@ -67,7 +70,11 @@ public final class DataElaboratorImpl implements DataElaborator {
 
     private ElaboratedData processDynoData(final RawData rawData) {
         if (!rawData.torque().isPresent() || !rawData.engineRPM().isPresent()) {
-            throw new IllegalStateException("Raw data must contain both torque and RPM values.");
+            AlertMonitor.warningNotify(
+                "Raw data must contain both torque and RPM values",
+                Optional.empty()
+            );
+            //throw new IllegalStateException("Raw data must contain both torque and RPM values.");
         }
         final Double engineCorrectedTorque =
             rawData.torque().get()
