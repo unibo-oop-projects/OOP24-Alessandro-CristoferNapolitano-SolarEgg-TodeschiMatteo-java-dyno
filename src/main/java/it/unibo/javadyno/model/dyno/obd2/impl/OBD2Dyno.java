@@ -85,8 +85,8 @@ public final class OBD2Dyno extends AbstractPhysicalDyno<String> {
                 .engineRPM(this.engineRpm)
                 .vehicleSpeed(this.vehicleSpeed)
                 .engineTemperature(this.engineTemperature)
-                .baroPressure(this.barometricPressure) // Using boostPressure field for barometric pressure
-                .ambientAirPressure(this.ambientAirTemperature) // Using ambientAirPressure field for ambient air temperature
+                .baroPressure(this.barometricPressure)
+                .ambientAirTemperature(this.ambientAirTemperature)
                 .timestamp(this.timestamp)
                 .build();
     }

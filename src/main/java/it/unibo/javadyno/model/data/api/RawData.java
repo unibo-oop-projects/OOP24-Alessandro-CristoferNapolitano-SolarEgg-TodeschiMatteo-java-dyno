@@ -14,7 +14,7 @@ import java.util.Optional;
  * @param timestamp the timestamp
  * @param throttlePosition the throttle position
  * @param baroPressure the boost pressure
- * @param ambientAirPressure the ambient air pressure
+ * @param ambientAirTemperature the ambient air pressure
  * @param exhaustGasTemperature the exhaust gas temperature
  */
 public record RawData(
@@ -26,7 +26,7 @@ public record RawData(
     Optional<Instant> timestamp,
     Optional<Double> throttlePosition,
     Optional<Integer> baroPressure,
-    Optional<Integer> ambientAirPressure,
+    Optional<Integer> ambientAirTemperature,
     Optional<Double> exhaustGasTemperature
 ) {
 
@@ -41,7 +41,7 @@ public record RawData(
      * @param timestamp the timestamp
      * @param throttlePosition the throttle position
      * @param baroPressure the boost pressure
-     * @param ambientAirPressure the ambient air pressure
+     * @param ambientAirTemperature the ambient air pressure
      * @param exhaustGasTemperature the exhaust gas temperature
      */
     public static Builder builder() {
@@ -154,11 +154,11 @@ public record RawData(
         /**
          * Sets the ambient air pressure.
          *
-         * @param valueAmbientAirPressure the ambient air pressure (Optional)
+         * @param valueAmbientAirTemperature the ambient air pressure (Optional)
          * @return this builder instance
          */
-        public Builder ambientAirPressure(final Optional<Integer> valueAmbientAirPressure) {
-            this.ambientAirPressure = valueAmbientAirPressure;
+        public Builder ambientAirTemperature(final Optional<Integer> valueAmbientAirTemperature) {
+            this.ambientAirPressure = valueAmbientAirTemperature;
             return this;
         }
 
