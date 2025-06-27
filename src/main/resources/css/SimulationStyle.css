@@ -1,5 +1,5 @@
-.button {
-    -fx-pref-width: 200;
+.main-container {
+    -fx-background-color: #262626;
 }
 .left-column {
     -fx-border-color: red;
@@ -12,4 +12,41 @@
 .gauge-panel {
     -fx-border-color: blue;
     -fx-border-width: 2;
+}
+
+/* Buttons Section */
+.button {
+    -fx-pref-width: 200;
+    -fx-font-size: 15;
+    -fx-font-family: Arial;
+    -fx-text-fill: white;
+    -fx-border-width: 1;
+    -fx-border-color: #124d77;
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #007dc1, #0061a7);
+}
+.button:hover {
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #0061a7, #007dc1);
+}
+
+/* Charts section */
+.charts-panel .chart-title {
+    -fx-text-fill: white;
+}
+.charts-panel .axis-label {
+    -fx-text-fill: white;
+}
+.charts-panel .axis {
+    -fx-stroke: white;
+    -fx-tick-label-fill: white;
+}
+.charts-panel .chart-legend .label {
+    -fx-text-fill: white;
+}
+.charts-panel .chart-plot-background {
+    -fx-background-color: transparent;
+}
+.charts-panel .chart-legend {
+    -fx-background-color: transparent;
 }

@@ -31,6 +31,8 @@ public class DefaultGaugeFactory implements GaugeFactory {
                 .minorTickSpace(minorTickSpace)
                 .animated(true)
                 .decimals(0)
+                .sectionsVisible(true)
+                .markersVisible(true)
                 .build();
     }
 

@@ -1,10 +1,13 @@
 package it.unibo.javadyno.view.impl.component;
 
 import eu.hansolo.medusa.Gauge;
+import eu.hansolo.medusa.Marker;
+import eu.hansolo.medusa.Section;
 import it.unibo.javadyno.model.graph.api.GaugeFactory;
 import it.unibo.javadyno.model.graph.impl.DefaultGaugeFactory;
 import javafx.geometry.Pos;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 
 /**
  * GaugePanel class that extends VBox to create a panel with multiple gauges.
@@ -52,6 +55,8 @@ public final class GaugePanel extends VBox {
                 RPM_MAJOR_TICK_SPACE,
                 RPM_MINOR_TICK_SPACE
         );
+        this.rpmGauge.setSections(new Section(6000, 8000, Color.RED));
+        this.rpmGauge.setMarkers(new Marker(5000, "5K", Color.RED));
         this.speedGauge = gaugeFactory.createGaugeChart(
                 SPEEDOMETER_TITLE,
                 SPEEDOMETER_UNIT,
@@ -68,7 +73,26 @@ public final class GaugePanel extends VBox {
                 TEMPERATURE_MAJOR_TICK_SPACE,
                 TEMPERATURE_MINOR_TICK_SPACE
         );
+        applyGaugeStyle(rpmGauge);
+        applyGaugeStyle(speedGauge);
+        applyGaugeStyle(tempGauge);
         this.getChildren().addAll(rpmGauge, speedGauge, tempGauge);
+    }
+
+    /**
+     * Applies the style to the gauges.
+     *
+     * @param gauge the Gauge to style
+     */
+    private void applyGaugeStyle(final Gauge gauge) {
+        gauge.setBackgroundPaint(Color.WHITE);
+        gauge.setBorderPaint(Color.BLACK);
+        gauge.setValueColor(Color.BLACK);
+        gauge.setTitleColor(Color.BLACK);
+        gauge.setUnitColor(Color.BLACK);
+        gauge.setMajorTickMarkColor(Color.BLACK);
+        gauge.setMinorTickMarkColor(Color.BLACK);
+        gauge.setNeedleColor(Color.RED);
     }
 
     /**

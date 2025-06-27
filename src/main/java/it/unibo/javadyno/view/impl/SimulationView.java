@@ -72,6 +72,7 @@ public class SimulationView extends Application implements View {
         // Create the main container
         final HBox mainContainer = new HBox();
         mainContainer.setSpacing(CONTAINER_SPACING);
+        mainContainer.getStyleClass().add("main-container");
         mainContainer.getChildren().addAll(leftColumn, centerColumn, rightColumn);
 
         final Scene scene = new Scene(mainContainer, width, height);
