@@ -56,11 +56,11 @@ public class ControllerImpl implements Controller {
     @Override
     public void showMainMenu(final Stage stage) {
         if (Objects.nonNull(this.dyno) && this.dyno.isActive()) {
-                AlertMonitor.warningNotify(
-                    "Simulation is running",
-                    Optional.of("Please stop the current simulation before returning to the main menu."
-                ));
-                return;
+            AlertMonitor.warningNotify(
+                "Simulation is running",
+                Optional.of("Please stop the current simulation before returning to the main menu."
+            ));
+            return;
         }
         new MainMenu().start(stage);
     }
