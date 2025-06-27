@@ -81,7 +81,7 @@ public final class OBD2Dyno extends AbstractPhysicalDyno<String> {
                 .engineRPM(this.engineRpm)
                 .vehicleSpeed(this.vehicleSpeed)
                 .engineTemperature(this.engineTemperature)
-                .timestamp(Optional.of(Instant.now()))
+                .timestamp(this.timestamp)
                 .build();
     }
 
