@@ -11,6 +11,9 @@ import it.unibo.javadyno.model.dyno.simulated.impl.SimulatedDynoImpl;
 import it.unibo.javadyno.view.impl.MainMenu;
 import it.unibo.javadyno.view.impl.SimulationView;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
 /**
@@ -30,6 +33,7 @@ public class ControllerImpl implements Controller {
      * Default constructor for ControllerImpl.
      */
     public ControllerImpl() {
+        AlertMonitor.setController(this);
         this.dyno = null;
         this.simulationView = null;
         this.dataCollector = new DataCollectorImpl();
@@ -126,4 +130,17 @@ public class ControllerImpl implements Controller {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void showAlert(final String title, final String message, final String explanation) {
+        Platform.runLater(() -> {
+            final Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle(title);
+            alert.setHeaderText(message);
+            alert.setContentText(explanation);
+            alert.showAndWait();
+        });
+    }
 }

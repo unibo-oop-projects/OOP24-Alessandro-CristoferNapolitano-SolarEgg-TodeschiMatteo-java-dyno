@@ -41,4 +41,13 @@ public interface Controller {
      */
     void stopSimulation();
 
+    /**
+     * Shows an alert dialog with a given message.
+     *
+     * @param title the title of the alert dialog
+     * @param message the message to display in the alert dialog
+     * @param explanation the explanation of the alert
+     */
+    void showAlert(String title, String message, String explanation);
+
 }
