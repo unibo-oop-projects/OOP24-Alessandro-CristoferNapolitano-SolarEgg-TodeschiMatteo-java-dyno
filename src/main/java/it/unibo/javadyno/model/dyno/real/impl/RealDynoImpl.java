@@ -29,6 +29,7 @@ public final class RealDynoImpl extends AbstractPhysicalDyno<Pair<JsonScheme, Do
     private Optional<Double> engineTemperature = Optional.empty();
     private Optional<Double> torque = Optional.empty();
     private Optional<Double> throttlePosition = Optional.empty();
+    private Optional<Instant> timestamp = Optional.empty();
 
     /**
      * Initializes the ReadlDynoImpl with the given MCUCommunicator.
@@ -46,7 +47,7 @@ public final class RealDynoImpl extends AbstractPhysicalDyno<Pair<JsonScheme, Do
             .engineTemperature(this.engineTemperature)
             .torque(this.torque)
             .throttlePosition(this.throttlePosition)
-            .timestamp(Optional.of(Instant.now()))
+            .timestamp(this.timestamp)
             .build();
     }
 
@@ -55,8 +56,16 @@ public final class RealDynoImpl extends AbstractPhysicalDyno<Pair<JsonScheme, Do
         return DataSource.REAL_DYNO;
     }
 
+    /**
+     * Processes incoming messages from the real dyno MCU and updates corresponding sensor data.
+     * Updates the values based on the JsonScheme key.
+     * Sets the current timestamp for each processed message.
+     *
+     * @param message a Pair containing the JsonScheme type and the sensor value
+     */
     @Override
     protected void handleMessage(final Pair<JsonScheme, Double> message) {
+        this.timestamp = Optional.of(Instant.now());
         switch (message.getKey()) {
             case ENGINE_RPM -> this.engineRpm = Optional.of(message.getValue().intValue());
             case ENGINE_TEMPERATURE -> this.engineTemperature = Optional.of(message.getValue());

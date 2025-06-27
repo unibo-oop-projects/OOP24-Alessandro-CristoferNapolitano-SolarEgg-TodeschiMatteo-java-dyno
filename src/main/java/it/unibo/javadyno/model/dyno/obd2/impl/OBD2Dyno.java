@@ -32,6 +32,7 @@ public final class OBD2Dyno extends AbstractPhysicalDyno<String> {
     private Optional<Integer> engineRpm = Optional.empty();
     private Optional<Integer> vehicleSpeed = Optional.empty();
     private Optional<Double> engineTemperature = Optional.empty();
+    private Optional<Instant> timestamp = Optional.empty();
 
     /**
      * Initializes the OBD2Dyno with default values.
@@ -74,16 +75,13 @@ public final class OBD2Dyno extends AbstractPhysicalDyno<String> {
         this.loopingIterator = new LoopingIterator<>(this.supportedPIDs);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public RawData getRawData() {
         return RawData.builder()
                 .engineRPM(this.engineRpm)
                 .vehicleSpeed(this.vehicleSpeed)
                 .engineTemperature(this.engineTemperature)
-                .timestamp(Optional.of(Instant.now()))
+                .timestamp(this.timestamp)
                 .build();
     }
 
@@ -92,10 +90,19 @@ public final class OBD2Dyno extends AbstractPhysicalDyno<String> {
         return DataSource.OBD2;
     }
 
+    /**
+     * Processes OBD2 response messages in format [Mode+40][PID][Data...].
+     * The first 4 hex digits represent the echoed mode and PID from the request,
+     * with the mode incremented by 0x40 to indicate a response.
+     * Example: reuest "01 0C" gets response "41 0C 1A 2B".
+     * Extracts and updates engine RPM, vehicle speed, and coolant temperature
+     * based on the PID type, then sets the current timestamp.
+     *
+     * @param message the OBD2 response message in hexadecimal format
+     */
     @Override
     protected void handleMessage(final String message) {
-        // 01 00 (mode 01, PID 00) -> 41 00 0C 1A (data = 0C1A)
-        // first 4 digits are "repeated"
+        this.timestamp = Optional.of(Instant.now());
         final String header = message.substring(0, HEADER_LENGTH);
         final int mode = Integer.parseInt(header.substring(0, SEGMENTS_LENGTH)) - MODE_OFFSET;
 
