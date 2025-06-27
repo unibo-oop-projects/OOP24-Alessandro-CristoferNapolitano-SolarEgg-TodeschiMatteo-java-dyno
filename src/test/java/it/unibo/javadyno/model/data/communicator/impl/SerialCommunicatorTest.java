@@ -33,14 +33,15 @@ class SerialCommunicatorTest {
     void testIsConnectedInitiallyFalse() {
         assertFalse(communicatorAuto.isConnected());
     }
+
     @Test
     void testConnection() {
         assertThrows(
             NullPointerException.class,
-            () -> communicatorAuto.connect(),
+            communicatorAuto::connect,
             "Alert monitor does throw a NullPointerException when the controller is not initialized.");
         assertFalse(communicatorAuto.isConnected());
-    
+
     }
 
     @Test
