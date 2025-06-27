@@ -1,5 +1,7 @@
 package it.unibo.javadyno.controller.impl;
 
+import java.util.Optional;
+
 import it.unibo.javadyno.controller.api.Controller;
 
 /**
@@ -30,7 +32,7 @@ public final class AlertMonitor {
      * @param message the message to display in the alert dialog
      * @param explanation the explanation of the alert
      */
-    public static void alertNotify(final String title, final String message, final String explanation) {
+    public static void alertNotify(final String title, final String message, final Optional<String> explanation) {
         controller.showAlert(title, message, explanation);
     }
 }

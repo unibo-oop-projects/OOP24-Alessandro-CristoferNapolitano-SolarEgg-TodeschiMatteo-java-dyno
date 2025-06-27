@@ -1,6 +1,7 @@
 package it.unibo.javadyno.controller.impl;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Random;
 
 import it.unibo.javadyno.controller.api.Controller;
@@ -134,12 +135,12 @@ public class ControllerImpl implements Controller {
      * {@inheritDoc}
      */
     @Override
-    public void showAlert(final String title, final String message, final String explanation) {
+    public void showAlert(final String title, final String message, final Optional<String> explanation) {
         Platform.runLater(() -> {
             final Alert alert = new Alert(AlertType.INFORMATION);
             alert.setTitle(title);
             alert.setHeaderText(message);
-            alert.setContentText(explanation);
+            explanation.ifPresent(alert::setContentText);
             alert.showAndWait();
         });
     }

@@ -1,5 +1,7 @@
 package it.unibo.javadyno.controller.api;
 
+import java.util.Optional;
+
 import javafx.stage.Stage;
 
 /**
@@ -48,6 +50,6 @@ public interface Controller {
      * @param message the message to display in the alert dialog
      * @param explanation the explanation of the alert
      */
-    void showAlert(String title, String message, String explanation);
+    void showAlert(String title, String message, Optional<String> explanation);
 
 }
