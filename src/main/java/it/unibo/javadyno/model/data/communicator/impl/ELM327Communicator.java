@@ -1,8 +1,11 @@
 package it.unibo.javadyno.model.data.communicator.impl;
 
 import java.nio.charset.Charset;
+import java.util.Optional;
 import java.util.function.Consumer;
 import com.fazecast.jSerialComm.SerialPort;
+
+import it.unibo.javadyno.controller.impl.AlertMonitor;
 
 /**
  * Implementation of MCUCommunicator for serial communication with a microcontroller unit (MCU).
@@ -33,8 +36,11 @@ public final class ELM327Communicator extends AbstractSerialCommunicator<String>
             this.send(DISABLE_ECHO_COMMAND);
             Thread.sleep(DELAY);
         } else {
-            throw new IllegalStateException("Serial port is not open: " + port.getSystemPortName());
-            // tell alert monitor
+            AlertMonitor.warningNotify(
+                "Serial port is not open: " + port.getSystemPortName(),
+                Optional.empty()
+            );
+            //throw new IllegalStateException("Serial port is not open: " + port.getSystemPortName());
         }
     }
 

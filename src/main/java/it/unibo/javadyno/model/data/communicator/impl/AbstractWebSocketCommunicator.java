@@ -5,9 +5,13 @@ import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
+
+import it.unibo.javadyno.controller.impl.AlertMonitor;
 import it.unibo.javadyno.model.data.communicator.api.MCUCommunicator;
+
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
@@ -55,7 +59,11 @@ public abstract class AbstractWebSocketCommunicator<T> implements MCUCommunicato
                     WEBSOCKET_PREFIX + this.mcuServerUri
                 ));
             } catch (final URISyntaxException e) {
-                throw new IllegalArgumentException("Invalid WebSocket URI: " + mcuServerUri, e);
+                AlertMonitor.warningNotify(
+                    "Invalid WebSocket URI: " + mcuServerUri,
+                    Optional.of(e.getMessage())
+                );
+                //throw new IllegalArgumentException("Invalid WebSocket URI: " + mcuServerUri, e);
             }
             webSocketClient.connect();
         }
