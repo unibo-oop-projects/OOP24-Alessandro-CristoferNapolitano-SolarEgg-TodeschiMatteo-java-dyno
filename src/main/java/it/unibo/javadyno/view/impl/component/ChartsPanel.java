@@ -8,7 +8,9 @@ import it.unibo.javadyno.model.graph.api.ChartsManager;
 import it.unibo.javadyno.model.graph.impl.ChartsManagerImpl;
 import it.unibo.javadyno.model.graph.impl.DefaultChartsFactory;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.layout.VBox;
+import javafx.stage.Screen;
 
 /**
  * ChartsPanel class for displaying charts in the JavaDyno application.
@@ -16,6 +18,8 @@ import javafx.scene.layout.VBox;
 public final class ChartsPanel extends VBox {
     private static final String CSS_CHARTS_PANEL_TAG = "charts-panel";
     private static final int COLUMN_SPACING = 5;
+    private static final double CHART_HEIGH_FACTOR = 0.4;
+    private static final double CHART_WIDTH_FACTOR = 0.3;
     private static final String CHARTS_NAME = "Speed";
     private static final String X_AXIS_LABEL = "Time (h)";
     private static final String Y_AXIS_LABEL = "Position (Km)";
@@ -32,14 +36,15 @@ public final class ChartsPanel extends VBox {
         super(COLUMN_SPACING);
         this.setAlignment(Pos.CENTER);
         this.getStyleClass().add(CSS_CHARTS_PANEL_TAG);
+        final Rectangle2D screenBounds = Screen.getPrimary().getBounds();
         lineChart = chartsFactory.createEmptyCharts(
             CHARTS_NAME,
             X_AXIS_LABEL,
             Y_AXIS_LABEL
         );
         final ChartViewer viewer = new ChartViewer(lineChart);
-        viewer.setPrefSize(600, 400);
-        viewer.setMinSize(400, 300);
+        viewer.setPrefSize(screenBounds.getWidth() * CHART_WIDTH_FACTOR, screenBounds.getHeight() * CHART_HEIGH_FACTOR);
+        viewer.setMinSize(screenBounds.getWidth() * CHART_WIDTH_FACTOR, screenBounds.getHeight() * CHART_HEIGH_FACTOR);
         chartManager.addNewSeries(lineChart, SERIES_NAME);
         this.getChildren().add(viewer);
     }

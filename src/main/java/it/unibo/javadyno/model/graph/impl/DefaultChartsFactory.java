@@ -21,7 +21,7 @@ public class DefaultChartsFactory implements ChartsFactory {
         final String yAxisLabel
         ) {
             final XYSeriesCollection collection = new XYSeriesCollection();
-            final JFreeChart lineChart = ChartFactory.createXYLineChart(
+            return ChartFactory.createXYLineChart(
                 title,
                 xAxisLabel,
                 yAxisLabel,
@@ -31,6 +31,5 @@ public class DefaultChartsFactory implements ChartsFactory {
                 true,
                 false
             );
-            return lineChart;
     }
 }

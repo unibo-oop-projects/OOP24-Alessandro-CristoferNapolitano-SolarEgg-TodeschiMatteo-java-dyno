@@ -13,7 +13,7 @@ public interface ChartsFactory {
      * @param title the title of the chart
      * @param xAxisLabel the label for the x-axis
      * @param yAxisLabel the label for the y-axis
-     * 
+     *
      * @return an empty LineChart with the specified parameters
      */
     JFreeChart createEmptyCharts(
