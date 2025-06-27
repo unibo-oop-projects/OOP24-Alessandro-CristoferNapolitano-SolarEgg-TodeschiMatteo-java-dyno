@@ -1,3 +1,4 @@
+/* Main CSS settings */
 .main-container {
     -fx-background-color: #262626;
 }
@@ -28,6 +29,22 @@
 }
 .button:hover {
     -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #0061a7, #007dc1);
+}
+#start-button {
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #28a725, #216838);
+    -fx-border-color: #1e7e31;
+}
+
+#start-button:hover {
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #216838, #28a725);
+}
+#stop-button {
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #dc3345, #c82343);
+    -fx-border-color: #bd2630;
+}
+
+#stop-button:hover {
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #c82343, #dc3345);
 }
 
 /* Charts section */

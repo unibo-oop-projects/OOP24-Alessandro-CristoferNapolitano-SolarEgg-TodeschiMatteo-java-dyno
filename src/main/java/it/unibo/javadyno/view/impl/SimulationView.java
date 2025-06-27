@@ -62,16 +62,32 @@ public class SimulationView extends Application implements View {
 
         // Setting up buttons for the left column
         final Button startSimulationButton = new Button("Start Simulation");
+        startSimulationButton.setId("start-button");
         final Button stopSimulationButton = new Button("Stop Simulation");
+        stopSimulationButton.setId("stop-button");
         final Button saveDataButton = new Button("Save datas");
         final Button backToMenuButton = new Button("Back to menu");
+        final Button reloadButton = new Button("Reload simulation");
+        stopSimulationButton.setDisable(true);
         saveDataButton.setDisable(true);
-        startSimulationButton.setOnAction(e -> controller.startSimulation());
+        startSimulationButton.setOnAction(e -> {
+            controller.startSimulation();
+            startSimulationButton.setDisable(true);
+            stopSimulationButton.setDisable(false);
+        });
         stopSimulationButton.setOnAction(e -> {
             controller.stopSimulation();
+            stopSimulationButton.setDisable(true);
             saveDataButton.setDisable(false);
+            leftColumn.getChildren().removeAll(startSimulationButton, stopSimulationButton);
+            leftColumn.getChildren().add(0, reloadButton);
         });
-        backToMenuButton.setOnAction(e -> controller.showMainMenu(primaryStage));
+        reloadButton.setOnAction(e -> {
+            controller.showSimulationView(primaryStage);
+        });
+        backToMenuButton.setOnAction(e -> {
+            controller.showMainMenu(primaryStage);
+        });
         leftColumn.getChildren().addAll(startSimulationButton, stopSimulationButton, saveDataButton, backToMenuButton);
 
         // Create the main container
