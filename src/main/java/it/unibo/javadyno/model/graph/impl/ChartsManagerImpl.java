@@ -1,8 +1,14 @@
 package it.unibo.javadyno.model.graph.impl;
 
+import java.util.Objects;
+import java.util.Optional;
+
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+
+import it.unibo.javadyno.controller.impl.AlertMonitor;
 import it.unibo.javadyno.model.graph.api.ChartsManager;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.XYChart;
 
 /**
  * Implementation of the ChartsManager interface for managing charts.
@@ -10,28 +16,31 @@ import javafx.scene.chart.XYChart;
  * @param <X> the type of the x-axis values
  * @param <Y> the type of the y-axis values
  */
-public class ChartsManagerImpl<X, Y> implements ChartsManager<X, Y> {
+public class ChartsManagerImpl implements ChartsManager {
     /**
      * {@inheritDoc}
      */
     @Override
-    public void addNewSeries(final LineChart<X, Y> lineChart, final String seriesName) {
-        final XYChart.Series<X, Y> series = new XYChart.Series<>();
-        series.setName(seriesName);
-        lineChart.getData().add(series);
+    public void addNewSeries(final JFreeChart lineChart, final String seriesName) {
+        XYSeries newSeries = new XYSeries(seriesName);
+        XYSeriesCollection dataset = (XYSeriesCollection) lineChart.getXYPlot().getDataset();
+        dataset.addSeries(newSeries);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void addPointToSeries(final LineChart<X, Y> chart, final String seriesName, final X xValue, final Y yValue) {
-        chart.getData().stream()
-            .filter(series -> series.getName().equals(seriesName))
-            .findFirst()
-            .ifPresent(series -> {
-                final XYChart.Data<X, Y> point = new XYChart.Data<>(xValue, yValue);
-                series.getData().add(point);
-            });
+    public void addPointToSeries(final JFreeChart chart, final String seriesName, final Number xValue, final Number yValue) {
+        XYSeriesCollection dataset = (XYSeriesCollection) chart.getXYPlot().getDataset();
+        XYSeries serie = dataset.getSeries(seriesName);
+        if (!Objects.nonNull(serie)) {
+            AlertMonitor.errorNotify(
+                "Error in accessing the datas from charts",
+                Optional.empty()
+            );
+            return;
+        }
+        serie.add(xValue, yValue);
     }
 }

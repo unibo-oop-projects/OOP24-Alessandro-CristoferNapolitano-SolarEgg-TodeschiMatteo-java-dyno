@@ -1,11 +1,13 @@
 package it.unibo.javadyno.view.impl.component;
 
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.fx.ChartViewer;
+
 import it.unibo.javadyno.model.graph.api.ChartsFactory;
 import it.unibo.javadyno.model.graph.api.ChartsManager;
 import it.unibo.javadyno.model.graph.impl.ChartsManagerImpl;
 import it.unibo.javadyno.model.graph.impl.DefaultChartsFactory;
 import javafx.geometry.Pos;
-import javafx.scene.chart.LineChart;
 import javafx.scene.layout.VBox;
 
 /**
@@ -19,9 +21,9 @@ public final class ChartsPanel extends VBox {
     private static final String Y_AXIS_LABEL = "Position (Km)";
     private static final String SERIES_NAME = "Speed (Km/h)";
 
-    private final LineChart<Number, Number> lineChart;
+    private final JFreeChart lineChart;
     private final ChartsFactory chartsFactory = new DefaultChartsFactory();
-    private final ChartsManager<Number, Number> chartManager = new ChartsManagerImpl<>();
+    private final ChartsManager chartManager = new ChartsManagerImpl();
 
     /**
      * Default constructor for ChartsPanel.
@@ -30,14 +32,16 @@ public final class ChartsPanel extends VBox {
         super(COLUMN_SPACING);
         this.setAlignment(Pos.CENTER);
         this.getStyleClass().add(CSS_CHARTS_PANEL_TAG);
-        lineChart = chartsFactory.createEmptyTorqueCharts(
+        lineChart = chartsFactory.createEmptyCharts(
             CHARTS_NAME,
             X_AXIS_LABEL,
             Y_AXIS_LABEL
         );
-        lineChart.setAnimated(false); // HAndle animation?
+        final ChartViewer viewer = new ChartViewer(lineChart);
+        viewer.setPrefSize(600, 400);
+        viewer.setMinSize(400, 300);
         chartManager.addNewSeries(lineChart, SERIES_NAME);
-        this.getChildren().add(lineChart);
+        this.getChildren().add(viewer);
     }
 
     /**

@@ -1,6 +1,6 @@
 package it.unibo.javadyno.model.graph.api;
 
-import javafx.scene.chart.LineChart;
+import org.jfree.chart.JFreeChart;
 
 /**
  * Factory interface for creating charts.
@@ -13,9 +13,10 @@ public interface ChartsFactory {
      * @param title the title of the chart
      * @param xAxisLabel the label for the x-axis
      * @param yAxisLabel the label for the y-axis
+     * 
      * @return an empty LineChart with the specified parameters
      */
-    LineChart<Number, Number> createEmptyTorqueCharts(
+    JFreeChart createEmptyCharts(
         String title,
         String xAxisLabel,
         String yAxisLabel

@@ -1,8 +1,11 @@
 package it.unibo.javadyno.model.graph.impl;
 
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.xy.XYSeriesCollection;
+
 import it.unibo.javadyno.model.graph.api.ChartsFactory;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
 
 /**
  * Default implementation of the ChartsFactory functional interface.
@@ -12,18 +15,22 @@ public class DefaultChartsFactory implements ChartsFactory {
      * {@inheritDoc}
      */
     @Override
-    public LineChart<Number, Number> createEmptyTorqueCharts(
+    public JFreeChart createEmptyCharts(
         final String title,
         final String xAxisLabel,
         final String yAxisLabel
         ) {
-            final NumberAxis xAxis = new NumberAxis();
-            xAxis.setLabel(xAxisLabel);
-            final NumberAxis yAxis = new NumberAxis();
-            yAxis.setLabel(yAxisLabel);
-            final LineChart<Number, Number> lineChart = new LineChart<>(xAxis, yAxis);
-            lineChart.setTitle(title);
-            lineChart.setCreateSymbols(false);
+            final XYSeriesCollection collection = new XYSeriesCollection();
+            final JFreeChart lineChart = ChartFactory.createXYLineChart(
+                title,
+                xAxisLabel,
+                yAxisLabel,
+                collection,
+                PlotOrientation.VERTICAL,
+                true,
+                true,
+                false
+            );
             return lineChart;
     }
 }
