@@ -78,7 +78,7 @@ public abstract class AbstractSerialCommunicator<T> implements MCUCommunicator<T
                 if (ports.isEmpty()) {
                     AlertMonitor.warningNotify(
                         "No serial ports available for connection",
-                        Optional.empty()
+                        Optional.of("Verify USB connection or drivers.")
                     );
                     //throw new IllegalStateException("No serial ports available for connection.");
                 }
@@ -89,7 +89,7 @@ public abstract class AbstractSerialCommunicator<T> implements MCUCommunicator<T
                     }
                 }
                 AlertMonitor.warningNotify(
-                    "No valid serial ports", 
+                    "No valid serial ports found.", 
                     Optional.empty()
                 );
                 //throw new IllegalStateException("No valid serial ports.");
@@ -105,12 +105,16 @@ public abstract class AbstractSerialCommunicator<T> implements MCUCommunicator<T
             } catch (final InterruptedException e) {
                 AlertMonitor.warningNotify(
                     "Failed to setup the chip on port: " + this.commPort.getSystemPortName(),
-                    Optional.of(e.getMessage())
+                    Optional.empty()
                 );
                 //throw new IllegalStateException("Failed to setup the chip on port: " + this.commPort.getSystemPortName(), e);
             }
             this.commPort.addDataListener(new DataListener());
             this.commPort.addDataListener(new DisconnectListener());
+            AlertMonitor.infoNotify(
+                "Connected to serial port: " + this.commPort.getSystemPortName(),
+                Optional.empty()
+            );
         }
     }
 
@@ -129,6 +133,10 @@ public abstract class AbstractSerialCommunicator<T> implements MCUCommunicator<T
             }
             this.messageListeners.clear();
             this.commPort.removeDataListener();
+            AlertMonitor.infoNotify(
+                "Disconnected from serial port: " + this.commPort.getSystemPortName(),
+                Optional.empty()
+            );
             this.commPort = null;
         }
     }
@@ -261,6 +269,10 @@ public abstract class AbstractSerialCommunicator<T> implements MCUCommunicator<T
         public void serialEvent(final SerialPortEvent event) {
             if (event.getEventType() == SerialPort.LISTENING_EVENT_PORT_DISCONNECTED) {
                 disconnect();
+                AlertMonitor.warningNotify(
+                    "Serial port disconnected: " + commPort.getSystemPortName(),
+                    Optional.empty()
+                );
             }
         }
     }

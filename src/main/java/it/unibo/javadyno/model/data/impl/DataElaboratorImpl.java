@@ -67,8 +67,11 @@ public final class DataElaboratorImpl implements DataElaborator {
         if (!rawData.vehicleSpeed().isPresent()
             || !rawData.engineRPM().isPresent()
             || !rawData.timestamp().isPresent()) {
-            throw new IllegalStateException("Raw data must contain speed, rpm and timestamp.");
-            // tell alert monitor
+            // throw new IllegalStateException("Raw data must contain speed, rpm and timestamp.");
+            AlertMonitor.warningNotify(
+                "Raw data must contain speed, rpm and timestamp.",
+                Optional.empty()
+            );
         } else if (Objects.isNull(prevRawData)) {
             prevRawData = rawData;
             return null;
@@ -77,14 +80,12 @@ public final class DataElaboratorImpl implements DataElaborator {
         final Double timeDelta = (double) (rawData.timestamp().get().toEpochMilli()
             - prevRawData.timestamp().orElseThrow().toEpochMilli());
         if (vehicleSpeedDelta <= 0) {
-            throw new IllegalStateException("Vehicle speed cannot decrease in OBD2 data processing.");
-            // tell alert monitor
+            // throw new IllegalStateException("Vehicle speed cannot decrease in OBD2 data processing.");
+            AlertMonitor.warningNotify(
+                "Vehicle speed cannot decrease in OBD2 data processing.",
+                Optional.of("The vehicle speed must increase or remain constant between data points.")
+            );
         }
-        final Double acceleration = vehicleSpeedDelta / (timeDelta / 1000) / KMH_TO_MS;
-        final Double inertialForce = acceleration * UserSettings.VEHICLE_MASS.getDefaultValue();
-        final Double rollingResistanceForce = UserSettings.ROLLING_RESISTANCE_COEFFICIENT.getDefaultValue()
-            * UserSettings.VEHICLE_MASS.getDefaultValue()
-            * HEARTH_GRAVITY_ACCELERATION;
         final Double airDensity;
         if (rawData.ambientAirTemperature().isPresent() && rawData.baroPressure().isPresent()) {
             final Double temperatureInKelvin = rawData.ambientAirTemperature().get() + ZERO_CELSIUS_IN_KELVIN;
@@ -93,17 +94,26 @@ public final class DataElaboratorImpl implements DataElaborator {
         } else {
             airDensity = UserSettings.AIR_DENSITY.getDefaultValue();
         }
+        final Double acceleration = vehicleSpeedDelta / (timeDelta / 1000) / KMH_TO_MS;
+        final Double inertialForce = acceleration * UserSettings.VEHICLE_MASS.getDefaultValue();
+
+        final Double rollingResistanceForce = UserSettings.ROLLING_RESISTANCE_COEFFICIENT.getDefaultValue()
+            * UserSettings.VEHICLE_MASS.getDefaultValue()
+            * HEARTH_GRAVITY_ACCELERATION;
+
         final Double aerodynamicDragForce = 0.5
             * UserSettings.AIR_DRAG_COEFFICIENT.getDefaultValue()
             * UserSettings.FRONTAL_AREA.getDefaultValue()
             * airDensity
             * Math.pow(rawData.vehicleSpeed().get() / KMH_TO_MS, 2);
+
         final Double totalForce = inertialForce + rollingResistanceForce + aerodynamicDragForce;
         final Double enginePowerKW = totalForce * (rawData.vehicleSpeed().get() / KMH_TO_MS)
             / UserSettings.DRIVE_TRAIN_EFFICIENCY.getDefaultValue();
         final Double enginePowerHP = enginePowerKW * KW_TO_HP_MULTIPLIER;
         final Double engineCorrectedTorque = enginePowerKW
-        * ENGINE_POWER_KW_DIVISOR / rawData.engineRPM().orElseThrow();
+            * ENGINE_POWER_KW_DIVISOR / rawData.engineRPM().orElseThrow();
+
         prevRawData = rawData;
         return new ElaboratedData(
             rawData,
@@ -117,7 +127,7 @@ public final class DataElaboratorImpl implements DataElaborator {
         if (!rawData.torque().isPresent() || !rawData.engineRPM().isPresent()) {
             AlertMonitor.warningNotify(
                 "Raw data must contain both torque and RPM values",
-                Optional.empty()
+                Optional.of("To process dyno data, both torque and RPM values are required.")
             );
             //throw new IllegalStateException("Raw data must contain both torque and RPM values.");
         }

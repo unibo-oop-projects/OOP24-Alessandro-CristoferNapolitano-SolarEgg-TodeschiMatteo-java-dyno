@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.time.Instant;
 import java.util.Optional;
+import java.util.Random;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import it.unibo.javadyno.model.data.api.DataSource;
@@ -15,6 +16,7 @@ import it.unibo.javadyno.model.dyno.api.Dyno;
 class DataElaboratorImplTest {
 
     private static final int DATA_NUMBER = 50;
+    private final Random rand = new Random();
     private DataElaboratorImpl dataElaborator;
 
     @BeforeEach
@@ -94,8 +96,9 @@ class DataElaboratorImplTest {
 
             // Generate realistic timestamp with variable delay between measurements
             final Instant prevTimestamp = this.prevRawData.timestamp().get();
-            final int delayMillis = MIN_DELAY_MILLIS
-                + (int) (Math.random() * (MAX_DELAY_MILLIS - MIN_DELAY_MILLIS));
+            final int delayMillis = (int) (MIN_DELAY_MILLIS
+                + rand.nextDouble()
+                * (MAX_DELAY_MILLIS - MIN_DELAY_MILLIS));
             final Instant newTimestamp = prevTimestamp.plusMillis(delayMillis);
 
             final RawData rawData = RawData.builder()
