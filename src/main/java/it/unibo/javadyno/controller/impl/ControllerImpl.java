@@ -91,7 +91,7 @@ public class ControllerImpl implements Controller {
                 .start(this::polling)
                 .setName(SIMULATION_POLLING_THREAD_NAME);
         } else {
-            AlertMonitor.alertNotify(
+            AlertMonitor.warningNotify(
                 "Simulation is already running",
                 Optional.of("Please stop the current simulation before starting a new one."
             ));
@@ -131,7 +131,7 @@ public class ControllerImpl implements Controller {
     @Override
     public void stopSimulation() {
         if (Objects.isNull(this.dyno)) {
-            AlertMonitor.alertNotify(
+            AlertMonitor.warningNotify(
                 "Simulation is not running",
                 Optional.of("Dyno must be initialized before stopping it."
             ));

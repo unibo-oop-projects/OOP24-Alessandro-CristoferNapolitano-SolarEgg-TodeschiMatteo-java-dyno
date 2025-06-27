@@ -36,7 +36,10 @@ public final class ELM327Communicator extends AbstractSerialCommunicator<String>
             this.send(DISABLE_ECHO_COMMAND);
             Thread.sleep(DELAY);
         } else {
-            AlertMonitor.alertNotify("Serial port is not open: " + port.getSystemPortName(), Optional.empty());
+            AlertMonitor.warningNotify(
+                "Serial port is not open: " + port.getSystemPortName(),
+                Optional.empty()
+            );
             //throw new IllegalStateException("Serial port is not open: " + port.getSystemPortName());
         }
     }

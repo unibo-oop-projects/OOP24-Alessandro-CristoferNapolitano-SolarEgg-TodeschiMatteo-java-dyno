@@ -32,7 +32,27 @@ public final class AlertMonitor {
      * @param message the message to display in the alert dialog
      * @param explanation the explanation of the alert
      */
-    public static void alertNotify(final String message, final Optional<String> explanation) {
+    public static void infoNotify(final String message, final Optional<String> explanation) {
+        controller.showAlert(AlertType.INFORMATION.getType(), message, explanation);
+    }
+
+    /**
+     * Shows a warning dialog with the specified title, message, and explanation.
+     *
+     * @param message the message to display in the alert dialog
+     * @param explanation the explanation of the alert
+     */
+    public static void warningNotify(final String message, final Optional<String> explanation) {
         controller.showAlert(AlertType.WARNING.getType(), message, explanation);
+    }
+
+    /**
+     * Shows an error dialog with the specified title, message, and explanation.
+     *
+     * @param message the message to display in the alert dialog
+     * @param explanation the explanation of the alert
+     */
+    public static void errorNotify(final String message, final Optional<String> explanation) {
+        controller.showAlert(AlertType.INFORMATION.getType(), message, explanation);
     }
 }

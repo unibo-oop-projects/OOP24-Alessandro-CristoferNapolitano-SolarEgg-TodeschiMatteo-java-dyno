@@ -76,7 +76,10 @@ public abstract class AbstractSerialCommunicator<T> implements MCUCommunicator<T
             if (Objects.isNull(this.suppliedPort)) {
                 final Set<SerialPort> ports = Set.of(SerialPort.getCommPorts());
                 if (ports.isEmpty()) {
-                    AlertMonitor.alertNotify("No serial ports available for connection", Optional.empty());
+                    AlertMonitor.warningNotify(
+                        "No serial ports available for connection",
+                        Optional.empty()
+                    );
                     //throw new IllegalStateException("No serial ports available for connection.");
                 }
                 for (final SerialPort serialPort : ports) {
@@ -85,7 +88,10 @@ public abstract class AbstractSerialCommunicator<T> implements MCUCommunicator<T
                         break;
                     }
                 }
-                AlertMonitor.alertNotify("No valid serial ports", Optional.empty());
+                AlertMonitor.warningNotify(
+                    "No valid serial ports", 
+                    Optional.empty()
+                );
                 //throw new IllegalStateException("No valid serial ports.");
 
             } else {
@@ -97,7 +103,10 @@ public abstract class AbstractSerialCommunicator<T> implements MCUCommunicator<T
             try {
                 this.setupChip(this.commPort);
             } catch (final InterruptedException e) {
-                AlertMonitor.alertNotify("Failed to setup the chip on port: " + this.commPort.getSystemPortName(), Optional.of(e.getMessage()));
+                AlertMonitor.warningNotify(
+                    "Failed to setup the chip on port: " + this.commPort.getSystemPortName(),
+                    Optional.of(e.getMessage())
+                );
                 //throw new IllegalStateException("Failed to setup the chip on port: " + this.commPort.getSystemPortName(), e);
             }
             this.commPort.addDataListener(new DataListener());
@@ -112,7 +121,10 @@ public abstract class AbstractSerialCommunicator<T> implements MCUCommunicator<T
     public void disconnect() {
         if (this.isConnected()) {
             if (!this.commPort.closePort()) {
-                AlertMonitor.alertNotify("Failed to close the serial port: " + this.commPort.getSystemPortName(), Optional.empty());
+                AlertMonitor.warningNotify(
+                    "Failed to close the serial port: " + this.commPort.getSystemPortName(),
+                    Optional.empty()
+                    );
                 //throw new IllegalStateException("Failed to close the serial port: " + this.commPort.getSystemPortName());
             }
             this.messageListeners.clear();

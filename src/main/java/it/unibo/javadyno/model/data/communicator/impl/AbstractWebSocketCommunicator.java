@@ -59,7 +59,10 @@ public abstract class AbstractWebSocketCommunicator<T> implements MCUCommunicato
                     WEBSOCKET_PREFIX + this.mcuServerUri
                 ));
             } catch (final URISyntaxException e) {
-                AlertMonitor.alertNotify("Invalid WebSocket URI: " + mcuServerUri, Optional.of(e.getMessage()));
+                AlertMonitor.warningNotify(
+                    "Invalid WebSocket URI: " + mcuServerUri,
+                    Optional.of(e.getMessage())
+                );
                 //throw new IllegalArgumentException("Invalid WebSocket URI: " + mcuServerUri, e);
             }
             webSocketClient.connect();

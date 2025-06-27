@@ -56,7 +56,10 @@ public final class JsonWebSocketCommunicator extends AbstractWebSocketCommunicat
                 .map(entry -> new Pair<>(JsonScheme.valueOf(entry.getKey()), (Double) entry.getValue()))
                 .toList();
         } catch (final JSONException e) {
-            AlertMonitor.alertNotify("Invalid JSON message received: " + message, Optional.of(e.getMessage()));
+            AlertMonitor.warningNotify(
+                "Invalid JSON message received: " + message,
+                Optional.of(e.getMessage())
+            );
             throw new IllegalArgumentException("Invalid JSON message received: " + message, e);
         }
     }
