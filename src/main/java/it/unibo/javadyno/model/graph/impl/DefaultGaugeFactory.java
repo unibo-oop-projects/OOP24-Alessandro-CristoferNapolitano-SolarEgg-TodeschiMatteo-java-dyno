@@ -30,7 +30,7 @@ public class DefaultGaugeFactory implements GaugeFactory {
                 .maxValue(maxValue)
                 .majorTickSpace(majorTickSpace)
                 .minorTickSpace(minorTickSpace)
-                .animated(true)
+                .animated(false)// Handle animation?
                 .decimals(0)
                 .sectionsVisible(true)
                 .markersVisible(true)
