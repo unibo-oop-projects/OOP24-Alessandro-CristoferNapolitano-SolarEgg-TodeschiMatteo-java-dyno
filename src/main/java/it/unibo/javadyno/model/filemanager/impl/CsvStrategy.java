@@ -76,4 +76,18 @@ public final class CsvStrategy implements FileStrategy {
         return null; // Placeholder return statement
     }
 
+    /**
+     * A helper method to safely parse a string from the CSV into an Optional.
+     */
+    private <T> Optional<T> parseOptional(final String value, final Function<String, T> parser) {
+        if (value == null || value.isEmpty()) {
+            return Optional.empty();
+        }
+        try {
+            return Optional.of(parser.apply(value));
+        } catch (final Exception e) {
+            // In case of a parsing error, treat it as missing data.
+            return Optional.empty();
+        }
+    }
 }
