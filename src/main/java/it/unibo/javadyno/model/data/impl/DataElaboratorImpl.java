@@ -64,43 +64,43 @@ public final class DataElaboratorImpl implements DataElaborator {
         if (!rawData.vehicleSpeed().isPresent()
             || !rawData.engineRPM().isPresent()
             || !rawData.timestamp().isPresent()) {
-            throw new IllegalStateException("Raw data must contain both torque and RPM values.");
+            throw new IllegalStateException("Raw data must contain speed, rpm and timestamp.");
             // tell alert monitor
         } else if (Objects.isNull(prevRawData)) {
             prevRawData = rawData;
             return null;
         }
-        final Integer vehicleSpeedDelta = rawData.vehicleSpeed().get() - prevRawData.vehicleSpeed().get();
-        final long timeDelta = rawData.timestamp().get().toEpochMilli()
-            - prevRawData.timestamp().orElseThrow().toEpochMilli();
+        final Double vehicleSpeedDelta = (rawData.vehicleSpeed().get() - prevRawData.vehicleSpeed().get()) / KMH_TO_MS;
+        final Double timeDelta = (double) (rawData.timestamp().get().toEpochMilli()
+            - prevRawData.timestamp().orElseThrow().toEpochMilli());
         if (vehicleSpeedDelta <= 0) {
             throw new IllegalStateException("Vehicle speed cannot decrease in OBD2 data processing.");
             // tell alert monitor
         }
-        final Double acceleration = vehicleSpeedDelta / KMH_TO_MS / timeDelta;
-        final Double inertialForce = acceleration * (Double) UserSettings.VEHICLE_MASS.getDefaultValue();
-        final Double rollingResistanceForce = (Double) UserSettings.ROLLING_RESISTANCE_COEFFICIENT.getDefaultValue()
-            * (Double) UserSettings.VEHICLE_MASS.getDefaultValue() * HEARTH_GRAVITY_ACCELERATION;
+        final Double acceleration = vehicleSpeedDelta / (timeDelta / 1000) / KMH_TO_MS;
+        final Double inertialForce = acceleration * UserSettings.VEHICLE_MASS.getDefaultValue();
+        final Double rollingResistanceForce = UserSettings.ROLLING_RESISTANCE_COEFFICIENT.getDefaultValue()
+            * UserSettings.VEHICLE_MASS.getDefaultValue()
+            * HEARTH_GRAVITY_ACCELERATION;
         final Double airDensity;
         if (rawData.ambientAirTemperature().isPresent() && rawData.baroPressure().isPresent()) {
             final Double temperatureInKelvin = rawData.ambientAirTemperature().get() + ZERO_CELSIUS_IN_KELVIN;
             airDensity = rawData.baroPressure().get() * 1000
-                / SPECIFIC_GAS_COSTANT_DRY_AIR
-                * temperatureInKelvin;
+                / (SPECIFIC_GAS_COSTANT_DRY_AIR * temperatureInKelvin);
         } else {
-            airDensity = (Double) UserSettings.AIR_DENSITY.getDefaultValue();
+            airDensity = UserSettings.AIR_DENSITY.getDefaultValue();
         }
         final Double aerodynamicDragForce = 0.5
-            * (Double) UserSettings.AIR_DRAG_COEFFICIENT.getDefaultValue()
-            * (Double) UserSettings.FRONTAL_AREA.getDefaultValue()
+            * UserSettings.AIR_DRAG_COEFFICIENT.getDefaultValue()
+            * UserSettings.FRONTAL_AREA.getDefaultValue()
             * airDensity
             * Math.pow(rawData.vehicleSpeed().get() / KMH_TO_MS, 2);
         final Double totalForce = inertialForce + rollingResistanceForce + aerodynamicDragForce;
-        final Double enginePowerKW = totalForce * rawData.vehicleSpeed().get() / KMH_TO_MS
-            / (Double) UserSettings.DRIVE_TRAIN_EFFICIENCY.getDefaultValue();
+        final Double enginePowerKW = totalForce * (rawData.vehicleSpeed().get() / KMH_TO_MS)
+            / UserSettings.DRIVE_TRAIN_EFFICIENCY.getDefaultValue();
         final Double enginePowerHP = enginePowerKW * KW_TO_HP_MULTIPLIER;
-        final Double engineCorrectedTorque =
-            enginePowerKW * ENGINE_POWER_KW_DIVISOR / rawData.engineRPM().orElseThrow();
+        final Double engineCorrectedTorque = enginePowerKW
+        * ENGINE_POWER_KW_DIVISOR / rawData.engineRPM().orElseThrow();
         prevRawData = rawData;
         return new ElaboratedData(
             rawData,
@@ -115,9 +115,8 @@ public final class DataElaboratorImpl implements DataElaborator {
             throw new IllegalStateException("Raw data must contain both torque and RPM values.");
             // tell alert monitor
         }
-        final Double engineCorrectedTorque =
-            rawData.torque().get()
-            * (Double) UserSettings.LOADCELL_LEVER_LENGTH.getDefaultValue();
+        final Double engineCorrectedTorque = rawData.torque().get()
+            * UserSettings.LOADCELL_LEVER_LENGTH.getDefaultValue();
         final Double enginePowerKW = engineCorrectedTorque * rawData.engineRPM().get() / ENGINE_POWER_KW_DIVISOR;
         final Double enginePowerHP = enginePowerKW * KW_TO_HP_MULTIPLIER;
         return new ElaboratedData(
