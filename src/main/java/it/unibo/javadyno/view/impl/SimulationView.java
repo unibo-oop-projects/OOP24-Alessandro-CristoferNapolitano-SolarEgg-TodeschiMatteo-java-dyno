@@ -62,16 +62,38 @@ public class SimulationView extends Application implements View {
 
         // Setting up buttons for the left column
         final Button startSimulationButton = new Button("Start Simulation");
+        startSimulationButton.setId("start-button");
         final Button stopSimulationButton = new Button("Stop Simulation");
+        stopSimulationButton.setId("stop-button");
+        final Button saveDataButton = new Button("Save datas");
         final Button backToMenuButton = new Button("Back to menu");
-        startSimulationButton.setOnAction(e -> controller.startSimulation());
-        stopSimulationButton.setOnAction(e -> controller.stopSimulation());
-        backToMenuButton.setOnAction(e -> controller.showMainMenu((Stage) backToMenuButton.getScene().getWindow()));
-        leftColumn.getChildren().addAll(startSimulationButton, stopSimulationButton, backToMenuButton);
+        final Button reloadButton = new Button("Reload simulation");
+        stopSimulationButton.setDisable(true);
+        saveDataButton.setDisable(true);
+        startSimulationButton.setOnAction(e -> {
+            controller.startSimulation();
+            startSimulationButton.setDisable(true);
+            stopSimulationButton.setDisable(false);
+        });
+        stopSimulationButton.setOnAction(e -> {
+            controller.stopSimulation();
+            stopSimulationButton.setDisable(true);
+            saveDataButton.setDisable(false);
+            leftColumn.getChildren().removeAll(startSimulationButton, stopSimulationButton);
+            leftColumn.getChildren().add(0, reloadButton);
+        });
+        reloadButton.setOnAction(e -> {
+            controller.showSimulationView(primaryStage);
+        });
+        backToMenuButton.setOnAction(e -> {
+            controller.showMainMenu(primaryStage);
+        });
+        leftColumn.getChildren().addAll(startSimulationButton, stopSimulationButton, saveDataButton, backToMenuButton);
 
         // Create the main container
         final HBox mainContainer = new HBox();
         mainContainer.setSpacing(CONTAINER_SPACING);
+        mainContainer.getStyleClass().add("main-container");
         mainContainer.getChildren().addAll(leftColumn, centerColumn, rightColumn);
 
         final Scene scene = new Scene(mainContainer, width, height);

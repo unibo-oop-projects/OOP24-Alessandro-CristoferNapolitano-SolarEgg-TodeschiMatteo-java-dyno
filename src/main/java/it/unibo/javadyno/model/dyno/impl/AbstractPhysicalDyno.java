@@ -1,7 +1,10 @@
 package it.unibo.javadyno.model.dyno.impl;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
+
+import it.unibo.javadyno.controller.impl.AlertMonitor;
 import it.unibo.javadyno.model.data.communicator.api.MCUCommunicator;
 import it.unibo.javadyno.model.dyno.api.Dyno;
 
@@ -37,7 +40,11 @@ public abstract class AbstractPhysicalDyno<T> implements Dyno, Runnable {
     public AbstractPhysicalDyno(final MCUCommunicator<T> communicator, final int polling) {
         this.communicator = new WrapperCommunicator(Objects.requireNonNull(communicator, "Communicator cannot be null"));
         if (polling <= 0) {
-            throw new IllegalArgumentException("Polling interval must be greater than zero");
+            AlertMonitor.warningNotify(
+                "Polling interval must be greater than zero",
+                Optional.empty()
+            );
+            //throw new IllegalArgumentException("Polling interval must be greater than zero");
         }
         this.polling = polling;
     }

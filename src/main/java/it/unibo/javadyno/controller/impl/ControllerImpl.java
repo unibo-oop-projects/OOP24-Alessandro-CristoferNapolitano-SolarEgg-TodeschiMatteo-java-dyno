@@ -1,16 +1,22 @@
 package it.unibo.javadyno.controller.impl;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Random;
 
 import it.unibo.javadyno.controller.api.Controller;
+import it.unibo.javadyno.controller.api.NotificationType;
 import it.unibo.javadyno.model.data.api.DataCollector;
+import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.impl.DataCollectorImpl;
 import it.unibo.javadyno.model.dyno.api.Dyno;
 import it.unibo.javadyno.model.dyno.simulated.impl.SimulatedDynoImpl;
 import it.unibo.javadyno.view.impl.MainMenu;
 import it.unibo.javadyno.view.impl.SimulationView;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
 /**
@@ -30,6 +36,7 @@ public class ControllerImpl implements Controller {
      * Default constructor for ControllerImpl.
      */
     public ControllerImpl() {
+        AlertMonitor.setController(this);
         this.dyno = null;
         this.simulationView = null;
         this.dataCollector = new DataCollectorImpl();
@@ -48,6 +55,13 @@ public class ControllerImpl implements Controller {
      */
     @Override
     public void showMainMenu(final Stage stage) {
+        if (Objects.nonNull(this.dyno) && this.dyno.isActive()) {
+            AlertMonitor.warningNotify(
+                "Simulation is running",
+                Optional.of("Please stop the current simulation before returning to the main menu."
+            ));
+            return;
+        }
         new MainMenu().start(stage);
     }
 
@@ -75,15 +89,20 @@ public class ControllerImpl implements Controller {
      */
     @Override
     public void startSimulation() {
-        this.dyno = new SimulatedDynoImpl();
-        if (!Objects.nonNull(this.dyno) || !this.dyno.isActive()) {
+        if (!Objects.nonNull(this.dyno) || !this.dyno.getDynoType().equals(DataSource.SIMULATED_DYNO)) {
+            this.dyno = new SimulatedDynoImpl();
+        }
+        if (!this.dyno.isActive()) {
             this.dataCollector.initialize(this.dyno);
             this.dyno.begin();
             Thread.ofVirtual()
-                .start(this::simulationPolling)
+                .start(this::polling)
                 .setName(SIMULATION_POLLING_THREAD_NAME);
         } else {
-            throw new IllegalStateException("Simulation is already running."); // maybe alert box?
+            AlertMonitor.warningNotify(
+                "Simulation is already running",
+                Optional.of("Please stop the current simulation before starting a new one."
+            ));
         }
     }
 
@@ -91,7 +110,7 @@ public class ControllerImpl implements Controller {
      * Polling method for the simulation.
      * This method runs in a loop while the dyno is active, collecting data and updating the graphics.
      */
-    private void simulationPolling() {
+    private void polling() {
         while (Objects.nonNull(dyno) && dyno.isActive()) {
             //TODO Call the DataCollector to collect data
             //TODO Update Graphics
@@ -119,11 +138,34 @@ public class ControllerImpl implements Controller {
      */
     @Override
     public void stopSimulation() {
-        Objects.requireNonNull(this.dyno, "Dyno must be initialized before stopping it."); // maybe alert box?
+        if (Objects.isNull(this.dyno)) {
+            AlertMonitor.warningNotify(
+                "Simulation is not running",
+                Optional.of("Dyno must be initialized before stopping it."
+            ));
+            return;
+        }
         if (this.dyno.isActive()) {
             this.dyno.end();
             this.dyno = null;
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void showAlert(final NotificationType type, final String message, final Optional<String> explanation) {
+        Platform.runLater(() -> {
+            final Alert alert = new Alert(switch (type) {
+                case WARNING -> AlertType.WARNING;
+                case ERROR -> AlertType.ERROR;
+                default -> AlertType.INFORMATION;
+            });
+            alert.setTitle(type.getType());
+            alert.setHeaderText(message);
+            explanation.ifPresent(alert::setContentText);
+            alert.showAndWait();
+        });
+    }
 }

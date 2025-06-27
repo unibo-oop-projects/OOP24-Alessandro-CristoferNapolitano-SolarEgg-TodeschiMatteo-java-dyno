@@ -21,7 +21,8 @@ public class MainMenu extends Application implements View {
     // final Parent root = FXMLLoader.load(ClassLoader.getSystemResource("layouts/SimpleGui.fxml"));
 
     private static final String CSS_FILE = "/css/MenuStyle.css";
-    private static final String HOME_IMAGE = "images/homecar.png";
+    private static final String ICON_PATH = "images/icon.png";
+    private static final String HOME_IMAGE = "images/logo_no_bg.png";
     private static final double WIDTH_RATIO = 0.3; //percentage of screen width
     private static final double HEIGHT_RATIO = 0.5; //percentage of screen height
     private static final double IMAGE_WIDTH = 0.6;
@@ -46,8 +47,7 @@ public class MainMenu extends Application implements View {
         final Button realDynoButton = new Button("Real Dyno");
         final Button settingsButton = new Button("Settings");
         simulatedDynoButton.setOnAction(e -> {
-            final Stage stage = (Stage) simulatedDynoButton.getScene().getWindow();
-            controller.showSimulationView(stage);
+            controller.showSimulationView(primaryStage);
         });
 
         final Rectangle2D screenBounds = Screen.getPrimary().getBounds();
@@ -56,6 +56,7 @@ public class MainMenu extends Application implements View {
         final ImageView image = new ImageView(new Image(ClassLoader.getSystemResource(HOME_IMAGE).toExternalForm()));
         final VBox vbox = new VBox(15, image, simulatedDynoButton, realDynoButton, settingsButton);
         vbox.setAlignment(Pos.CENTER);
+        vbox.getStyleClass().add("main-menu-container");
         final Scene scene = new Scene(vbox, width, height);
 
         image.fitWidthProperty().bind(Bindings.multiply(scene.widthProperty(), IMAGE_WIDTH));
@@ -64,6 +65,7 @@ public class MainMenu extends Application implements View {
 
         scene.getStylesheets().add(MainMenu.class.getResource(CSS_FILE).toExternalForm());
         primaryStage.setTitle("JavaDyno");
+        primaryStage.getIcons().add(new Image(ClassLoader.getSystemResource(ICON_PATH).toExternalForm()));
         primaryStage.setScene(scene);
         primaryStage.show();
         primaryStage.centerOnScreen();

@@ -1,5 +1,6 @@
 package it.unibo.javadyno.model.filemanager.impl;
 
+import it.unibo.javadyno.controller.impl.AlertMonitor;
 import it.unibo.javadyno.model.data.api.ElaboratedData;
 import it.unibo.javadyno.model.filemanager.api.FileManager;
 import it.unibo.javadyno.model.filemanager.api.FileStrategy;
@@ -8,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Queue;
 
 /**
@@ -33,7 +35,11 @@ public final class FileManagerImpl implements FileManager {
     @Override
     public void exportDataToFile(final Queue<ElaboratedData> dataQueue, final File file) throws IOException {
         if (this.strategy == null) {
-            throw new IOException("No file strategy has been set.");
+            AlertMonitor.errorNotify(
+                "No file strategy has been set",
+                Optional.empty()
+            );
+            //throw new IOException("No file strategy has been set.");
         }
         // The strategy works with a List, so we convert the Queue.
         this.strategy.exportData(new ArrayList<>(dataQueue), file);
@@ -45,7 +51,11 @@ public final class FileManagerImpl implements FileManager {
     @Override
     public List<ElaboratedData> importDataFromFile(final File file) throws IOException {
         if (this.strategy == null) {
-            throw new IOException("No file strategy has been set.");
+            AlertMonitor.errorNotify(
+                "No file strategy has been set",
+                Optional.empty()
+            );
+            //throw new IOException("No file strategy has been set.");
         }
         return this.strategy.importData(file);
     }

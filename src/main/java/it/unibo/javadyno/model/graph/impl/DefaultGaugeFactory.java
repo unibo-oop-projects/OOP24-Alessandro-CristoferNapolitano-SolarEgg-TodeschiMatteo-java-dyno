@@ -3,6 +3,7 @@ package it.unibo.javadyno.model.graph.impl;
 import eu.hansolo.medusa.Gauge;
 import eu.hansolo.medusa.GaugeBuilder;
 import it.unibo.javadyno.model.graph.api.GaugeFactory;
+import javafx.scene.paint.Color;
 
 /**
  * Default implementation of the GaugeFactory interface.
@@ -29,9 +30,18 @@ public class DefaultGaugeFactory implements GaugeFactory {
                 .maxValue(maxValue)
                 .majorTickSpace(majorTickSpace)
                 .minorTickSpace(minorTickSpace)
-                .animated(true)
+                .animated(false)// Handle animation?
                 .decimals(0)
+                .sectionsVisible(true)
+                .markersVisible(true)
+                .backgroundPaint(Color.WHITE)
+                .borderPaint(Color.BLACK)
+                .valueColor(Color.BLACK)
+                .titleColor(Color.BLACK)
+                .unitColor(Color.BLACK)
+                .majorTickMarkColor(Color.BLACK)
+                .minorTickMarkColor(Color.BLACK)
+                .needleColor(Color.RED)
                 .build();
     }
-
 }

@@ -1,10 +1,13 @@
 package it.unibo.javadyno.view.impl.component;
 
 import eu.hansolo.medusa.Gauge;
+import eu.hansolo.medusa.Marker;
+import eu.hansolo.medusa.Section;
 import it.unibo.javadyno.model.graph.api.GaugeFactory;
 import it.unibo.javadyno.model.graph.impl.DefaultGaugeFactory;
 import javafx.geometry.Pos;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 
 /**
  * GaugePanel class that extends VBox to create a panel with multiple gauges.
@@ -19,6 +22,8 @@ public final class GaugePanel extends VBox {
     private static final int RPM_MAX_RANGE = 8000;
     private static final int RPM_MAJOR_TICK_SPACE = 1000;
     private static final int RPM_MINOR_TICK_SPACE = 200;
+    private static final int RPM_WARNING = 5000;
+    private static final int RPM_REDLINE = 6000;
 
     private static final String SPEEDOMETER_TITLE = "Speedometer";
     private static final String SPEEDOMETER_UNIT = "KM/H";
@@ -52,6 +57,8 @@ public final class GaugePanel extends VBox {
                 RPM_MAJOR_TICK_SPACE,
                 RPM_MINOR_TICK_SPACE
         );
+        this.rpmGauge.setMarkers(new Marker(RPM_WARNING, Color.RED));
+        this.rpmGauge.setSections(new Section(RPM_REDLINE, RPM_MAX_RANGE, Color.RED));
         this.speedGauge = gaugeFactory.createGaugeChart(
                 SPEEDOMETER_TITLE,
                 SPEEDOMETER_UNIT,
