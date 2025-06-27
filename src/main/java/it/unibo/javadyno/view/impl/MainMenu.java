@@ -21,7 +21,7 @@ public class MainMenu extends Application implements View {
     // final Parent root = FXMLLoader.load(ClassLoader.getSystemResource("layouts/SimpleGui.fxml"));
 
     private static final String CSS_FILE = "/css/MenuStyle.css";
-    private static final String ICON_PATH = "images/homecar.png";
+    private static final String ICON_PATH = "images/icon.png";
     private static final String HOME_IMAGE = "images/logo_no_bg.png";
     private static final double WIDTH_RATIO = 0.3; //percentage of screen width
     private static final double HEIGHT_RATIO = 0.5; //percentage of screen height
