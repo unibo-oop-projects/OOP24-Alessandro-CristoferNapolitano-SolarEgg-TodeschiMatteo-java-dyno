@@ -1,5 +1,7 @@
 package it.unibo.javadyno.model.dyno.simulated.api;
 
+import it.unibo.javadyno.model.data.api.RawData;
+
 /**
  * Vehicle Interface.
  */
@@ -30,4 +32,11 @@ public interface Vehicle {
      * @return current gear (one-based)
      */
     int getCurrentGear();
+
+    /**
+     * method to create raw data when called.
+     *
+     * @return raw data
+     */
+    RawData getRawData();
 }
