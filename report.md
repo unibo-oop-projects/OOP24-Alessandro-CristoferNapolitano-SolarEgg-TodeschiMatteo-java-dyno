@@ -168,7 +168,55 @@ Il **Model** è rappresentato principalmente dall'interfaccia `Dyno` e dalle sue
 Con questa architettura, è possibile sostituire completamente la view senza impattare controller o model: l'interfaccia `View` e le sue implementazioni sono completamente disaccoppiate dalla logica di core. Similmente, l'aggiunta di nuovi tipi di dinamometro richiede solo l'implementazione dell'interfaccia `Dyno` senza modificare il controller esistente.
 
 ```mermaid
-UML TODO
+classDiagram
+    class View {
+        <<interface>>
+        +update(ElaboratedData)
+        +begin(Stage)
+    }
+    
+    class Controller {
+        <<interface>>
+        +startSimulation()
+        +stopSimulation()
+    }
+    
+    class Dyno {
+        <<interface>>
+        +getRawData() RawData
+        +begin()
+        +end()
+        +isActive() boolean
+    }
+    
+    class DataCollector {
+        +initialize(Dyno)
+        +collectData()
+        +getFullData() Queue
+    }
+    
+    class DataElaborator {
+        <<interface>>
+        +getElaboratedData() ElaboratedData
+    }
+    
+    class SimulatedDyno {
+    }
+    
+    class RealDyno {
+    }
+    
+    class OBD2Dyno {
+    }
+
+    View --* Controller
+    Controller --* View
+    Controller --* Dyno : coordinates
+    Controller --* DataCollector : manages
+    DataCollector --* DataElaborator : uses
+    Dyno <|-- SimulatedDyno
+    Dyno <|-- RealDyno
+    Dyno <|-- OBD2Dyno
 ```
 ## 2.2 Design dettagliato
 ### 2.2.1 Porcheddu Alessandro
