@@ -40,8 +40,16 @@ public class RigidDriveTrainSim implements DriveTrain{
         return engine.getAngularVelocity();
     }
 
+    public double getEngineTemperature() {
+        return engine.getEngineTemperature();
+    }
+
     public double getWheelOmega() {
         return engine.getAngularVelocity() * transmission.getCurrentRatio();
+    }
+
+    public double getGeneratedTorque() {
+        return engine.getGeneratedTorque();
     }
 
     //TODO : creation of a clutch component to synchronize engine and wheel speed
@@ -68,6 +76,9 @@ public class RigidDriveTrainSim implements DriveTrain{
         engine.setAngularVelocity(newEngineOmega);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getCurrentGear() {
         return transmission.getCurrentGear();
