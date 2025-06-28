@@ -92,8 +92,6 @@ direction TB
     DataCollector --* DataElaborator
     DataCollector --o ElaboratedData
     OBD2 --|> Dyno
-    OBD2 -- PID
-    OBD2 -- Mode
     FileManager --* FileStrategy
 
     class MCUCommunicator {
@@ -148,12 +146,6 @@ direction TB
     class OBD2 {
     }
 
-    class Mode {
-    }
-
-    class PID {
-    }
-
     class RealDyno {
     }
 
@@ -166,13 +158,15 @@ direction TB
 	<<interface>> RawData
 	<<interface>> ElaboratedData
 	<<enumeration>> DataSource
-	<<enumeration>> Mode
-	<<enumeration>> PID
 
 ```
 # Capitolo 2 - Design
 ## 2.1 Architettura
-TODO
+Per Java Dyno è stato scelto il pattern architetturale MVC (Model-View-Controller), che consente una chiara separazione tra logica, interfaccia e controllo, facilitando manutenzione e sviluppo futuro.  
+Il **Controller** funge da coordinatore centrale per tutte le operazioni dell'applicazione. Esso gestisce il ciclo di vita delle simulazioni, coordina l'acquisizione dati dai dinamometri e orchestra l'aggiornamento dell'interfaccia utente. Inoltre accetta la registrazione di eventi dalla view (pressione pulsanti, navigazione tra schermate) e notifica gli aggiornamenti alle componenti grafiche ottenendo i dati attraverso un meccanismo di polling in thread separati.  
+Il **Model** è rappresentato principalmente dall'interfaccia `Dyno` e dalle sue implementazioni, che costituiscono i punti d'ingresso per l'acquisizione e l'elaborazione dei dati. Il modello include anche il sistema di gestione dati attraverso `DataCollector` e `DataElaborator`, completamente indipendente dalle implementazioni di `Dyno`.  
+Con questa architettura, è possibile sostituire completamente la view senza impattare controller o model: l'interfaccia `View` e le sue implementazioni sono completamente disaccoppiate dalla logica di core. Similmente, l'aggiunta di nuovi tipi di dinamometro richiede solo l'implementazione dell'interfaccia `Dyno` senza modificare il controller esistente.
+
 ```mermaid
 UML TODO
 ```
