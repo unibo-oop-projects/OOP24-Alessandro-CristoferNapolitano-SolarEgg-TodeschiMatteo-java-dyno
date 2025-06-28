@@ -44,21 +44,32 @@ Ivan Crimaldi
 - ### [B.0.3 name.surname@studio.unibo.it](#b03-namesurnamestudiouniboit-1)
 - ### [B.0.4 name.surname@studio.unibo.it](#b04-namesurnamestudiouniboit-1)
 
+<br>
 
 # Capitolo 1 - Analisi
 ## 1.1 Descrizione e Requisiti
 Il software si presenta come un ambiente per la gestione e simulazione di un dinamometro per motori di varia natura.  
-Un dinamometro è un dispositivo che, collegato ad un asse rotante connesso al relativo motore, permette di misurarne la potenza sprigionata a diversi regimi di rotazione.
+Un dinamometro è un dispositivo che, collegato ad un asse rotante connesso al relativo motore, permette di misurarne la potenza sprigionata a diversi regimi di rotazione. Esistono diverse tipologie di dinamometro ma la più diffusa in assoluto è il [freno magnetico a correnti parassite](https://www.elprocus.com/what-is-eddy-current-dynamometer-construction-its-working/).
 
-L’utente ha la libertà di decidere se interagire con la parte di simulazione, se avviare una prova con strumentazione fisica oppure se acquisire i dati della prova dalla propria autovettura.  
+L’utente ha la libertà di decidere se interagire con la parte di simulazione, se avviare una prova con strumentazione fisica oppure se acquisire i dati della prova dalla propria autovettura tramite porta OBD2 (presente su tutti i veicoli immatricolati nell'UE dal [1 gennaio 2004](https://en.wikipedia.org/wiki/On-board_diagnostics#History)).  
 La simulazione comprende un minigioco per poter prendere dimestichezza con le operazioni che potranno poi essere effettuate nel mondo reale.
 
 Il software comprende diverse opzioni per la personalizzazione della GUI e per il confronto di grafici salvati, in modo da poter lavorare in qualsiasi momento sui dati raccolti.
 
 ### Requisiti funzionali
-- TODO
+- Operazioni sui grafici
+    - Salvataggio ed esportazione grafici (in diversi formati)
+    - Confronto di grafici con diverse opzioni di visualizzazione
+    - Caricamento da file
+- Assistenza real-time per prove su banco
+    - Warning per raggiungimento soglie critiche o problemi di varia natura
+    - Svolgimento della prova in modalità guidata per una ripetibilità più affidabile
+- Comunicazione con hardware esterno
+    - Compatibilità con un ampio range di interfacce USB
+    - Capacità di comunicazione wireless
 ### Requisiti non funzionali
-- TODO
+- Elaborazione dei grafici e dei dati in tempo reale con elevata precisione e fluidità
+- Proporzioni grafiche invariate tra dispositivi con risoluzioni molto diverse
 ## 1.2 Analisi e modello del dominio
 TODO
 ```mermaid
