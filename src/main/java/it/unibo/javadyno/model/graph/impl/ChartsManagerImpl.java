@@ -2,10 +2,14 @@ package it.unibo.javadyno.model.graph.impl;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
+import java.awt.Color; 
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -16,6 +20,42 @@ import it.unibo.javadyno.model.graph.api.ChartsManager;
  * Implementation of the ChartsManager interface for managing charts.
  */
 public class ChartsManagerImpl implements ChartsManager {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setColor(JFreeChart chart, String seriesName, YAxisLevel level, Color color) {
+        final XYSeriesCollection dataset = (XYSeriesCollection) chart.getXYPlot().getDataset(level.getLevel());
+        if (!Objects.nonNull(dataset)) {
+            AlertMonitor.errorNotify(
+                "Error in dataset from charts",
+                Optional.of("Series '" + seriesName + "' does not exist in level " + level.getLevel())
+            );
+            return;
+        }
+        final XYSeries serie = dataset.getSeries(seriesName);
+        if (!Objects.nonNull(serie)) {
+            AlertMonitor.errorNotify(
+                "Error in accessing series from charts",
+                Optional.of("Series '" + seriesName + "' does not exist in level " + level.getLevel())
+            );
+            return;
+        }
+        final XYItemRenderer renderer = chart.getXYPlot().getRenderer(level.getLevel());
+        if (!Objects.nonNull(renderer)) {
+            AlertMonitor.errorNotify(
+                "Error in accessing the renderer from charts",
+                Optional.of("Level " + level.getLevel() + " does not exist.")
+            );
+            return;
+        }
+        final int seriesIndex = IntStream.range(0, dataset.getSeriesCount())
+            .filter(i -> dataset.getSeries(i).getKey().equals(seriesName))
+            .findFirst()
+            .orElse(0);
+        renderer.setSeriesPaint(seriesIndex, color);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -66,9 +106,15 @@ public class ChartsManagerImpl implements ChartsManager {
             );
             return;
         }
+        final int newIndex = plot.getRangeAxisCount();
         final NumberAxis newYAxis = new NumberAxis(axisLabel);
-        plot.setRangeAxis(plot.getRangeAxisCount(), newYAxis);
+        plot.setRangeAxis(newIndex, newYAxis);
         final XYSeriesCollection newDataset = new XYSeriesCollection();
-        plot.setDataset(plot.getDatasetCount(), newDataset);
+        plot.setDataset(newIndex, newDataset);
+        plot.mapDatasetToRangeAxis(newIndex, newIndex);
+        final XYLineAndShapeRenderer newRenderer = new XYLineAndShapeRenderer();
+        newRenderer.setDefaultLinesVisible(true);
+        newRenderer.setDefaultShapesVisible(false);
+        plot.setRenderer(newIndex, newRenderer);
     }
 }

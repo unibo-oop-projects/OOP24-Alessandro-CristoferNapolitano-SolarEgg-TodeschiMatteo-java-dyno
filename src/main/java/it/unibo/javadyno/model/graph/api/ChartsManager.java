@@ -1,5 +1,6 @@
 package it.unibo.javadyno.model.graph.api;
 
+import java.awt.Color; 
 import org.jfree.chart.JFreeChart;
 
 /**
@@ -34,6 +35,16 @@ public interface ChartsManager {
         }
 
     }
+
+    /**
+     * Sets the color of a series in the chart for a specific Y-axis level.
+     *
+     * @param chart the chart containing the series
+     * @param seriesName the name of the series whose color will be set
+     * @param level the Y-axis level of the series
+     * @param color the color to set for the series
+     */
+    void setColor(JFreeChart chart, String seriesName, ChartsManager.YAxisLevel level, Color color);
 
     /**
      * Adds a series to the chart with the specified name.

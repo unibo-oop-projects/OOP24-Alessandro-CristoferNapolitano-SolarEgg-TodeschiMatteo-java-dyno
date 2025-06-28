@@ -48,6 +48,8 @@ public final class ChartsPanel extends VBox {
         chartManager.addNewSeries(lineChart, SERIES_NAME, ChartsManager.YAxisLevel.FIRST);
         chartManager.addYAxis(lineChart, Y_AXIS_LABEL);
         chartManager.addNewSeries(lineChart, SERIES_NAME, ChartsManager.YAxisLevel.SECOND);
+        chartManager.addYAxis(lineChart, Y_AXIS_LABEL);
+        chartManager.addNewSeries(lineChart, SERIES_NAME, ChartsManager.YAxisLevel.THIRD);
         this.getChildren().add(viewer);
     }
 
@@ -71,6 +73,13 @@ public final class ChartsPanel extends VBox {
             ChartsManager.YAxisLevel.SECOND,
             yValue,
             xValue
+        );
+        chartManager.addPointToSeries(
+            this.lineChart,
+            SERIES_NAME,
+            ChartsManager.YAxisLevel.THIRD,
+            yValue,
+            yValue
         );
     }
 }
