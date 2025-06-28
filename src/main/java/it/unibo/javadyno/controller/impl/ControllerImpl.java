@@ -12,7 +12,6 @@ import it.unibo.javadyno.model.data.impl.DataCollectorImpl;
 import it.unibo.javadyno.model.dyno.api.Dyno;
 import it.unibo.javadyno.model.dyno.simulated.impl.SimulatedDynoImpl;
 import it.unibo.javadyno.view.impl.MainMenu;
-import it.unibo.javadyno.view.impl.SimulationView;
 import it.unibo.javadyno.view.impl.SimulationViewV2;
 import javafx.application.Application;
 import javafx.application.Platform;

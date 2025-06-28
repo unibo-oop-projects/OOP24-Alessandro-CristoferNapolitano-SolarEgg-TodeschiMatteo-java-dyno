@@ -19,9 +19,11 @@ import javafx.stage.Stage;
  * Simulation view class for the JavaDyno application.
  */
 public class SimulationViewV2 extends Application implements View {
-    private static final int COLUMN_SPACING = 5;
+    private static final String STAGE_TITLE = "JavaDyno - Simulation";
     private static final String CSS_FILE = "/css/simulationStyle.css";
     private static final String CSS_SETTINGS_PANEL_TAG = "left-column";
+    private static final String CSS_MAIN_CONTAINER_TAG = "main-container";
+    private static final int COLUMN_SPACING = 5;
     private static final double WIDTH_RATIO = 0.8; //percentage of screen width
     private static final double HEIGHT_RATIO = 0.8; //percentage of screen height
 
@@ -47,17 +49,13 @@ public class SimulationViewV2 extends Application implements View {
         final Rectangle2D screenBounds = Screen.getPrimary().getBounds();
         final double width = screenBounds.getWidth() * WIDTH_RATIO;
         final double height = screenBounds.getHeight() * HEIGHT_RATIO;
-
-        // Create left columns with buttons and settings
         settingsPanel.setAlignment(Pos.CENTER);
-        HBox.setHgrow(settingsPanel, Priority.ALWAYS);
         settingsPanel.getStyleClass().add(CSS_SETTINGS_PANEL_TAG);
-
-        // Create center column for charts
+        HBox.setHgrow(settingsPanel, Priority.ALWAYS);
         HBox.setHgrow(chartsPanel, Priority.ALWAYS);
-
-        // Create right column for gauges
         HBox.setHgrow(gaugePanel, Priority.ALWAYS);
+        VBox.setVgrow(chartsPanel, Priority.ALWAYS);
+        VBox.setVgrow(gaugePanel, Priority.NEVER); 
 
         // Setting up buttons for the left column
         final Button startSimulationButton = new Button("Start Simulation");
@@ -91,21 +89,20 @@ public class SimulationViewV2 extends Application implements View {
 
         // Create the main container
         final HBox mainContainer = new HBox();
-        mainContainer.getStyleClass().add("main-container");
+        mainContainer.getStyleClass().add(CSS_MAIN_CONTAINER_TAG);
         final VBox leftPanel = new VBox();
         final VBox rightPanel = new VBox();
         HBox.setHgrow(rightPanel, Priority.ALWAYS);
         rightPanel.setAlignment(Pos.TOP_RIGHT);
-        rightPanel.setSpacing(0);
-        VBox.setVgrow(chartsPanel, Priority.ALWAYS);
-        VBox.setVgrow(gaugePanel, Priority.NEVER);  
+        rightPanel.setSpacing(0); 
         leftPanel.getChildren().add(settingsPanel);
         rightPanel.getChildren().addAll(chartsPanel, gaugePanel);
         mainContainer.getChildren().addAll(leftPanel, rightPanel);
 
+        // Set the scene
         final Scene scene = new Scene(mainContainer, width, height);
         scene.getStylesheets().add(SimulationViewV2.class.getResource(CSS_FILE).toExternalForm());
-        primaryStage.setTitle("JavaDyno - Simulation");
+        primaryStage.setTitle(STAGE_TITLE);
         primaryStage.setScene(scene);
         primaryStage.show();
         primaryStage.centerOnScreen();
