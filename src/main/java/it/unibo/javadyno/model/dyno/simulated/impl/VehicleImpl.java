@@ -48,6 +48,11 @@ public class VehicleImpl implements Vehicle{
         drivetrain.shiftDown();
     }
 
+    @Override
+    public int getCurrentGear() {
+        return drivetrain.getCurrentGear();
+    }
+
     /* TODO :
     VehicleRawData getVehicleRawData() {
 
