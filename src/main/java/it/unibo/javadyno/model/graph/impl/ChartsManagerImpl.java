@@ -143,7 +143,6 @@ public class ChartsManagerImpl implements ChartsManager {
      * Checks if the renderer is valid for the given series name and level.
      *
      * @param renderer the renderer to check
-     * @param seriesName the name of the series to check
      * @param level the Y-axis level to check
      * @return true if the renderer is valid, false otherwise
      */

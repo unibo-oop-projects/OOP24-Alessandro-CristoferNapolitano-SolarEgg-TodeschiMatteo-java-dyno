@@ -1,6 +1,8 @@
 /* Main CSS settings */
 .main-container {
     -fx-background-color: #262626;
+    -fx-border-color: #a1d908;
+    -fx-border-width: 2;
 }
 .left-column {
     -fx-border-color: red;
