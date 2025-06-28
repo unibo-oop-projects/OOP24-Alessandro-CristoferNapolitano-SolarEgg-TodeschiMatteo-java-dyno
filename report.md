@@ -103,32 +103,32 @@ direction TB
     }
 
     class Dyno {
-	    +getRawData() : RawData
-	    +getDynoType() : DataSource
+	    +getRawData() RawData
+	    +getDynoType() DataSource
 	    +begin()
 	    +end()
-	    +isActive() : boolean
+	    +isActive() boolean
     }
 
     class DataCollector {
 	    +initialize(Dyno)
 	    +collectData()
-	    +getFullData() : Queue~ElaboratedData~;
+	    +getFullData() Queue~ElaboratedData~;
     }
 
     class DataElaborator {
-	    +getElaboratedData() : ElaboratedData
+	    +getElaboratedData() ElaboratedData
     }
 
     class FileManager {
 	    +setStrategy(FileStrategy)
 	    +exportDataToFile(Queue~ElaboratedData~, File)
-	    +importDataFromFile(File) : List~ElaboratedData~
+	    +importDataFromFile(File) List~ElaboratedData~
     }
 
     class FileStrategy {
 	    +exportData(List~ElaboratedData~, File)
-	    +importData(File) : List~ElaboratedData~
+	    +importData(File) List~ElaboratedData~
     }
 
     class RawData {
@@ -220,18 +220,55 @@ classDiagram
 ```
 ## 2.2 Design dettagliato
 ### 2.2.1 Porcheddu Alessandro
-#### Subject
+#### Comunicazione con hardware esterno
 
 ```mermaid
-UML TODO
+classDiagram
+    class MCUCommunicator {
+        <<interface>>
+        +connect()
+        +disconnect()
+        +isConnected() boolean
+        +send(String)
+        +addMessageListener(Consumer)
+        +removeMessageListener(Consumer)
+    }
+    
+    class AbstractSerialCommunicator {
+        #setupChip(SerialPort)*
+        #getSentDataDelimiter()* String
+        #getReceivedDataDelimiter()* String
+        #parseMessage()*
+    }
+    
+    class AbstractWebSocketCommunicator {
+        #parseMessage(String)* List~
+    }
+    
+    class ELM327Communicator {
+        +setupChip(SerialPort)
+        +getSentDataDelimiter() String
+        +getReceivedDataDelimiter() String
+        +parseMessage()
+    }
+    
+    class JsonWebSocketCommunicator {
+        +parseMessage(String) List
+        +send(String)
+    }
 
+    MCUCommunicator <|.. AbstractSerialCommunicator
+    MCUCommunicator <|.. AbstractWebSocketCommunicator
+    AbstractSerialCommunicator <|-- ELM327Communicator
+    AbstractWebSocketCommunicator <|-- JsonWebSocketCommunicator
 ```
 
-**Problema:** TODO. 
+**Problema:** il software deve poter permettere ai diversi `Dyno` di comunicare con il relativo hardware esterno indipendentemente dal vettore di comunicazione (USB, Bluetooth, HTTP, WebSocket, ecc) e dal protocollo finale che si aspetta il microcontrollore. Quest'ultima, inoltre, deve avvenire in modo asincrono per non interferire con l'esecuzione del programma.  
 
-**Soluzione:** TODO. 
+**Soluzione:** la soluzione più idonea risulta essere l'utilizzo del pattern **Template Method** che permette una facile e veloce implementazione di un nuovo mezzo per comunicare con un possibile microcontrollore. In particolare l'interfaccia `MCUCommunicator` definisce il contratto da seguire per la comunicazione che **deve** essere eseguita attraverso _listeners_. Vengono poi definite 2 classi astratte relative a comunicazione seriale e via websocket che implementano i metodi dell'interfaccia per facilitare l'implementazione di protocolli specifici legati a particolari microcontrollori. Infatti `JsonWebSocketCommunicator` rappresenta un generico microcontrollore nel quale ci si aspetta di inviare e ricevere dati in formato JSON, mentre `ELM327Communicator` fa riferimento alla specifica implementazione di una comunicazione con l'omonimo chip per OBD2. Si noti inoltre che l'interfaccia `MCUCommunicator` utilizza un generico per permetterealle implementazioni di gestire meglio i diversi tipi di messaggi nella comunicazione (come il `Pair` nel caso di `JsonWebSocketCommunicator`).
 
 ---
+
 #### Subject
 
 ```mermaid
@@ -243,12 +280,18 @@ UML TODO
 
 **Soluzione:** TODO.
 
+---
+
+#### Subject
+
 ```mermaid
 UML TODO
 
 ```
 
-TODO
+**Problema:** TODO.
+
+**Soluzione:** TODO.
 
 ### 2.2.1 Surname Name
 #### Subject
