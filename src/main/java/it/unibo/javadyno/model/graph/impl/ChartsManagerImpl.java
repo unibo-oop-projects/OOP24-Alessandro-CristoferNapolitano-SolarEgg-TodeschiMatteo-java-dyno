@@ -24,17 +24,17 @@ public class ChartsManagerImpl implements ChartsManager {
      * {@inheritDoc}
      */
     @Override
-    public void setColor(JFreeChart chart, String seriesName, YAxisLevel level, Color color) {
+    public void setColor(final JFreeChart chart, final String seriesName, final YAxisLevel level, final Color color) {
         final XYSeriesCollection dataset = (XYSeriesCollection) chart.getXYPlot().getDataset(level.getLevel());
-        if(!isDatasetValid(dataset, seriesName, level)){
+        if (!isDatasetValid(dataset, seriesName, level)) {
             return;
         }
         final XYSeries series = dataset.getSeries(seriesName);
-        if(!isSeriesValid(series, seriesName, level)){
+        if (!isSeriesValid(series, seriesName, level)) {
             return;
         }
         final XYItemRenderer renderer = chart.getXYPlot().getRenderer(level.getLevel());
-        if(!isRendererValid(renderer, seriesName, level)){
+        if (!isRendererValid(renderer, level)) {
             return;
         }
         final int seriesIndex = IntStream.range(0, dataset.getSeriesCount())
@@ -51,7 +51,7 @@ public class ChartsManagerImpl implements ChartsManager {
     public void addNewSeries(final JFreeChart lineChart, final String seriesName, final ChartsManager.YAxisLevel level) {
         final XYSeries newSeries = new XYSeries(seriesName);
         final XYSeriesCollection dataset = (XYSeriesCollection) lineChart.getXYPlot().getDataset(level.getLevel());
-        if(!isDatasetValid(dataset, seriesName, level)){
+        if (!isDatasetValid(dataset, seriesName, level)) {
             return;
         }
         dataset.addSeries(newSeries);
@@ -66,11 +66,11 @@ public class ChartsManagerImpl implements ChartsManager {
         final Number xValue, final Number yValue
         ) {
         final XYSeriesCollection dataset = (XYSeriesCollection) chart.getXYPlot().getDataset(level.getLevel());
-        if(!isDatasetValid(dataset, seriesName, level)){
+        if (!isDatasetValid(dataset, seriesName, level)) {
             return;
         }
         final XYSeries series = dataset.getSeries(seriesName);
-        if(!isSeriesValid(series, seriesName, level)){
+        if (!isSeriesValid(series, seriesName, level)) {
             return;
         }
         series.add(xValue, yValue);
@@ -147,7 +147,7 @@ public class ChartsManagerImpl implements ChartsManager {
      * @param level the Y-axis level to check
      * @return true if the renderer is valid, false otherwise
      */
-    private boolean isRendererValid(final XYItemRenderer renderer, final String seriesName, final YAxisLevel level) {
+    private boolean isRendererValid(final XYItemRenderer renderer, final YAxisLevel level) {
         if (!Objects.nonNull(renderer)) {
             AlertMonitor.errorNotify(
                 "Error in accessing the renderer from charts",
