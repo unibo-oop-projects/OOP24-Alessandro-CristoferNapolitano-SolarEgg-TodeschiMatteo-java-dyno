@@ -22,12 +22,13 @@ public final class FileStrategyFactoryImpl implements FileStrategyFactory {
      */
     @Override
     public Optional<FileStrategy> createStrategyFor(final File file) {
-
-        if (file.getName().endsWith(CSV_EXTENSION)) {
+        // Shorten for readability
+        final String fileName = file.getName().toLowerCase();
+        if (fileName.endsWith(CSV_EXTENSION)) {
             return Optional.of(new CsvStrategy());
         }
         // TODO: Add a future JsonStrategy:
-        // if (file.getName().endsWith(JSON_EXTENSION)) {
+        // if (fileName.endsWith(JSON_EXTENSION)) {
         //     return Optional.of(new JsonStrategy());
         // }
         return Optional.empty();
