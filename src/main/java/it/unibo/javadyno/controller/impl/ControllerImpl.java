@@ -1,5 +1,6 @@
 package it.unibo.javadyno.controller.impl;
 
+import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
@@ -8,11 +9,14 @@ import it.unibo.javadyno.controller.api.Controller;
 import it.unibo.javadyno.controller.api.NotificationType;
 import it.unibo.javadyno.model.data.api.DataCollector;
 import it.unibo.javadyno.model.data.api.DataSource;
+import it.unibo.javadyno.model.data.api.ElaboratedData;
+import it.unibo.javadyno.model.data.api.RawData;
 import it.unibo.javadyno.model.data.impl.DataCollectorImpl;
 import it.unibo.javadyno.model.dyno.api.Dyno;
 import it.unibo.javadyno.model.dyno.simulated.impl.SimulatedDynoImpl;
+import it.unibo.javadyno.view.api.View;
 import it.unibo.javadyno.view.impl.MainMenu;
-import it.unibo.javadyno.view.impl.SimulationViewV2;
+import it.unibo.javadyno.view.impl.SimulationView;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
@@ -30,7 +34,7 @@ public class ControllerImpl implements Controller {
     private final Random random = new Random();
     private final DataCollector dataCollector;
     private Dyno dyno;
-    private SimulationViewV2 simulationView;
+    private View view;
 
     /**
      * Default constructor for ControllerImpl.
@@ -38,7 +42,7 @@ public class ControllerImpl implements Controller {
     public ControllerImpl() {
         AlertMonitor.setController(this);
         this.dyno = null;
-        this.simulationView = null;
+        this.view = null;
         this.dataCollector = new DataCollectorImpl();
     }
 
@@ -70,8 +74,8 @@ public class ControllerImpl implements Controller {
      */
     @Override
     public void showSimulationView(final Stage stage) {
-        this.simulationView = new SimulationViewV2(this);
-        simulationView.start(stage);
+        this.view = new SimulationView(this);
+        view.begin(stage);
     }
 
     /**
@@ -115,15 +119,23 @@ public class ControllerImpl implements Controller {
             //TODO Call the DataCollector to collect data
             //TODO Update Graphics
             //RANDOM NUMER GENERATION FOR TESTING
-            simulationView.updateGauges(
-                this.random.nextInt(RPM_MULTIPLIER),
-                this.random.nextInt(RANDOM_DATA_MULTIPLIER),
-                this.random.nextInt(RANDOM_DATA_MULTIPLIER)
-            );
-            simulationView.updateGraph(
-                this.random.nextInt(RANDOM_DATA_MULTIPLIER),
-                this.random.nextInt(RANDOM_DATA_MULTIPLIER)
-            );
+            // Update the gauges and graph with random data for testing purposes
+            view.update(new ElaboratedData(
+                new RawData.Builder()
+                    .engineRPM(Optional.of(this.random.nextInt(RPM_MULTIPLIER)))
+                    .engineTemperature(Optional.of(this.random.nextDouble(RANDOM_DATA_MULTIPLIER)))
+                    .rollerRPM(Optional.of(this.random.nextInt(RPM_MULTIPLIER)))
+                    .torque(Optional.of(this.random.nextDouble(RPM_MULTIPLIER)))
+                    .vehicleSpeed(Optional.of(this.random.nextInt(RANDOM_DATA_MULTIPLIER)))
+                    .timestamp(Optional.of(Instant.now()))
+                    .throttlePosition(Optional.of(this.random.nextDouble(RANDOM_DATA_MULTIPLIER)))
+                    .baroPressure(Optional.of(this.random.nextInt(RANDOM_DATA_MULTIPLIER)))
+                    .exhaustGasTemperature(Optional.of(this.random.nextDouble(RPM_MULTIPLIER)))
+                    .build(),
+                this.random.nextDouble(RPM_MULTIPLIER),
+                this.random.nextDouble(RANDOM_DATA_MULTIPLIER),
+                this.random.nextDouble(RANDOM_DATA_MULTIPLIER)
+            ));
             try {
                 Thread.sleep(100);
             } catch (final InterruptedException e) {

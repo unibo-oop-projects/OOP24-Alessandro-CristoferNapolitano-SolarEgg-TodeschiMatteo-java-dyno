@@ -1,6 +1,7 @@
 package it.unibo.javadyno.view.test;
 
 import it.unibo.javadyno.controller.api.Controller;
+import it.unibo.javadyno.model.data.api.ElaboratedData;
 import it.unibo.javadyno.view.api.View;
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -41,6 +42,18 @@ public class SimulationThreadGUITest extends Application implements View {
         primaryStage.setTitle("SimulationThreadGUITest");
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    @Override
+    public void update(final ElaboratedData data) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'update'");
+    }
+
+    @Override
+    public void begin(final Stage primaryStage) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'begin'");
     }
 }
 

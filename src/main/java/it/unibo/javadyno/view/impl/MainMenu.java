@@ -1,6 +1,7 @@
 package it.unibo.javadyno.view.impl;
 
 import it.unibo.javadyno.controller.api.Controller;
+import it.unibo.javadyno.model.data.api.ElaboratedData;
 import it.unibo.javadyno.view.api.View;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
@@ -77,5 +78,13 @@ public class MainMenu extends Application implements View {
     @Override
     public void stop() {
         controller.closeApp();
+    }
+
+    @Override
+    public void update(final ElaboratedData data) { }
+
+    @Override
+    public void begin(final Stage primaryStage) {
+        this.start(primaryStage);
     }
 }
