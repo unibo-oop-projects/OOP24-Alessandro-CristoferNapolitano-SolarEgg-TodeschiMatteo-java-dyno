@@ -28,8 +28,8 @@ public final class CsvStrategy implements FileStrategy {
     // Defines the header of the CSV file.
     private static final String[] HEADER = {
         "timestamp", "engineRPM", "engineTemperature", "rollerRPM", "torque",
-        "vehicleSpeed", "throttlePosition", "boostPressure", "exhaustGasTemperature",
-        "enginePowerKW", "enginePowerHP", "engineCorrectedTorque", // Trailing comma
+        "vehicleSpeed", "throttlePosition", "baroPressure", "ambientAirTemperature", "exhaustGasTemperature",
+        "enginePowerKW", "enginePowerHP", "engineCorrectedTorque",
     };
 
     // Column indices constants to avoid magic numbers.
@@ -40,11 +40,12 @@ public final class CsvStrategy implements FileStrategy {
     private static final int INDEX_TORQUE = 4;
     private static final int INDEX_VEHICLE_SPEED = 5;
     private static final int INDEX_THROTTLE_POSITION = 6;
-    private static final int INDEX_BOOST_PRESSURE = 7;
-    private static final int INDEX_EXHAUST_GAS_TEMPERATURE = 8;
-    private static final int INDEX_ENGINE_POWER_KW = 9;
-    private static final int INDEX_ENGINE_POWER_HP = 10;
-    private static final int INDEX_ENGINE_CORRECTED_TORQUE = 11;
+    private static final int INDEX_BARO_PRESSURE = 7;
+    private static final int INDEX_AMBIENT_AIR_TEMPERATURE = 8;
+    private static final int INDEX_EXHAUST_GAS_TEMPERATURE = 9;
+    private static final int INDEX_ENGINE_POWER_KW = 10;
+    private static final int INDEX_ENGINE_POWER_HP = 11;
+    private static final int INDEX_ENGINE_CORRECTED_TORQUE = 12;
 
     /**
      * {@inheritDoc}
@@ -65,6 +66,7 @@ public final class CsvStrategy implements FileStrategy {
                     raw.vehicleSpeed().map(Object::toString).orElse(""),
                     raw.throttlePosition().map(Object::toString).orElse(""),
                     raw.baroPressure().map(Object::toString).orElse(""),
+                    raw.ambientAirTemperature().map(Object::toString).orElse(""),
                     raw.exhaustGasTemperature().map(Object::toString).orElse(""),
                     String.valueOf(elaborated.enginePowerKW()),
                     String.valueOf(elaborated.enginePowerHP()),
@@ -104,7 +106,8 @@ public final class CsvStrategy implements FileStrategy {
                     .torque(parseOptional(fields[INDEX_TORQUE], Double::parseDouble))
                     .vehicleSpeed(parseOptional(fields[INDEX_VEHICLE_SPEED], Integer::parseInt))
                     .throttlePosition(parseOptional(fields[INDEX_THROTTLE_POSITION], Double::parseDouble))
-                    .boostPressure(parseOptional(fields[INDEX_BOOST_PRESSURE], Double::parseDouble))
+                    .baroPressure(parseOptional(fields[INDEX_BARO_PRESSURE], Integer::parseInt))
+                    .ambientAirTemperature(parseOptional(fields[INDEX_AMBIENT_AIR_TEMPERATURE], Integer::parseInt))
                     .exhaustGasTemperature(parseOptional(fields[INDEX_EXHAUST_GAS_TEMPERATURE], Double::parseDouble))
                     .build();
 
