@@ -38,7 +38,9 @@ public final class DataElaboratorImpl implements DataElaborator {
     }
 
     /**
-     * {@inheritDoc}
+     * Retrieves the RawData from the Dyno and processes it to produce an ElaboratedData object.
+     * 
+     * @return an ElaboratedData object containing the processed data, or null if the data cannot be processed
      */
     @Override
     public ElaboratedData getElaboratedData() {
@@ -58,20 +60,20 @@ public final class DataElaboratorImpl implements DataElaborator {
     }
 
     /**
-     * Elaborates the raw data received from the DataTransreciever.
+     * Elaborates the raw data received from the OBD2 Dyno.
      *
      * @param rawData the raw data to be processed
-     * @return an ElaboratedData object containing the processed data
+     * @return an ElaboratedData object containing the processed data that can be null
      */
     private ElaboratedData processOBD2Data(final RawData rawData) {
         if (!rawData.vehicleSpeed().isPresent()
             || !rawData.engineRPM().isPresent()
             || !rawData.timestamp().isPresent()) {
-            // throw new IllegalStateException("Raw data must contain speed, rpm and timestamp.");
             AlertMonitor.warningNotify(
                 "Raw data must contain speed, rpm and timestamp.",
                 Optional.empty()
             );
+            return null;
         } else if (Objects.isNull(prevRawData)) {
             prevRawData = rawData;
             return null;
@@ -80,11 +82,11 @@ public final class DataElaboratorImpl implements DataElaborator {
         final Double timeDelta = (double) (rawData.timestamp().get().toEpochMilli()
             - prevRawData.timestamp().orElseThrow().toEpochMilli());
         if (vehicleSpeedDelta <= 0) {
-            // throw new IllegalStateException("Vehicle speed cannot decrease in OBD2 data processing.");
             AlertMonitor.warningNotify(
                 "Vehicle speed cannot decrease in OBD2 data processing.",
                 Optional.of("The vehicle speed must increase or remain constant between data points.")
             );
+            return null;
         }
         final Double airDensity;
         if (rawData.ambientAirTemperature().isPresent() && rawData.baroPressure().isPresent()) {
@@ -123,13 +125,19 @@ public final class DataElaboratorImpl implements DataElaborator {
         );
     }
 
+    /**
+     * Processes the raw data from the Bench Dyno.
+     *
+     * @param rawData the raw data to be processed
+     * @return an ElaboratedData object containing the processed data that can be null
+     */
     private ElaboratedData processDynoData(final RawData rawData) {
         if (!rawData.torque().isPresent() || !rawData.engineRPM().isPresent()) {
             AlertMonitor.warningNotify(
                 "Raw data must contain both torque and RPM values",
                 Optional.of("To process dyno data, both torque and RPM values are required.")
             );
-            //throw new IllegalStateException("Raw data must contain both torque and RPM values.");
+            return null;
         }
         final Double engineCorrectedTorque = rawData.torque().get()
             * UserSettings.LOADCELL_LEVER_LENGTH.getDefaultValue();
