@@ -13,6 +13,7 @@ import it.unibo.javadyno.model.dyno.api.Dyno;
 import it.unibo.javadyno.model.dyno.simulated.impl.SimulatedDynoImpl;
 import it.unibo.javadyno.view.impl.MainMenu;
 import it.unibo.javadyno.view.impl.SimulationView;
+import it.unibo.javadyno.view.impl.SimulationViewV2;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
@@ -30,7 +31,7 @@ public class ControllerImpl implements Controller {
     private final Random random = new Random();
     private final DataCollector dataCollector;
     private Dyno dyno;
-    private SimulationView simulationView;
+    private SimulationViewV2 simulationView;
 
     /**
      * Default constructor for ControllerImpl.
@@ -70,7 +71,7 @@ public class ControllerImpl implements Controller {
      */
     @Override
     public void showSimulationView(final Stage stage) {
-        this.simulationView = new SimulationView(this);
+        this.simulationView = new SimulationViewV2(this);
         simulationView.start(stage);
     }
 

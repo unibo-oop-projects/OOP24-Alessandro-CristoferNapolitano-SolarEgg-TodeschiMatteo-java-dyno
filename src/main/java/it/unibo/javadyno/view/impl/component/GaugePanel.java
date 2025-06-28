@@ -6,13 +6,16 @@ import eu.hansolo.medusa.Section;
 import it.unibo.javadyno.model.graph.api.GaugeFactory;
 import it.unibo.javadyno.model.graph.impl.DefaultGaugeFactory;
 import javafx.geometry.Pos;
-import javafx.scene.layout.VBox;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Screen;
 
 /**
  * GaugePanel class that extends VBox to create a panel with multiple gauges.
  */
-public final class GaugePanel extends VBox {
+public final class GaugePanel extends HBox {
+    private static final double MAXIMUM_HEIGHT_FACTOR = 0.3;
     private static final int COLUMN_SPACING = 5;
     private static final String CSS_GAUGE_PANEL_TAG = "gauge-panel";
 
@@ -49,6 +52,9 @@ public final class GaugePanel extends VBox {
         super(COLUMN_SPACING);
         this.setAlignment(Pos.CENTER);
         this.getStyleClass().add(CSS_GAUGE_PANEL_TAG);
+        final Rectangle2D screenBounds = Screen.getPrimary().getBounds();
+        final double height = screenBounds.getHeight() * MAXIMUM_HEIGHT_FACTOR;
+        this.setMaxHeight(height);
         this.rpmGauge = gaugeFactory.createGaugeChart(
                 RPM_CHARTS_TITLE,
                 RPM_CHARTS_UNIT,
