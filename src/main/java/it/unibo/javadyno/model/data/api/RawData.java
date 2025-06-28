@@ -60,7 +60,7 @@ public record RawData(
         private Optional<Instant> timestamp = Optional.empty();
         private Optional<Double> throttlePosition = Optional.empty();
         private Optional<Integer> baroPressure = Optional.empty();
-        private Optional<Integer> ambientAirPressure = Optional.empty();
+        private Optional<Integer> ambientAirTemperature = Optional.empty();
         private Optional<Double> exhaustGasTemperature = Optional.empty();
 
         /**
@@ -158,7 +158,7 @@ public record RawData(
          * @return this builder instance
          */
         public Builder ambientAirTemperature(final Optional<Integer> valueAmbientAirTemperature) {
-            this.ambientAirPressure = valueAmbientAirTemperature;
+            this.ambientAirTemperature = valueAmbientAirTemperature;
             return this;
         }
 
@@ -189,7 +189,7 @@ public record RawData(
                 timestamp,
                 throttlePosition,
                 baroPressure,
-                ambientAirPressure,
+                ambientAirTemperature,
                 exhaustGasTemperature
             );
         }
