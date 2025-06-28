@@ -21,6 +21,7 @@ import java.util.function.Function;
 /**
  * CSV Strategy implementation using the opencsv library.
  * Handles reading and writing of Raw and Elaborated data to and from CSV files.
+ * Uses the openCSV library for parsing and writing.
  * This class is not designed for extension.
  */
 public final class CsvStrategy implements FileStrategy {
@@ -86,7 +87,8 @@ public final class CsvStrategy implements FileStrategy {
         try (CSVReader reader = new CSVReader(new FileReader(file, StandardCharsets.UTF_8))) {
             reader.skip(1); // Skip the header row.
 
-            // Continues reading until end of file.
+            // Continues reading infinitely until end of file.
+            // Adds each row as an element in the importedData list, and skips potentially malformed lines.
             while (true) {
                 final String[] fields = reader.readNext();
                 if (fields == null) {

@@ -46,9 +46,12 @@ dependencies {
     val javaWebSocketVersion = "1.6.0"
     implementation("org.java-websocket:Java-WebSocket:$javaWebSocketVersion")
 
-    // JSON library for parsing and generating JSON
+    // JSON library for manually parsing and generating JSON
     val jsonVersion = "20250517"
     implementation("org.json:json:$jsonVersion")
+
+     // JSON library for convenient object-to-JSON mapping
+    implementation("com.owlike:genson:1.6")
 
     // CSV library for parsing and generating CSV
     implementation("com.opencsv:opencsv:5.9")
