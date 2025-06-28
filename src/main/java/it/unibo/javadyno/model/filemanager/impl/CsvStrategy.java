@@ -83,12 +83,19 @@ public final class CsvStrategy implements FileStrategy {
         final List<ElaboratedData> importedData = new ArrayList<>();
         try (CSVReader reader = new CSVReader(new FileReader(file, StandardCharsets.UTF_8))) {
             reader.skip(1); // Skip the header row.
-            String[] fields;
-            while ((fields = reader.readNext()) != null) {
+
+            // Continues reading until end of file.
+            while (true) {
+                final String[] fields = reader.readNext();
+                if (fields == null) {
+                    break; // End of file reached.
+                }
+
                 if (fields.length < HEADER.length) {
                     continue; // Skip malformed lines.
                 }
 
+                // Creates a RawData object from the rawdata fields.
                 final RawData rawData = RawData.builder()
                     .timestamp(parseOptional(fields[INDEX_TIMESTAMP], Instant::parse))
                     .engineRPM(parseOptional(fields[INDEX_ENGINE_RPM], Integer::parseInt))
@@ -101,6 +108,7 @@ public final class CsvStrategy implements FileStrategy {
                     .exhaustGasTemperature(parseOptional(fields[INDEX_EXHAUST_GAS_TEMPERATURE], Double::parseDouble))
                     .build();
 
+                // Parses the elaborateddata fields.
                 final double powerKW = Double.parseDouble(fields[INDEX_ENGINE_POWER_KW]);
                 final double powerHP = Double.parseDouble(fields[INDEX_ENGINE_POWER_HP]);
                 final double correctedTorque = Double.parseDouble(fields[INDEX_ENGINE_CORRECTED_TORQUE]);
