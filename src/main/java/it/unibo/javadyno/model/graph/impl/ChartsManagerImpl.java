@@ -37,7 +37,10 @@ public class ChartsManagerImpl implements ChartsManager {
      * {@inheritDoc}
      */
     @Override
-    public void addPointToSeries(final JFreeChart chart, final String seriesName, final ChartsManager.YAxisLevel level, final Number xValue, final Number yValue) {
+    public void addPointToSeries(
+        final JFreeChart chart, final String seriesName, final ChartsManager.YAxisLevel level,
+        final Number xValue, final Number yValue
+        ) {
         final XYSeriesCollection dataset = (XYSeriesCollection) chart.getXYPlot().getDataset(level.getLevel());
         final XYSeries serie = dataset.getSeries(seriesName);
         if (!Objects.nonNull(serie)) {
@@ -50,6 +53,9 @@ public class ChartsManagerImpl implements ChartsManager {
         serie.add(xValue, yValue);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addYAxis(final JFreeChart chart, final String axisLabel) {
         final XYPlot plot = chart.getXYPlot();

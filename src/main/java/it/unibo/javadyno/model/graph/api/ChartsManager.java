@@ -9,7 +9,10 @@ import org.jfree.chart.JFreeChart;
 @SuppressWarnings("PMD.ImplicitFunctionalInterface")
 public interface ChartsManager {
 
-    public static enum YAxisLevel {
+    /**
+     * Enumeration representing the levels of Y-axis in a chart.
+     */
+    enum YAxisLevel {
         FIRST(0),
         SECOND(1),
         THIRD(2),
@@ -21,11 +24,17 @@ public interface ChartsManager {
             this.level = level;
         }
 
+        /**
+         * Returns the integer value representing the Y-axis level.
+         *
+         * @return the level as an integer
+         */
         public int getLevel() {
             return this.level;
         }
 
     }
+
     /**
      * Adds a series to the chart with the specified name.
      *
@@ -33,17 +42,18 @@ public interface ChartsManager {
      * @param seriesName the name of the series to be added
      * @param level the Y-axis level for the series
      */
-    void addNewSeries(JFreeChart chart, String seriesName, final ChartsManager.YAxisLevel level);
+    void addNewSeries(JFreeChart chart, String seriesName, ChartsManager.YAxisLevel level);
 
     /**
      * Adds a point to the specified series in the chart.
      *
      * @param chart the chart containing the series
      * @param seriesName the name of the series to which the point will be added
+     * @param level the Y-axis level of the series
      * @param xValue the x-axis value of the point
      * @param yValue the y-axis value of the point
      */
-    void addPointToSeries(JFreeChart chart, String seriesName, final ChartsManager.YAxisLevel level,Number xValue, Number yValue);
+    void addPointToSeries(JFreeChart chart, String seriesName, ChartsManager.YAxisLevel level, Number xValue, Number yValue);
 
     /**
      * Adds another a Y-axis to the chart with the specified label and series name.
