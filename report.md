@@ -1,19 +1,75 @@
+<center>
+<h1>
+Relazione del progetto 
+
+“JavaDyno”
+</h1>
+
+<h2>
+
+Alessandro Porcheddu  
+Matteo Todeschi  
+Christofer Napolitano  
+Ivan Crimaldi
+<br>
+
+29 giugno 2025
+</h2>
+
+</center>
+<br>
+
+# Indice
+
+## [1. Analisi](#capitolo-1---analisi)
+- ### [1.1 Descrizione e requisiti](#11-descrizione-e-requisiti-1)
+- ### [1.2 Analisi e modello del dominio](#12-analisi-e-modello-del-dominio-1)
+## [2. Design](#capitolo-2---design)
+- ### [2.1 Architettura](#21-architettura-1)
+- ### [2.2 Design dettagliato](#22-design-dettagliato-1)
+    - #### [2.2.1 Porcheddu Alessandro](#221-porcheddu-alessandro-1)
+    - #### [2.2.2 Surname Name](#222-surname-name-1)
+## [3. Sviluppo](#capitolo-3---sviluppo)
+- ### [3.1 Testing automatizzato](#31-testing-automatizzato-1)
+- ### [3.2 Note di sviluppo](#32-note-di-sviluppo-1)
+    - #### [3.2.1 Porcheddu Alessandro](#321-porcheddu-alessandro-1)
+    - #### [3.2.2 Surname Name](#322-surname-name-1)
+## [4. Commenti finali](#capitolo-4---commenti-finali)
+- ### [4.1 Autovalutazione e lavori futuri](#41-autovalutazione-e-lavori-futuri-1)
+- ### [4.2 Difficoltà incontrate e commenti per i docenti](#42-difficoltà-incontrate-e-commenti-per-i-docenti-1)
+## [Appendice A - Guida utente](#appendice-a---guida-utente-1)
+## [Appendice B - Esercitazioni di laboratorio](#appendice-b---esercitazioni-di-laboratorio-1)
+- ### [B.0.1 alessandro.porcheddu@studio.unibo.it](#b01-alessandroporcheddustudiouniboit-1)
+- ### [B.0.2 matteo.todeschi@studio.unibo.it](#b02-matteotodeschistudiouniboit-1)
+- ### [B.0.3 name.surname@studio.unibo.it](#b03-namesurnamestudiouniboit-1)
+- ### [B.0.4 name.surname@studio.unibo.it](#b04-namesurnamestudiouniboit-1)
+
+<br>
+
 # Capitolo 1 - Analisi
-## 1.1 Requisiti
-Il software si presenta come un ambiente per la gestione e simulazione di un dinamometro per motori di varia natura.
+## 1.1 Descrizione e Requisiti
+Il software si presenta come un ambiente per la gestione e simulazione di un dinamometro per motori di varia natura.  
+Un dinamometro è un dispositivo che, collegato ad un asse rotante connesso al relativo motore, permette di misurarne la potenza sprigionata a diversi regimi di rotazione. Esistono diverse tipologie di dinamometro ma la più diffusa in assoluto è il [freno magnetico a correnti parassite](https://www.elprocus.com/what-is-eddy-current-dynamometer-construction-its-working/).
 
-Un dinamometro è un dispositivo che, collegato ad un asse rotante connesso al relativo motore, permette di misurarne la potenza sprigionata a diversi regimi di rotazione.
-
-L’utente ha la libertà di decidere se interagire con la parte di simulazione, se avviare una prova con strumentazione fisica oppure se acquisire i dati della prova dalla propria autovettura.
-
+L’utente ha la libertà di decidere se interagire con la parte di simulazione, se avviare una prova con strumentazione fisica oppure se acquisire i dati della prova dalla propria autovettura tramite porta OBD2 (presente su tutti i veicoli immatricolati nell'UE dal [1 gennaio 2004](https://en.wikipedia.org/wiki/On-board_diagnostics#History)).  
 La simulazione comprende un minigioco per poter prendere dimestichezza con le operazioni che potranno poi essere effettuate nel mondo reale.
 
 Il software comprende diverse opzioni per la personalizzazione della GUI e per il confronto di grafici salvati, in modo da poter lavorare in qualsiasi momento sui dati raccolti.
 
 ### Requisiti funzionali
-- TODO
+- Operazioni sui grafici
+    - Salvataggio ed esportazione grafici (in diversi formati)
+    - Confronto di grafici con diverse opzioni di visualizzazione
+    - Caricamento da file
+- Assistenza real-time per prove su banco
+    - Warning per raggiungimento soglie critiche o problemi di varia natura
+    - Svolgimento della prova in modalità guidata per una ripetibilità più affidabile
+- Comunicazione con hardware esterno
+    - Compatibilità con un ampio range di interfacce USB
+    - Capacità di comunicazione wireless
 ### Requisiti non funzionali
-- TODO
+- Elaborazione dei grafici e dei dati in tempo reale con elevata precisione e fluidità
+- Proporzioni grafiche invariate tra dispositivi con risoluzioni molto diverse
 ## 1.2 Analisi e modello del dominio
 TODO
 ```mermaid
@@ -95,7 +151,7 @@ Per tale scopo è stato adottato _JUnit_ e componenti derivate che, inoltre, ci 
 
 * OBD2DynoTest: test progettato per verificare il corretto funzionamento della logica di acquisizione dati tramite l'interfaccia OBD2. Vengono inoltre simulati diversi scenari di input per assicurare che i dati, come i giri del motore e la velocità del veicolo, vengano interpretati correttamente e che le operazioni di conversione siano accurate.
 * SerialCommunicatorTest: classe implementata per un veloce riscontro all'inizio dello sviluppo per quanto riguarda l'interfacciamento con la libreria jSerialComm
-
+* DataElaboratorImplTest: in questo caso il test prevede la crezione di dati pseudo realistici la verifica della correttezza dei calcoli sapendo il "trend" a priori. In particolare viene testata la componente di calcolo dell'OBD2 che risulta molto più articolata di quella del banco reale.
 ## 3.2 Note di sviluppo
 ### 3.2.1 Porcheddu Alessandro
 #### Utilizzo di `LoopingIterator` dalla libreria **Apache Commons Collections**

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.AfterEach;
 
 class SerialCommunicatorTest {
@@ -35,11 +36,12 @@ class SerialCommunicatorTest {
 
     @Test
     void testConnection() {
-        try {
-            communicatorAuto.connect();
-        } catch (final IllegalStateException e) {
-            assertFalse(communicatorAuto.isConnected()); // This is expected if no port is available
-        }
+        assertThrows(
+            NullPointerException.class,
+            communicatorAuto::connect,
+            "Alert monitor does throw a NullPointerException when the controller is not initialized.");
+        assertFalse(communicatorAuto.isConnected());
+
     }
 
     @Test

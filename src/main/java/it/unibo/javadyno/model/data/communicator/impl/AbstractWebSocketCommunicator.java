@@ -8,10 +8,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
-
 import it.unibo.javadyno.controller.impl.AlertMonitor;
 import it.unibo.javadyno.model.data.communicator.api.MCUCommunicator;
-
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
@@ -133,7 +131,10 @@ public abstract class AbstractWebSocketCommunicator<T> implements MCUCommunicato
 
         @Override
         public void onOpen(final ServerHandshake handshakedata) {
-            // Tell AlertMonitor
+            AlertMonitor.infoNotify(
+                "Connected to WebSocket server: " + mcuServerUri,
+                Optional.empty()
+            );
         }
 
         @Override
@@ -147,12 +148,18 @@ public abstract class AbstractWebSocketCommunicator<T> implements MCUCommunicato
 
         @Override
         public void onClose(final int code, final String reason, final boolean remote) {
-            // Tell AlertMonitor
+            AlertMonitor.infoNotify(
+                "WebSocket connection closed: " + reason,
+                Optional.of("Code: " + code)
+            );
         }
 
         @Override
         public void onError(final Exception ex) {
-            // Tell AlertMonitor
+            AlertMonitor.warningNotify(
+                "WebSocket error: " + ex.getMessage(),
+                Optional.of(ex.getMessage())
+            );
         }
     }
 }

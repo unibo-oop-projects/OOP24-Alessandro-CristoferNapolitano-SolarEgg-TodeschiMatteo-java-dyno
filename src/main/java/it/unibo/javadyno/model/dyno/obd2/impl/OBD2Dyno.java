@@ -32,6 +32,8 @@ public final class OBD2Dyno extends AbstractPhysicalDyno<String> {
     private Optional<Integer> engineRpm = Optional.empty();
     private Optional<Integer> vehicleSpeed = Optional.empty();
     private Optional<Double> engineTemperature = Optional.empty();
+    private Optional<Integer> barometricPressure = Optional.empty();
+    private Optional<Integer> ambientAirTemperature = Optional.empty();
     private Optional<Instant> timestamp = Optional.empty();
 
     /**
@@ -70,7 +72,9 @@ public final class OBD2Dyno extends AbstractPhysicalDyno<String> {
         this.supportedPIDs = List.of(
             PID.ENGINE_RPM,
             PID.VEHICLE_SPEED,
-            PID.ENGINE_COOLANT_TEMPERATURE
+            PID.ENGINE_COOLANT_TEMPERATURE,
+            PID.BAROMETRIC_PRESSURE,
+            PID.AMBIENT_AIR_TEMPERATURE
         );
         this.loopingIterator = new LoopingIterator<>(this.supportedPIDs);
     }
@@ -81,6 +85,8 @@ public final class OBD2Dyno extends AbstractPhysicalDyno<String> {
                 .engineRPM(this.engineRpm)
                 .vehicleSpeed(this.vehicleSpeed)
                 .engineTemperature(this.engineTemperature)
+                .baroPressure(this.barometricPressure)
+                .ambientAirTemperature(this.ambientAirTemperature)
                 .timestamp(this.timestamp)
                 .build();
     }
@@ -122,10 +128,24 @@ public final class OBD2Dyno extends AbstractPhysicalDyno<String> {
                 final String speedData = message.substring(HEADER_LENGTH, HEADER_LENGTH + SEGMENTS_LENGTH);
                 this.vehicleSpeed = Optional.of(Integer.parseInt(speedData, DATA_NUMERICAL_BASE));
             } else if (pid == PID.ENGINE_COOLANT_TEMPERATURE.getCode()) {
+                // Engine coolant temperature formula: temperature in °C = A - 40
                 final String tempData = message.substring(HEADER_LENGTH, HEADER_LENGTH + SEGMENTS_LENGTH);
                 this.engineTemperature = Optional.of((double)
                     (Integer.parseInt(tempData, DATA_NUMERICAL_BASE)
                     + PID.ENGINE_COOLANT_TEMPERATURE.getOffset())
+                );
+            } else if (pid == PID.BAROMETRIC_PRESSURE.getCode()) {
+                final String pressureData = message.substring(HEADER_LENGTH, HEADER_LENGTH + SEGMENTS_LENGTH);
+                this.barometricPressure = Optional.of(
+                    Integer.parseInt(pressureData, DATA_NUMERICAL_BASE)
+                    + PID.BAROMETRIC_PRESSURE.getOffset()
+                );
+            } else if (pid == PID.AMBIENT_AIR_TEMPERATURE.getCode()) {
+                // Ambient air temperature formula: temperature in °C = A - 40
+                final String ambientTempData = message.substring(HEADER_LENGTH, HEADER_LENGTH + SEGMENTS_LENGTH);
+                this.ambientAirTemperature = Optional.of(
+                    Integer.parseInt(ambientTempData, DATA_NUMERICAL_BASE)
+                    + PID.AMBIENT_AIR_TEMPERATURE.getOffset()
                 );
             }
         }

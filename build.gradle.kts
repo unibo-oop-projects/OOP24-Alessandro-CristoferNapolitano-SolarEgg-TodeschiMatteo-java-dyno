@@ -58,6 +58,8 @@ dependencies {
 
     // GUI library for JavaFX Gauge components
     implementation("eu.hansolo:Medusa:11.7")
+    implementation("org.jfree:jfreechart:1.5.6")
+    implementation("org.jfree:jfreechart-fx:1.0.1")
 
     // Apache Commons Lang for additional Java Collections utilities
     implementation("org.apache.commons:commons-collections4:4.5.0")

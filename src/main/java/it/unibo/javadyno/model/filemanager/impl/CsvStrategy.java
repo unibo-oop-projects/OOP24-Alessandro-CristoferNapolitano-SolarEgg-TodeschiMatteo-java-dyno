@@ -64,7 +64,7 @@ public final class CsvStrategy implements FileStrategy {
                     raw.torque().map(Object::toString).orElse(""),
                     raw.vehicleSpeed().map(Object::toString).orElse(""),
                     raw.throttlePosition().map(Object::toString).orElse(""),
-                    raw.boostPressure().map(Object::toString).orElse(""),
+                    raw.baroPressure().map(Object::toString).orElse(""),
                     raw.exhaustGasTemperature().map(Object::toString).orElse(""),
                     String.valueOf(elaborated.enginePowerKW()),
                     String.valueOf(elaborated.enginePowerHP()),

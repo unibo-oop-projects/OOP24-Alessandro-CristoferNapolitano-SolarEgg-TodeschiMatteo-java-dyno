@@ -10,7 +10,9 @@ public enum PID {
     THROTTLE_POSITION(0x11, "Throttle Position"),
     ENGINE_COOLANT_TEMPERATURE(0x05, "Engine Coolant Temperature", -40),
     MAF_AIR_FLOW_RATE(0x10, "MAF Air Flow Rate"),
-    FUEL_LEVEL_INPUT(0x2F, "Fuel Level Input");
+    FUEL_LEVEL_INPUT(0x2F, "Fuel Level Input"),
+    BAROMETRIC_PRESSURE(0x33, "Barometric Pressure"),
+    AMBIENT_AIR_TEMPERATURE(0x46, "Ambient Air Temperature", -40);
 
     private final int code;
     private final String description;
