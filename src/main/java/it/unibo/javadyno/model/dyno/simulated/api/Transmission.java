@@ -22,7 +22,8 @@ public interface Transmission {
     void shiftDown();
 
     /**
-     * get current gear number
+     * get current gear number.
+     *
      * @return actual gear number
      */
     int getCurrentGear();
