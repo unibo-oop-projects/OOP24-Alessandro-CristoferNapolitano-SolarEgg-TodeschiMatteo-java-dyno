@@ -26,27 +26,15 @@ public class ChartsManagerImpl implements ChartsManager {
     @Override
     public void setColor(JFreeChart chart, String seriesName, YAxisLevel level, Color color) {
         final XYSeriesCollection dataset = (XYSeriesCollection) chart.getXYPlot().getDataset(level.getLevel());
-        if (!Objects.nonNull(dataset)) {
-            AlertMonitor.errorNotify(
-                "Error in dataset from charts",
-                Optional.of("Series '" + seriesName + "' does not exist in level " + level.getLevel())
-            );
+        if(!isDatasetValid(dataset, seriesName, level)){
             return;
         }
-        final XYSeries serie = dataset.getSeries(seriesName);
-        if (!Objects.nonNull(serie)) {
-            AlertMonitor.errorNotify(
-                "Error in accessing series from charts",
-                Optional.of("Series '" + seriesName + "' does not exist in level " + level.getLevel())
-            );
+        final XYSeries series = dataset.getSeries(seriesName);
+        if(!isSeriesValid(series, seriesName, level)){
             return;
         }
         final XYItemRenderer renderer = chart.getXYPlot().getRenderer(level.getLevel());
-        if (!Objects.nonNull(renderer)) {
-            AlertMonitor.errorNotify(
-                "Error in accessing the renderer from charts",
-                Optional.of("Level " + level.getLevel() + " does not exist.")
-            );
+        if(!isRendererValid(renderer, seriesName, level)){
             return;
         }
         final int seriesIndex = IntStream.range(0, dataset.getSeriesCount())
@@ -63,11 +51,7 @@ public class ChartsManagerImpl implements ChartsManager {
     public void addNewSeries(final JFreeChart lineChart, final String seriesName, final ChartsManager.YAxisLevel level) {
         final XYSeries newSeries = new XYSeries(seriesName);
         final XYSeriesCollection dataset = (XYSeriesCollection) lineChart.getXYPlot().getDataset(level.getLevel());
-        if (!Objects.nonNull(dataset)) {
-            AlertMonitor.errorNotify(
-                "Error in accessing the dataset from charts",
-                Optional.of("Level " + level.getLevel() + " does not exist.")
-            );
+        if(!isDatasetValid(dataset, seriesName, level)){
             return;
         }
         dataset.addSeries(newSeries);
@@ -82,15 +66,14 @@ public class ChartsManagerImpl implements ChartsManager {
         final Number xValue, final Number yValue
         ) {
         final XYSeriesCollection dataset = (XYSeriesCollection) chart.getXYPlot().getDataset(level.getLevel());
-        final XYSeries serie = dataset.getSeries(seriesName);
-        if (!Objects.nonNull(serie)) {
-            AlertMonitor.errorNotify(
-                "Error in accessing the datas from charts",
-                Optional.empty()
-            );
+        if(!isDatasetValid(dataset, seriesName, level)){
             return;
         }
-        serie.add(xValue, yValue);
+        final XYSeries series = dataset.getSeries(seriesName);
+        if(!isSeriesValid(series, seriesName, level)){
+            return;
+        }
+        series.add(xValue, yValue);
     }
 
     /**
@@ -116,5 +99,62 @@ public class ChartsManagerImpl implements ChartsManager {
         newRenderer.setDefaultLinesVisible(true);
         newRenderer.setDefaultShapesVisible(false);
         plot.setRenderer(newIndex, newRenderer);
+    }
+
+    /**
+     * Checks if the dataset is valid for the given series and level.
+     *
+     * @param dataset the dataset to check
+     * @param seriesName the name of the series to check
+     * @param level the Y-axis level to check
+     * @return true if the dataset is valid, false otherwise
+     */
+    private boolean isDatasetValid(final XYSeriesCollection dataset, final String seriesName, final YAxisLevel level) {
+        if (!Objects.nonNull(dataset)) {
+            AlertMonitor.errorNotify(
+                "Error in dataset from charts",
+                Optional.of("Series '" + seriesName + "' does not exist in level " + level.getLevel())
+            );
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Checks if the series is valid for the given series name and level.
+     *
+     * @param series the series to check
+     * @param seriesName the name of the series to check
+     * @param level the Y-axis level to check
+     * @return true if the series is valid, false otherwise
+     */
+    private boolean isSeriesValid(final XYSeries series, final String seriesName, final YAxisLevel level) {
+        if (!Objects.nonNull(series)) {
+            AlertMonitor.errorNotify(
+                "Error in series from charts",
+                Optional.of("Series '" + seriesName + "' does not exist in level " + level.getLevel())
+            );
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Checks if the renderer is valid for the given series name and level.
+     *
+     * @param renderer the renderer to check
+     * @param seriesName the name of the series to check
+     * @param level the Y-axis level to check
+     * @return true if the renderer is valid, false otherwise
+     */
+    private boolean isRendererValid(final XYItemRenderer renderer, final String seriesName, final YAxisLevel level) {
+        if (!Objects.nonNull(renderer)) {
+            AlertMonitor.errorNotify(
+                "Error in accessing the renderer from charts",
+                Optional.of("Level " + level.getLevel() + " does not exist.")
+            );
+            return false;
+        }
+        return true;
     }
 }
