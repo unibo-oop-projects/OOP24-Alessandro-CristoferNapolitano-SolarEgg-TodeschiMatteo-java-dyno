@@ -138,8 +138,11 @@ public class SimulationView extends Application implements View {
         controller.closeApp();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void update(ElaboratedData data) {
+    public void update(final ElaboratedData data) {
         updateGauges(data.rawData().engineRPM().orElse(0),
                      data.rawData().vehicleSpeed().orElse(0),
                      data.rawData().engineTemperature().orElse(0.0));
@@ -147,6 +150,9 @@ public class SimulationView extends Application implements View {
                     data.rawData().torque().orElse(0.0));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void begin(final Stage primaryStage) {
         this.start(primaryStage);

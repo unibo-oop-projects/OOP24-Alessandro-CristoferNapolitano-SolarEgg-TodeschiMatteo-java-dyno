@@ -44,12 +44,18 @@ public class SimulationThreadGUITest extends Application implements View {
         primaryStage.show();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void update(final ElaboratedData data) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'update'");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void begin(final Stage primaryStage) {
         // TODO Auto-generated method stub

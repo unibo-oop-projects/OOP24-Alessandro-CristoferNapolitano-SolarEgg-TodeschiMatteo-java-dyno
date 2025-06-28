@@ -80,9 +80,15 @@ public class MainMenu extends Application implements View {
         controller.closeApp();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void update(final ElaboratedData data) { }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void begin(final Stage primaryStage) {
         this.start(primaryStage);
