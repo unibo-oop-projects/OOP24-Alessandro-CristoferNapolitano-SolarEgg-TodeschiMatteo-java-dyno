@@ -1,5 +1,6 @@
 package it.unibo.javadyno.model.dyno.simulated.impl;
 
+import it.unibo.javadyno.model.data.api.RawData;
 import it.unibo.javadyno.model.dyno.simulated.api.DriveTrain;
 import it.unibo.javadyno.model.dyno.simulated.api.Vehicle;
 import it.unibo.javadyno.model.dyno.simulated.api.WeatherStation;
@@ -53,10 +54,8 @@ public class VehicleImpl implements Vehicle{
         return drivetrain.getCurrentGear();
     }
 
-    /* TODO :
-    VehicleRawData getVehicleRawData() {
-
+    @Override
+    public RawData getRawData() {
+        return null;
     }
-    */
-    
 }
