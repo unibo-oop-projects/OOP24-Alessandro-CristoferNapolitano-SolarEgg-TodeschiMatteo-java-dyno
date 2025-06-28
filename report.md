@@ -78,7 +78,97 @@ L’intero applicativo si basa su pacchetti di dati che vengono man mano raffina
 Inoltre viene utilizzata una di verifica dei dati per evitare che vi siano problemi e/o incongruenze nei e gestisce il comportamento dell’applicativo di conseguenza.
 
 ```mermaid
-UML TODO
+classDiagram
+direction TB
+    MCU -- MCUCommunicator
+    OBD2 --* MCUCommunicator
+    RealDyno --* MCUCommunicator
+    Dyno --* DataSource
+    RealDyno --|> Dyno
+    SimulatedDyno --|> Dyno
+    Dyno -- RawData
+    DataElaborator --o RawData
+    DataElaborator --o ElaboratedData
+    DataCollector --* DataElaborator
+    DataCollector --o ElaboratedData
+    OBD2 --|> Dyno
+    OBD2 -- PID
+    OBD2 -- Mode
+    FileManager --* FileStrategy
+
+    class MCUCommunicator {
+	    +connect()
+	    +disconnect()
+	    +send()
+	    +addMessageListener(Consumer)
+	    +removeMessageListener(Consumer)
+    }
+
+    class Dyno {
+	    +getRawData() : RawData
+	    +getDynoType() : DataSource
+	    +begin()
+	    +end()
+	    +isActive() : boolean
+    }
+
+    class DataCollector {
+	    +initialize(Dyno)
+	    +collectData()
+	    +getFullData() : Queue~ElaboratedData~;
+    }
+
+    class DataElaborator {
+	    +getElaboratedData() : ElaboratedData
+    }
+
+    class FileManager {
+	    +setStrategy(FileStrategy)
+	    +exportDataToFile(Queue~ElaboratedData~, File)
+	    +importDataFromFile(File) : List~ElaboratedData~
+    }
+
+    class FileStrategy {
+	    +exportData(List~ElaboratedData~, File)
+	    +importData(File) : List~ElaboratedData~
+    }
+
+    class RawData {
+    }
+
+    class ElaboratedData {
+    }
+
+    class DataSource {
+    }
+
+    class MCU {
+    }
+
+    class OBD2 {
+    }
+
+    class Mode {
+    }
+
+    class PID {
+    }
+
+    class RealDyno {
+    }
+
+    class SimulatedDyno {
+    }
+
+	<<interface>> MCUCommunicator
+	<<interface>> Dyno
+	<<interface>> DataElaborator
+	<<interface>> RawData
+	<<interface>> ElaboratedData
+	<<enumeration>> DataSource
+	<<enumeration>> Mode
+	<<enumeration>> PID
+
 ```
 # Capitolo 2 - Design
 ## 2.1 Architettura
