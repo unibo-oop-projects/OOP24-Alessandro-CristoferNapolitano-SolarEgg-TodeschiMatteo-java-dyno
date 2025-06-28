@@ -17,9 +17,9 @@ import javafx.stage.Screen;
  */
 public final class ChartsPanel extends VBox {
     private static final String CSS_CHARTS_PANEL_TAG = "charts-panel";
-    private static final int COLUMN_SPACING = 5;
-    private static final double CHART_HEIGH_FACTOR = 0.4;
-    private static final double CHART_WIDTH_FACTOR = 0.3;
+    private static final double CHART_HEIGH_FACTOR = 0.7;
+    private static final double CHART_WIDTH_FACTOR = 0.6;
+    private static final double CHART_MINIMUM_FACTOR = 0.5;
     private static final String CHARTS_NAME = "Speed";
     private static final String X_AXIS_LABEL = "Time (h)";
     private static final String Y_AXIS_LABEL = "Position (Km)";
@@ -33,8 +33,7 @@ public final class ChartsPanel extends VBox {
      * Default constructor for ChartsPanel.
      */
     public ChartsPanel() {
-        super(COLUMN_SPACING);
-        this.setAlignment(Pos.CENTER);
+        this.setAlignment(Pos.TOP_RIGHT);
         this.getStyleClass().add(CSS_CHARTS_PANEL_TAG);
         final Rectangle2D screenBounds = Screen.getPrimary().getBounds();
         lineChart = chartsFactory.createEmptyCharts(
@@ -44,8 +43,12 @@ public final class ChartsPanel extends VBox {
         );
         final ChartViewer viewer = new ChartViewer(lineChart);
         viewer.setPrefSize(screenBounds.getWidth() * CHART_WIDTH_FACTOR, screenBounds.getHeight() * CHART_HEIGH_FACTOR);
-        viewer.setMinSize(screenBounds.getWidth() * CHART_WIDTH_FACTOR, screenBounds.getHeight() * CHART_HEIGH_FACTOR);
-        chartManager.addNewSeries(lineChart, SERIES_NAME);
+        viewer.setMinSize(screenBounds.getWidth() * CHART_MINIMUM_FACTOR, screenBounds.getHeight() * CHART_MINIMUM_FACTOR);
+        chartManager.addNewSeries(lineChart, SERIES_NAME, ChartsManager.YAxisLevel.FIRST);
+        chartManager.addYAxis(lineChart, Y_AXIS_LABEL);
+        chartManager.addNewSeries(lineChart, SERIES_NAME, ChartsManager.YAxisLevel.SECOND);
+        chartManager.addYAxis(lineChart, Y_AXIS_LABEL);
+        chartManager.addNewSeries(lineChart, SERIES_NAME, ChartsManager.YAxisLevel.THIRD);
         this.getChildren().add(viewer);
     }
 
@@ -59,7 +62,22 @@ public final class ChartsPanel extends VBox {
         chartManager.addPointToSeries(
             this.lineChart,
             SERIES_NAME,
+            ChartsManager.YAxisLevel.FIRST,
             xValue,
+            yValue
+        );
+        chartManager.addPointToSeries(
+            this.lineChart,
+            SERIES_NAME,
+            ChartsManager.YAxisLevel.SECOND,
+            yValue,
+            xValue
+        );
+        chartManager.addPointToSeries(
+            this.lineChart,
+            SERIES_NAME,
+            ChartsManager.YAxisLevel.THIRD,
+            yValue,
             yValue
         );
     }

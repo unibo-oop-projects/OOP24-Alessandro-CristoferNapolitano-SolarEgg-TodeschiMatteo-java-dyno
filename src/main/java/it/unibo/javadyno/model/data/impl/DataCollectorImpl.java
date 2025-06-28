@@ -33,7 +33,10 @@ public final class DataCollectorImpl implements DataCollector {
 
     @Override
     public void collectData() {
-        this.datas.add(this.dataElaborator.getElaboratedData());
+        final ElaboratedData elaboratedData = this.dataElaborator.getElaboratedData();
+        if (!Objects.isNull(elaboratedData)) {
+            this.datas.add(this.dataElaborator.getElaboratedData());
+        }
     }
 
     @Override
