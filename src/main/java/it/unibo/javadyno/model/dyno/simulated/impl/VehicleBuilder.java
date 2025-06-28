@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import it.unibo.javadyno.model.dyno.simulated.api.BrakeTorqueProvider;
 import it.unibo.javadyno.model.dyno.simulated.api.DriveTrain;
 import it.unibo.javadyno.model.dyno.simulated.api.Engine;
 import it.unibo.javadyno.model.dyno.simulated.api.LoadModel;
@@ -44,9 +45,8 @@ public class VehicleBuilder {
     /** rolling resistance coefficient [N*m/(rad/s)] */
     private Double rollingCoeff;
 
-    //TODO : waiting for exact implementation of bench
-    //private double benchBrakeTorque;
-    //private LiveBenchController benchController;
+    // --- bench brake torque ---
+    private BrakeTorqueProvider benchBrakeTorqueProvider;
 
     // --- simulation timing and enviroment ---
     /** simulation step [s] */
@@ -92,12 +92,11 @@ public class VehicleBuilder {
         return this;
     }
 
-    /*
-    public VehicleBuilder withBenchBrake(double brakeTorque, LiveBenchController ctrl) {
-        this.benchBrakeTorque = brakeTorque;
-        this.benchController  = ctrl;
+    
+    public VehicleBuilder withBenchBrake(BrakeTorqueProvider provider) {
+        this.benchBrakeTorqueProvider  = provider;
         return this;
-    }*/
+    }
 
     public VehicleBuilder withDeltaTime(double deltaTime) {
         this.deltaTime = deltaTime;
@@ -128,8 +127,7 @@ public class VehicleBuilder {
         Objects.requireNonNull(gearRatio, "gearRatios");
         Objects.requireNonNull(wheelMass, "wheelMass");
         Objects.requireNonNull(wheelRadius, "wheelRadius");
-        //Objects.requireNonNull(benchBrakeTorque, "benchBrakeTorque");
-        //Objects.requireNonNull(benchController, "benchController");
+        Objects.requireNonNull(benchBrakeTorqueProvider, "benchBrakeTorqueProvider");
         Objects.requireNonNull(deltaTime, "deltaTime");
         Objects.requireNonNull(weatherStation, "weatherStation");
         if (gearRatio.length == 0) {
@@ -151,7 +149,7 @@ public class VehicleBuilder {
         if (enableRollingResistance) {
             loads.add(new RollingResistance(rollingCoeff));
         }
-        //loads.add(new Bench(benchBrakeTorque, benchController)); ??? TODO: updating bench
+        loads.add(new BenchLoad(benchBrakeTorqueProvider));
 
         DriveTrain sim = new RigidDriveTrainSim(engine, transmission, loads, deltaTime);
 
