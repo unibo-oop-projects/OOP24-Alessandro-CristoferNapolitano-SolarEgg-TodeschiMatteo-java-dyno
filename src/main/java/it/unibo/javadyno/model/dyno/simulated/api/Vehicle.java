@@ -23,4 +23,11 @@ public interface Vehicle {
      * method to shift gear down.
      */
     void shiftDown();
+
+    /**
+     * getter for current gear.
+     *
+     * @return current gear (one-based)
+     */
+    int getCurrentGear();
 }
