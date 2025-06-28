@@ -7,17 +7,17 @@ import it.unibo.javadyno.model.dyno.simulated.api.WeatherStation;
  */
 public class WeatherStationImpl implements WeatherStation{
     private final double temperature;
-    private final double pressure;
+    private final int  pressure;
     private final int humidity;
 
     /**
      * simple constructor for WeatherStationImpl.
      *
      * @param temperature value in [°C]
-     * @param pressure value in [mbar]
+     * @param pressure value in [kPa]
      * @param humidity value between [0-100]
      */
-    public WeatherStationImpl(final double temperature, final double pressure, final int humidity) {
+    public WeatherStationImpl(final double temperature, final int pressure, final int humidity) {
         
         this.temperature = temperature;
         this.pressure = pressure;
@@ -39,7 +39,7 @@ public class WeatherStationImpl implements WeatherStation{
      * {@inheritDoc}
      */
     @Override
-    public double getPressure() {
+    public int getPressure() {
         return this.pressure;
     }
 
