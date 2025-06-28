@@ -41,5 +41,19 @@ public interface DriveTrain {
      * get current transmission gear.
      */
     int getCurrentGear();
+
+    /**
+     * get engine temperature.
+     *
+     * @return engine temperature [°C]
+     */
+    double getEngineTemperature();
+
+    /**
+     * get engine generated torque.
+     * 
+     * @return generated torque [Nm]
+     */
+    double getGeneratedTorque();
     
 }
