@@ -1,7 +1,9 @@
 package it.unibo.javadyno.model.dyno.simulated.impl;
 
 import java.util.Objects;
+import java.util.Optional;
 
+import it.unibo.javadyno.controller.impl.AlertMonitor;
 import it.unibo.javadyno.model.dyno.simulated.api.Engine;
 import it.unibo.javadyno.model.dyno.simulated.api.TemperatureModel;
 import it.unibo.javadyno.model.dyno.simulated.api.TorqueMap;
@@ -28,7 +30,11 @@ public class EngineImpl implements Engine {
      */
     public EngineImpl(final double inertia, final TorqueMap map, final TemperatureModel temperatureModel, WeatherStation weatherStation) {
         if (inertia <= 0) {
-            throw new IllegalArgumentException("Inertia must be > 0");
+            AlertMonitor.errorNotify(
+                "Inertia must be > 0",
+                Optional.empty()
+            );
+            //throw new IllegalArgumentException("Inertia must be > 0");
         }
         this.inertia = inertia;
         this.map = Objects.requireNonNull(map, "TorqueMap required");
@@ -42,7 +48,11 @@ public class EngineImpl implements Engine {
     @Override
     public void setThrottle(final double throttle) {
         if (throttle < 0.0 || throttle > 1.0) {
-            throw new IllegalArgumentException("throttle must be between 0.0 and 1.0");
+            AlertMonitor.errorNotify(
+                "throttle must be between 0.0 and 1.0",
+                Optional.empty()
+            );
+            //throw new IllegalArgumentException("throttle must be between 0.0 and 1.0");
         }
         this.throttle = throttle;
     }

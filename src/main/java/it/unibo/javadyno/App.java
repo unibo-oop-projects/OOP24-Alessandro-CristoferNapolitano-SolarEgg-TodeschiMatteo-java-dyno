@@ -6,6 +6,7 @@ package it.unibo.javadyno;
 
 import it.unibo.javadyno.controller.api.Controller;
 import it.unibo.javadyno.controller.impl.ControllerImpl;
+import it.unibo.javadyno.view.impl.MainMenu;
 
 /** Main application entry-point's class. */
 
@@ -21,6 +22,7 @@ public final class App {
         // Application.launch(ViewImpl.class, args);
         // ViewImpl.run(args);
         final Controller controller = new ControllerImpl();
+        MainMenu.setController(controller);
         controller.launchApp(args);
     }
 }

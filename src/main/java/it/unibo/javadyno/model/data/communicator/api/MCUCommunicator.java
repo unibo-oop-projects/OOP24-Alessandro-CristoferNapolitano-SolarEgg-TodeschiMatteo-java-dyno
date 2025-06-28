@@ -6,22 +6,22 @@ import java.util.function.Consumer;
  * Interface for communicating with a microcontroller unit (MCU).
  * Provides methods to connect, disconnect, send messages, and manage message listeners.
  * Abstracts the communication layer for different types of MCUs and communication protocols.
+ *
+ * @param <T> the type of parsed messages that will be delivered to registered listeners
  */
-public interface MCUCommunicator {
+public interface MCUCommunicator<T> {
 
     /**
      * Establishes (or re‐establishes) the connection to the MCU synchronically.
-     * If already connected, this can be a no‐op or attempt a reconnect.
-     *
-     * @throws InterruptedException if connection times out.
+     * If already connected, this can be a no‐op.
      */
-    void connect() throws InterruptedException;
+    void connect();
 
     /**
      * Disconnects from the MCU in a synchronous way.
      * If not connected, this can be a no‐op.
      */
-    void disconnect() throws InterruptedException;
+    void disconnect();
 
     /**
      * Checks if the communicator is currently connected to the MCU.
@@ -43,13 +43,13 @@ public interface MCUCommunicator {
      *
      * @param listener a Consumer that handles incoming messages.
      */
-    void addMessageListener(Consumer<String> listener);
+    void addMessageListener(Consumer<T> listener);
 
     /**
      * Removes a previously registered message listener.
      *
      * @param listener the Consumer to remove from the listeners list.
      */
-    void removeMessageListener(Consumer<String> listener);
+    void removeMessageListener(Consumer<T> listener);
 
 }

@@ -7,14 +7,15 @@ import java.util.Optional;
  * RawData interface.
  *
  * @param engineRPM the engine revolutions per minute
- * @param engineTemperature the engine coolant temperature (Optional)
- * @param rollerRPM the roller revolutions per minute (Optional)
- * @param torque the torque measured by the dynamometer in Newton per meter [Nm] (Optional)
- * @param vehicleSpeed the vehicle speed in Km/h (Optional)
- * @param timestamp the timestamp (Optional)
- * @param throttlePosition the throttle position (Optional)
- * @param boostPressure the boost pressure (Optional)
- * @param exhaustGasTemperature the exhaust gas temperature (Optional)
+ * @param engineTemperature the engine coolant temperature
+ * @param rollerRPM the roller revolutions per minute
+ * @param torque the torque measured by the dynamometer in Newton per meter [Nm]
+ * @param vehicleSpeed the vehicle speed in Km/h
+ * @param timestamp the timestamp
+ * @param throttlePosition the throttle position
+ * @param baroPressure the boost pressure
+ * @param ambientAirTemperature the ambient air pressure
+ * @param exhaustGasTemperature the exhaust gas temperature
  */
 public record RawData(
     Optional<Integer> engineRPM,
@@ -24,7 +25,8 @@ public record RawData(
     Optional<Integer> vehicleSpeed,
     Optional<Instant> timestamp,
     Optional<Double> throttlePosition,
-    Optional<Double> boostPressure,
+    Optional<Integer> baroPressure,
+    Optional<Integer> ambientAirTemperature,
     Optional<Double> exhaustGasTemperature
 ) {
 
@@ -32,14 +34,15 @@ public record RawData(
      * Creates a new RawData instance.
      *
      * @param engineRPM the engine revolutions per minute
-     * @param engineTemperature the engine coolant temperature (Optional)
-     * @param rollerRPM the roller revolutions per minute (Optional)
-     * @param torque the torque measured by the dynamometer in Newton per meter [Nm] (Optional)
-     * @param vehicleSpeed the vehicle speed in Km/h (Optional)
-     * @param timestamp the timestamp (Optional)
-     * @param throttlePosition the throttle position (Optional)
-     * @param boostPressure the boost pressure (Optional)
-     * @param exhaustGasTemperature the exhaust gas temperature (Optional)
+     * @param engineTemperature the engine coolant temperature
+     * @param rollerRPM the roller revolutions per minute
+     * @param torque the torque measured by the dynamometer in Newton per meter [Nm]
+     * @param vehicleSpeed the vehicle speed in Km/h
+     * @param timestamp the timestamp
+     * @param throttlePosition the throttle position
+     * @param baroPressure the boost pressure
+     * @param ambientAirTemperature the ambient air pressure
+     * @param exhaustGasTemperature the exhaust gas temperature
      */
     public static Builder builder() {
         return new Builder();
@@ -49,14 +52,15 @@ public record RawData(
      * Builder class for RawData.
      */
     public static final class Builder {
-        private Optional<Integer> engineRPM;
+        private Optional<Integer> engineRPM = Optional.empty();
         private Optional<Double> engineTemperature = Optional.empty();
         private Optional<Integer> rollerRPM = Optional.empty();
         private Optional<Double> torque = Optional.empty();
         private Optional<Integer> vehicleSpeed = Optional.empty();
         private Optional<Instant> timestamp = Optional.empty();
         private Optional<Double> throttlePosition = Optional.empty();
-        private Optional<Double> boostPressure = Optional.empty();
+        private Optional<Integer> baroPressure = Optional.empty();
+        private Optional<Integer> ambientAirTemperature = Optional.empty();
         private Optional<Double> exhaustGasTemperature = Optional.empty();
 
         /**
@@ -139,11 +143,22 @@ public record RawData(
         /**
          * Sets the boost pressure.
          *
-         * @param valueBoostPressure the boost pressure (Optional)
+         * @param valueBaroPressure the boost pressure (Optional)
          * @return this builder instance
          */
-        public Builder boostPressure(final Optional<Double> valueBoostPressure) {
-            this.boostPressure = valueBoostPressure;
+        public Builder baroPressure(final Optional<Integer> valueBaroPressure) {
+            this.baroPressure = valueBaroPressure;
+            return this;
+        }
+
+        /**
+         * Sets the ambient air pressure.
+         *
+         * @param valueAmbientAirTemperature the ambient air pressure (Optional)
+         * @return this builder instance
+         */
+        public Builder ambientAirTemperature(final Optional<Integer> valueAmbientAirTemperature) {
+            this.ambientAirTemperature = valueAmbientAirTemperature;
             return this;
         }
 
@@ -173,7 +188,8 @@ public record RawData(
                 vehicleSpeed,
                 timestamp,
                 throttlePosition,
-                boostPressure,
+                baroPressure,
+                ambientAirTemperature,
                 exhaustGasTemperature
             );
         }

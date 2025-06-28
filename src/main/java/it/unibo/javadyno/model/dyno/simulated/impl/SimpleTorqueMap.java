@@ -1,5 +1,8 @@
 package it.unibo.javadyno.model.dyno.simulated.impl;
 
+import java.util.Optional;
+
+import it.unibo.javadyno.controller.impl.AlertMonitor;
 import it.unibo.javadyno.model.dyno.simulated.api.TorqueMap;
 
 /**
@@ -24,7 +27,11 @@ public class SimpleTorqueMap implements TorqueMap {
      */
     public SimpleTorqueMap(final double baseTorque, final double torquePerRad) {
         if (baseTorque < 0 || torquePerRad < 0) {
-            throw new IllegalArgumentException("baseTorque and torquePerRad must be >=0");
+            AlertMonitor.errorNotify(
+                "BaseTorque and torquePerRad must be >=0",
+                Optional.empty()
+            );
+            //throw new IllegalArgumentException("baseTorque and torquePerRad must be >=0");
         }
         this.baseTorque = baseTorque;
         this.torquePerRad = torquePerRad;
@@ -36,7 +43,11 @@ public class SimpleTorqueMap implements TorqueMap {
     @Override
     public double getTorque(final double throttle, final double omega) {
         if (throttle < 0.0 || throttle > 1.0) {
-            throw new IllegalArgumentException("throttle must be between 0.0 and 1.0");
+            AlertMonitor.errorNotify(
+                "Throttle must be between 0.0 and 1.0",
+                Optional.empty()
+            );
+            //throw new IllegalArgumentException("throttle must be between 0.0 and 1.0");
         }
         return throttle * (baseTorque + this.torquePerRad * omega);
     }
