@@ -1,4 +1,4 @@
-<center>
+<div style="text-align:center">
 <h1>
 Relazione del progetto 
 
@@ -16,7 +16,7 @@ Ivan Crimaldi
 29 giugno 2025
 </h2>
 
-</center>
+</div>
 <br>
 
 # Indice
