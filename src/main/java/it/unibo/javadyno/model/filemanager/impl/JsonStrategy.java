@@ -3,6 +3,7 @@ package it.unibo.javadyno.model.filemanager.impl;
 import com.owlike.genson.Genson;
 import com.owlike.genson.GenericType;
 import com.owlike.genson.JsonBindingException;
+import com.owlike.genson.GensonBuilder;
 import it.unibo.javadyno.model.data.api.ElaboratedData;
 import it.unibo.javadyno.model.filemanager.api.FileStrategy;
 
@@ -11,6 +12,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,7 +25,8 @@ import java.util.Objects;
 public final class JsonStrategy implements FileStrategy {
 
     // A reusable Genson instance.
-    private final Genson genson = new Genson();
+    // Uses GensonBuilder's useIndentation to make the JSON more readable.
+    private final Genson genson = new GensonBuilder().useIndentation(true).create();
 
     /**
      * {@inheritDoc}
@@ -51,7 +54,14 @@ public final class JsonStrategy implements FileStrategy {
                 reader, new GenericType<List<ElaboratedData>>() { }
             );
 
-            return importedData;
+            // Genson might return null.
+            if (importedData != null) {
+                return importedData;
+            } else {
+                // Returns an empty list (to ensure the caller never gets a null because of Genson.
+                return Collections.emptyList();
+            }
+
         } catch (final JsonBindingException e) {
             // If the JSON is malformed, Genson throws a JsonBindingException.
             throw new IOException("Failed to parse JSON file: " + file.getAbsolutePath(), e);
