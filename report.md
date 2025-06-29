@@ -78,28 +78,197 @@ L’intero applicativo si basa su pacchetti di dati che vengono man mano raffina
 Inoltre viene utilizzata una di verifica dei dati per evitare che vi siano problemi e/o incongruenze nei e gestisce il comportamento dell’applicativo di conseguenza.
 
 ```mermaid
-UML TODO
+classDiagram
+direction TB
+    MCU -- MCUCommunicator
+    OBD2 --* MCUCommunicator
+    RealDyno --* MCUCommunicator
+    Dyno --* DataSource
+    RealDyno --|> Dyno
+    SimulatedDyno --|> Dyno
+    Dyno -- RawData
+    DataElaborator --o RawData
+    DataElaborator --o ElaboratedData
+    DataCollector --* DataElaborator
+    DataCollector --o ElaboratedData
+    OBD2 --|> Dyno
+    FileManager --* FileStrategy
+
+    class MCUCommunicator {
+	    +connect()
+	    +disconnect()
+	    +send()
+	    +addMessageListener(Consumer)
+	    +removeMessageListener(Consumer)
+    }
+
+    class Dyno {
+	    +getRawData() RawData
+	    +getDynoType() DataSource
+	    +begin()
+	    +end()
+	    +isActive() boolean
+    }
+
+    class DataCollector {
+	    +initialize(Dyno)
+	    +collectData()
+	    +getFullData() Queue~ElaboratedData~;
+    }
+
+    class DataElaborator {
+	    +getElaboratedData() ElaboratedData
+    }
+
+    class FileManager {
+	    +setStrategy(FileStrategy)
+	    +exportDataToFile(Queue~ElaboratedData~, File)
+	    +importDataFromFile(File) List~ElaboratedData~
+    }
+
+    class FileStrategy {
+	    +exportData(List~ElaboratedData~, File)
+	    +importData(File) List~ElaboratedData~
+    }
+
+    class RawData {
+    }
+
+    class ElaboratedData {
+    }
+
+    class DataSource {
+    }
+
+    class MCU {
+    }
+
+    class OBD2 {
+    }
+
+    class RealDyno {
+    }
+
+    class SimulatedDyno {
+    }
+
+	<<interface>> MCUCommunicator
+	<<interface>> Dyno
+	<<interface>> DataElaborator
+	<<interface>> RawData
+	<<interface>> ElaboratedData
+	<<enumeration>> DataSource
+
 ```
 # Capitolo 2 - Design
 ## 2.1 Architettura
-TODO
+Per Java Dyno è stato scelto il pattern architetturale MVC (Model-View-Controller), che consente una chiara separazione tra logica, interfaccia e controllo, facilitando manutenzione e sviluppo futuro.  
+Il **Controller** funge da coordinatore centrale per tutte le operazioni dell'applicazione. Esso gestisce il ciclo di vita delle simulazioni, coordina l'acquisizione dati dai dinamometri e orchestra l'aggiornamento dell'interfaccia utente. Inoltre accetta la registrazione di eventi dalla view (pressione pulsanti, navigazione tra schermate) e notifica gli aggiornamenti alle componenti grafiche ottenendo i dati attraverso un meccanismo di polling in thread separati.  
+Il **Model** è rappresentato principalmente dall'interfaccia `Dyno` e dalle sue implementazioni, che costituiscono i punti d'ingresso per l'acquisizione e l'elaborazione dei dati. Il modello include anche il sistema di gestione dati attraverso `DataCollector` e `DataElaborator`, completamente indipendente dalle implementazioni di `Dyno`.  
+Con questa architettura, è possibile sostituire completamente la view senza impattare controller o model: l'interfaccia `View` e le sue implementazioni sono completamente disaccoppiate dalla logica di core. Similmente, l'aggiunta di nuovi tipi di dinamometro richiede solo l'implementazione dell'interfaccia `Dyno` senza modificare il controller esistente.
+
 ```mermaid
-UML TODO
+classDiagram
+    class View {
+        <<interface>>
+        +update(ElaboratedData)
+        +begin(Stage)
+    }
+    
+    class Controller {
+        <<interface>>
+        +startSimulation()
+        +stopSimulation()
+    }
+    
+    class Dyno {
+        <<interface>>
+        +getRawData() RawData
+        +begin()
+        +end()
+        +isActive() boolean
+    }
+    
+    class DataCollector {
+        +initialize(Dyno)
+        +collectData()
+        +getFullData() Queue
+    }
+    
+    class DataElaborator {
+        <<interface>>
+        +getElaboratedData() ElaboratedData
+    }
+    
+    class SimulatedDyno {
+    }
+    
+    class RealDyno {
+    }
+    
+    class OBD2Dyno {
+    }
+
+    View --* Controller
+    Controller --* View
+    Controller --* Dyno : coordinates
+    Controller --* DataCollector : manages
+    DataCollector --* DataElaborator : uses
+    Dyno <|-- SimulatedDyno
+    Dyno <|-- RealDyno
+    Dyno <|-- OBD2Dyno
 ```
 ## 2.2 Design dettagliato
 ### 2.2.1 Porcheddu Alessandro
-#### Subject
+#### Comunicazione con hardware esterno
 
 ```mermaid
-UML TODO
+classDiagram
+    class MCUCommunicator {
+        <<interface>>
+        +connect()
+        +disconnect()
+        +isConnected() boolean
+        +send(String)
+        +addMessageListener(Consumer)
+        +removeMessageListener(Consumer)
+    }
+    
+    class AbstractSerialCommunicator {
+        #setupChip(SerialPort)*
+        #getSentDataDelimiter()* String
+        #getReceivedDataDelimiter()* String
+        #parseMessage()*
+    }
+    
+    class AbstractWebSocketCommunicator {
+        #parseMessage(String)* List~
+    }
+    
+    class ELM327Communicator {
+        +setupChip(SerialPort)
+        +getSentDataDelimiter() String
+        +getReceivedDataDelimiter() String
+        +parseMessage()
+    }
+    
+    class JsonWebSocketCommunicator {
+        +parseMessage(String) List
+        +send(String)
+    }
 
+    MCUCommunicator <|.. AbstractSerialCommunicator
+    MCUCommunicator <|.. AbstractWebSocketCommunicator
+    AbstractSerialCommunicator <|-- ELM327Communicator
+    AbstractWebSocketCommunicator <|-- JsonWebSocketCommunicator
 ```
 
-**Problema:** TODO. 
+**Problema:** il software deve poter permettere ai diversi `Dyno` di comunicare con il relativo hardware esterno indipendentemente dal vettore di comunicazione (USB, Bluetooth, HTTP, WebSocket, ecc) e dal protocollo finale che si aspetta il microcontrollore. Quest'ultima, inoltre, deve avvenire in modo asincrono per non interferire con l'esecuzione del programma.  
 
-**Soluzione:** TODO. 
+**Soluzione:** la soluzione più idonea risulta essere l'utilizzo del pattern **Template Method** che permette una facile e veloce implementazione di un nuovo mezzo per comunicare con un possibile microcontrollore. In particolare l'interfaccia `MCUCommunicator` definisce il contratto da seguire per la comunicazione che **deve** essere eseguita attraverso _listeners_. Vengono poi definite 2 classi astratte relative a comunicazione seriale e via websocket che implementano i metodi dell'interfaccia per facilitare l'implementazione di protocolli specifici legati a particolari microcontrollori. Infatti `JsonWebSocketCommunicator` rappresenta un generico microcontrollore nel quale ci si aspetta di inviare e ricevere dati in formato JSON, mentre `ELM327Communicator` fa riferimento alla specifica implementazione di una comunicazione con l'omonimo chip per OBD2. Si noti inoltre che l'interfaccia `MCUCommunicator` utilizza un generico per permetterealle implementazioni di gestire meglio i diversi tipi di messaggi nella comunicazione (come il `Pair` nel caso di `JsonWebSocketCommunicator`).
 
 ---
+
 #### Subject
 
 ```mermaid
@@ -111,12 +280,18 @@ UML TODO
 
 **Soluzione:** TODO.
 
+---
+
+#### Subject
+
 ```mermaid
 UML TODO
 
 ```
 
-TODO
+**Problema:** TODO.
+
+**Soluzione:** TODO.
 
 ### 2.2.1 Surname Name
 #### Subject
