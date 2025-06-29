@@ -21,6 +21,12 @@
     -fx-padding: 10;
     -fx-spacing: 10;
 }
+.stats-panel .label {
+    -fx-text-fill: white;
+    -fx-font-size: 14;
+    -fx-font-family: Arial;
+    -fx-font-weight: bold;
+}
 .charts-panel {
     -fx-border-color: green;
     -fx-border-width: 2;

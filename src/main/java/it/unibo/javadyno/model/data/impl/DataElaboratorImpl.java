@@ -39,7 +39,7 @@ public final class DataElaboratorImpl implements DataElaborator {
 
     /**
      * Retrieves the RawData from the Dyno and processes it to produce an ElaboratedData object.
-     * 
+     *
      * @return an ElaboratedData object containing the processed data, or null if the data cannot be processed
      */
     @Override

@@ -23,8 +23,8 @@ public final class ChartsPanel extends VBox {
 
     private static final String CHARTS_NAME = "RPM vs Power";
     private static final String X_AXIS_LABEL = "RPM (Revolutions Per Minute)";
-    private static final String Y_AXIS_LABEL = "Power (Hp)";
-    private static final String Y2_AXIS_LABEL = "Power (Kw)";
+    private static final String Y_AXIS_LABEL = "Horsepower (HP)";
+    private static final String Y2_AXIS_LABEL = "Torque (Nm)";
     private static final String SERIES_NAME = "Power";
 
     private final JFreeChart lineChart;

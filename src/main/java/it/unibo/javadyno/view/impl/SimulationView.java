@@ -21,7 +21,6 @@ import javafx.stage.Stage;
  * Simulation view class for the JavaDyno application.
  */
 public class SimulationView extends Application implements View {
-    private static final double HP_TO_KWW = 0.7457;
     private static final String STAGE_TITLE = "JavaDyno - Simulation";
     private static final String CSS_FILE = "/css/simulationStyle.css";
     private static final String CSS_SETTINGS_PANEL_TAG = "left-column";
@@ -32,6 +31,7 @@ public class SimulationView extends Application implements View {
     private final Controller controller;
     private final ChartsPanel chartsPanel = new ChartsPanel();
     private final GaugePanel gaugePanel = new GaugePanel();
+    private final StatsPanel statsPanel = new StatsPanel();
 
     /**
      * Constructor for SimulationView that imports the controller.
@@ -51,7 +51,6 @@ public class SimulationView extends Application implements View {
         final VBox leftPanel = new VBox();
         final VBox rightPanel = new VBox();
         final ButtonsPanel buttonsPanel = new ButtonsPanel(controller, primaryStage);
-        final StatsPanel statsPanel = new StatsPanel();
 
         HBox.setHgrow(leftPanel, Priority.NEVER);
         HBox.setHgrow(rightPanel, Priority.ALWAYS);
@@ -59,7 +58,7 @@ public class SimulationView extends Application implements View {
         HBox.setHgrow(gaugePanel, Priority.ALWAYS);
         VBox.setVgrow(chartsPanel, Priority.ALWAYS);
         VBox.setVgrow(gaugePanel, Priority.NEVER);
-        VBox.setVgrow(buttonsPanel, Priority.NEVER);
+        VBox.setVgrow(buttonsPanel, Priority.ALWAYS);
         VBox.setVgrow(statsPanel, Priority.ALWAYS);
         buttonsPanel.getStyleClass().add("buttons-panel");
         statsPanel.getStyleClass().add("stats-panel");
@@ -84,28 +83,6 @@ public class SimulationView extends Application implements View {
     }
 
     /**
-     * Updates the graph with new data points.
-     *
-     * @param xValue the x-axis value to be added to the graph
-     * @param yValue the y-axis value to be added to the graph
-     * @param y2Value the second y-axis value to be added to the graph
-     */
-    public void updateGraph(final Number xValue, final Number yValue, final Number y2Value) {
-        this.chartsPanel.addPointToChart(xValue, yValue, y2Value);
-    }
-
-    /**
-     * Updates the gauges with new values.
-     *
-     * @param rpm the current RPM value
-     * @param speed the current speed value
-     * @param temperature the current temperature value
-     */
-    public void updateGauges(final int rpm, final int speed, final double temperature) {
-        this.gaugePanel.updateGauges(rpm, speed, temperature);
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
@@ -123,7 +100,11 @@ public class SimulationView extends Application implements View {
                      data.rawData().engineTemperature().orElse(0.0));
         updateGraph(data.rawData().engineRPM().orElse(0),
                     data.enginePowerHP(),
-                    data.enginePowerHP() * HP_TO_KWW);
+                    data.engineCorrectedTorque());
+        updateStats(data.rawData().engineRPM().orElse(0),
+                     data.engineCorrectedTorque(),
+                     data.enginePowerHP(),
+                     data.enginePowerKW());
     }
 
     /**
@@ -132,5 +113,31 @@ public class SimulationView extends Application implements View {
     @Override
     public void begin(final Stage primaryStage) {
         this.start(primaryStage);
+    }
+
+    /**
+     * Updates the graph with new data points.
+     *
+     * @param xValue the x-axis value to be added to the graph
+     * @param yValue the y-axis value to be added to the graph
+     * @param y2Value the second y-axis value to be added to the graph
+     */
+    private void updateGraph(final Number xValue, final Number yValue, final Number y2Value) {
+        this.chartsPanel.addPointToChart(xValue, yValue, y2Value);
+    }
+
+    /**
+     * Updates the gauges with new values.
+     *
+     * @param rpm the current RPM value
+     * @param speed the current speed value
+     * @param temperature the current temperature value
+     */
+    private void updateGauges(final int rpm, final int speed, final double temperature) {
+        this.gaugePanel.updateGauges(rpm, speed, temperature);
+    }
+
+    private void updateStats(final int rpm, final double torque, final double horsePower, final double kiloWatts) {
+        this.statsPanel.updateStats(rpm, torque, horsePower, kiloWatts);
     }
 }
