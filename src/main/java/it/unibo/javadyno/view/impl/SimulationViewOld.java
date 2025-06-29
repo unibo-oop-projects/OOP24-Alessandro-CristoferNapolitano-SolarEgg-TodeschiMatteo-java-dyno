@@ -84,7 +84,7 @@ public class SimulationViewOld extends Application implements View {
             leftColumn.getChildren().add(0, reloadButton);
         });
         reloadButton.setOnAction(e -> {
-            controller.showSimulationView(primaryStage);
+            controller.showView(primaryStage, new SimulationView(controller));
         });
         backToMenuButton.setOnAction(e -> {
             controller.showMainMenu(primaryStage);
@@ -110,9 +110,10 @@ public class SimulationViewOld extends Application implements View {
      *
      * @param xValue the x-axis value to be added to the graph
      * @param yValue the y-axis value to be added to the graph
+     * @param y2Value the second y-axis value to be added to the graph
      */
-    public void updateGraph(final Number xValue, final Number yValue) {
-        this.centerColumn.addPointToChart(xValue, yValue);
+    public void updateGraph(final Number xValue, final Number yValue, final Number y2Value) {
+        this.centerColumn.addPointToChart(xValue, yValue, y2Value);
     }
 
     /**

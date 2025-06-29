@@ -4,7 +4,13 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
-import java.awt.Color; 
+import javax.imageio.ImageIO;
+
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.XYPlot;
@@ -20,6 +26,37 @@ import it.unibo.javadyno.model.graph.api.ChartsManager;
  * Implementation of the ChartsManager interface for managing charts.
  */
 public class ChartsManagerImpl implements ChartsManager {
+    private static final String DARK_THEME_HEX = "#262626";
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setDarkTheme(final JFreeChart chart) {
+        chart.setBackgroundPaint(Color.decode(DARK_THEME_HEX));
+        chart.getTitle().setPaint(Color.WHITE);
+        chart.getXYPlot().setBackgroundPaint(Color.BLACK);
+        chart.getXYPlot().setDomainGridlinePaint(Color.DARK_GRAY);
+        chart.getXYPlot().setRangeGridlinePaint(Color.DARK_GRAY);
+        chart.getXYPlot().setOutlinePaint(Color.GRAY);
+        chart.getXYPlot().getDomainAxis().setLabelPaint(Color.LIGHT_GRAY);
+        chart.getXYPlot().getDomainAxis().setTickLabelPaint(Color.LIGHT_GRAY);
+        chart.getXYPlot().getDomainAxis().setAxisLinePaint(Color.WHITE);
+        chart.getXYPlot().getDomainAxis().setTickMarkPaint(Color.WHITE);
+        IntStream.range(0, chart.getXYPlot().getRangeAxisCount())
+            .mapToObj(i -> chart.getXYPlot().getRangeAxis(i))
+            .forEach(axis -> {
+                    axis.setLabelPaint(Color.LIGHT_GRAY);
+                    axis.setTickLabelPaint(Color.LIGHT_GRAY);
+                    axis.setAxisLinePaint(Color.WHITE);
+                    axis.setTickMarkPaint(Color.WHITE);
+            });
+        if (Objects.nonNull(chart.getLegend())) {
+            chart.getLegend().setBackgroundPaint(Color.decode(DARK_THEME_HEX));
+            chart.getLegend().setItemPaint(Color.WHITE);
+        }
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -45,12 +82,39 @@ public class ChartsManagerImpl implements ChartsManager {
     }
 
     /**
+     * Sets a background image for the chart.
+     *
+     * @param chart the JFreeChart to set the background image for
+     * @param imagePath the path to the image file
+     */
+    @Override
+    public void setBackgroundImage(final JFreeChart chart, final String imagePath) {
+        try (InputStream inputStream = getClass().getResourceAsStream(imagePath)) {
+            final BufferedImage image = ImageIO.read(inputStream);
+            chart.getXYPlot().setBackgroundImage(image);
+        } catch (final IOException e) {
+            AlertMonitor.errorNotify(
+                "Error in setting background image",
+                Optional.of(e.getMessage())
+            );
+        }
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
-    public void addNewSeries(final JFreeChart lineChart, final String seriesName, final ChartsManager.YAxisLevel level) {
+    public void resetBackgroundImage(final JFreeChart chart) {
+        chart.getXYPlot().setBackgroundImage(null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addNewSeries(final JFreeChart chart, final String seriesName, final ChartsManager.YAxisLevel level) {
         final XYSeries newSeries = new XYSeries(seriesName);
-        final XYSeriesCollection dataset = (XYSeriesCollection) lineChart.getXYPlot().getDataset(level.getLevel());
+        final XYSeriesCollection dataset = (XYSeriesCollection) chart.getXYPlot().getDataset(level.getLevel());
         if (!isDatasetValid(dataset, seriesName, level)) {
             return;
         }
@@ -140,7 +204,7 @@ public class ChartsManagerImpl implements ChartsManager {
     }
 
     /**
-     * Checks if the renderer is valid for the given series name and level.
+     * Checks if the renderer is valid for the given level.
      *
      * @param renderer the renderer to check
      * @param level the Y-axis level to check

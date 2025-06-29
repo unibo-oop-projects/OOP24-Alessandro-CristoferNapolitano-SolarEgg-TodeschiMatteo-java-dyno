@@ -8,6 +8,25 @@
     -fx-border-color: red;
     -fx-border-width: 2;
 }
+.buttons-panel {
+    -fx-background-color: #1a1a1a;
+    -fx-border-color: #124d77;
+    -fx-border-width: 2;
+    -fx-padding: 10;
+    -fx-spacing: 10;
+}
+.stats-panel {
+    -fx-border-color: #066428;
+    -fx-border-width: 2;
+    -fx-padding: 10;
+    -fx-spacing: 10;
+}
+.stats-panel .label {
+    -fx-text-fill: white;
+    -fx-font-size: 14;
+    -fx-font-family: Arial;
+    -fx-font-weight: bold;
+}
 .charts-panel {
     -fx-border-color: green;
     -fx-border-width: 2;

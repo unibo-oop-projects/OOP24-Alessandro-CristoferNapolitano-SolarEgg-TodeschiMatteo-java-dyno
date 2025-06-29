@@ -37,6 +37,13 @@ public interface ChartsManager {
     }
 
     /**
+     * Sets the chart to use a dark theme.
+     *
+     * @param chart the chart to be themed
+     */
+    void setDarkTheme(JFreeChart chart);
+
+    /**
      * Sets the color of a series in the chart for a specific Y-axis level.
      *
      * @param chart the chart containing the series
@@ -45,6 +52,21 @@ public interface ChartsManager {
      * @param color the color to set for the series
      */
     void setColor(JFreeChart chart, String seriesName, ChartsManager.YAxisLevel level, Color color);
+
+    /**
+     * Sets a background image for the chart.
+     *
+     * @param chart the JFreeChart to set the background image for
+     * @param imagePath the path to the image file
+     */
+    void setBackgroundImage(JFreeChart chart, String imagePath);
+
+    /**
+     * Removes the background image from the chart.
+     *
+     * @param chart the JFreeChart from which the background image will be removed
+     */
+    void resetBackgroundImage(JFreeChart chart);
 
     /**
      * Adds a series to the chart with the specified name.

@@ -17,7 +17,6 @@ import it.unibo.javadyno.model.dyno.api.Dyno;
 import it.unibo.javadyno.model.dyno.simulated.impl.SimulatedDynoImpl;
 import it.unibo.javadyno.view.api.View;
 import it.unibo.javadyno.view.impl.MainMenu;
-import it.unibo.javadyno.view.impl.SimulationView;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
@@ -32,6 +31,7 @@ public class ControllerImpl implements Controller {
     private static final String SIMULATION_POLLING_THREAD_NAME = "SimulationPollingThread";
     private final DataCollector dataCollector;
     private DataElaborator dataElaborator;
+    private boolean pollingRunning;
     private Dyno dyno;
     private View view;
 
@@ -73,9 +73,9 @@ public class ControllerImpl implements Controller {
      * {@inheritDoc}
      */
     @Override
-    public void showSimulationView(final Stage stage) {
-        this.view = new SimulationView(this);
-        view.begin(stage);
+    public void showView(final Stage stage, final View suppliedView) {
+        this.view = suppliedView;
+        suppliedView.begin(stage);
     }
 
     /**
@@ -116,6 +116,7 @@ public class ControllerImpl implements Controller {
      * This method runs in a loop while the dyno is active, collecting data and updating the graphics.
      */
     private void polling() {
+        this.pollingRunning = true;
         this.dataElaborator.getElaboratedData();
         while (Objects.nonNull(dyno) && dyno.isActive()) {
             //TODO Call the DataCollector to collect data
@@ -130,6 +131,8 @@ public class ControllerImpl implements Controller {
                 break;
             }
         }
+        this.pollingRunning = false;
+        view.update(this.dataElaborator.getElaboratedData());
     }
 
     /**
@@ -148,6 +151,14 @@ public class ControllerImpl implements Controller {
             this.dyno.end();
             this.dyno = null;
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isPollingRunning() {
+        return this.pollingRunning;
     }
 
     /**

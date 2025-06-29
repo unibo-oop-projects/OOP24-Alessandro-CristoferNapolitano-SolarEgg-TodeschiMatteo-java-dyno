@@ -1,7 +1,7 @@
 package it.unibo.javadyno.controller.api;
 
 import java.util.Optional;
-
+import it.unibo.javadyno.view.api.View;
 import javafx.stage.Stage;
 
 /**
@@ -25,8 +25,9 @@ public interface Controller {
      * Shows the simulation view.
      *
      * @param stage the primary stage to show the simulation view on
+     * @param view the view to be displayed
      */
-    void showSimulationView(Stage stage);
+    void showView(Stage stage, View view);
 
     /**
      * Closes the application.
@@ -37,6 +38,13 @@ public interface Controller {
      * Start the simulation.
      */
     void startSimulation();
+
+    /**
+     * Checks if the polling is running.
+     *
+     * @return true if polling is running, false otherwise
+     */
+    boolean isPollingRunning();
 
     /**
      * Stop the simulation.
