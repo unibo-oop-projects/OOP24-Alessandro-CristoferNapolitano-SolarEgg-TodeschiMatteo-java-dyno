@@ -1,4 +1,4 @@
-<div style="text-align:center">
+<p align="center">
 <h1>
 Relazione del progetto 
 
@@ -16,7 +16,8 @@ Ivan Crimaldi
 29 giugno 2025
 </h2>
 
-</div>
+</p>
+
 <br>
 
 # Indice
@@ -160,6 +161,9 @@ direction TB
 	<<enumeration>> DataSource
 
 ```
+
+*asd*
+
 # Capitolo 2 - Design
 ## 2.1 Architettura
 Per Java Dyno è stato scelto il pattern architetturale MVC (Model-View-Controller), che consente una chiara separazione tra logica, interfaccia e controllo, facilitando manutenzione e sviluppo futuro.  
