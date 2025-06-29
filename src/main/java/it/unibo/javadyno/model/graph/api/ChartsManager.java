@@ -62,6 +62,13 @@ public interface ChartsManager {
     void setBackgroundImage(JFreeChart chart, String imagePath);
 
     /**
+     * Removes the background image from the chart.
+     *
+     * @param chart the JFreeChart from which the background image will be removed
+     */
+    void resetBackgroundImage(final JFreeChart chart);
+
+    /**
      * Adds a series to the chart with the specified name.
      *
      * @param chart the chart to which the series will be added

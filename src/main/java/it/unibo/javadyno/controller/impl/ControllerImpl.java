@@ -132,6 +132,7 @@ public class ControllerImpl implements Controller {
             }
         }
         this.pollingRunning = false;
+        view.update(this.dataElaborator.getElaboratedData());
     }
 
     /**

@@ -39,19 +39,19 @@ public final class ChartsPanel extends VBox {
         this.setAlignment(Pos.TOP_RIGHT);
         this.getStyleClass().add(CSS_CHARTS_PANEL_TAG);
         final Rectangle2D screenBounds = Screen.getPrimary().getBounds();
-        lineChart = chartsFactory.createEmptyCharts(
+        this.lineChart = chartsFactory.createEmptyCharts(
             CHARTS_NAME,
             X_AXIS_LABEL,
             Y_AXIS_LABEL
         );
-        final ChartViewer viewer = new ChartViewer(lineChart);
+        final ChartViewer viewer = new ChartViewer(this.lineChart);
         viewer.setPrefSize(screenBounds.getWidth() * CHART_WIDTH_FACTOR, screenBounds.getHeight() * CHART_HEIGH_FACTOR);
         viewer.setMinSize(screenBounds.getWidth() * CHART_MINIMUM_FACTOR, screenBounds.getHeight() * CHART_MINIMUM_FACTOR);
-        chartManager.addNewSeries(lineChart, SERIES_NAME, ChartsManager.YAxisLevel.FIRST);
-        chartManager.addYAxis(lineChart, Y2_AXIS_LABEL);
-        chartManager.addNewSeries(lineChart, SERIES_NAME, ChartsManager.YAxisLevel.SECOND);
-        chartManager.setDarkTheme(lineChart);
-        chartManager.setBackgroundImage(lineChart, BG_IMAGE);
+        chartManager.addNewSeries(this.lineChart, SERIES_NAME, ChartsManager.YAxisLevel.FIRST);
+        chartManager.addYAxis(this.lineChart, Y2_AXIS_LABEL);
+        chartManager.addNewSeries(this.lineChart, SERIES_NAME, ChartsManager.YAxisLevel.SECOND);
+        chartManager.setDarkTheme(this.lineChart);
+        chartManager.setBackgroundImage(this.lineChart, BG_IMAGE);
         this.getChildren().add(viewer);
     }
 
@@ -77,5 +77,18 @@ public final class ChartsPanel extends VBox {
             xValue,
             y2Value
         );
+    }
+
+    /**
+     * Sets the visibility of the background image.
+     *
+     * @param visible true to show the background image, false to hide it
+     */
+    public void setBackgroundVisible(final boolean visible) {
+        if (visible) {
+            chartManager.setBackgroundImage(this.lineChart, BG_IMAGE);
+        } else {
+            chartManager.resetBackgroundImage(this.lineChart);
+        }
     }
 }

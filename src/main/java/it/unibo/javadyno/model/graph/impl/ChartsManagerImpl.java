@@ -104,6 +104,14 @@ public class ChartsManagerImpl implements ChartsManager {
      * {@inheritDoc}
      */
     @Override
+    public void resetBackgroundImage(final JFreeChart chart) {
+        chart.getXYPlot().setBackgroundImage(null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void addNewSeries(final JFreeChart chart, final String seriesName, final ChartsManager.YAxisLevel level) {
         final XYSeries newSeries = new XYSeries(seriesName);
         final XYSeriesCollection dataset = (XYSeriesCollection) chart.getXYPlot().getDataset(level.getLevel());
