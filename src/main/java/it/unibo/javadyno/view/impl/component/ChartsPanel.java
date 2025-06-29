@@ -49,6 +49,7 @@ public final class ChartsPanel extends VBox {
         chartManager.addNewSeries(lineChart, SERIES_NAME, ChartsManager.YAxisLevel.SECOND);
         chartManager.addYAxis(lineChart, Y_AXIS_LABEL);
         chartManager.addNewSeries(lineChart, SERIES_NAME, ChartsManager.YAxisLevel.THIRD);
+        chartManager.setDarkTheme(lineChart);
         this.getChildren().add(viewer);
     }
 

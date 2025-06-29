@@ -37,6 +37,13 @@ public interface ChartsManager {
     }
 
     /**
+     * Sets the chart to use a dark theme.
+     *
+     * @param chart the chart to be themed
+     */
+    void setDarkTheme(JFreeChart chart);
+
+    /**
      * Sets the color of a series in the chart for a specific Y-axis level.
      *
      * @param chart the chart containing the series

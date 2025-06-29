@@ -20,6 +20,37 @@ import it.unibo.javadyno.model.graph.api.ChartsManager;
  * Implementation of the ChartsManager interface for managing charts.
  */
 public class ChartsManagerImpl implements ChartsManager {
+    private static final String DARK_THEME_HEX = "#262626";
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setDarkTheme(final JFreeChart chart) {
+        chart.setBackgroundPaint(Color.decode(DARK_THEME_HEX));
+        chart.getTitle().setPaint(Color.WHITE);
+        chart.getXYPlot().setBackgroundPaint(Color.BLACK);
+        chart.getXYPlot().setDomainGridlinePaint(Color.DARK_GRAY);
+        chart.getXYPlot().setRangeGridlinePaint(Color.DARK_GRAY);
+        chart.getXYPlot().setOutlinePaint(Color.GRAY);
+        chart.getXYPlot().getDomainAxis().setLabelPaint(Color.LIGHT_GRAY);
+        chart.getXYPlot().getDomainAxis().setTickLabelPaint(Color.LIGHT_GRAY);
+        chart.getXYPlot().getDomainAxis().setAxisLinePaint(Color.WHITE);
+        chart.getXYPlot().getDomainAxis().setTickMarkPaint(Color.WHITE);
+        IntStream.range(0, chart.getXYPlot().getRangeAxisCount())
+            .mapToObj(i -> chart.getXYPlot().getRangeAxis(i))
+            .forEach(axis -> {
+                    axis.setLabelPaint(Color.LIGHT_GRAY);
+                    axis.setTickLabelPaint(Color.LIGHT_GRAY);
+                    axis.setAxisLinePaint(Color.WHITE);
+                    axis.setTickMarkPaint(Color.WHITE);
+            });
+        if (Objects.nonNull(chart.getLegend())) {
+            chart.getLegend().setBackgroundPaint(Color.decode(DARK_THEME_HEX));
+            chart.getLegend().setItemPaint(Color.WHITE);
+        }
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -48,9 +79,9 @@ public class ChartsManagerImpl implements ChartsManager {
      * {@inheritDoc}
      */
     @Override
-    public void addNewSeries(final JFreeChart lineChart, final String seriesName, final ChartsManager.YAxisLevel level) {
+    public void addNewSeries(final JFreeChart chart, final String seriesName, final ChartsManager.YAxisLevel level) {
         final XYSeries newSeries = new XYSeries(seriesName);
-        final XYSeriesCollection dataset = (XYSeriesCollection) lineChart.getXYPlot().getDataset(level.getLevel());
+        final XYSeriesCollection dataset = (XYSeriesCollection) chart.getXYPlot().getDataset(level.getLevel());
         if (!isDatasetValid(dataset, seriesName, level)) {
             return;
         }
@@ -140,7 +171,7 @@ public class ChartsManagerImpl implements ChartsManager {
     }
 
     /**
-     * Checks if the renderer is valid for the given series name and level.
+     * Checks if the renderer is valid for the given level.
      *
      * @param renderer the renderer to check
      * @param level the Y-axis level to check
