@@ -17,6 +17,7 @@ import javafx.stage.Screen;
  */
 public final class ChartsPanel extends VBox {
     private static final String CSS_CHARTS_PANEL_TAG = "charts-panel";
+    private static final String BG_IMAGE = "/images/logo_no_bg.png";
     private static final double CHART_HEIGH_FACTOR = 0.7;
     private static final double CHART_WIDTH_FACTOR = 0.6;
     private static final double CHART_MINIMUM_FACTOR = 0.5;
@@ -50,6 +51,7 @@ public final class ChartsPanel extends VBox {
         chartManager.addYAxis(lineChart, Y2_AXIS_LABEL);
         chartManager.addNewSeries(lineChart, SERIES_NAME, ChartsManager.YAxisLevel.SECOND);
         chartManager.setDarkTheme(lineChart);
+        chartManager.setBackgroundImage(lineChart, BG_IMAGE);
         this.getChildren().add(viewer);
     }
 

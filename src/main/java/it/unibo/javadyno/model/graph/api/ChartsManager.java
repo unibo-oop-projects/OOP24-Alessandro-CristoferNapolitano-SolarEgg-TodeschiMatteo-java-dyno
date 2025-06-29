@@ -54,6 +54,14 @@ public interface ChartsManager {
     void setColor(JFreeChart chart, String seriesName, ChartsManager.YAxisLevel level, Color color);
 
     /**
+     * Sets a background image for the chart.
+     *
+     * @param chart the JFreeChart to set the background image for
+     * @param imagePath the path to the image file
+     */
+    void setBackgroundImage(JFreeChart chart, String imagePath);
+
+    /**
      * Adds a series to the chart with the specified name.
      *
      * @param chart the chart to which the series will be added

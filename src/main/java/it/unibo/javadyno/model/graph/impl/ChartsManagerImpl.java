@@ -4,7 +4,13 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
+import javax.imageio.ImageIO;
+
 import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.XYPlot;
@@ -73,6 +79,25 @@ public class ChartsManagerImpl implements ChartsManager {
             .findFirst()
             .orElse(0);
         renderer.setSeriesPaint(seriesIndex, color);
+    }
+
+    /**
+     * Sets a background image for the chart.
+     *
+     * @param chart the JFreeChart to set the background image for
+     * @param imagePath the path to the image file
+     */
+    @Override
+    public void setBackgroundImage(final JFreeChart chart, final String imagePath) {
+        try (InputStream inputStream = getClass().getResourceAsStream(imagePath)) {
+            final BufferedImage image = ImageIO.read(inputStream);
+            chart.getXYPlot().setBackgroundImage(image);
+        } catch (final IOException e) {
+            AlertMonitor.errorNotify(
+                "Error in setting background image",
+                Optional.of(e.getMessage())
+            );
+        }
     }
 
     /**
