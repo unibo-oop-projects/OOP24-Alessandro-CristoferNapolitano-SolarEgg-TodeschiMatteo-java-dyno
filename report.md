@@ -273,26 +273,66 @@ classDiagram
 #### Scambio asincrono di dati
 
 ```mermaid
-UML TODO
+classDiagram
+    class MCUCommunicator {
+        <<interface>>
+        +connect()
+        +disconnect()
+        +send(String)
+        +addMessageListener(Consumer~T~)
+        +removeMessageListener(Consumer~T~)
+    }
 
+    class AbstractPhysicalDyno {
+        -communicator: MCUCommunicator
+        #handleMessage(T)
+        +getRawData() RawData
+    }
+
+    class MCU {
+
+    }
+
+
+    MCUCommunicator --> AbstractPhysicalDyno : recieves
+    MCU --> MCUCommunicator: sends
+    MCUCommunicator --> MCU: asks
 ```
 
-**Problema:** TODO.
+**Problema:** rendere la comunicazione con l'hardware esterno asincrona per rendersi indipendenti dai tempi di risposta di quest'ultimo e per garantire un'esperienza utente fluida.
 
-**Soluzione:** TODO.
+**Soluzione:** per rispettare questi requisiti si ricorre al pattern **Observer**, dove l'applicazione richiede i dati in modo sincrono ma riceve una risposta asincrona. Ritroviamo nell'interfaccia `MCUCommunicator` i metodi `addMessageListener(Consumer<T>)` e il relativo `removeMessageListener(Consumer<T>)` che permettono ai clienti di registrare più di un _listener_ (e quindi di _Observers_). La classe astratta `AbstractPhysicalDyno`, attraverso il metodo astratto `handleMessage(T)`, fornisce ai clienti (ed a estensioni future) un contratto per ricevere ed elaborare i dati richiesti in ingresso. Infine, si pretende dai clienti che vengano inviati messaggi esclusivamente testuali e con un certo intervallo, per evitare fenomeno di _flooding_.
 
 ---
 
-#### Subject
+#### Creazione dei dati grezzi
 
 ```mermaid
-UML TODO
+classDiagram
+    class RawData {
+        -Optional~Integer~ engineRPM
+        -Optional~Double~ engineTemperature
+        ...
+        +builder() Builder
+    }
 
+    class Dyno {
+        <<interface>>
+        +getRawData() RawData
+    }
+
+    class DataElaborator {
+        <<interface>>
+        +getElaboratedData() ElaboratedData
+    }
+
+    Dyno --> RawData : produces
+    DataElaborator --> RawData : consumes
 ```
 
-**Problema:** TODO.
+**Problema:** ogni `Dyno` genera diversi dati in base a quali sensori sono stati installati, per esempio uno potrebbe monitorare in dettaglio le condizioni atmosferiche mentre l'altro ometterle completamente. Alcuni dati potrebbero anche venir trasmessi in maniera errata o essere persi durante la comunicazione. In generale sono presenti molti dati diversi.
 
-**Soluzione:** TODO.
+**Soluzione:** viene fatto ampio utilizzo degli `Optional` per immagazzinare i dati in un _record_ `RawData` attraverso il pattern **Builder**. Quest'ultimo permette di creare `RawData` in maniera facilmente interpretabile e specificando solo i dati davvero utili. Infatti i restanti risulteranno essere un `Optional` vuoto, evitando di doverli impostare a un valore nullo o zero. In questo modo i clienti possono facilmente maneggiare i dati evitando eccezioni e controlli su eventuali valori _null_.
 
 ### 2.2.1 Surname Name
 #### Subject
