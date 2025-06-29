@@ -47,11 +47,13 @@ dependencies {
     implementation("org.java-websocket:Java-WebSocket:$javaWebSocketVersion")
 
     // JSON library for manually parsing and generating JSON
-    val jsonVersion = "20250517"
-    implementation("org.json:json:$jsonVersion")
+    val orgJsonVersion = "20250517"
+    implementation("org.json:json:$orgJsonVersion")
 
-     // TODO: add JSON library for convenient object-to-JSON mapping
-    
+    // JSON library for convenient object-to-JSON mapping
+    val jacksonVersion = "2.18.3"
+    implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:$jacksonVersion") // For Optional support
 
     // CSV library for parsing and generating CSV
     implementation("com.opencsv:opencsv:5.9")
