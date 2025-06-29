@@ -32,6 +32,7 @@ public class ControllerImpl implements Controller {
     private static final String SIMULATION_POLLING_THREAD_NAME = "SimulationPollingThread";
     private final DataCollector dataCollector;
     private DataElaborator dataElaborator;
+    private boolean pollingRunning;
     private Dyno dyno;
     private View view;
 
@@ -116,6 +117,7 @@ public class ControllerImpl implements Controller {
      * This method runs in a loop while the dyno is active, collecting data and updating the graphics.
      */
     private void polling() {
+        this.pollingRunning = true;
         this.dataElaborator.getElaboratedData();
         while (Objects.nonNull(dyno) && dyno.isActive()) {
             //TODO Call the DataCollector to collect data
@@ -130,6 +132,7 @@ public class ControllerImpl implements Controller {
                 break;
             }
         }
+        this.pollingRunning = false;
     }
 
     /**
@@ -148,6 +151,14 @@ public class ControllerImpl implements Controller {
             this.dyno.end();
             this.dyno = null;
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isPollingRunning() {
+        return this.pollingRunning;
     }
 
     /**

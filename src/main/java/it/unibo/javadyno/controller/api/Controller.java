@@ -39,6 +39,13 @@ public interface Controller {
     void startSimulation();
 
     /**
+     * Checks if the polling is running.
+     *
+     * @return true if polling is running, false otherwise
+     */
+    boolean isPollingRunning();
+
+    /**
      * Stop the simulation.
      */
     void stopSimulation();
