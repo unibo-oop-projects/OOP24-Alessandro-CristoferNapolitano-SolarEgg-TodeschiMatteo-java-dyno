@@ -2,4 +2,7 @@ package it.unibo.javadyno.view.impl.component;
 
 import javafx.scene.layout.VBox;
 
-public class StatsPanel extends VBox { }
+/**
+ * StatsPanel class that creates a panel for displaying global statistics.
+ */
+public final class StatsPanel extends VBox { }

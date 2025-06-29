@@ -8,7 +8,13 @@ import javafx.stage.Stage;
 /**
  * ButtonsPanel class that creates a panel with buttons for controlling the GUI.
  */
-public class ButtonsPanel extends VBox {
+public final class ButtonsPanel extends VBox {
+    /**
+     * Constructor for ButtonsPanel that initializes the buttons and their actions.
+     *
+     * @param controller the controller to be used
+     * @param primaryStage the primary stage of the application
+     */
     public ButtonsPanel(final Controller controller, final Stage primaryStage) {
         final Button startSimulationButton = new Button("Start Simulation");
         startSimulationButton.setId("start-button");
