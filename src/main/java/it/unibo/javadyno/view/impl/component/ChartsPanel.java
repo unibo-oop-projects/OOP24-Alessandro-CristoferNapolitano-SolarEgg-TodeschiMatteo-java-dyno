@@ -20,10 +20,12 @@ public final class ChartsPanel extends VBox {
     private static final double CHART_HEIGH_FACTOR = 0.7;
     private static final double CHART_WIDTH_FACTOR = 0.6;
     private static final double CHART_MINIMUM_FACTOR = 0.5;
-    private static final String CHARTS_NAME = "Speed";
-    private static final String X_AXIS_LABEL = "Time (h)";
-    private static final String Y_AXIS_LABEL = "Position (Km)";
-    private static final String SERIES_NAME = "Speed (Km/h)";
+
+    private static final String CHARTS_NAME = "RPM vs Power";
+    private static final String X_AXIS_LABEL = "RPM (Revolutions Per Minute)";
+    private static final String Y_AXIS_LABEL = "Power (Hp)";
+    private static final String Y2_AXIS_LABEL = "Power (Kw)";
+    private static final String SERIES_NAME = "Power";
 
     private final JFreeChart lineChart;
     private final ChartsFactory chartsFactory = new DefaultChartsFactory();
@@ -45,10 +47,8 @@ public final class ChartsPanel extends VBox {
         viewer.setPrefSize(screenBounds.getWidth() * CHART_WIDTH_FACTOR, screenBounds.getHeight() * CHART_HEIGH_FACTOR);
         viewer.setMinSize(screenBounds.getWidth() * CHART_MINIMUM_FACTOR, screenBounds.getHeight() * CHART_MINIMUM_FACTOR);
         chartManager.addNewSeries(lineChart, SERIES_NAME, ChartsManager.YAxisLevel.FIRST);
-        chartManager.addYAxis(lineChart, Y_AXIS_LABEL);
+        chartManager.addYAxis(lineChart, Y2_AXIS_LABEL);
         chartManager.addNewSeries(lineChart, SERIES_NAME, ChartsManager.YAxisLevel.SECOND);
-        chartManager.addYAxis(lineChart, Y_AXIS_LABEL);
-        chartManager.addNewSeries(lineChart, SERIES_NAME, ChartsManager.YAxisLevel.THIRD);
         chartManager.setDarkTheme(lineChart);
         this.getChildren().add(viewer);
     }
@@ -56,10 +56,11 @@ public final class ChartsPanel extends VBox {
     /**
      * Adds a point to the speed chart.
      *
-     * @param xValue the x-axis value (time in hours)
-     * @param yValue the y-axis value (position in Km)
+     * @param xValue the x-axis value
+     * @param yValue the y-axis value
+     * @param y2Value the second y-axis value
      */
-    public void addPointToChart(final Number xValue, final Number yValue) {
+    public void addPointToChart(final Number xValue, final Number yValue, final Number y2Value) {
         chartManager.addPointToSeries(
             this.lineChart,
             SERIES_NAME,
@@ -71,15 +72,8 @@ public final class ChartsPanel extends VBox {
             this.lineChart,
             SERIES_NAME,
             ChartsManager.YAxisLevel.SECOND,
-            yValue,
-            xValue
-        );
-        chartManager.addPointToSeries(
-            this.lineChart,
-            SERIES_NAME,
-            ChartsManager.YAxisLevel.THIRD,
-            yValue,
-            yValue
+            xValue,
+            y2Value
         );
     }
 }

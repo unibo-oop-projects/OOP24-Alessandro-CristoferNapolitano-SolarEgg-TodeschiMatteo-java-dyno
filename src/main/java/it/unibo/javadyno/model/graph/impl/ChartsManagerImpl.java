@@ -4,7 +4,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
-import java.awt.Color; 
+import java.awt.Color;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.XYPlot;

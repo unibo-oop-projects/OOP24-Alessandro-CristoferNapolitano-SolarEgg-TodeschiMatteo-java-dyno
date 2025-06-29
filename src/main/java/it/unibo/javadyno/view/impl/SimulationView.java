@@ -20,6 +20,7 @@ import javafx.stage.Stage;
  * Simulation view class for the JavaDyno application.
  */
 public class SimulationView extends Application implements View {
+    private static final double HP_TO_KWW = 0.7457;
     private static final String STAGE_TITLE = "JavaDyno - Simulation";
     private static final String CSS_FILE = "/css/simulationStyle.css";
     private static final String CSS_SETTINGS_PANEL_TAG = "left-column";
@@ -114,9 +115,10 @@ public class SimulationView extends Application implements View {
      *
      * @param xValue the x-axis value to be added to the graph
      * @param yValue the y-axis value to be added to the graph
+     * @param y2Value the second y-axis value to be added to the graph
      */
-    public void updateGraph(final Number xValue, final Number yValue) {
-        this.chartsPanel.addPointToChart(xValue, yValue);
+    public void updateGraph(final Number xValue, final Number yValue, final Number y2Value) {
+        this.chartsPanel.addPointToChart(xValue, yValue, y2Value);
     }
 
     /**
@@ -147,7 +149,8 @@ public class SimulationView extends Application implements View {
                      data.rawData().vehicleSpeed().orElse(0),
                      data.rawData().engineTemperature().orElse(0.0));
         updateGraph(data.rawData().engineRPM().orElse(0),
-                    data.rawData().torque().orElse(0.0));
+                    data.enginePowerHP(),
+                    data.enginePowerHP() * HP_TO_KWW);
     }
 
     /**
