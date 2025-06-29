@@ -50,8 +50,8 @@ dependencies {
     val jsonVersion = "20250517"
     implementation("org.json:json:$jsonVersion")
 
-     // JSON library for convenient object-to-JSON mapping
-    implementation("com.owlike:genson:1.6")
+     // TODO: add JSON library for convenient object-to-JSON mapping
+    
 
     // CSV library for parsing and generating CSV
     implementation("com.opencsv:opencsv:5.9")

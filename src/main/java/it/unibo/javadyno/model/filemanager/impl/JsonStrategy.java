@@ -1,6 +1,5 @@
 package it.unibo.javadyno.model.filemanager.impl;
 
-import com.owlike.genson.Genson;
 import it.unibo.javadyno.model.data.api.ElaboratedData;
 import it.unibo.javadyno.model.filemanager.api.FileStrategy;
 
@@ -20,9 +19,7 @@ import java.util.List;
  */
 public final class JsonStrategy implements FileStrategy {
 
-    // A reusable Genson instance.
-    private final Genson genson = new Genson();
-
+    
     /**
      * {@inheritDoc}
      */
