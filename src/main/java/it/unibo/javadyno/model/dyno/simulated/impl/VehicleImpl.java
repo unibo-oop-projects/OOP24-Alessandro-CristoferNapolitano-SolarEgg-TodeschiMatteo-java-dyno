@@ -7,29 +7,36 @@ import it.unibo.javadyno.model.dyno.simulated.api.DriveTrain;
 import it.unibo.javadyno.model.dyno.simulated.api.Vehicle;
 import it.unibo.javadyno.model.dyno.simulated.api.WeatherStation;
 
-public class VehicleImpl implements Vehicle{
+/**
+ * Implementation of a vehicle with a drive train, wheel, injection of a weatherstation.
+ */
+public final class VehicleImpl implements Vehicle {
     private final DriveTrain drivetrain;
     private final WeatherStation weatherStation;
     private final double wheelRadius;
     private double currentThrottle;
 
     /**
-     * 
-     * @param drivetrain
-     * @param weather
+     * simple constructor for VehicleImpl.
+     *
+     * @param drivetrain DriveTrain implementation
+     * @param weather WeatherStation, used to calculate alternatives drivetrain implementations
      * @param wheelRadius wheel radius, used to compute vehicle speed [m]
-     * @param currentThrottle
+     * @param currentThrottle starting throttle position
      */
-    public VehicleImpl(DriveTrain drivetrain, WeatherStation weather,
-            double wheelRadius, double currentThrottle) {
+    public VehicleImpl(final DriveTrain drivetrain, final WeatherStation weather,
+            final double wheelRadius, final double currentThrottle) {
         this.drivetrain = java.util.Objects.requireNonNull(drivetrain, "drivetrain");
-        this.weatherStation  = java.util.Objects.requireNonNull(weather,  "weather");
-        if (wheelRadius <= 0) throw new IllegalArgumentException("wheelRadius must be > 0");
-        this.wheelRadius  = wheelRadius;
+        this.weatherStation = java.util.Objects.requireNonNull(weather, "weather");
+        if (wheelRadius <= 0) {
+            throw new IllegalArgumentException("wheelRadius must be > 0");
+        }
+        this.wheelRadius = wheelRadius;
+        this.setThrottle(currentThrottle);
     }
 
     @Override
-    public void setThrottle(double throttle) {
+    public void setThrottle(final double throttle) {
         if (throttle < 0.0 || throttle > 1.0) {
             throw new IllegalArgumentException("throttle must be between [0-1]");
         }
@@ -37,8 +44,8 @@ public class VehicleImpl implements Vehicle{
     }
 
     @Override
-    public void update(double deltatime) {
-        drivetrain.step(currentThrottle,deltatime);
+    public void update(final double deltatime) {
+        drivetrain.step(currentThrottle, deltatime);
     }
 
     @Override
@@ -59,29 +66,28 @@ public class VehicleImpl implements Vehicle{
     @Override
     public RawData getRawData() {
         //engine RPM [rev/min]
-        double engineOmega = drivetrain.getEngineOmega();
-        int engineRpm = (int) Math.round(engineOmega * 60.0 / (2 * Math.PI));
+        final double engineOmega = drivetrain.getEngineOmega();
+        final int engineRpm = (int) Math.round(engineOmega * 60.0 / (2 * Math.PI));
 
         //engine temperature [°C]
-        double engineTemp = drivetrain.getEngineTemperature();
+        final double engineTemp = drivetrain.getEngineTemperature();
 
         //compute wheel torque [Nm] from engine torque
-        double engineTorque = drivetrain.getGeneratedTorque();
-        double wheelOmega = drivetrain.getWheelOmega();
+        final double engineTorque = drivetrain.getGeneratedTorque();
+        final double wheelOmega = drivetrain.getWheelOmega();
         //TorqueWheel = TorqueEngine / gear
-        double wheelTorque = engineOmega == 0 ? 0 : engineTorque * (wheelOmega / engineOmega);
+        final double wheelTorque = engineOmega == 0 ? 0 : engineTorque * (wheelOmega / engineOmega);
 
         //vehicle speed [km/h]
-        int speedKmh = (int) Math.round(wheelOmega * wheelRadius * 3.6);
+        final int speedKmh = (int) Math.round(wheelOmega * wheelRadius * 3.6);
 
         //gas aperture [0-1]
-        double throttle = currentThrottle;
+        final double throttle = currentThrottle;
 
         //ambient data
-        int ambientTemperature = (int)weatherStation.getTemperature();
-        int ambientPressure = weatherStation.getPressure();
+        final int ambientTemperature = (int) weatherStation.getTemperature();
+        final int ambientPressure = weatherStation.getPressure();
         //int ambientHumidity = weatherStation.getHumidity();
-    
         // TODO : change pressure to kPa
         // TODO : change in rawdata ambienttemp in double
 
