@@ -48,10 +48,10 @@ public class MainMenu extends Application implements View {
         final Button realDynoButton = new Button("Dyno");
         final Button settingsButton = new Button("Settings");
         simulatedDynoButton.setOnAction(e -> {
-            controller.showView(primaryStage);
+            controller.showView(primaryStage, new SimulationView(controller));
         });
         realDynoButton.setOnAction(e -> {
-            controller.showView(primaryStage);
+            controller.showView(primaryStage, new SimulationView(controller));
         });
 
         final Rectangle2D screenBounds = Screen.getPrimary().getBounds();

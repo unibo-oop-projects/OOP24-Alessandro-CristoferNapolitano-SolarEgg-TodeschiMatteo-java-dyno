@@ -1,6 +1,7 @@
 package it.unibo.javadyno.view.impl.component;
 
 import it.unibo.javadyno.controller.api.Controller;
+import it.unibo.javadyno.view.api.View;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -14,8 +15,9 @@ public final class ButtonsPanel extends VBox {
      *
      * @param controller the controller to be used
      * @param primaryStage the primary stage of the application
+     * @param view the view to be displayed
      */
-    public ButtonsPanel(final Controller controller, final Stage primaryStage) {
+    public ButtonsPanel(final Controller controller, final Stage primaryStage, final View view) {
         final Button startSimulationButton = new Button("Start Simulation");
         startSimulationButton.setId("start-button");
         final Button stopSimulationButton = new Button("Stop Simulation");
@@ -35,7 +37,7 @@ public final class ButtonsPanel extends VBox {
             this.getChildren().addFirst(reloadButton);
         });
         reloadButton.setOnAction(e -> {
-            controller.showView(primaryStage);
+            controller.showView(primaryStage, view);
         });
         backToMenuButton.setOnAction(e -> {
             controller.showMainMenu(primaryStage);

@@ -50,7 +50,7 @@ public class SimulationView extends Application implements View {
         final HBox mainContainer = new HBox();
         final VBox leftPanel = new VBox();
         final VBox rightPanel = new VBox();
-        final ButtonsPanel buttonsPanel = new ButtonsPanel(controller, primaryStage);
+        final ButtonsPanel buttonsPanel = new ButtonsPanel(controller, primaryStage, this);
 
         HBox.setHgrow(leftPanel, Priority.NEVER);
         HBox.setHgrow(rightPanel, Priority.ALWAYS);
