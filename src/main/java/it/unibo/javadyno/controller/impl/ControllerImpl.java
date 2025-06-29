@@ -17,7 +17,6 @@ import it.unibo.javadyno.model.dyno.api.Dyno;
 import it.unibo.javadyno.model.dyno.simulated.impl.SimulatedDynoImpl;
 import it.unibo.javadyno.view.api.View;
 import it.unibo.javadyno.view.impl.MainMenu;
-import it.unibo.javadyno.view.impl.SimulationView;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
@@ -73,9 +72,9 @@ public class ControllerImpl implements Controller {
      * {@inheritDoc}
      */
     @Override
-    public void showSimulationView(final Stage stage) {
-        this.view = new SimulationView(this);
-        view.begin(stage);
+    public void showView(final Stage stage, final View suppliedView) {
+        this.view = suppliedView;
+        suppliedView.begin(stage);
     }
 
     /**
