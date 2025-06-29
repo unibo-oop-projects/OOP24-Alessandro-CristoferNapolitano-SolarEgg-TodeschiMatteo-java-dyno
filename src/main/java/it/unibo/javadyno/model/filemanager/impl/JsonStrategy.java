@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import it.unibo.javadyno.model.data.api.ElaboratedData;
 import it.unibo.javadyno.model.filemanager.api.FileStrategy;
 
@@ -25,6 +26,7 @@ public final class JsonStrategy implements FileStrategy {
     // A reusable ObjectMapper instance.
     private final ObjectMapper objectMapper = new ObjectMapper()
         .registerModule(new Jdk8Module()) // Enables Optional<T> support.
+        .registerModule(new JavaTimeModule()) // Enables Instant and other time types support.
         .enable(SerializationFeature.INDENT_OUTPUT); // Pretty printing for readability.
 
     /**
@@ -44,9 +46,9 @@ public final class JsonStrategy implements FileStrategy {
             // Uses TypeReference to tell Jackson the exact generic type to deserialize to.
             // Handles the conversion to List<ElaboratedData> automatically.
             final List<ElaboratedData> importedData = objectMapper.readValue(
-                file, new TypeReference<List<ElaboratedData>>() {}
+                file, new TypeReference<List<ElaboratedData>>() { }
             );
-            
+
             // Returns the imported data or an empty list if the file is null.
             if (importedData != null) {
                 return importedData;

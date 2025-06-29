@@ -54,6 +54,7 @@ dependencies {
     val jacksonVersion = "2.18.3"
     implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:$jacksonVersion") // For Optional support
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion") // For time type support (Instant)
 
     // CSV library for parsing and generating CSV
     implementation("com.opencsv:opencsv:5.9")
