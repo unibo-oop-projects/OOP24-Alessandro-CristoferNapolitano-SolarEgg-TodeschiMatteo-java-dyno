@@ -6,6 +6,7 @@ import it.unibo.javadyno.view.api.View;
 import it.unibo.javadyno.view.impl.component.ButtonsPanel;
 import it.unibo.javadyno.view.impl.component.ChartsPanel;
 import it.unibo.javadyno.view.impl.component.GaugePanel;
+import it.unibo.javadyno.view.impl.component.StatsPanel;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
@@ -50,6 +51,7 @@ public class SimulationView extends Application implements View {
         final VBox leftPanel = new VBox();
         final VBox rightPanel = new VBox();
         final ButtonsPanel buttonsPanel = new ButtonsPanel(controller, primaryStage);
+        final StatsPanel statsPanel = new StatsPanel();
 
         HBox.setHgrow(leftPanel, Priority.NEVER);
         HBox.setHgrow(rightPanel, Priority.ALWAYS);
@@ -57,10 +59,13 @@ public class SimulationView extends Application implements View {
         HBox.setHgrow(gaugePanel, Priority.ALWAYS);
         VBox.setVgrow(chartsPanel, Priority.ALWAYS);
         VBox.setVgrow(gaugePanel, Priority.NEVER);
-        buttonsPanel.getStyleClass().addAll("buttons-panel");
+        VBox.setVgrow(buttonsPanel, Priority.NEVER);
+        VBox.setVgrow(statsPanel, Priority.ALWAYS);
+        buttonsPanel.getStyleClass().add("buttons-panel");
+        statsPanel.getStyleClass().add("stats-panel");
         leftPanel.setAlignment(Pos.TOP_CENTER);
         leftPanel.getStyleClass().add(CSS_SETTINGS_PANEL_TAG);
-        leftPanel.getChildren().add(buttonsPanel);
+        leftPanel.getChildren().addAll(buttonsPanel, statsPanel);
         rightPanel.setAlignment(Pos.TOP_RIGHT);
         rightPanel.setSpacing(0);
         rightPanel.getChildren().addAll(chartsPanel, gaugePanel);
