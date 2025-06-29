@@ -4,6 +4,7 @@ import com.owlike.genson.Genson;
 import com.owlike.genson.GenericType;
 import com.owlike.genson.JsonBindingException;
 import com.owlike.genson.GensonBuilder;
+import com.owlike.genson.reflect.VisibilityFilter;
 import it.unibo.javadyno.model.data.api.ElaboratedData;
 import it.unibo.javadyno.model.filemanager.api.FileStrategy;
 
@@ -24,9 +25,17 @@ import java.util.Objects;
  */
 public final class JsonStrategy implements FileStrategy {
 
-    // A reusable Genson instance.
-    // Uses GensonBuilder's useIndentation to make the JSON more readable.
-    private final Genson genson = new GensonBuilder().useIndentation(true).create();
+    /* A reusable Genson instance configured to work with Java records.
+    * useIndentation to makes the JSON more readable.
+    * useConstructorWithArguments to make Genson use the constructor with arguments instead of the default one.
+    * useFields(true, VisibilityFilter.PRIVATE) allows Genson to access private fields directly,
+    * which is necessary for records since they don't have setters.
+    */
+    private final Genson genson = new GensonBuilder()
+        .useIndentation(true)
+        .useConstructorWithArguments(true)
+        .useFields(true, VisibilityFilter.PRIVATE)
+        .create();
 
     /**
      * {@inheritDoc}
