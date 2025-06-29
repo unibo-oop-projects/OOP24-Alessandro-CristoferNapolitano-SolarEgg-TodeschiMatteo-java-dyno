@@ -2,6 +2,7 @@ package it.unibo.javadyno.view.impl.component;
 
 import it.unibo.javadyno.controller.api.Controller;
 import it.unibo.javadyno.view.api.View;
+import it.unibo.javadyno.view.impl.SimulationView;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -37,7 +38,7 @@ public final class ButtonsPanel extends VBox {
             this.getChildren().addFirst(reloadButton);
         });
         reloadButton.setOnAction(e -> {
-            controller.showView(primaryStage, view);
+            controller.showView(primaryStage, new SimulationView(controller));
         });
         backToMenuButton.setOnAction(e -> {
             controller.showMainMenu(primaryStage);
