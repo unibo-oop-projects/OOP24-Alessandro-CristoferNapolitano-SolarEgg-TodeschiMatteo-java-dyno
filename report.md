@@ -1,7 +1,6 @@
 <p align="center">
 <h1>
 Relazione del progetto 
-
 “JavaDyno”
 </h1>
 
