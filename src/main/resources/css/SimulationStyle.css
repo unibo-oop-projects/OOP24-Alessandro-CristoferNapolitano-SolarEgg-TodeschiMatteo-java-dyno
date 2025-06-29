@@ -8,6 +8,13 @@
     -fx-border-color: red;
     -fx-border-width: 2;
 }
+.buttons-panel {
+    -fx-background-color: #1a1a1a;
+    -fx-border-color: #124d77;
+    -fx-border-width: 2;
+    -fx-padding: 10;
+    -fx-spacing: 10;
+}
 .charts-panel {
     -fx-border-color: green;
     -fx-border-width: 2;

@@ -3,13 +3,13 @@ package it.unibo.javadyno.view.impl;
 import it.unibo.javadyno.controller.api.Controller;
 import it.unibo.javadyno.model.data.api.ElaboratedData;
 import it.unibo.javadyno.view.api.View;
+import it.unibo.javadyno.view.impl.component.ButtonsPanel;
 import it.unibo.javadyno.view.impl.component.ChartsPanel;
 import it.unibo.javadyno.view.impl.component.GaugePanel;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -25,12 +25,10 @@ public class SimulationView extends Application implements View {
     private static final String CSS_FILE = "/css/simulationStyle.css";
     private static final String CSS_SETTINGS_PANEL_TAG = "left-column";
     private static final String CSS_MAIN_CONTAINER_TAG = "main-container";
-    private static final int COLUMN_SPACING = 5;
     private static final double WIDTH_RATIO = 0.8; //percentage of screen width
     private static final double HEIGHT_RATIO = 0.8; //percentage of screen height
 
     private final Controller controller;
-    private final VBox settingsPanel = new VBox(COLUMN_SPACING);
     private final ChartsPanel chartsPanel = new ChartsPanel();
     private final GaugePanel gaugePanel = new GaugePanel();
 
@@ -48,60 +46,30 @@ public class SimulationView extends Application implements View {
      */
     @Override
     public void start(final Stage primaryStage) {
-        final Rectangle2D screenBounds = Screen.getPrimary().getBounds();
-        final double width = screenBounds.getWidth() * WIDTH_RATIO;
-        final double height = screenBounds.getHeight() * HEIGHT_RATIO;
-        settingsPanel.setAlignment(Pos.CENTER);
-        settingsPanel.getStyleClass().add(CSS_SETTINGS_PANEL_TAG);
-        HBox.setHgrow(settingsPanel, Priority.ALWAYS);
+        final HBox mainContainer = new HBox();
+        final VBox leftPanel = new VBox();
+        final VBox rightPanel = new VBox();
+        final ButtonsPanel buttonsPanel = new ButtonsPanel(controller, primaryStage);
+
+        HBox.setHgrow(leftPanel, Priority.NEVER);
+        HBox.setHgrow(rightPanel, Priority.ALWAYS);
         HBox.setHgrow(chartsPanel, Priority.ALWAYS);
         HBox.setHgrow(gaugePanel, Priority.ALWAYS);
         VBox.setVgrow(chartsPanel, Priority.ALWAYS);
-        VBox.setVgrow(gaugePanel, Priority.NEVER); 
-
-        // Setting up buttons for the left column
-        final Button startSimulationButton = new Button("Start Simulation");
-        startSimulationButton.setId("start-button");
-        final Button stopSimulationButton = new Button("Stop Simulation");
-        stopSimulationButton.setId("stop-button");
-        final Button saveDataButton = new Button("Save datas");
-        final Button backToMenuButton = new Button("Back to menu");
-        final Button reloadButton = new Button("Reload simulation");
-        stopSimulationButton.setDisable(true);
-        saveDataButton.setDisable(true);
-        startSimulationButton.setOnAction(e -> {
-            controller.startSimulation();
-            startSimulationButton.setDisable(true);
-            stopSimulationButton.setDisable(false);
-        });
-        stopSimulationButton.setOnAction(e -> {
-            controller.stopSimulation();
-            stopSimulationButton.setDisable(true);
-            saveDataButton.setDisable(false);
-            settingsPanel.getChildren().removeAll(startSimulationButton, stopSimulationButton);
-            settingsPanel.getChildren().add(0, reloadButton);
-        });
-        reloadButton.setOnAction(e -> {
-            controller.showSimulationView(primaryStage);
-        });
-        backToMenuButton.setOnAction(e -> {
-            controller.showMainMenu(primaryStage);
-        });
-        settingsPanel.getChildren().addAll(startSimulationButton, stopSimulationButton, saveDataButton, backToMenuButton);
-
-        // Create the main container
-        final HBox mainContainer = new HBox();
-        mainContainer.getStyleClass().add(CSS_MAIN_CONTAINER_TAG);
-        final VBox leftPanel = new VBox();
-        final VBox rightPanel = new VBox();
-        HBox.setHgrow(rightPanel, Priority.ALWAYS);
+        VBox.setVgrow(gaugePanel, Priority.NEVER);
+        buttonsPanel.getStyleClass().addAll("buttons-panel");
+        leftPanel.setAlignment(Pos.TOP_CENTER);
+        leftPanel.getStyleClass().add(CSS_SETTINGS_PANEL_TAG);
+        leftPanel.getChildren().add(buttonsPanel);
         rightPanel.setAlignment(Pos.TOP_RIGHT);
-        rightPanel.setSpacing(0); 
-        leftPanel.getChildren().add(settingsPanel);
+        rightPanel.setSpacing(0);
         rightPanel.getChildren().addAll(chartsPanel, gaugePanel);
+        mainContainer.getStyleClass().add(CSS_MAIN_CONTAINER_TAG);
         mainContainer.getChildren().addAll(leftPanel, rightPanel);
 
-        // Set the scene
+        final Rectangle2D screenBounds = Screen.getPrimary().getBounds();
+        final double width = screenBounds.getWidth() * WIDTH_RATIO;
+        final double height = screenBounds.getHeight() * HEIGHT_RATIO;
         final Scene scene = new Scene(mainContainer, width, height);
         scene.getStylesheets().add(SimulationView.class.getResource(CSS_FILE).toExternalForm());
         primaryStage.setTitle(STAGE_TITLE);
