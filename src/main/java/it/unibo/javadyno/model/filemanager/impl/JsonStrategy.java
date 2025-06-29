@@ -1,6 +1,8 @@
 package it.unibo.javadyno.model.filemanager.impl;
 
 import com.owlike.genson.Genson;
+import com.owlike.genson.GenericType;
+import com.owlike.genson.JsonBindingException;
 import it.unibo.javadyno.model.data.api.ElaboratedData;
 import it.unibo.javadyno.model.filemanager.api.FileStrategy;
 
@@ -9,8 +11,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * JSON Strategy implementation using the Genson library.
@@ -28,9 +30,9 @@ public final class JsonStrategy implements FileStrategy {
      */
     @Override
     public void exportData(final List<ElaboratedData> data, final File file) throws IOException {
-        // A try-with-resources statement ensures the writer is automatically closed.
+        // Using try-with-resources to make sure the writer is automatically closed.
         try (FileWriter writer = new FileWriter(file, StandardCharsets.UTF_8)) {
-            // TODO
+            genson.serialize(Objects.requireNonNull(data), writer);
         }
     }
 
@@ -39,10 +41,20 @@ public final class JsonStrategy implements FileStrategy {
      */
     @Override
     public List<ElaboratedData> importData(final File file) throws IOException {
-        // A try-with-resources statement ensures the reader is automatically closed.
+        // Using try-with-resources to make sure the reader is automatically closed.
         try (FileReader reader = new FileReader(file, StandardCharsets.UTF_8)) {
-            // TODO
-            return new ArrayList<>(); // Placeholder return
+            /*
+             * To deserialize a generic collection like List<ElaboratedData>, provides
+             * a GenericType to specify the exact target type.
+             */
+            final List<ElaboratedData> importedData = genson.deserialize(
+                reader, new GenericType<List<ElaboratedData>>() { }
+            );
+
+            return importedData;
+        } catch (final JsonBindingException e) {
+            // If the JSON is malformed, Genson throws a JsonBindingException.
+            throw new IOException("Failed to parse JSON file: " + file.getAbsolutePath(), e);
         }
     }
 }

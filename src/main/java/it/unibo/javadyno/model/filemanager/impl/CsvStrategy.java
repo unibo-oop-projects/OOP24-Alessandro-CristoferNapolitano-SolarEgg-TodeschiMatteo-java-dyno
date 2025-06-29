@@ -53,6 +53,7 @@ public final class CsvStrategy implements FileStrategy {
      */
     @Override
     public void exportData(final List<ElaboratedData> data, final File file) throws IOException {
+       // Using try-with-resources to make sure the writer is automatically closed.
        try (CSVWriter writer = new CSVWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
         writer.writeNext(HEADER);
 
@@ -121,6 +122,7 @@ public final class CsvStrategy implements FileStrategy {
                 importedData.add(new ElaboratedData(rawData, powerKW, powerHP, correctedTorque));
             }
         } catch (final CsvException e) {
+            // If the CSV is malformed, opencsv throws a CsvException.
             throw new IOException("Error reading CSV file", e);
         }
         return importedData;
