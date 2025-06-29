@@ -83,7 +83,8 @@ final class CsvStrategyTest {
             .torque(Optional.of(200.0))
             .vehicleSpeed(Optional.of(100))
             .throttlePosition(Optional.of(75.5))
-            .boostPressure(Optional.of(1.2))
+            .baroPressure(Optional.of(1013)) // Fixed: was boostPressure
+            .ambientAirTemperature(Optional.of(25)) // Added: missing field
             .exhaustGasTemperature(Optional.of(800.0))
             .build();
         final ElaboratedData elaborated1 = new ElaboratedData(raw1, 62.83, 84.25, 205.0);
@@ -97,7 +98,8 @@ final class CsvStrategyTest {
             .torque(Optional.of(210.0))
             .vehicleSpeed(Optional.empty()) // Missing data
             .throttlePosition(Optional.empty()) // Missing data
-            .boostPressure(Optional.of(1.25))
+            .baroPressure(Optional.of(1012)) // Fixed: was boostPressure
+            .ambientAirTemperature(Optional.empty()) // Added: missing field (empty to test Optional handling)
             .exhaustGasTemperature(Optional.of(810.0))
             .build();
         final ElaboratedData elaborated2 = new ElaboratedData(raw2, 67.9, 91.0, 215.0);
