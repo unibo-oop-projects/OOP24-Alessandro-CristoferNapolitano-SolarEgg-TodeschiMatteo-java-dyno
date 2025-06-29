@@ -105,7 +105,7 @@ public class SimulationView extends Application implements View {
                      data.engineCorrectedTorque(),
                      data.enginePowerHP(),
                      data.enginePowerKW());
-        if(controller.isPollingRunning()) {
+        if (controller.isPollingRunning()) {
             chartsPanel.setBackgroundVisible(false);
         } else {
             chartsPanel.setBackgroundVisible(true);
