@@ -13,24 +13,28 @@ import java.util.Optional;
  */
 public final class FileStrategyFactoryImpl implements FileStrategyFactory {
 
+    // Supported file extensions.
     private static final String CSV_EXTENSION = ".csv";
-    // TODO: private static final String JSON_EXTENSION = ".json";
-    // TODO: Add more supported file types.
+    private static final String JSON_EXTENSION = ".json";
 
     /**
      * {@inheritDoc}
      */
     @Override
     public Optional<FileStrategy> createStrategyFor(final File file) {
-        // Shorten for readability
+
+        // Strategy is selected based on the file's extension.
+
         final String fileName = file.getName().toLowerCase();
         if (fileName.endsWith(CSV_EXTENSION)) {
             return Optional.of(new CsvStrategy());
         }
-        // TODO: Add a future JsonStrategy:
-        // if (fileName.endsWith(JSON_EXTENSION)) {
-        //     return Optional.of(new JsonStrategy());
-        // }
+
+        if (fileName.endsWith(JSON_EXTENSION)) {
+            return Optional.of(new JsonStrategy());
+        }
+
+        // If the file extension is not recognized, just returns an empty Optional.
         return Optional.empty();
     }
 }
