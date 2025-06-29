@@ -35,7 +35,7 @@ public final class ButtonsPanel extends VBox {
             this.getChildren().addFirst(reloadButton);
         });
         reloadButton.setOnAction(e -> {
-            controller.showSimulationView(primaryStage);
+            controller.showView(primaryStage);
         });
         backToMenuButton.setOnAction(e -> {
             controller.showMainMenu(primaryStage);

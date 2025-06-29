@@ -26,7 +26,7 @@ public interface Controller {
      *
      * @param stage the primary stage to show the simulation view on
      */
-    void showSimulationView(Stage stage);
+    void showView(Stage stage);
 
     /**
      * Closes the application.

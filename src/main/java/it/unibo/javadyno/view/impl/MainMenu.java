@@ -44,18 +44,21 @@ public class MainMenu extends Application implements View {
      */
     @Override
     public void start(final Stage primaryStage) {
-        final Button simulatedDynoButton = new Button("Simulated Dyno");
-        final Button realDynoButton = new Button("Real Dyno");
+        final Button simulatedDynoButton = new Button("Simulation");
+        final Button realDynoButton = new Button("Dyno");
         final Button settingsButton = new Button("Settings");
         simulatedDynoButton.setOnAction(e -> {
-            controller.showSimulationView(primaryStage);
+            controller.showView(primaryStage);
+        });
+        realDynoButton.setOnAction(e -> {
+            controller.showView(primaryStage);
         });
 
         final Rectangle2D screenBounds = Screen.getPrimary().getBounds();
         final double width = screenBounds.getWidth() * WIDTH_RATIO;
         final double height = screenBounds.getHeight() * HEIGHT_RATIO;
         final ImageView image = new ImageView(new Image(ClassLoader.getSystemResource(HOME_IMAGE).toExternalForm()));
-        final VBox vbox = new VBox(15, image, simulatedDynoButton, realDynoButton, settingsButton);
+        final VBox vbox = new VBox(15, image, realDynoButton, simulatedDynoButton, settingsButton);
         vbox.setAlignment(Pos.CENTER);
         vbox.getStyleClass().add("main-menu-container");
         final Scene scene = new Scene(vbox, width, height);

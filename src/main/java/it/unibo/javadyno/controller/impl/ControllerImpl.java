@@ -73,7 +73,7 @@ public class ControllerImpl implements Controller {
      * {@inheritDoc}
      */
     @Override
-    public void showSimulationView(final Stage stage) {
+    public void showView(final Stage stage) {
         this.view = new SimulationView(this);
         view.begin(stage);
     }

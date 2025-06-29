@@ -84,7 +84,7 @@ public class SimulationViewOld extends Application implements View {
             leftColumn.getChildren().add(0, reloadButton);
         });
         reloadButton.setOnAction(e -> {
-            controller.showSimulationView(primaryStage);
+            controller.showView(primaryStage);
         });
         backToMenuButton.setOnAction(e -> {
             controller.showMainMenu(primaryStage);
