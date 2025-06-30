@@ -23,5 +23,5 @@ public interface DataCollector {
     /**
      * Collect the last data collected.
      */
-    void collectData();
+    ElaboratedData collectData();
 }

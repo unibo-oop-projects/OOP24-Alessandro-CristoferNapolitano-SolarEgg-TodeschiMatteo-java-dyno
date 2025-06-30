@@ -10,6 +10,7 @@ import it.unibo.javadyno.view.impl.component.ChartsPanel;
 import it.unibo.javadyno.view.impl.component.GaugePanel;
 import it.unibo.javadyno.view.impl.component.StatsPanel;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
@@ -34,6 +35,7 @@ public class SimulationView extends Application implements View {
     private final ChartsPanel chartsPanel = new ChartsPanel();
     private final GaugePanel gaugePanel = new GaugePanel();
     private final StatsPanel statsPanel = new StatsPanel();
+    private ButtonsPanel buttonsPanel;
 
     /**
      * Constructor for SimulationView that imports the controller.
@@ -52,7 +54,7 @@ public class SimulationView extends Application implements View {
         final HBox mainContainer = new HBox();
         final VBox leftPanel = new VBox();
         final VBox rightPanel = new VBox();
-        final ButtonsPanel buttonsPanel = new ButtonsPanel(controller, primaryStage, this);
+        buttonsPanel = new ButtonsPanel(controller, primaryStage, this);
 
         HBox.setHgrow(leftPanel, Priority.NEVER);
         HBox.setHgrow(rightPanel, Priority.ALWAYS);
@@ -144,6 +146,7 @@ public class SimulationView extends Application implements View {
         if (controller.isPollingRunning()) {
             chartsPanel.setBackgroundVisible(false);
         } else {
+            Platform.runLater(() -> buttonsPanel.reachedEnd());
             chartsPanel.setBackgroundVisible(true);
         }
     }

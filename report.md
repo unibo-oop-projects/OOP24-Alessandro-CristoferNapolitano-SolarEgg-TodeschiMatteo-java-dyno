@@ -112,7 +112,7 @@ direction TB
 
     class DataCollector {
 	    +initialize(Dyno)
-	    +collectData()
+	    +collectData() ElaboratedData
 	    +getFullData() Queue~ElaboratedData~;
     }
 
@@ -193,7 +193,7 @@ classDiagram
     
     class DataCollector {
         +initialize(Dyno)
-        +collectData()
+        +collectData() ElaboratedData
         +getFullData() Queue
     }
     

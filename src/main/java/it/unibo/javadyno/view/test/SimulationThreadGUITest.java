@@ -3,6 +3,7 @@ package it.unibo.javadyno.view.test;
 import java.util.List;
 
 import it.unibo.javadyno.controller.api.Controller;
+import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.api.ElaboratedData;
 import it.unibo.javadyno.view.api.View;
 import javafx.application.Application;
@@ -35,8 +36,8 @@ public class SimulationThreadGUITest extends Application implements View {
     public void start(final Stage primaryStage) throws Exception {
         final Button startSimulationButton = new Button("Avvia Simulazione");
         final Button stopSimulationButton = new Button("Termina Simulazione");
-        startSimulationButton.setOnAction(e -> controller.startSimulation());
-        stopSimulationButton.setOnAction(e -> controller.stopSimulation());
+        startSimulationButton.setOnAction(e -> controller.startEvaluation(DataSource.SIMULATED_DYNO));
+        stopSimulationButton.setOnAction(e -> controller.stopEvaluation());
         final VBox vbox = new VBox(15, startSimulationButton, stopSimulationButton);
         vbox.setAlignment(Pos.CENTER);
         final Scene scene = new Scene(vbox, 400, 400);
