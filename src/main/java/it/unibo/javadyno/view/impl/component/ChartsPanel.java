@@ -1,9 +1,11 @@
 package it.unibo.javadyno.view.impl.component;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.fx.ChartViewer;
+import org.jfree.data.xy.XYSeriesCollection;
 
 import it.unibo.javadyno.model.graph.api.ChartsFactory;
 import it.unibo.javadyno.model.graph.api.ChartsManager;
@@ -11,6 +13,7 @@ import it.unibo.javadyno.model.graph.impl.ChartsManagerImpl;
 import it.unibo.javadyno.model.graph.impl.DefaultChartsFactory;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 
@@ -60,13 +63,12 @@ public final class ChartsPanel extends VBox {
     }
 
     /**
-     * Returns the ChartViewer instance associated with this ChartsPanel.
-     * This permits external access to the chart viewer for customization.
+     * Sets the vertical growth priority for the chart viewer.
      *
-     * @return the ChartViewer instance
+     * @param priority the priority for vertical growth
      */
-    public ChartViewer getChartsViewer() {
-        return this.viewer;
+    public void setChartViewerVgrow(final Priority priority) {
+        setVgrow(this.viewer, priority);
     }
 
     /**
@@ -139,6 +141,18 @@ public final class ChartsPanel extends VBox {
             chartManager.setBackgroundImage(this.lineChart, BG_IMAGE);
         } else {
             chartManager.resetBackgroundImage(this.lineChart);
+        }
+    }
+
+    /**
+     * Removes the first series from all Y-axis levels in the chart.
+     */
+    public void removeDefaultSeries() {
+        for (final ChartsManager.YAxisLevel level : ChartsManager.YAxisLevel.values()) {
+            final var dataset = (XYSeriesCollection) this.lineChart.getXYPlot().getDataset(level.getLevel());
+            if (Objects.nonNull(dataset) && dataset.getSeriesCount() > 0) {
+                dataset.removeSeries(0);
+            }
         }
     }
 }
