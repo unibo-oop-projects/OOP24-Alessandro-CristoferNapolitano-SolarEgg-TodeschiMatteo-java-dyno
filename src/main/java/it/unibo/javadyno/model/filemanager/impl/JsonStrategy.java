@@ -46,7 +46,7 @@ public final class JsonStrategy implements FileStrategy {
             // Uses TypeReference to tell Jackson the exact generic type to deserialize to.
             // Handles the conversion to List<ElaboratedData> automatically.
             final List<ElaboratedData> importedData = objectMapper.readValue(
-                file, new TypeReference<List<ElaboratedData>>() { }
+                file, new TypeReference<>() { }
             );
 
             // Returns the imported data or an empty list if the file is null.

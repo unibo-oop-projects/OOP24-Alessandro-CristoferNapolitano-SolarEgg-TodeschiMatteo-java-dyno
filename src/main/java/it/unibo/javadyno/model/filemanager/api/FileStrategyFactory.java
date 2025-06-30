@@ -6,6 +6,7 @@ import java.util.Optional;
 /**
  * An interface for a factory that creates FileStrategy objects.
  */
+@FunctionalInterface
 public interface FileStrategyFactory {
 
     /**

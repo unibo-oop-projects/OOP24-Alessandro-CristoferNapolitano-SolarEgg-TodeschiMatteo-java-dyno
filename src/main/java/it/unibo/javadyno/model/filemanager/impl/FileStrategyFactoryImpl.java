@@ -4,6 +4,7 @@ import it.unibo.javadyno.model.filemanager.api.FileStrategy;
 import it.unibo.javadyno.model.filemanager.api.FileStrategyFactory;
 
 import java.io.File;
+import java.util.Locale;
 import java.util.Optional;
 
 /**
@@ -25,7 +26,7 @@ public final class FileStrategyFactoryImpl implements FileStrategyFactory {
 
         // Strategy is selected based on the file's extension.
 
-        final String fileName = file.getName().toLowerCase();
+        final String fileName = file.getName().toLowerCase(Locale.ROOT);
         if (fileName.endsWith(CSV_EXTENSION)) {
             return Optional.of(new CsvStrategy());
         }
