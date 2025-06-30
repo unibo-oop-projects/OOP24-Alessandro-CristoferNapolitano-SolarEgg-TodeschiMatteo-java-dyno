@@ -7,8 +7,10 @@ import it.unibo.javadyno.model.data.api.ElaboratedData;
 import it.unibo.javadyno.view.api.View;
 import it.unibo.javadyno.view.impl.component.ChartsPanel;
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -44,9 +46,18 @@ public class ChartsViewer extends Application implements View {
     public void start(final Stage primaryStage) {
         final VBox mainContainer = new VBox();
         final HBox buttonsPanel = new HBox();
-        HBox.setHgrow(chartsPanel, Priority.ALWAYS);
         VBox.setVgrow(chartsPanel, Priority.ALWAYS);
+        buttonsPanel.setAlignment(Pos.CENTER);
+        final Button importDataButton = new Button("Import datas");
+        final Button backToMenuButton = new Button("Back to menu");
         buttonsPanel.getStyleClass().add("buttons-panel");
+        buttonsPanel.getChildren().addAll(importDataButton, backToMenuButton);
+        importDataButton.setOnAction(e -> {
+            controller.importData();
+        });
+        backToMenuButton.setOnAction(e -> {
+            controller.showMainMenu(primaryStage);
+        });
         mainContainer.getStyleClass().add(CSS_MAIN_CONTAINER_TAG);
         mainContainer.getChildren().addAll(buttonsPanel, chartsPanel);
 
