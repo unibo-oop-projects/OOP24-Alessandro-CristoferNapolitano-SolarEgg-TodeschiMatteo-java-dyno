@@ -338,10 +338,52 @@ classDiagram
 ### 2.2.2 Todeschi Matteo
 #### Gestione di simulazione concorrente
 ```mermaid
+classDiagram
+    class Dyno {
+        <<interface>>
+        +getRawData() RawData
+        +getDynoType() DataSource
+        +begin()
+        +end()
+        +isActive() boolean
+    }
+
+    class Runnable {
+        <<interface>>
+        +run() void
+    }
+
+    class SimulatedDyno {
+        <<interface>>
+    }
+
+    class SimulatedDynoImpl {
+        +getRawData() RawData
+        +begin()
+        +end()
+        +isActive() boolean
+    }
+
+    Dyno <|-- SimulatedDyno
+    Runnable <|-- SimulatedDyno
+    SimulatedDyno <|.. SimulatedDynoImpl
+
+```
+
+**Problema:** 
+Far si che ogni implementazione di `SimulatedDyno` possa essere eseguita in modo concorrente, permettendo in primis di generare dati e aggiornarsi molto più velocemente rispetto alla frequenza di aggiornamento dell'appplicazione e dando inoltre all'utente la possibilità di interagire con l'applicazione senza blocchi o rallentamenti.
+
+**Soluzione:**
+Per risolvere il problema si è scelto di creare un interfaccia intemedia tra `Dyno` e `SimulatedDyno` che implementa l'interfaccia `Runnable`. In questo modo ogni implementazione di `SimulatedDyno` deve essere eseguita in un thread separato, permettendo di generare i dati in modo asincrono. La classe `SimulatedDynoImpl` implementa questa logica, gestendo la generazione dei dati e l'aggiornamento dello stato in modo concorrente.
+
+#### Gestione degli errori con Monitor dedicato 
+```mermaid
 UML TODO
 ```
 
 **Problema:** TODO.
+
+**Soluzione:** TODO. 
 
 **Soluzione:** TODO. 
 #### Riutilizzo dei componenti della view
