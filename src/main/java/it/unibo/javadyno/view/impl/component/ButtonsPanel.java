@@ -11,6 +11,7 @@ import javafx.stage.Stage;
  * ButtonsPanel class that creates a panel with buttons for controlling the GUI.
  */
 public final class ButtonsPanel extends VBox {
+
     private final Button startSimulationButton;
     private final Button stopSimulationButton;
     private final Button saveDataButton;
@@ -24,8 +25,10 @@ public final class ButtonsPanel extends VBox {
      * @param controller the controller to be used
      * @param primaryStage the primary stage of the application
      * @param type the type of buttons to be created
+     * @param dataSource the data source to be used for the simulation
      */
-    public ButtonsPanel(final Controller controller, final Stage primaryStage, final LabelsType type) {
+    public ButtonsPanel(final Controller controller, final Stage primaryStage,
+            final LabelsType type,final DataSource dataSource) {
         startSimulationButton = new Button(type.getStartButton());
         startSimulationButton.setId("start-button");
         stopSimulationButton = new Button(type.getStopButton());
@@ -35,7 +38,7 @@ public final class ButtonsPanel extends VBox {
         backToMenuButton = new Button(type.getBackToMenu());
         reloadButton = new Button(type.getReloadButton());
         startSimulationButton.setOnAction(e -> {
-            controller.startEvaluation(DataSource.SIMULATED_DYNO);
+            controller.startEvaluation(dataSource);
             this.getChildren().remove(startSimulationButton);
             this.getChildren().addFirst(stopSimulationButton);
         });
@@ -47,7 +50,7 @@ public final class ButtonsPanel extends VBox {
             controller.importData();
         });
         reloadButton.setOnAction(e -> {
-            controller.showView(primaryStage, new EvaluatingView(controller, type));
+            controller.showView(primaryStage, new EvaluatingView(controller, type, dataSource));
         });
         backToMenuButton.setOnAction(e -> {
             controller.showMainMenu(primaryStage);

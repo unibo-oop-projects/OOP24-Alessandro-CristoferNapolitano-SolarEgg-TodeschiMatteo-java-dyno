@@ -3,6 +3,7 @@ package it.unibo.javadyno.view.impl;
 import java.util.List;
 
 import it.unibo.javadyno.controller.api.Controller;
+import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.api.ElaboratedData;
 import it.unibo.javadyno.view.api.View;
 import it.unibo.javadyno.view.impl.component.ButtonsPanel;
@@ -25,7 +26,7 @@ import javafx.stage.Stage;
  * Simulation view class for the JavaDyno application.
  */
 public class EvaluatingView extends Application implements View {
-    private static final String CSS_FILE = "/css/simulationStyle.css";
+    private static final String CSS_FILE = "/css/SimulationStyle.css";
     private static final String CSS_SETTINGS_PANEL_TAG = "left-column";
     private static final String CSS_MAIN_CONTAINER_TAG = "main-container";
     private static final double WIDTH_RATIO = 0.8; //percentage of screen width
@@ -33,6 +34,7 @@ public class EvaluatingView extends Application implements View {
 
     private final Controller controller;
     private final LabelsType buttonsType;
+    private final DataSource dataSource;
     private final ChartsPanel chartsPanel = new ChartsPanel();
     private final GaugePanel gaugePanel = new GaugePanel();
     private final StatsPanel statsPanel = new StatsPanel();
@@ -43,10 +45,12 @@ public class EvaluatingView extends Application implements View {
      *
      * @param controller the controller to be used
      * @param type the type of buttons to be created
+     * @param dataSource the data source to be used for the simulation
      */
-    public EvaluatingView(final Controller controller, final LabelsType type) {
+    public EvaluatingView(final Controller controller, final LabelsType type, final DataSource dataSource) {
         this.controller = controller;
         this.buttonsType = type;
+        this.dataSource = dataSource;
     }
 
     /**
@@ -57,7 +61,7 @@ public class EvaluatingView extends Application implements View {
         final HBox mainContainer = new HBox();
         final VBox leftPanel = new VBox();
         final VBox rightPanel = new VBox();
-        buttonsPanel = new ButtonsPanel(controller, primaryStage, buttonsType);
+        buttonsPanel = new ButtonsPanel(controller, primaryStage, buttonsType, dataSource);
 
         HBox.setHgrow(leftPanel, Priority.NEVER);
         HBox.setHgrow(rightPanel, Priority.ALWAYS);
