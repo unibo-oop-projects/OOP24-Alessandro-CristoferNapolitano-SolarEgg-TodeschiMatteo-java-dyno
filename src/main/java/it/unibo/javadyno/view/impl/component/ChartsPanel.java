@@ -78,9 +78,8 @@ public final class ChartsPanel extends VBox {
         final String seriesName = IMPORTED_SERIES_NAME;
         chartManager.addNewSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.FIRST);
         chartManager.addNewSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.SECOND);
-        for (int i = 0; i < xValues.size(); i++) {
-            this.addPointToChart(seriesName, xValues.get(i), yValues.get(i), y2Values.get(i));
-        }
+        chartManager.addAllPointsToSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.FIRST, xValues, yValues);
+        chartManager.addAllPointsToSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.SECOND, xValues, y2Values);
     }
 
     /**

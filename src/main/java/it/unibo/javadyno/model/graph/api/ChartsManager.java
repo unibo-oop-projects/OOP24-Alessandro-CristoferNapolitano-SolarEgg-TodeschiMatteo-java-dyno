@@ -1,6 +1,8 @@
 package it.unibo.javadyno.model.graph.api;
 
-import java.awt.Color; 
+import java.awt.Color;
+import java.util.List;
+
 import org.jfree.chart.JFreeChart;
 
 /**
@@ -86,7 +88,24 @@ public interface ChartsManager {
      * @param xValue the x-axis value of the point
      * @param yValue the y-axis value of the point
      */
-    void addPointToSeries(JFreeChart chart, String seriesName, ChartsManager.YAxisLevel level, Number xValue, Number yValue);
+    void addPointToSeries(
+        JFreeChart chart, String seriesName, ChartsManager.YAxisLevel level,
+        Number xValue, Number yValue
+    );
+
+    /**
+     * Adds all points from the provided iterables to the specified series in the chart.
+     *
+     * @param chart the chart containing the series
+     * @param seriesName the name of the series to which the points will be added
+     * @param level the Y-axis level of the series
+     * @param xValues the list of x-axis values to be added
+     * @param yValues the list of y-axis values to be added
+     */
+    void addAllPointsToSeries(
+        JFreeChart chart, String seriesName, ChartsManager.YAxisLevel level,
+        List<Number> xValues, List<Number> yValues
+    );
 
     /**
      * Adds another a Y-axis to the chart with the specified label and series name.
