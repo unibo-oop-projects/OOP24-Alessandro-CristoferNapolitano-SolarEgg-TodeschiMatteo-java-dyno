@@ -65,6 +65,12 @@ public interface Controller {
      */
     void showAlert(NotificationType type, String message, Optional<String> explanation);
 
+    /**
+     * Updates the setting with the given value.
+     *
+     * @param setting the setting to update
+     * @param value the new value for the setting
+     */
     void updateSetting(UserSettingDef setting, double value);
 
     /**

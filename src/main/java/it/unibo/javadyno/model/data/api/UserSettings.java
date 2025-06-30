@@ -4,7 +4,7 @@ package it.unibo.javadyno.model.data.api;
  * Static class representing user settings with default values.
  */
 public final class UserSettings {
-    
+
     private static double simulationUpdateTimeDelta = UserSettingDef.SIMULATION_UPDATE_TIME_DELTA.getDefaultValue();
     private static double loadcellLeverLength = UserSettingDef.LOADCELL_LEVER_LENGTH.getDefaultValue();
     private static double vehicleMass = UserSettingDef.VEHICLE_MASS.getDefaultValue();
@@ -14,7 +14,7 @@ public final class UserSettings {
     private static double airDensity = UserSettingDef.AIR_DENSITY.getDefaultValue();
     private static double driveTrainEfficiency = UserSettingDef.DRIVE_TRAIN_EFFICIENCY.getDefaultValue();
     private static double dynoType = UserSettingDef.DYNO_TYPE.getDefaultValue();
-    
+
     /**
      * Private constructor to prevent instantiation.
      */
@@ -30,7 +30,7 @@ public final class UserSettings {
     public static double getSimulationUpdateTimeDelta() {
         return simulationUpdateTimeDelta;
     }
-    
+
     /**
      * Gets the loadcell lever length.
      *
@@ -39,7 +39,7 @@ public final class UserSettings {
     public static double getLoadcellLeverLength() {
         return loadcellLeverLength;
     }
-    
+
     /**
      * Gets the vehicle mass.
      *
@@ -48,7 +48,7 @@ public final class UserSettings {
     public static double getVehicleMass() {
         return vehicleMass;
     }
-    
+
     /**
      * Gets the rolling resistance coefficient.
      *
@@ -57,7 +57,7 @@ public final class UserSettings {
     public static double getRollingResistanceCoefficient() {
         return rollingResistanceCoefficient;
     }
-    
+
     /**
      * Gets the air drag coefficient.
      *
@@ -66,7 +66,7 @@ public final class UserSettings {
     public static double getAirDragCoefficient() {
         return airDragCoefficient;
     }
-    
+
     /**
      * Gets the frontal area.
      *
@@ -75,7 +75,7 @@ public final class UserSettings {
     public static double getFrontalArea() {
         return frontalArea;
     }
-    
+
     /**
      * Gets the air density.
      *
@@ -84,7 +84,7 @@ public final class UserSettings {
     public static double getAirDensity() {
         return airDensity;
     }
-    
+
     /**
      * Gets the drive train efficiency.
      *
@@ -180,8 +180,8 @@ public final class UserSettings {
      *
      * @param dynoType the dyno type
      */
-    public static void setDynoType(final DataSource dynoType) {
-        UserSettings.dynoType = dynoType.ordinal();
+    public static void setDynoType(final double dynoType) {
+        UserSettings.dynoType = dynoType;
     }
 
     /**

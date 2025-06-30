@@ -13,6 +13,8 @@ import it.unibo.javadyno.model.data.api.DataCollector;
 import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.api.ElaboratedData;
 import it.unibo.javadyno.model.data.api.RawData;
+import it.unibo.javadyno.model.data.api.UserSettingDef;
+import it.unibo.javadyno.model.data.api.UserSettings;
 import it.unibo.javadyno.model.data.communicator.impl.JsonWebSocketCommunicator;
 import it.unibo.javadyno.model.data.impl.DataCollectorImpl;
 import it.unibo.javadyno.model.dyno.api.Dyno;
@@ -29,7 +31,7 @@ import javafx.stage.Stage;
 /**
  * Controller implementation.
  */
-public class ControllerImpl implements Controller {
+public final class ControllerImpl implements Controller {
 
     private static final int MAX_RPM = 7000;
     private static final String SIMULATION_POLLING_THREAD_NAME = "SimulationPollingThread";
@@ -183,6 +185,24 @@ public class ControllerImpl implements Controller {
             explanation.ifPresent(alert::setContentText);
             alert.showAndWait();
         });
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void updateSetting(final UserSettingDef setting, final double value) {
+        switch (setting) {
+            case SIMULATION_UPDATE_TIME_DELTA -> UserSettings.setSimulationUpdateTimeDelta(value);
+            case LOADCELL_LEVER_LENGTH -> UserSettings.setLoadcellLeverLength(value);
+            case VEHICLE_MASS -> UserSettings.setVehicleMass(value);
+            case ROLLING_RESISTANCE_COEFFICIENT -> UserSettings.setRollingResistanceCoefficient(value);
+            case AIR_DRAG_COEFFICIENT -> UserSettings.setAirDragCoefficient(value);
+            case FRONTAL_AREA -> UserSettings.setFrontalArea(value);
+            case AIR_DENSITY -> UserSettings.setAirDensity(value);
+            case DRIVE_TRAIN_EFFICIENCY -> UserSettings.setDriveTrainEfficiency(value);
+            case DYNO_TYPE -> UserSettings.setDynoType(value);
+        }
     }
 
     /**
