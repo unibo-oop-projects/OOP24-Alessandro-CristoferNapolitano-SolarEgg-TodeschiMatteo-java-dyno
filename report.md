@@ -243,7 +243,7 @@ classDiagram
     }
     
     class AbstractWebSocketCommunicator {
-        #parseMessage(String)* List~
+        #parseMessage(String)* List~String~
     }
     
     class ELM327Communicator {
@@ -254,7 +254,7 @@ classDiagram
     }
     
     class JsonWebSocketCommunicator {
-        +parseMessage(String) List
+        +parseMessage(String) List~String~
         +send(String)
     }
 
