@@ -1,5 +1,7 @@
 package it.unibo.javadyno.view.impl.component;
 
+import java.util.List;
+
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.fx.ChartViewer;
 
@@ -26,11 +28,13 @@ public final class ChartsPanel extends VBox {
     private static final String X_AXIS_LABEL = "RPM (Revolutions Per Minute)";
     private static final String Y_AXIS_LABEL = "Horsepower (HP)";
     private static final String Y2_AXIS_LABEL = "Torque (Nm)";
-    private static final String SERIES_NAME = "Power";
+    private static final String GENERAL_SERIES_NAME = "Power";
 
     private final JFreeChart lineChart;
+    private final ChartViewer viewer;
     private final ChartsFactory chartsFactory = new DefaultChartsFactory();
     private final ChartsManager chartManager = new ChartsManagerImpl();
+    private int importedOrder;
 
     /**
      * Default constructor for ChartsPanel.
@@ -44,35 +48,81 @@ public final class ChartsPanel extends VBox {
             X_AXIS_LABEL,
             Y_AXIS_LABEL
         );
-        final ChartViewer viewer = new ChartViewer(this.lineChart);
+        viewer = new ChartViewer(this.lineChart);
         viewer.setPrefSize(screenBounds.getWidth() * CHART_WIDTH_FACTOR, screenBounds.getHeight() * CHART_HEIGH_FACTOR);
         viewer.setMinSize(screenBounds.getWidth() * CHART_MINIMUM_FACTOR, screenBounds.getHeight() * CHART_MINIMUM_FACTOR);
-        chartManager.addNewSeries(this.lineChart, SERIES_NAME, ChartsManager.YAxisLevel.FIRST);
+        chartManager.addNewSeries(this.lineChart, GENERAL_SERIES_NAME, ChartsManager.YAxisLevel.FIRST);
         chartManager.addYAxis(this.lineChart, Y2_AXIS_LABEL);
-        chartManager.addNewSeries(this.lineChart, SERIES_NAME, ChartsManager.YAxisLevel.SECOND);
+        chartManager.addNewSeries(this.lineChart, GENERAL_SERIES_NAME, ChartsManager.YAxisLevel.SECOND);
         chartManager.setDarkTheme(this.lineChart);
         chartManager.setBackgroundImage(this.lineChart, BG_IMAGE);
         this.getChildren().add(viewer);
     }
 
     /**
+     * Returns the ChartViewer instance associated with this ChartsPanel.
+     * This permits external access to the chart viewer for customization.
+     *
+     * @return the ChartViewer instance
+     */
+    public ChartViewer getChartsViewer() {
+        return this.viewer;
+    }
+
+    /**
+     * Generates a unique name for imported data series.
+     *
+     * @return a unique name for the imported data series
+     */
+    private String generateImportedName() {
+        return String.format("%s(Import %d)", GENERAL_SERIES_NAME, ++this.importedOrder);
+    }
+
+    /**
+     * Adds a single data point to the charts panel.
+     *
+     * @param xValue the x-axis value
+     * @param yValue the y-axis value
+     * @param y2Valu the second y-axis value
+     */
+    public void addSingleData(final Number xValue, final Number yValue, final Number y2Valu) {
+        addPointToChart(GENERAL_SERIES_NAME, xValue, yValue, y2Valu);
+    }
+
+    /**
+     * Inserts all data of a list into the charts panel.
+     *
+     * @param xValues the list of x-axis values
+     * @param yValues the list of y-axis values
+     * @param y2Values the list of second y-axis values
+     */
+    public void addAllData(final List<Number> xValues, final List<Number> yValues, final List<Number> y2Values) {
+        final String seriesName = generateImportedName();
+        chartManager.addNewSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.FIRST);
+        chartManager.addNewSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.SECOND);
+        chartManager.addAllPointsToSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.FIRST, xValues, yValues);
+        chartManager.addAllPointsToSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.SECOND, xValues, y2Values);
+    }
+
+    /**
      * Adds a point to the speed chart.
      *
+     * @param seriesName the name of the series to which the point will be added
      * @param xValue the x-axis value
      * @param yValue the y-axis value
      * @param y2Value the second y-axis value
      */
-    public void addPointToChart(final Number xValue, final Number yValue, final Number y2Value) {
+    private void addPointToChart(final String seriesName, final Number xValue, final Number yValue, final Number y2Value) {
         chartManager.addPointToSeries(
             this.lineChart,
-            SERIES_NAME,
+            seriesName,
             ChartsManager.YAxisLevel.FIRST,
             xValue,
             yValue
         );
         chartManager.addPointToSeries(
             this.lineChart,
-            SERIES_NAME,
+            seriesName,
             ChartsManager.YAxisLevel.SECOND,
             xValue,
             y2Value

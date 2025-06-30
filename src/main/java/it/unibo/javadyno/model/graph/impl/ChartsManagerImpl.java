@@ -1,5 +1,6 @@
 package it.unibo.javadyno.model.graph.impl;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -89,7 +90,7 @@ public class ChartsManagerImpl implements ChartsManager {
      */
     @Override
     public void setBackgroundImage(final JFreeChart chart, final String imagePath) {
-        try (InputStream inputStream = getClass().getResourceAsStream(imagePath)) {
+        try (InputStream inputStream = ChartsManagerImpl.class.getResourceAsStream(imagePath)) {
             final BufferedImage image = ImageIO.read(inputStream);
             chart.getXYPlot().setBackgroundImage(image);
         } catch (final IOException e) {
@@ -138,6 +139,27 @@ public class ChartsManagerImpl implements ChartsManager {
             return;
         }
         series.add(xValue, yValue);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addAllPointsToSeries(
+        final JFreeChart chart, final String seriesName, final ChartsManager.YAxisLevel level,
+        final List<Number> xValues, final List<Number> yValues
+        ) {
+        final XYSeriesCollection dataset = (XYSeriesCollection) chart.getXYPlot().getDataset(level.getLevel());
+        if (!isDatasetValid(dataset, seriesName, level)) {
+            return;
+        }
+        final XYSeries series = dataset.getSeries(seriesName);
+        if (!isSeriesValid(series, seriesName, level)) {
+            return;
+        }
+        series.setNotify(false);
+        IntStream.range(0, xValues.size()).forEach(i -> series.add(xValues.get(i), yValues.get(i), false));
+        series.setNotify(true);
     }
 
     /**

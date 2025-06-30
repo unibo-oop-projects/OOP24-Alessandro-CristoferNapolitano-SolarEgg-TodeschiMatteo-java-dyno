@@ -1,13 +1,17 @@
 package it.unibo.javadyno.view.impl;
 
+import java.util.List;
+
 import it.unibo.javadyno.controller.api.Controller;
 import it.unibo.javadyno.model.data.api.ElaboratedData;
 import it.unibo.javadyno.view.api.View;
 import it.unibo.javadyno.view.impl.component.ButtonsPanel;
+import it.unibo.javadyno.view.impl.component.LabelsType;
 import it.unibo.javadyno.view.impl.component.ChartsPanel;
 import it.unibo.javadyno.view.impl.component.GaugePanel;
 import it.unibo.javadyno.view.impl.component.StatsPanel;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
@@ -20,8 +24,7 @@ import javafx.stage.Stage;
 /**
  * Simulation view class for the JavaDyno application.
  */
-public class SimulationView extends Application implements View {
-    private static final String STAGE_TITLE = "JavaDyno - Simulation";
+public class EvaluatingView extends Application implements View {
     private static final String CSS_FILE = "/css/simulationStyle.css";
     private static final String CSS_SETTINGS_PANEL_TAG = "left-column";
     private static final String CSS_MAIN_CONTAINER_TAG = "main-container";
@@ -29,17 +32,21 @@ public class SimulationView extends Application implements View {
     private static final double HEIGHT_RATIO = 0.8; //percentage of screen height
 
     private final Controller controller;
+    private final LabelsType buttonsType;
     private final ChartsPanel chartsPanel = new ChartsPanel();
     private final GaugePanel gaugePanel = new GaugePanel();
     private final StatsPanel statsPanel = new StatsPanel();
+    private ButtonsPanel buttonsPanel;
 
     /**
      * Constructor for SimulationView that imports the controller.
      *
      * @param controller the controller to be used
+     * @param type the type of buttons to be created
      */
-    public SimulationView(final Controller controller) {
+    public EvaluatingView(final Controller controller, final LabelsType type) {
         this.controller = controller;
+        this.buttonsType = type;
     }
 
     /**
@@ -50,7 +57,7 @@ public class SimulationView extends Application implements View {
         final HBox mainContainer = new HBox();
         final VBox leftPanel = new VBox();
         final VBox rightPanel = new VBox();
-        final ButtonsPanel buttonsPanel = new ButtonsPanel(controller, primaryStage, this);
+        buttonsPanel = new ButtonsPanel(controller, primaryStage, buttonsType);
 
         HBox.setHgrow(leftPanel, Priority.NEVER);
         HBox.setHgrow(rightPanel, Priority.ALWAYS);
@@ -75,8 +82,8 @@ public class SimulationView extends Application implements View {
         final double width = screenBounds.getWidth() * WIDTH_RATIO;
         final double height = screenBounds.getHeight() * HEIGHT_RATIO;
         final Scene scene = new Scene(mainContainer, width, height);
-        scene.getStylesheets().add(SimulationView.class.getResource(CSS_FILE).toExternalForm());
-        primaryStage.setTitle(STAGE_TITLE);
+        scene.getStylesheets().add(EvaluatingView.class.getResource(CSS_FILE).toExternalForm());
+        primaryStage.setTitle(this.buttonsType.getTitle());
         primaryStage.setScene(scene);
         primaryStage.show();
         primaryStage.centerOnScreen();
@@ -88,28 +95,6 @@ public class SimulationView extends Application implements View {
     @Override
     public void stop() {
         controller.closeApp();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void update(final ElaboratedData data) {
-        updateGauges(data.rawData().engineRPM().orElse(0),
-                     data.rawData().vehicleSpeed().orElse(0),
-                     data.rawData().engineTemperature().orElse(0.0));
-        updateGraph(data.rawData().engineRPM().orElse(0),
-                    data.enginePowerHP(),
-                    data.engineCorrectedTorque());
-        updateStats(data.rawData().engineRPM().orElse(0),
-                     data.engineCorrectedTorque(),
-                     data.enginePowerHP(),
-                     data.enginePowerKW());
-        if (controller.isPollingRunning()) {
-            chartsPanel.setBackgroundVisible(false);
-        } else {
-            chartsPanel.setBackgroundVisible(true);
-        }
     }
 
     /**
@@ -128,7 +113,7 @@ public class SimulationView extends Application implements View {
      * @param y2Value the second y-axis value to be added to the graph
      */
     private void updateGraph(final Number xValue, final Number yValue, final Number y2Value) {
-        this.chartsPanel.addPointToChart(xValue, yValue, y2Value);
+        this.chartsPanel.addSingleData(xValue, yValue, y2Value);
     }
 
     /**
@@ -144,5 +129,47 @@ public class SimulationView extends Application implements View {
 
     private void updateStats(final int rpm, final double torque, final double horsePower, final double kiloWatts) {
         this.statsPanel.updateStats(rpm, torque, horsePower, kiloWatts);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void update(final ElaboratedData data) {
+        if (controller.isPollingRunning()) {
+            chartsPanel.setBackgroundVisible(false);
+        } else {
+            Platform.runLater(buttonsPanel::reachedEnd);
+            chartsPanel.setBackgroundVisible(true);
+            return;
+        }
+        updateGauges(data.rawData().engineRPM().orElse(0),
+                     data.rawData().vehicleSpeed().orElse(0),
+                     data.rawData().engineTemperature().orElse(0.0));
+        updateGraph(data.rawData().engineRPM().orElse(0),
+                    data.enginePowerHP(),
+                    data.engineCorrectedTorque());
+        updateStats(data.rawData().engineRPM().orElse(0),
+                     data.engineCorrectedTorque(),
+                     data.enginePowerHP(),
+                     data.enginePowerKW());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void update(final List<ElaboratedData> data) {
+        this.chartsPanel.addAllData(
+            data.stream()
+                .map(i -> (Number) i.rawData().engineRPM().orElse(0))
+                .toList(),
+            data.stream()
+                .map(i -> (Number) i.enginePowerHP())
+                .toList(),
+            data.stream()
+                .map(i -> (Number) i.engineCorrectedTorque())
+                .toList()
+            );
     }
 }

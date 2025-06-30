@@ -1,6 +1,9 @@
 package it.unibo.javadyno.controller.api;
 
 import java.util.Optional;
+
+import it.unibo.javadyno.model.data.api.DataSource;
+
 import it.unibo.javadyno.view.api.View;
 import javafx.stage.Stage;
 
@@ -35,9 +38,16 @@ public interface Controller {
     void closeApp();
 
     /**
-     * Start the simulation.
+     * Starts the dyno run to evaluate the engine performance.
+     *
+     * @param dynoType the type of dyno to be used for evaluation
      */
-    void startSimulation();
+    void startEvaluation(DataSource dynoType);
+
+    /**
+     * Stops the dyno run.
+     */
+    void stopEvaluation();
 
     /**
      * Checks if the polling is running.
@@ -47,11 +57,6 @@ public interface Controller {
     boolean isPollingRunning();
 
     /**
-     * Stop the simulation.
-     */
-    void stopSimulation();
-
-    /**
      * Shows an alert dialog with a given message.
      *
      * @param type the type of notification
@@ -59,5 +64,10 @@ public interface Controller {
      * @param explanation the explanation of the alert
      */
     void showAlert(NotificationType type, String message, Optional<String> explanation);
+
+    /**
+     * Imports prevoious data from a file.
+     */
+    void importData();
 
 }

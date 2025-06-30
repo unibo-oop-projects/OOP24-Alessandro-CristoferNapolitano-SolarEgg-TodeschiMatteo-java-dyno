@@ -1,20 +1,23 @@
 package it.unibo.javadyno.controller.impl;
 
 import java.time.Instant;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
-
 import it.unibo.javadyno.controller.api.Controller;
 import it.unibo.javadyno.controller.api.NotificationType;
 import it.unibo.javadyno.model.data.api.DataCollector;
-import it.unibo.javadyno.model.data.api.DataElaborator;
 import it.unibo.javadyno.model.data.api.DataSource;
+import it.unibo.javadyno.model.data.api.ElaboratedData;
 import it.unibo.javadyno.model.data.api.RawData;
+import it.unibo.javadyno.model.data.communicator.impl.JsonWebSocketCommunicator;
 import it.unibo.javadyno.model.data.impl.DataCollectorImpl;
-import it.unibo.javadyno.model.data.impl.DataElaboratorImpl;
 import it.unibo.javadyno.model.dyno.api.Dyno;
-import it.unibo.javadyno.model.dyno.simulated.impl.SimulatedDynoImpl;
+import it.unibo.javadyno.model.dyno.obd2.impl.OBD2Dyno;
+import it.unibo.javadyno.model.dyno.real.impl.RealDynoImpl;
 import it.unibo.javadyno.view.api.View;
 import it.unibo.javadyno.view.impl.MainMenu;
 import javafx.application.Application;
@@ -28,10 +31,11 @@ import javafx.stage.Stage;
  */
 public class ControllerImpl implements Controller {
 
+    private static final int MAX_RPM = 7000;
     private static final String SIMULATION_POLLING_THREAD_NAME = "SimulationPollingThread";
     private final DataCollector dataCollector;
-    private DataElaborator dataElaborator;
-    private boolean pollingRunning;
+    private final Random rand = new Random();
+    private boolean isRunning;
     private Dyno dyno;
     private View view;
 
@@ -43,7 +47,6 @@ public class ControllerImpl implements Controller {
         this.dyno = null;
         this.view = null;
         this.dataCollector = new DataCollectorImpl();
-        this.dataElaborator = new DataElaboratorImpl(new TestOBD2Dyno());
     }
 
     /**
@@ -84,7 +87,7 @@ public class ControllerImpl implements Controller {
     @Override
     public void closeApp() {
         if (Objects.nonNull(this.dyno)) {
-            this.stopSimulation();
+            this.stopEvaluation();
         }
     }
 
@@ -92,14 +95,18 @@ public class ControllerImpl implements Controller {
      * {@inheritDoc}
      */
     @Override
-    public void startSimulation() {
-        if (!Objects.nonNull(this.dyno) || !this.dyno.getDynoType().equals(DataSource.SIMULATED_DYNO)) {
-            this.dataElaborator = new DataElaboratorImpl(new TestOBD2Dyno());
-            this.dyno = new SimulatedDynoImpl();
+    public void startEvaluation(final DataSource dynoType) {
+        if (!Objects.nonNull(this.dyno) || !this.dyno.getDynoType().equals(dynoType)) {
+            switch (dynoType) {
+                case SIMULATED_DYNO -> this.dyno = new TestOBD2Dyno(); // TODO replace with simulation
+                case OBD2 -> this.dyno = new OBD2Dyno();
+                case REAL_DYNO -> this.dyno = new RealDynoImpl(new JsonWebSocketCommunicator());
+            }
         }
         if (!this.dyno.isActive()) {
             this.dataCollector.initialize(this.dyno);
             this.dyno.begin();
+            this.isRunning = true;
             Thread.ofVirtual()
                 .start(this::polling)
                 .setName(SIMULATION_POLLING_THREAD_NAME);
@@ -116,30 +123,29 @@ public class ControllerImpl implements Controller {
      * This method runs in a loop while the dyno is active, collecting data and updating the graphics.
      */
     private void polling() {
-        this.pollingRunning = true;
-        this.dataElaborator.getElaboratedData();
-        while (Objects.nonNull(dyno) && dyno.isActive()) {
-            //TODO Call the DataCollector to collect data
-            //TODO Update Graphics
-            //RANDOM NUMER GENERATION FOR TESTING
-            // Update the gauges and graph with random data for testing purposes
-            view.update(this.dataElaborator.getElaboratedData());
+        this.dataCollector.collectData();
+        while (Objects.nonNull(dyno) && dyno.isActive() && this.isRunning) {
+            final ElaboratedData data = this.dataCollector.collectData();
+            if (Objects.nonNull(data)) {
+                this.view.update(data);
+            }
             try {
+                // TODO sleep based on system performance (match to x fps)
                 Thread.sleep(100);
             } catch (final InterruptedException e) {
                 Thread.currentThread().interrupt();
                 break;
             }
         }
-        this.pollingRunning = false;
-        view.update(this.dataElaborator.getElaboratedData());
+        this.isRunning = false;
+        this.view.update(dataCollector.collectData());
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void stopSimulation() {
+    public void stopEvaluation() {
         if (Objects.isNull(this.dyno)) {
             AlertMonitor.warningNotify(
                 "Simulation is not running",
@@ -158,7 +164,7 @@ public class ControllerImpl implements Controller {
      */
     @Override
     public boolean isPollingRunning() {
-        return this.pollingRunning;
+        return this.isRunning;
     }
 
     /**
@@ -179,8 +185,30 @@ public class ControllerImpl implements Controller {
         });
     }
 
-    private final class TestOBD2Dyno implements Dyno {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void importData() {
+        final List<ElaboratedData> list = new LinkedList<>();
+        for (int i = 0; i < MAX_RPM; i++) {
+            final RawData rawData = RawData.builder()
+                    .engineRPM(Optional.of(i))
+                    .vehicleSpeed(Optional.of(i / 10))
+                    .timestamp(Optional.of(Instant.now()))
+                    .build();
+            final ElaboratedData elaboratedData = new ElaboratedData(
+                rawData,
+                0.0,
+                i * 10 + rand.nextDouble() * 1000,
+                i * 15 - rand.nextDouble() * 1000
+            );
+            list.add(elaboratedData);
+        }
+        view.update(Collections.unmodifiableList(list));
+    }
 
+    private final class TestOBD2Dyno implements Dyno {
         // Initial values
         private static final Integer INITIAL_ENGINE_RPM = 500;
         private static final Integer INITIAL_VEHICLE_SPEED = 2;
@@ -199,8 +227,9 @@ public class ControllerImpl implements Controller {
         // Timestamp constants
         private static final int MIN_DELAY_MILLIS = 800;
         private static final int MAX_DELAY_MILLIS = 1100;
-        private RawData prevRawData;
         private final Random rand = new Random();
+        private RawData prevRawData;
+        private boolean isActive;
 
         TestOBD2Dyno() {
             this.prevRawData = RawData.builder()
@@ -214,6 +243,9 @@ public class ControllerImpl implements Controller {
 
         @Override
         public RawData getRawData() {
+            if (prevRawData.engineRPM().get() >= MAX_ENGINE_RPM) {
+                this.isActive = false;
+            }
             // Calculate dynamic engine RPM - increase by percentage each call, with max limit
             final int currentRpm = this.prevRawData.engineRPM().get();
             final Integer newRpm = Math.min(MAX_ENGINE_RPM, (int) (currentRpm * RPM_INCREASE_FACTOR));
@@ -254,15 +286,17 @@ public class ControllerImpl implements Controller {
 
         @Override
         public void begin() {
+            this.isActive = true;
         }
 
         @Override
         public void end() {
+            this.isActive = false;
         }
 
         @Override
         public boolean isActive() {
-            return true;
+            return this.isActive;
         }
     }
 }

@@ -1,8 +1,11 @@
 package it.unibo.javadyno.view.impl;
 
+import java.util.List;
+
 import it.unibo.javadyno.controller.api.Controller;
 import it.unibo.javadyno.model.data.api.ElaboratedData;
 import it.unibo.javadyno.view.api.View;
+import it.unibo.javadyno.view.impl.component.LabelsType;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Pos;
@@ -46,19 +49,23 @@ public class MainMenu extends Application implements View {
     public void start(final Stage primaryStage) {
         final Button simulatedDynoButton = new Button("Simulation");
         final Button realDynoButton = new Button("Dyno");
+        final Button chartsViewerButton = new Button("Charts");
         final Button settingsButton = new Button("Settings");
         simulatedDynoButton.setOnAction(e -> {
-            controller.showView(primaryStage, new SimulationView(controller));
+            controller.showView(primaryStage, new EvaluatingView(controller, LabelsType.SIMULATED));
         });
         realDynoButton.setOnAction(e -> {
-            controller.showView(primaryStage, new SimulationView(controller));
+            controller.showView(primaryStage, new EvaluatingView(controller, LabelsType.REAL));
+        });
+        chartsViewerButton.setOnAction(e -> {
+            controller.showView(primaryStage, new ChartsViewer(controller));
         });
 
         final Rectangle2D screenBounds = Screen.getPrimary().getBounds();
         final double width = screenBounds.getWidth() * WIDTH_RATIO;
         final double height = screenBounds.getHeight() * HEIGHT_RATIO;
         final ImageView image = new ImageView(new Image(ClassLoader.getSystemResource(HOME_IMAGE).toExternalForm()));
-        final VBox vbox = new VBox(15, image, realDynoButton, simulatedDynoButton, settingsButton);
+        final VBox vbox = new VBox(15, image, realDynoButton, simulatedDynoButton, chartsViewerButton, settingsButton);
         vbox.setAlignment(Pos.CENTER);
         vbox.getStyleClass().add("main-menu-container");
         final Scene scene = new Scene(vbox, width, height);
@@ -87,13 +94,19 @@ public class MainMenu extends Application implements View {
      * {@inheritDoc}
      */
     @Override
+    public void begin(final Stage primaryStage) {
+        this.start(primaryStage);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void update(final ElaboratedData data) { }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void begin(final Stage primaryStage) {
-        this.start(primaryStage);
-    }
+    public void update(final List<ElaboratedData> data) { }
 }

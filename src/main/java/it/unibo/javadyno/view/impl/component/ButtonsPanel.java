@@ -1,8 +1,8 @@
 package it.unibo.javadyno.view.impl.component;
 
 import it.unibo.javadyno.controller.api.Controller;
-import it.unibo.javadyno.view.api.View;
-import it.unibo.javadyno.view.impl.SimulationView;
+import it.unibo.javadyno.model.data.api.DataSource;
+import it.unibo.javadyno.view.impl.EvaluatingView;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -11,38 +11,57 @@ import javafx.stage.Stage;
  * ButtonsPanel class that creates a panel with buttons for controlling the GUI.
  */
 public final class ButtonsPanel extends VBox {
+    private final Button startSimulationButton;
+    private final Button stopSimulationButton;
+    private final Button saveDataButton;
+    private final Button importDataButton;
+    private final Button backToMenuButton;
+    private final Button reloadButton;
+
     /**
      * Constructor for ButtonsPanel that initializes the buttons and their actions.
      *
      * @param controller the controller to be used
      * @param primaryStage the primary stage of the application
-     * @param view the view to be displayed
+     * @param type the type of buttons to be created
      */
-    public ButtonsPanel(final Controller controller, final Stage primaryStage, final View view) {
-        final Button startSimulationButton = new Button("Start Simulation");
+    public ButtonsPanel(final Controller controller, final Stage primaryStage, final LabelsType type) {
+        startSimulationButton = new Button(type.getStartButton());
         startSimulationButton.setId("start-button");
-        final Button stopSimulationButton = new Button("Stop Simulation");
+        stopSimulationButton = new Button(type.getStopButton());
         stopSimulationButton.setId("stop-button");
-        final Button saveDataButton = new Button("Save datas");
-        final Button backToMenuButton = new Button("Back to menu");
-        final Button reloadButton = new Button("Reload simulation");
+        saveDataButton = new Button(type.getSaveButton());
+        importDataButton = new Button(type.getLoadButton());
+        backToMenuButton = new Button(type.getBackToMenu());
+        reloadButton = new Button(type.getReloadButton());
         startSimulationButton.setOnAction(e -> {
-            controller.startSimulation();
+            controller.startEvaluation(DataSource.SIMULATED_DYNO);
             this.getChildren().remove(startSimulationButton);
             this.getChildren().addFirst(stopSimulationButton);
         });
         stopSimulationButton.setOnAction(e -> {
-            controller.stopSimulation();
-            this.getChildren().remove(stopSimulationButton);
-            this.getChildren().addFirst(saveDataButton);
-            this.getChildren().addFirst(reloadButton);
+            controller.stopEvaluation();
+            reachedEnd();
+        });
+        importDataButton.setOnAction(e -> {
+            controller.importData();
         });
         reloadButton.setOnAction(e -> {
-            controller.showView(primaryStage, new SimulationView(controller));
+            controller.showView(primaryStage, new EvaluatingView(controller, type));
         });
         backToMenuButton.setOnAction(e -> {
             controller.showMainMenu(primaryStage);
         });
         this.getChildren().addAll(startSimulationButton, backToMenuButton);
+    }
+
+    /**
+     * Method to be called when the dyno run ends.
+     */
+    public void reachedEnd() {
+        this.getChildren().remove(stopSimulationButton);
+        this.getChildren().addFirst(importDataButton);
+        this.getChildren().addFirst(saveDataButton);
+        this.getChildren().addFirst(reloadButton);
     }
 }
