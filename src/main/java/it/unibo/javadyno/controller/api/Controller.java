@@ -1,9 +1,11 @@
 package it.unibo.javadyno.controller.api;
 
+import java.io.File;
 import java.util.Optional;
+import java.util.Queue;
 
 import it.unibo.javadyno.model.data.api.DataSource;
-
+import it.unibo.javadyno.model.data.api.ElaboratedData;
 import it.unibo.javadyno.view.api.View;
 import javafx.stage.Stage;
 
@@ -66,8 +68,17 @@ public interface Controller {
     void showAlert(NotificationType type, String message, Optional<String> explanation);
 
     /**
-     * Imports prevoious data from a file.
+     * Exports current simulation data to a file.
+     *
+     * @param file The destination file.
      */
-    void importData();
+    void exportCurrentData(File file);
 
+    /**
+     * Imports data from a file and returns it as a Queue.
+     *
+     * @param file The source file.
+     * @return The imported data, or empty list if import fails.
+     */
+    Queue<ElaboratedData> importDataFromFile(File file);
 }
