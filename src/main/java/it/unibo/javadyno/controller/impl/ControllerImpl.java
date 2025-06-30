@@ -200,8 +200,8 @@ public class ControllerImpl implements Controller {
             final ElaboratedData elaboratedData = new ElaboratedData(
                 rawData,
                 0.0,
-                Double.valueOf(i * 10 + rand.nextDouble() * 1000),
-                Double.valueOf(i * 15 - rand.nextDouble() * 1000)
+                i * 10 + rand.nextDouble() * 1000,
+                i * 15 - rand.nextDouble() * 1000
             );
             list.add(elaboratedData);
         }
