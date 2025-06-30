@@ -13,6 +13,7 @@ import it.unibo.javadyno.model.graph.impl.ChartsManagerImpl;
 import it.unibo.javadyno.model.graph.impl.DefaultChartsFactory;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 
@@ -62,13 +63,12 @@ public final class ChartsPanel extends VBox {
     }
 
     /**
-     * Returns the ChartViewer instance associated with this ChartsPanel.
-     * This permits external access to the chart viewer for customization.
+     * Sets the vertical growth priority for the chart viewer.
      *
-     * @return the ChartViewer instance
+     * @param priority the priority for vertical growth
      */
-    public ChartViewer getChartsViewer() {
-        return this.viewer;
+    public void setChartViewerVgrow(final Priority priority) {
+        setVgrow(this.viewer, priority);
     }
 
     /**

@@ -48,7 +48,7 @@ public class ChartsViewer extends Application implements View {
         final VBox mainContainer = new VBox();
         final HBox buttonsPanel = new HBox();
         VBox.setVgrow(chartsPanel, Priority.ALWAYS);
-        VBox.setVgrow(chartsPanel.getChartsViewer(), Priority.ALWAYS);
+        this.chartsPanel.setChartViewerVgrow(Priority.ALWAYS);
         buttonsPanel.setAlignment(Pos.CENTER);
         final Button importDataButton = new Button(LabelsType.OBD.getLoadButton());
         final Button backToMenuButton = new Button(LabelsType.OBD.getBackToMenu());
