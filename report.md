@@ -173,7 +173,7 @@ classDiagram
     class View {
         <<interface>>
         +update(ElaboratedData)
-        +update(List<ElaboratedData>)
+        +update(List~ElaboratedData~)
         +begin(Stage)
     }
     
