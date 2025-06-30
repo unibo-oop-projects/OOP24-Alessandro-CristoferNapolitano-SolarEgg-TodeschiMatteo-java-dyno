@@ -3,7 +3,7 @@ package it.unibo.javadyno.controller.api;
 import java.util.Optional;
 
 import it.unibo.javadyno.model.data.api.DataSource;
-
+import it.unibo.javadyno.model.data.api.UserSettingDef;
 import it.unibo.javadyno.view.api.View;
 import javafx.stage.Stage;
 
@@ -64,6 +64,8 @@ public interface Controller {
      * @param explanation the explanation of the alert
      */
     void showAlert(NotificationType type, String message, Optional<String> explanation);
+
+    void updateSetting(UserSettingDef setting, double value);
 
     /**
      * Imports prevoious data from a file.

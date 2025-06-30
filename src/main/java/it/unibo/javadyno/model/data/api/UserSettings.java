@@ -5,25 +5,15 @@ package it.unibo.javadyno.model.data.api;
  */
 public final class UserSettings {
     
-    // Default values
-    private static final double DEFAULT_SIMULATION_UPDATE_TIME_DELTA = 100.0;
-    private static final double DEFAULT_LOADCELL_LEVER_LENGTH = 0.5;
-    private static final double DEFAULT_VEHICLE_MASS = 1500.0;
-    private static final double DEFAULT_ROLLING_RESISTANCE_COEFFICIENT = 0.012;
-    private static final double DEFAULT_AIR_DRAG_COEFFICIENT = 0.32;
-    private static final double DEFAULT_FRONTAL_AREA = 2.2;
-    private static final double DEFAULT_AIR_DENSITY = 1.225;
-    private static final double DEFAULT_DRIVE_TRAIN_EFFICIENCY = 0.85;
-
-    // Current values
-    private static double simulationUpdateTimeDelta = DEFAULT_SIMULATION_UPDATE_TIME_DELTA;
-    private static double loadcellLeverLength = DEFAULT_LOADCELL_LEVER_LENGTH;
-    private static double vehicleMass = DEFAULT_VEHICLE_MASS;
-    private static double rollingResistanceCoefficient = DEFAULT_ROLLING_RESISTANCE_COEFFICIENT;
-    private static double airDragCoefficient = DEFAULT_AIR_DRAG_COEFFICIENT;
-    private static double frontalArea = DEFAULT_FRONTAL_AREA;
-    private static double airDensity = DEFAULT_AIR_DENSITY;
-    private static double driveTrainEfficiency = DEFAULT_DRIVE_TRAIN_EFFICIENCY;
+    private static double simulationUpdateTimeDelta = UserSettingDef.SIMULATION_UPDATE_TIME_DELTA.getDefaultValue();
+    private static double loadcellLeverLength = UserSettingDef.LOADCELL_LEVER_LENGTH.getDefaultValue();
+    private static double vehicleMass = UserSettingDef.VEHICLE_MASS.getDefaultValue();
+    private static double rollingResistanceCoefficient = UserSettingDef.ROLLING_RESISTANCE_COEFFICIENT.getDefaultValue();
+    private static double airDragCoefficient = UserSettingDef.AIR_DRAG_COEFFICIENT.getDefaultValue();
+    private static double frontalArea = UserSettingDef.FRONTAL_AREA.getDefaultValue();
+    private static double airDensity = UserSettingDef.AIR_DENSITY.getDefaultValue();
+    private static double driveTrainEfficiency = UserSettingDef.DRIVE_TRAIN_EFFICIENCY.getDefaultValue();
+    private static double dynoType = UserSettingDef.DYNO_TYPE.getDefaultValue();
     
     /**
      * Private constructor to prevent instantiation.
@@ -105,6 +95,15 @@ public final class UserSettings {
     }
 
     /**
+     * Gets the dyno type.
+     *
+     * @return the dyno type
+     */
+    public static DataSource getDynoType() {
+        return DataSource.values()[(int) dynoType];
+    }
+
+    /**
      * Sets the simulation update time delta.
      *
      * @param simulationUpdateTimeDelta the simulation update time delta in milliseconds
@@ -177,17 +176,27 @@ public final class UserSettings {
     }
 
     /**
+     * Sets the dyno type.
+     *
+     * @param dynoType the dyno type
+     */
+    public static void setDynoType(final DataSource dynoType) {
+        UserSettings.dynoType = dynoType.ordinal();
+    }
+
+    /**
      * Resets all settings to their default values.
      */
     public static void resetToDefaults() {
-        simulationUpdateTimeDelta = DEFAULT_SIMULATION_UPDATE_TIME_DELTA;
-        loadcellLeverLength = DEFAULT_LOADCELL_LEVER_LENGTH;
-        vehicleMass = DEFAULT_VEHICLE_MASS;
-        rollingResistanceCoefficient = DEFAULT_ROLLING_RESISTANCE_COEFFICIENT;
-        airDragCoefficient = DEFAULT_AIR_DRAG_COEFFICIENT;
-        frontalArea = DEFAULT_FRONTAL_AREA;
-        airDensity = DEFAULT_AIR_DENSITY;
-        driveTrainEfficiency = DEFAULT_DRIVE_TRAIN_EFFICIENCY;
+        simulationUpdateTimeDelta = UserSettingDef.SIMULATION_UPDATE_TIME_DELTA.getDefaultValue();
+        loadcellLeverLength = UserSettingDef.LOADCELL_LEVER_LENGTH.getDefaultValue();
+        vehicleMass = UserSettingDef.VEHICLE_MASS.getDefaultValue();
+        rollingResistanceCoefficient = UserSettingDef.ROLLING_RESISTANCE_COEFFICIENT.getDefaultValue();
+        airDragCoefficient = UserSettingDef.AIR_DRAG_COEFFICIENT.getDefaultValue();
+        frontalArea = UserSettingDef.FRONTAL_AREA.getDefaultValue();
+        airDensity = UserSettingDef.AIR_DENSITY.getDefaultValue();
+        driveTrainEfficiency = UserSettingDef.DRIVE_TRAIN_EFFICIENCY.getDefaultValue();
+        dynoType = UserSettingDef.DYNO_TYPE.getDefaultValue();
     }
 
 }
