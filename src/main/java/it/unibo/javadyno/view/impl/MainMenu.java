@@ -24,7 +24,7 @@ import javafx.geometry.Rectangle2D;
 public class MainMenu extends Application implements View {
     // final Parent root = FXMLLoader.load(ClassLoader.getSystemResource("layouts/SimpleGui.fxml"));
 
-    private static final String CSS_FILE = "/css/MenuStyle.css";
+    private static final String CSS_FILE = "css/MenuStyle.css";
     private static final String ICON_PATH = "images/icon.png";
     private static final String HOME_IMAGE = "images/logo_no_bg.png";
     private static final double WIDTH_RATIO = 0.3; //percentage of screen width
@@ -74,7 +74,7 @@ public class MainMenu extends Application implements View {
         image.fitHeightProperty().bind(Bindings.multiply(scene.heightProperty(), IMAGE_HEIGHT));
         image.setPreserveRatio(true);
 
-        scene.getStylesheets().add(MainMenu.class.getResource(CSS_FILE).toExternalForm());
+        scene.getStylesheets().add(ClassLoader.getSystemResource(CSS_FILE).toExternalForm());
         primaryStage.setTitle("JavaDyno");
         primaryStage.getIcons().add(new Image(ClassLoader.getSystemResource(ICON_PATH).toExternalForm()));
         primaryStage.setScene(scene);

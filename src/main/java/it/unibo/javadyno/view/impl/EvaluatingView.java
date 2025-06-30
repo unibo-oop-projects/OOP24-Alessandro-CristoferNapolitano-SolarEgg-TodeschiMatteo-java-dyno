@@ -25,7 +25,7 @@ import javafx.stage.Stage;
  * Simulation view class for the JavaDyno application.
  */
 public class EvaluatingView extends Application implements View {
-    private static final String CSS_FILE = "/css/simulationStyle.css";
+    private static final String CSS_FILE = "css/SimulationStyle.css";
     private static final String CSS_SETTINGS_PANEL_TAG = "left-column";
     private static final String CSS_MAIN_CONTAINER_TAG = "main-container";
     private static final double WIDTH_RATIO = 0.8; //percentage of screen width
@@ -82,7 +82,7 @@ public class EvaluatingView extends Application implements View {
         final double width = screenBounds.getWidth() * WIDTH_RATIO;
         final double height = screenBounds.getHeight() * HEIGHT_RATIO;
         final Scene scene = new Scene(mainContainer, width, height);
-        scene.getStylesheets().add(EvaluatingView.class.getResource(CSS_FILE).toExternalForm());
+        scene.getStylesheets().add(ClassLoader.getSystemResource(CSS_FILE).toExternalForm());
         primaryStage.setTitle(this.buttonsType.getTitle());
         primaryStage.setScene(scene);
         primaryStage.show();
