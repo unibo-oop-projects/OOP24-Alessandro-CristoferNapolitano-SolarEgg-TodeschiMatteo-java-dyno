@@ -28,7 +28,7 @@ public final class ButtonsPanel extends VBox {
      * @param dataSource the data source to be used for the simulation
      */
     public ButtonsPanel(final Controller controller, final Stage primaryStage,
-            final LabelsType type,final DataSource dataSource) {
+            final LabelsType type, final DataSource dataSource) {
         startSimulationButton = new Button(type.getStartButton());
         startSimulationButton.setId("start-button");
         stopSimulationButton = new Button(type.getStopButton());

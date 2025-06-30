@@ -1,9 +1,11 @@
 package it.unibo.javadyno.view.impl.component;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.fx.ChartViewer;
+import org.jfree.data.xy.XYSeriesCollection;
 
 import it.unibo.javadyno.model.graph.api.ChartsFactory;
 import it.unibo.javadyno.model.graph.api.ChartsManager;
@@ -139,6 +141,18 @@ public final class ChartsPanel extends VBox {
             chartManager.setBackgroundImage(this.lineChart, BG_IMAGE);
         } else {
             chartManager.resetBackgroundImage(this.lineChart);
+        }
+    }
+
+    /**
+     * Removes the first series from all Y-axis levels in the chart.
+     */
+    public void removeDefaultSeries() {
+        for (final ChartsManager.YAxisLevel level : ChartsManager.YAxisLevel.values()) {
+            final var dataset = (XYSeriesCollection) this.lineChart.getXYPlot().getDataset(level.getLevel());
+            if (Objects.nonNull(dataset) && dataset.getSeriesCount() > 0) {
+                dataset.removeSeries(0);
+            }
         }
     }
 }
