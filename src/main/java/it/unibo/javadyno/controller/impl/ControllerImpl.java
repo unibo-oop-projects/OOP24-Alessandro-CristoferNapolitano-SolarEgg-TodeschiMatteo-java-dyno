@@ -2,6 +2,7 @@ package it.unibo.javadyno.controller.impl;
 
 import java.io.File;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -154,10 +155,10 @@ public class ControllerImpl implements Controller {
     /**
      * {@inheritDoc}
      */
-    @Override
+        @Override
     public void exportCurrentData(final File file) {
-        // Get all collected data from the dataCollector.
-        final Queue<ElaboratedData> currentData = dataCollector.getFullData();
+        // Get all collected data from the dataCollector as a List
+        final List<ElaboratedData> currentData = new ArrayList<>(dataCollector.getFullData());
         
         if (currentData.isEmpty()) {
             AlertMonitor.warningNotify(
@@ -181,7 +182,7 @@ public class ControllerImpl implements Controller {
 
             // Set the strategy and export the data.
             fileManager.setStrategy(strategy.get());
-            fileManager.exportDataToFile(currentData, file);
+            fileManager.exportDataToFile(currentData, file); 
             
             AlertMonitor.infoNotify(
                 "Export Successful!",
@@ -200,8 +201,7 @@ public class ControllerImpl implements Controller {
      * {@inheritDoc}
      */
     @Override
-    public Queue<ElaboratedData> importDataFromFile(final File file) {
-        try {
+    public List<ElaboratedData> importDataFromFile(final File file) {
             // Use factory to determine strategy based on file extension.
             final var strategy = strategyFactory.createStrategyFor(file);
             
@@ -210,7 +210,7 @@ public class ControllerImpl implements Controller {
                     "Unsupported File Format",
                     Optional.of("The selected file format is not supported.")
                 );
-                return new LinkedList<>();
+                return Collections.emptyList();
             }
             
             // Set the strategy and import the data.
@@ -222,7 +222,7 @@ public class ControllerImpl implements Controller {
                     "Empty File",
                     Optional.of("The selected file is empty or doesn't have valid data.")
                 );
-                return new LinkedList<>();
+                return Collections.emptyList(); // Changed from new LinkedList<>()
             }
             
             AlertMonitor.infoNotify(
@@ -230,15 +230,15 @@ public class ControllerImpl implements Controller {
                 Optional.of("Successfully imported " + importedList.size() + " data points from: " + file.getName())
             );
             
-            // Convert List to Queue and return.
-            return new LinkedList<>(importedList);
+            // Return the list directly - no conversion needed!
+            return importedList; // Changed: removed Queue conversion
             
         } catch (final Exception e) {
             AlertMonitor.errorNotify(
                 "Import Failed :(",
                 Optional.of("Failed to import data: " + e.getMessage())
             );
-            return new LinkedList<>();
+            return Collections.emptyList(); // Changed from new LinkedList<>()
         }
     }
 

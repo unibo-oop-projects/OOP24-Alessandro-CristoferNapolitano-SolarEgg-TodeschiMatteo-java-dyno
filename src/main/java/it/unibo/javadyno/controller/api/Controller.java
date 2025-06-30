@@ -2,7 +2,7 @@ package it.unibo.javadyno.controller.api;
 
 import java.io.File;
 import java.util.Optional;
-import java.util.Queue;
+import java.util.List;
 
 import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.api.ElaboratedData;
@@ -75,12 +75,12 @@ public interface Controller {
     void exportCurrentData(File file);
 
     /**
-     * Imports data from a file and returns it as a Queue.
+     * Imports data from a file and returns it as a List.
      *
      * @param file The source file.
      * @return The imported data, or empty list if import fails.
      */
-    Queue<ElaboratedData> importDataFromFile(File file);
+    List<ElaboratedData> importDataFromFile(File file);
 
     /**
      * Test method for importing data.

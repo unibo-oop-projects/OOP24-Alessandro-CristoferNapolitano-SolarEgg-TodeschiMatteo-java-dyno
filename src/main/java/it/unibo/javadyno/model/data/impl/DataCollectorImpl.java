@@ -1,10 +1,9 @@
 package it.unibo.javadyno.model.data.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Queue;
 import it.unibo.javadyno.model.data.api.DataCollector;
 import it.unibo.javadyno.model.data.api.DataElaborator;
 import it.unibo.javadyno.model.data.api.ElaboratedData;
@@ -12,18 +11,18 @@ import it.unibo.javadyno.model.dyno.api.Dyno;
 
 /**
  * Implementation of the DataCollector interface.
- * This class collects and stores elaborated data in a queue.
+ * This class collects and stores elaborated data in a list.
  */
 public final class DataCollectorImpl implements DataCollector {
 
-    private final Queue<ElaboratedData> datas;
+    private final List<ElaboratedData> datas;
     private DataElaborator dataElaborator;
 
     /**
      * Creates a new DataCollectorImpl instance.
      */
     public DataCollectorImpl() {
-        this.datas = new LinkedList<>();
+        this.datas = new ArrayList<>();
     }
 
     @Override
@@ -36,7 +35,7 @@ public final class DataCollectorImpl implements DataCollector {
     public ElaboratedData collectData() {
         final ElaboratedData elaboratedData = this.dataElaborator.getElaboratedData();
         if (!Objects.isNull(elaboratedData)) {
-            this.datas.add(this.dataElaborator.getElaboratedData());
+            this.datas.add(elaboratedData);
         }
         return elaboratedData;
     }

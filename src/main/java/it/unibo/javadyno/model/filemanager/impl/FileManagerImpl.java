@@ -31,12 +31,12 @@ public final class FileManagerImpl implements FileManager {
      * {@inheritDoc}
      */
     @Override
-    public void exportDataToFile(final Queue<ElaboratedData> dataQueue, final File file) throws IOException {
+    public void exportDataToFile(final List<ElaboratedData> dataList, final File file) throws IOException {
         if (this.strategy == null) {
             throw new IllegalStateException("No file strategy has been set.");
         }
-        // Converts the List back into a Queue. 
-        this.strategy.exportData(new ArrayList<>(dataQueue), file);
+        // No conversion needed - directly pass the list
+        this.strategy.exportData(dataList, file);
     }
 
     /**
