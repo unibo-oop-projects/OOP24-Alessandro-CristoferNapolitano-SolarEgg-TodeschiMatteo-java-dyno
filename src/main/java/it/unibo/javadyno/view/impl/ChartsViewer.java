@@ -5,6 +5,7 @@ import java.util.List;
 import it.unibo.javadyno.controller.api.Controller;
 import it.unibo.javadyno.model.data.api.ElaboratedData;
 import it.unibo.javadyno.view.api.View;
+import it.unibo.javadyno.view.impl.component.LabelsType;
 import it.unibo.javadyno.view.impl.component.ChartsPanel;
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -49,8 +50,8 @@ public class ChartsViewer extends Application implements View {
         VBox.setVgrow(chartsPanel, Priority.ALWAYS);
         VBox.setVgrow(chartsPanel.getChartsViewer(), Priority.ALWAYS);
         buttonsPanel.setAlignment(Pos.CENTER);
-        final Button importDataButton = new Button("Import datas");
-        final Button backToMenuButton = new Button("Back to menu");
+        final Button importDataButton = new Button(LabelsType.OBD.getLoadButton());
+        final Button backToMenuButton = new Button(LabelsType.OBD.getBackToMenu());
         buttonsPanel.getStyleClass().add("buttons-panel");
         buttonsPanel.getChildren().addAll(importDataButton, backToMenuButton);
         importDataButton.setOnAction(e -> {

@@ -6,6 +6,7 @@ import it.unibo.javadyno.controller.api.Controller;
 import it.unibo.javadyno.model.data.api.ElaboratedData;
 import it.unibo.javadyno.view.api.View;
 import it.unibo.javadyno.view.impl.component.ButtonsPanel;
+import it.unibo.javadyno.view.impl.component.LabelsType;
 import it.unibo.javadyno.view.impl.component.ChartsPanel;
 import it.unibo.javadyno.view.impl.component.GaugePanel;
 import it.unibo.javadyno.view.impl.component.StatsPanel;
@@ -23,8 +24,7 @@ import javafx.stage.Stage;
 /**
  * Simulation view class for the JavaDyno application.
  */
-public class SimulationView extends Application implements View {
-    private static final String STAGE_TITLE = "JavaDyno - Simulation";
+public class EvaluatingView extends Application implements View {
     private static final String CSS_FILE = "/css/simulationStyle.css";
     private static final String CSS_SETTINGS_PANEL_TAG = "left-column";
     private static final String CSS_MAIN_CONTAINER_TAG = "main-container";
@@ -32,6 +32,7 @@ public class SimulationView extends Application implements View {
     private static final double HEIGHT_RATIO = 0.8; //percentage of screen height
 
     private final Controller controller;
+    private final LabelsType buttonsType;
     private final ChartsPanel chartsPanel = new ChartsPanel();
     private final GaugePanel gaugePanel = new GaugePanel();
     private final StatsPanel statsPanel = new StatsPanel();
@@ -41,9 +42,11 @@ public class SimulationView extends Application implements View {
      * Constructor for SimulationView that imports the controller.
      *
      * @param controller the controller to be used
+     * @param type the type of buttons to be created
      */
-    public SimulationView(final Controller controller) {
+    public EvaluatingView(final Controller controller, final LabelsType type) {
         this.controller = controller;
+        this.buttonsType = type;
     }
 
     /**
@@ -54,7 +57,7 @@ public class SimulationView extends Application implements View {
         final HBox mainContainer = new HBox();
         final VBox leftPanel = new VBox();
         final VBox rightPanel = new VBox();
-        buttonsPanel = new ButtonsPanel(controller, primaryStage);
+        buttonsPanel = new ButtonsPanel(controller, primaryStage, buttonsType);
 
         HBox.setHgrow(leftPanel, Priority.NEVER);
         HBox.setHgrow(rightPanel, Priority.ALWAYS);
@@ -79,8 +82,8 @@ public class SimulationView extends Application implements View {
         final double width = screenBounds.getWidth() * WIDTH_RATIO;
         final double height = screenBounds.getHeight() * HEIGHT_RATIO;
         final Scene scene = new Scene(mainContainer, width, height);
-        scene.getStylesheets().add(SimulationView.class.getResource(CSS_FILE).toExternalForm());
-        primaryStage.setTitle(STAGE_TITLE);
+        scene.getStylesheets().add(EvaluatingView.class.getResource(CSS_FILE).toExternalForm());
+        primaryStage.setTitle(this.buttonsType.getTitle());
         primaryStage.setScene(scene);
         primaryStage.show();
         primaryStage.centerOnScreen();

@@ -5,6 +5,7 @@ import java.util.List;
 import it.unibo.javadyno.controller.api.Controller;
 import it.unibo.javadyno.model.data.api.ElaboratedData;
 import it.unibo.javadyno.view.api.View;
+import it.unibo.javadyno.view.impl.component.LabelsType;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Pos;
@@ -51,10 +52,10 @@ public class MainMenu extends Application implements View {
         final Button chartsViewerButton = new Button("Charts");
         final Button settingsButton = new Button("Settings");
         simulatedDynoButton.setOnAction(e -> {
-            controller.showView(primaryStage, new SimulationView(controller));
+            controller.showView(primaryStage, new EvaluatingView(controller, LabelsType.SIMULATED));
         });
         realDynoButton.setOnAction(e -> {
-            controller.showView(primaryStage, new SimulationView(controller));
+            controller.showView(primaryStage, new EvaluatingView(controller, LabelsType.REAL));
         });
         chartsViewerButton.setOnAction(e -> {
             controller.showView(primaryStage, new ChartsViewer(controller));

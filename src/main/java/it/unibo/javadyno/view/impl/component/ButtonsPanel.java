@@ -2,7 +2,7 @@ package it.unibo.javadyno.view.impl.component;
 
 import it.unibo.javadyno.controller.api.Controller;
 import it.unibo.javadyno.model.data.api.DataSource;
-import it.unibo.javadyno.view.impl.SimulationView;
+import it.unibo.javadyno.view.impl.EvaluatingView;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -23,16 +23,17 @@ public final class ButtonsPanel extends VBox {
      *
      * @param controller the controller to be used
      * @param primaryStage the primary stage of the application
+     * @param type the type of buttons to be created
      */
-    public ButtonsPanel(final Controller controller, final Stage primaryStage) {
-        startSimulationButton = new Button("Start Simulation");
+    public ButtonsPanel(final Controller controller, final Stage primaryStage, final LabelsType type) {
+        startSimulationButton = new Button(type.getStartButton());
         startSimulationButton.setId("start-button");
-        stopSimulationButton = new Button("Stop Simulation");
+        stopSimulationButton = new Button(type.getStopButton());
         stopSimulationButton.setId("stop-button");
-        saveDataButton = new Button("Save datas");
-        importDataButton = new Button("Import datas");
-        backToMenuButton = new Button("Back to menu");
-        reloadButton = new Button("Reload simulation");
+        saveDataButton = new Button(type.getSaveButton());
+        importDataButton = new Button(type.getLoadButton());
+        backToMenuButton = new Button(type.getBackToMenu());
+        reloadButton = new Button(type.getReloadButton());
         startSimulationButton.setOnAction(e -> {
             controller.startEvaluation(DataSource.SIMULATED_DYNO);
             this.getChildren().remove(startSimulationButton);
@@ -46,7 +47,7 @@ public final class ButtonsPanel extends VBox {
             controller.importData();
         });
         reloadButton.setOnAction(e -> {
-            controller.showView(primaryStage, new SimulationView(controller));
+            controller.showView(primaryStage, new EvaluatingView(controller, type));
         });
         backToMenuButton.setOnAction(e -> {
             controller.showMainMenu(primaryStage);
