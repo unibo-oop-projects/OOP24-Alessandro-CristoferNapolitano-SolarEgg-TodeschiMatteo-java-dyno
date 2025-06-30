@@ -335,36 +335,81 @@ classDiagram
 
 **Soluzione:** viene fatto ampio utilizzo degli `Optional` per immagazzinare i dati in un _record_ `RawData` attraverso il pattern **Builder**. Quest'ultimo permette di creare `RawData` in maniera facilmente interpretabile e specificando solo i dati davvero utili. Infatti i restanti risulteranno essere un `Optional` vuoto, evitando di doverli impostare a un valore nullo o zero. In questo modo i clienti possono facilmente maneggiare i dati evitando eccezioni e controlli su eventuali valori _null_.
 
-### 2.2.1 Surname Name
-#### Subject
-
+### 2.2.2 Todeschi Matteo
+#### Gestione di simulazione concorrente
 ```mermaid
-UML TODO
+classDiagram
+    class Dyno {
+        <<interface>>
+        +getRawData() RawData
+        +getDynoType() DataSource
+        +begin()
+        +end()
+        +isActive() boolean
+    }
+
+    class Runnable {
+        <<interface>>
+        +run()
+    }
+
+    class SimulatedDyno {
+        <<interface>>
+    }
+
+    class SimulatedDynoImpl {
+        +begin()
+        +end()
+        +isActive() boolean
+        +run()
+        +getRawData() RawData
+        +getDynoType() DataSource
+    }
+
+    Dyno <|-- SimulatedDyno
+    Runnable <|-- SimulatedDyno
+    SimulatedDyno <|.. SimulatedDynoImpl
 
 ```
 
-**Problema:** TODO. 
+**Problema:** 
+Far si che ogni implementazione di `SimulatedDyno` possa essere eseguita in modo concorrente, permettendo in primis di generare dati e aggiornarsi molto più velocemente rispetto alla frequenza di aggiornamento dell'appplicazione e dando inoltre all'utente la possibilità di interagire con l'applicazione senza blocchi o rallentamenti.
 
-**Soluzione:** TODO. 
+**Soluzione:**
+Per risolvere il problema si è scelto di creare un interfaccia intemedia tra `Dyno` e `SimulatedDyno` che implementa l'interfaccia `Runnable`. In questo modo ogni implementazione di `SimulatedDyno` deve essere eseguita in un thread separato, permettendo di generare i dati in modo asincrono. La classe `SimulatedDynoImpl` implementa questa logica, gestendo la generazione dei dati e l'aggiornamento dello stato in modo concorrente.
 
----
-#### Subject
-
+#### Gestione degli errori con Monitor dedicato 
 ```mermaid
 UML TODO
-
 ```
 
 **Problema:** TODO.
 
-**Soluzione:** TODO.
+**Soluzione:** TODO. 
 
+**Soluzione:** TODO. 
+#### Riutilizzo dei componenti della view
 ```mermaid
 UML TODO
-
 ```
 
-TODO
+**Problema:** TODO.
+
+**Soluzione:** TODO. 
+#### Visualizzazione di grafici multipli
+```mermaid
+UML TODO
+```
+
+**Problema:** TODO.
+
+**Soluzione:** TODO. 
+
+### 2.2.3 Surname Name
+#### Subject
+```mermaid
+UML TODO
+```
 
 # Capitolo 3 - Sviluppo
 ## 3.1 Testing automatizzato
