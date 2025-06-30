@@ -6,9 +6,7 @@ import it.unibo.javadyno.model.filemanager.api.FileStrategy;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 
 /**
  * A concrete implementation of the FileManager interface.
