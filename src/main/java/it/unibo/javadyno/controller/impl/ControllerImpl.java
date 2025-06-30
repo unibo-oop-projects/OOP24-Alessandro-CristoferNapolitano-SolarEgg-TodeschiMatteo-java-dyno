@@ -34,6 +34,7 @@ public class ControllerImpl implements Controller {
     private static final int MAX_RPM = 7000;
     private static final String SIMULATION_POLLING_THREAD_NAME = "SimulationPollingThread";
     private final DataCollector dataCollector;
+    private final Random rand = new Random();
     private boolean isRunning;
     private Dyno dyno;
     private View view;
@@ -94,13 +95,12 @@ public class ControllerImpl implements Controller {
      * {@inheritDoc}
      */
     @Override
-    public void startEvaluation(DataSource dynoType) {
+    public void startEvaluation(final DataSource dynoType) {
         if (!Objects.nonNull(this.dyno) || !this.dyno.getDynoType().equals(dynoType)) {
             switch (dynoType) {
                 case SIMULATED_DYNO -> this.dyno = new TestOBD2Dyno(); // TODO replace with simulation
                 case OBD2 -> this.dyno = new OBD2Dyno();
                 case REAL_DYNO -> this.dyno = new RealDynoImpl(new JsonWebSocketCommunicator());
-                default -> throw new IllegalArgumentException("Unsupported dyno type: " + dynoType);
             }
         }
         if (!this.dyno.isActive()) {
@@ -191,7 +191,6 @@ public class ControllerImpl implements Controller {
     @Override
     public void importData() {
         final List<ElaboratedData> list = new LinkedList<>();
-        final Random rand = new Random();
         for (int i = 0; i < MAX_RPM; i++) {
             final RawData rawData = RawData.builder()
                     .engineRPM(Optional.of(i))
@@ -210,9 +209,6 @@ public class ControllerImpl implements Controller {
     }
 
     private final class TestOBD2Dyno implements Dyno {
-
-        private boolean isActive;
-
         // Initial values
         private static final Integer INITIAL_ENGINE_RPM = 500;
         private static final Integer INITIAL_VEHICLE_SPEED = 2;
@@ -231,8 +227,9 @@ public class ControllerImpl implements Controller {
         // Timestamp constants
         private static final int MIN_DELAY_MILLIS = 800;
         private static final int MAX_DELAY_MILLIS = 1100;
-        private RawData prevRawData;
         private final Random rand = new Random();
+        private RawData prevRawData;
+        private boolean isActive;
 
         TestOBD2Dyno() {
             this.prevRawData = RawData.builder()

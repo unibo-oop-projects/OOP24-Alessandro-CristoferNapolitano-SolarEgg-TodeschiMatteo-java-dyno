@@ -22,6 +22,8 @@ public interface DataCollector {
 
     /**
      * Collect the last data collected.
+     *
+     * @return the last data collected.
      */
     ElaboratedData collectData();
 }

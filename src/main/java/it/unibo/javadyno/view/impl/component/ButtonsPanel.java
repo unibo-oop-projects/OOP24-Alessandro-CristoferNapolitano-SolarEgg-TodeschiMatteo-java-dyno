@@ -2,7 +2,6 @@ package it.unibo.javadyno.view.impl.component;
 
 import it.unibo.javadyno.controller.api.Controller;
 import it.unibo.javadyno.model.data.api.DataSource;
-import it.unibo.javadyno.view.api.View;
 import it.unibo.javadyno.view.impl.SimulationView;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
@@ -12,21 +11,20 @@ import javafx.stage.Stage;
  * ButtonsPanel class that creates a panel with buttons for controlling the GUI.
  */
 public final class ButtonsPanel extends VBox {
-    final private Button startSimulationButton;
-    final private Button stopSimulationButton;
-    final private Button saveDataButton;
-    final private Button importDataButton;
-    final private Button backToMenuButton;
-    final private Button reloadButton;
+    private final Button startSimulationButton;
+    private final Button stopSimulationButton;
+    private final Button saveDataButton;
+    private final Button importDataButton;
+    private final Button backToMenuButton;
+    private final Button reloadButton;
 
     /**
      * Constructor for ButtonsPanel that initializes the buttons and their actions.
      *
      * @param controller the controller to be used
      * @param primaryStage the primary stage of the application
-     * @param view the view to be displayed
      */
-    public ButtonsPanel(final Controller controller, final Stage primaryStage, final View view) {
+    public ButtonsPanel(final Controller controller, final Stage primaryStage) {
         startSimulationButton = new Button("Start Simulation");
         startSimulationButton.setId("start-button");
         stopSimulationButton = new Button("Stop Simulation");

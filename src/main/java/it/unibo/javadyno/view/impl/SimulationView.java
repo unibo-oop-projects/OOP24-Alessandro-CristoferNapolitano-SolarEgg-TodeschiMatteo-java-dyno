@@ -54,7 +54,7 @@ public class SimulationView extends Application implements View {
         final HBox mainContainer = new HBox();
         final VBox leftPanel = new VBox();
         final VBox rightPanel = new VBox();
-        buttonsPanel = new ButtonsPanel(controller, primaryStage, this);
+        buttonsPanel = new ButtonsPanel(controller, primaryStage);
 
         HBox.setHgrow(leftPanel, Priority.NEVER);
         HBox.setHgrow(rightPanel, Priority.ALWAYS);
@@ -133,6 +133,13 @@ public class SimulationView extends Application implements View {
      */
     @Override
     public void update(final ElaboratedData data) {
+        if (controller.isPollingRunning()) {
+            chartsPanel.setBackgroundVisible(false);
+        } else {
+            Platform.runLater(buttonsPanel::reachedEnd);
+            chartsPanel.setBackgroundVisible(true);
+            return;
+        }
         updateGauges(data.rawData().engineRPM().orElse(0),
                      data.rawData().vehicleSpeed().orElse(0),
                      data.rawData().engineTemperature().orElse(0.0));
@@ -143,12 +150,6 @@ public class SimulationView extends Application implements View {
                      data.engineCorrectedTorque(),
                      data.enginePowerHP(),
                      data.enginePowerKW());
-        if (controller.isPollingRunning()) {
-            chartsPanel.setBackgroundVisible(false);
-        } else {
-            Platform.runLater(() -> buttonsPanel.reachedEnd());
-            chartsPanel.setBackgroundVisible(true);
-        }
     }
 
     /**

@@ -113,7 +113,7 @@ direction TB
     class DataCollector {
 	    +initialize(Dyno)
 	    +collectData() ElaboratedData
-	    +getFullData() Queue~ElaboratedData~;
+	    +getFullData() Queue~ElaboratedData~
     }
 
     class DataElaborator {
