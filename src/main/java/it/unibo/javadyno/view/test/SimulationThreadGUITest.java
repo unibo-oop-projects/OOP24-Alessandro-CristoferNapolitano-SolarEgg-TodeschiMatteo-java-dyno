@@ -1,5 +1,7 @@
 package it.unibo.javadyno.view.test;
 
+import java.util.List;
+
 import it.unibo.javadyno.controller.api.Controller;
 import it.unibo.javadyno.model.data.api.ElaboratedData;
 import it.unibo.javadyno.view.api.View;
@@ -60,6 +62,15 @@ public class SimulationThreadGUITest extends Application implements View {
     public void begin(final Stage primaryStage) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'begin'");
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void update(List<ElaboratedData> data) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'update'");
     }
 }
 

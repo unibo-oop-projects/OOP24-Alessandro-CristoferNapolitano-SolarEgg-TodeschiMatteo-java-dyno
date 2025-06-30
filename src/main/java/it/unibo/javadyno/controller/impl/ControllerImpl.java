@@ -1,6 +1,9 @@
 package it.unibo.javadyno.controller.impl;
 
 import java.time.Instant;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
@@ -10,6 +13,7 @@ import it.unibo.javadyno.controller.api.NotificationType;
 import it.unibo.javadyno.model.data.api.DataCollector;
 import it.unibo.javadyno.model.data.api.DataElaborator;
 import it.unibo.javadyno.model.data.api.DataSource;
+import it.unibo.javadyno.model.data.api.ElaboratedData;
 import it.unibo.javadyno.model.data.api.RawData;
 import it.unibo.javadyno.model.data.impl.DataCollectorImpl;
 import it.unibo.javadyno.model.data.impl.DataElaboratorImpl;
@@ -177,6 +181,26 @@ public class ControllerImpl implements Controller {
             explanation.ifPresent(alert::setContentText);
             alert.showAndWait();
         });
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void importData() {
+        final List<ElaboratedData> list = new LinkedList<>();
+        for(int i = 0; i < 7000; i++) {
+            final RawData rawData = RawData.builder()
+                    .engineRPM(Optional.of(i))
+                    .vehicleSpeed(Optional.of(i / 10))
+                    .ambientAirTemperature(Optional.of(20))
+                    .baroPressure(Optional.of(101))
+                    .timestamp(Optional.of(Instant.now()))
+                    .build();
+            final ElaboratedData elaboratedData = new ElaboratedData(rawData, Double.valueOf(i*10), Double.valueOf(i*10), Double.valueOf(i*15));
+            list.add(elaboratedData);
+        }
+        view.update(Collections.unmodifiableList(list));
     }
 
     private final class TestOBD2Dyno implements Dyno {

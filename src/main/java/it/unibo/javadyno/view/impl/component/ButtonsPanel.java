@@ -24,6 +24,7 @@ public final class ButtonsPanel extends VBox {
         final Button stopSimulationButton = new Button("Stop Simulation");
         stopSimulationButton.setId("stop-button");
         final Button saveDataButton = new Button("Save datas");
+        final Button importDataButton = new Button("Import datas");
         final Button backToMenuButton = new Button("Back to menu");
         final Button reloadButton = new Button("Reload simulation");
         startSimulationButton.setOnAction(e -> {
@@ -34,8 +35,12 @@ public final class ButtonsPanel extends VBox {
         stopSimulationButton.setOnAction(e -> {
             controller.stopSimulation();
             this.getChildren().remove(stopSimulationButton);
+            this.getChildren().addFirst(importDataButton);
             this.getChildren().addFirst(saveDataButton);
             this.getChildren().addFirst(reloadButton);
+        });
+        importDataButton.setOnAction(e -> {
+            controller.importData();
         });
         reloadButton.setOnAction(e -> {
             controller.showView(primaryStage, new SimulationView(controller));

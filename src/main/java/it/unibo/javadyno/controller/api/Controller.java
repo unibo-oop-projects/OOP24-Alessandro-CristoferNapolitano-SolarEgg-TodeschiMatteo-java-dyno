@@ -60,4 +60,9 @@ public interface Controller {
      */
     void showAlert(NotificationType type, String message, Optional<String> explanation);
 
+    /**
+     * Imports prevoious data from a file.
+     */
+    void importData();
+
 }

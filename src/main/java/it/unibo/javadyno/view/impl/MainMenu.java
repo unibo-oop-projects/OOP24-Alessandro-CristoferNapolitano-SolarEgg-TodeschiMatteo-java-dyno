@@ -1,5 +1,7 @@
 package it.unibo.javadyno.view.impl;
 
+import java.util.List;
+
 import it.unibo.javadyno.controller.api.Controller;
 import it.unibo.javadyno.model.data.api.ElaboratedData;
 import it.unibo.javadyno.view.api.View;
@@ -96,4 +98,7 @@ public class MainMenu extends Application implements View {
     public void begin(final Stage primaryStage) {
         this.start(primaryStage);
     }
+
+    @Override
+    public void update(List<ElaboratedData> data) { }
 }

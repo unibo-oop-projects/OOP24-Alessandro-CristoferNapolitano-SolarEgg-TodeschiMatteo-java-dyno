@@ -1,5 +1,7 @@
 package it.unibo.javadyno.view.impl.component;
 
+import java.util.List;
+
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.fx.ChartViewer;
 
@@ -89,6 +91,19 @@ public final class ChartsPanel extends VBox {
             chartManager.setBackgroundImage(this.lineChart, BG_IMAGE);
         } else {
             chartManager.resetBackgroundImage(this.lineChart);
+        }
+    }
+
+    /**
+     * Inserts all data of a list into the charts panel.
+     *
+     * @param data the list of data to be inserted
+     */
+    public void insertAllData(List<Number> xValues, List<Number> yValues, List<Number> y2Values) {
+        chartManager.addNewSeries(this.lineChart, SERIES_NAME, ChartsManager.YAxisLevel.FIRST);
+        chartManager.addNewSeries(this.lineChart, SERIES_NAME, ChartsManager.YAxisLevel.SECOND);
+        for (int i = 0; i < xValues.size(); i++) {
+            this.addPointToChart(xValues.get(i), yValues.get(i), y2Values.get(i));
         }
     }
 }

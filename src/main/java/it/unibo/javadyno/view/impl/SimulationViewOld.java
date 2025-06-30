@@ -1,5 +1,7 @@
 package it.unibo.javadyno.view.impl;
 
+import java.util.List;
+
 import it.unibo.javadyno.controller.api.Controller;
 import it.unibo.javadyno.model.data.api.ElaboratedData;
 import it.unibo.javadyno.view.api.View;
@@ -150,5 +152,11 @@ public class SimulationViewOld extends Application implements View {
     @Override
     public void begin(final Stage primaryStage) {
         this.start(primaryStage);
+    }
+
+    @Override
+    public void update(List<ElaboratedData> data) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'update'");
     }
 }

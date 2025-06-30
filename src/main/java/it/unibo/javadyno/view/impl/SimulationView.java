@@ -1,5 +1,7 @@
 package it.unibo.javadyno.view.impl;
 
+import java.util.List;
+
 import it.unibo.javadyno.controller.api.Controller;
 import it.unibo.javadyno.model.data.api.ElaboratedData;
 import it.unibo.javadyno.view.api.View;
@@ -144,5 +146,20 @@ public class SimulationView extends Application implements View {
 
     private void updateStats(final int rpm, final double torque, final double horsePower, final double kiloWatts) {
         this.statsPanel.updateStats(rpm, torque, horsePower, kiloWatts);
+    }
+
+    @Override
+    public void update(List<ElaboratedData> data) {
+        this.chartsPanel.insertAllData(
+            data.stream()
+                .map(i -> (Number) i.rawData().engineRPM().orElse(0))
+                .toList(),
+            data.stream()
+                .map(i -> (Number) i.enginePowerHP())
+                .toList(),
+            data.stream()
+                .map(i -> (Number) i.engineCorrectedTorque())
+                .toList()
+            );
     }
 }
