@@ -5,7 +5,6 @@ import java.util.List;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.fx.ChartViewer;
 
-import javafx.scene.layout.Priority;
 import it.unibo.javadyno.model.graph.api.ChartsFactory;
 import it.unibo.javadyno.model.graph.api.ChartsManager;
 import it.unibo.javadyno.model.graph.impl.ChartsManagerImpl;
@@ -32,6 +31,7 @@ public final class ChartsPanel extends VBox {
     private static final String GENERAL_SERIES_NAME = "Power";
 
     private final JFreeChart lineChart;
+    private final ChartViewer viewer;
     private final ChartsFactory chartsFactory = new DefaultChartsFactory();
     private final ChartsManager chartManager = new ChartsManagerImpl();
     private int importedOrder;
@@ -48,8 +48,7 @@ public final class ChartsPanel extends VBox {
             X_AXIS_LABEL,
             Y_AXIS_LABEL
         );
-        final ChartViewer viewer = new ChartViewer(this.lineChart);
-        VBox.setVgrow(viewer, Priority.ALWAYS);
+        viewer = new ChartViewer(this.lineChart);
         viewer.setPrefSize(screenBounds.getWidth() * CHART_WIDTH_FACTOR, screenBounds.getHeight() * CHART_HEIGH_FACTOR);
         viewer.setMinSize(screenBounds.getWidth() * CHART_MINIMUM_FACTOR, screenBounds.getHeight() * CHART_MINIMUM_FACTOR);
         chartManager.addNewSeries(this.lineChart, GENERAL_SERIES_NAME, ChartsManager.YAxisLevel.FIRST);
@@ -58,6 +57,16 @@ public final class ChartsPanel extends VBox {
         chartManager.setDarkTheme(this.lineChart);
         chartManager.setBackgroundImage(this.lineChart, BG_IMAGE);
         this.getChildren().add(viewer);
+    }
+
+    /**
+     * Returns the ChartViewer instance associated with this ChartsPanel.
+     * This permits external access to the chart viewer for customization.
+     *
+     * @return the ChartViewer instance
+     */
+    public ChartViewer getChartsViewer() {
+        return this.viewer;
     }
 
     /**
