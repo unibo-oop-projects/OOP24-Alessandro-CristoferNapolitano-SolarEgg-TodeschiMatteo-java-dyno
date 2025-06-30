@@ -81,4 +81,9 @@ public interface Controller {
      * @return The imported data, or empty list if import fails.
      */
     Queue<ElaboratedData> importDataFromFile(File file);
+
+    /**
+     * Test method for importing data.
+     */
+    public void importDataTest();
 }

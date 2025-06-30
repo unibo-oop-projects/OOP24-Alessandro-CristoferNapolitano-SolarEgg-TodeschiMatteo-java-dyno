@@ -1,11 +1,13 @@
 package it.unibo.javadyno.controller.impl;
 
+import java.io.File;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.Random;
 import it.unibo.javadyno.controller.api.Controller;
 import it.unibo.javadyno.controller.api.NotificationType;
@@ -18,6 +20,10 @@ import it.unibo.javadyno.model.data.impl.DataCollectorImpl;
 import it.unibo.javadyno.model.dyno.api.Dyno;
 import it.unibo.javadyno.model.dyno.obd2.impl.OBD2Dyno;
 import it.unibo.javadyno.model.dyno.real.impl.RealDynoImpl;
+import it.unibo.javadyno.model.filemanager.api.FileManager;
+import it.unibo.javadyno.model.filemanager.api.FileStrategyFactory;
+import it.unibo.javadyno.model.filemanager.impl.FileManagerImpl;
+import it.unibo.javadyno.model.filemanager.impl.FileStrategyFactoryImpl;
 import it.unibo.javadyno.view.api.View;
 import it.unibo.javadyno.view.impl.MainMenu;
 import javafx.application.Application;
@@ -35,6 +41,8 @@ public class ControllerImpl implements Controller {
     private static final String SIMULATION_POLLING_THREAD_NAME = "SimulationPollingThread";
     private final DataCollector dataCollector;
     private final Random rand = new Random();
+    private final FileManager fileManager;
+    private final FileStrategyFactory strategyFactory;
     private boolean isRunning;
     private Dyno dyno;
     private View view;
@@ -47,6 +55,8 @@ public class ControllerImpl implements Controller {
         this.dyno = null;
         this.view = null;
         this.dataCollector = new DataCollectorImpl();
+        this.fileManager = new FileManagerImpl();
+        this.strategyFactory = new FileStrategyFactoryImpl();
     }
 
     /**
@@ -145,6 +155,97 @@ public class ControllerImpl implements Controller {
      * {@inheritDoc}
      */
     @Override
+    public void exportCurrentData(final File file) {
+        // Get all collected data from the dataCollector.
+        final Queue<ElaboratedData> currentData = dataCollector.getFullData();
+        
+        if (currentData.isEmpty()) {
+            AlertMonitor.warningNotify(
+                "No Data found to Export",
+                Optional.of("No simulation data is available for export. Please run a simulation first.")
+            );
+            return;
+        }
+
+        try {
+            // Factory determines strategy based on file extension.
+            final var strategy = strategyFactory.createStrategyFor(file);
+            
+            if (strategy.isEmpty()) {
+                AlertMonitor.errorNotify(
+                    "Unsupported File Format",
+                    Optional.of("The selected file format is not supported.")
+                );
+                return;
+            }
+
+            // Set the strategy and export the data.
+            fileManager.setStrategy(strategy.get());
+            fileManager.exportDataToFile(currentData, file);
+            
+            AlertMonitor.infoNotify(
+                "Export Successful!",
+                Optional.of("Successfully exported " + currentData.size() + " data points to: " + file.getName())
+            );
+            
+        } catch (final Exception e) {
+            AlertMonitor.errorNotify(
+                "Export Failed :(",
+                Optional.of("Failed to export data: " + e.getMessage())
+            );
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Queue<ElaboratedData> importDataFromFile(final File file) {
+        try {
+            // Use factory to determine strategy based on file extension.
+            final var strategy = strategyFactory.createStrategyFor(file);
+            
+            if (strategy.isEmpty()) {
+                AlertMonitor.errorNotify(
+                    "Unsupported File Format",
+                    Optional.of("The selected file format is not supported.")
+                );
+                return new LinkedList<>();
+            }
+            
+            // Set the strategy and import the data.
+            fileManager.setStrategy(strategy.get());
+            final List<ElaboratedData> importedList = fileManager.importDataFromFile(file);
+            
+            if (importedList.isEmpty()) {
+                AlertMonitor.warningNotify(
+                    "Empty File",
+                    Optional.of("The selected file is empty or doesn't have valid data.")
+                );
+                return new LinkedList<>();
+            }
+            
+            AlertMonitor.infoNotify(
+                "Import Successful!",
+                Optional.of("Successfully imported " + importedList.size() + " data points from: " + file.getName())
+            );
+            
+            // Convert List to Queue and return.
+            return new LinkedList<>(importedList);
+            
+        } catch (final Exception e) {
+            AlertMonitor.errorNotify(
+                "Import Failed :(",
+                Optional.of("Failed to import data: " + e.getMessage())
+            );
+            return new LinkedList<>();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void stopEvaluation() {
         if (Objects.isNull(this.dyno)) {
             AlertMonitor.warningNotify(
@@ -187,9 +288,11 @@ public class ControllerImpl implements Controller {
 
     /**
      * {@inheritDoc}
+     * Updated to use the file import system instead of generating demo data.
      */
     @Override
-    public void importData() {
+    public void importDataTest() {
+        // Kept for demo purposes
         final List<ElaboratedData> list = new LinkedList<>();
         for (int i = 0; i < MAX_RPM; i++) {
             final RawData rawData = RawData.builder()
