@@ -350,7 +350,7 @@ classDiagram
 
     class Runnable {
         <<interface>>
-        +run() void
+        +run()
     }
 
     class SimulatedDyno {
@@ -358,10 +358,12 @@ classDiagram
     }
 
     class SimulatedDynoImpl {
-        +getRawData() RawData
         +begin()
         +end()
         +isActive() boolean
+        +run()
+        +getRawData() RawData
+        +getDynoType() DataSource
     }
 
     Dyno <|-- SimulatedDyno
