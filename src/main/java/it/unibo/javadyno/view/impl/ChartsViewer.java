@@ -15,6 +15,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -55,7 +56,7 @@ public class ChartsViewer extends Application implements View {
         buttonsPanel.getStyleClass().add("buttons-panel");
         buttonsPanel.getChildren().addAll(importDataButton, backToMenuButton);
         importDataButton.setOnAction(e -> {
-            controller.importData();
+            controller.importDataFromFile(new FileChooser().showOpenDialog(primaryStage));
         });
         backToMenuButton.setOnAction(e -> {
             controller.showMainMenu(primaryStage);

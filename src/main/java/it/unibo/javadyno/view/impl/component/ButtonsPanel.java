@@ -5,6 +5,7 @@ import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.view.impl.EvaluatingView;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 /**
@@ -44,7 +45,10 @@ public final class ButtonsPanel extends VBox {
             reachedEnd();
         });
         importDataButton.setOnAction(e -> {
-            controller.importData();
+            controller.importDataFromFile(new FileChooser().showOpenDialog(primaryStage));
+        });
+        saveDataButton.setOnAction(e -> {
+            controller.exportCurrentData(new FileChooser().showSaveDialog(primaryStage));
         });
         reloadButton.setOnAction(e -> {
             controller.showView(primaryStage, new EvaluatingView(controller, type));

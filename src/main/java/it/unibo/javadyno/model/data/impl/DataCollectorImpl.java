@@ -2,6 +2,7 @@ package it.unibo.javadyno.model.data.impl;
 
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Queue;
 import it.unibo.javadyno.model.data.api.DataCollector;
@@ -41,7 +42,7 @@ public final class DataCollectorImpl implements DataCollector {
     }
 
     @Override
-    public Queue<ElaboratedData> getFullData() {
-        return (Queue<ElaboratedData>) Collections.unmodifiableCollection(datas);
+    public List<ElaboratedData> getFullData() {
+        return List.copyOf(this.datas);
     }
 }
