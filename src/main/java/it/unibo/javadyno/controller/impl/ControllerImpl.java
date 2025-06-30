@@ -153,46 +153,46 @@ public class ControllerImpl implements Controller {
     /**
      * {@inheritDoc}
      */
-        @Override
+    @Override
     public void exportCurrentData(final File file) {
-        // Get all collected data from the dataCollector as a List
-        final List<ElaboratedData> currentData = dataCollector.getFullData();
+    // Get all collected data from the dataCollector as a List.
+    final List<ElaboratedData> currentData = dataCollector.getFullData();
 
-        if (currentData.isEmpty()) {
-            AlertMonitor.warningNotify(
-                "No Data found to Export",
-                Optional.of("No simulation data is available for export. Please run a simulation first.")
+    if (currentData.isEmpty()) {
+        AlertMonitor.warningNotify(
+            "No Data found to Export",
+            Optional.of("No simulation data is available for export. Please run a simulation first.")
+        );
+        return;
+    }
+
+    try {
+        // Factory determines strategy based on file extension.
+        final var strategy = strategyFactory.createStrategyFor(file);
+        
+        if (strategy.isEmpty()) {
+            AlertMonitor.errorNotify(
+                "Unsupported File Format",
+                Optional.of("The selected file format is not supported.")
             );
             return;
         }
 
-        try {
-            // Factory determines strategy based on file extension.
-            final var strategy = strategyFactory.createStrategyFor(file);
-            
-            if (strategy.isEmpty()) {
-                AlertMonitor.errorNotify(
-                    "Unsupported File Format",
-                    Optional.of("The selected file format is not supported.")
-                );
-                return;
-            }
-
-            // Set the strategy and export the data.
-            fileManager.setStrategy(strategy.get());
-            fileManager.exportDataToFile(currentData, file); 
-            
-            AlertMonitor.infoNotify(
-                "Export Successful!",
-                Optional.of("Successfully exported " + currentData.size() + " data points to: " + file.getName())
-            );
-            
-        } catch (final Exception e) {
-            AlertMonitor.errorNotify(
-                "Export Failed :(",
-                Optional.of("Failed to export data: " + e.getMessage())
-            );
-        }
+        // Set the strategy and export the data.
+        fileManager.setStrategy(strategy.get());
+        fileManager.exportDataToFile(currentData, file); 
+        
+        AlertMonitor.infoNotify(
+            "Export Successful!",
+            Optional.of("Successfully exported " + currentData.size() + " data points to: " + file.getName())
+        );
+        
+    } catch (final Exception e) {
+        AlertMonitor.errorNotify(
+            "Export Failed :(",
+            Optional.of("Failed to export data: " + e.getMessage())
+        );
+    }
     }
 
     /**
