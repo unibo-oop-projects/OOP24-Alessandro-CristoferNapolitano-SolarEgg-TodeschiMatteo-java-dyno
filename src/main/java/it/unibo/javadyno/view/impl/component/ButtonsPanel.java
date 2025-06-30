@@ -62,21 +62,19 @@ public final class ButtonsPanel extends VBox {
     }
 
     /**
-     * Handles the export functionality with proper file chooser configuration.
+     * Sets proper file chooser configuration for the file export.
      *
      * @param controller the controller to handle the export
      * @param stage the stage for the file dialog
      */
     private void handleExport(final Controller controller, final Stage stage) {
         final FileChooser fileChooser = new FileChooser();
-        
         // Set file extension filters
         fileChooser.getExtensionFilters().addAll(
             new FileChooser.ExtensionFilter("JSON files", "*.json"),
-            new FileChooser.ExtensionFilter("CSV files", "*.csv"),
-            new FileChooser.ExtensionFilter("All supported", "*.json", "*.csv")
+            new FileChooser.ExtensionFilter("CSV files", "*.csv")
         );
-        
+
         // Show save dialog and handle the result
         final File file = fileChooser.showSaveDialog(stage);
         if (file != null) {
@@ -85,7 +83,7 @@ public final class ButtonsPanel extends VBox {
     }
 
     /**
-     * Handles the import functionality with proper file chooser configuration.
+     * Sets proper file chooser configuration for the file import.
      *
      * @param controller the controller to handle the import
      * @param stage the stage for the file dialog
@@ -95,11 +93,10 @@ public final class ButtonsPanel extends VBox {
 
         // Set file extension filters
         fileChooser.getExtensionFilters().addAll(
-            new FileChooser.ExtensionFilter("All supported", "*.json", "*.csv"),
             new FileChooser.ExtensionFilter("JSON files", "*.json"),
             new FileChooser.ExtensionFilter("CSV files", "*.csv")
         );
-        
+
         // Show open dialog and handle the result
         final File file = fileChooser.showOpenDialog(stage);
         if (file != null) {

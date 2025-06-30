@@ -1,6 +1,7 @@
 package it.unibo.javadyno.controller.impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -155,44 +156,49 @@ public class ControllerImpl implements Controller {
      */
     @Override
     public void exportCurrentData(final File file) {
-    // Get all collected data from the dataCollector as a List.
-    final List<ElaboratedData> currentData = dataCollector.getFullData();
+        // Get all collected data from the dataCollector as a List.
+        final List<ElaboratedData> currentData = dataCollector.getFullData();
 
-    if (currentData.isEmpty()) {
-        AlertMonitor.warningNotify(
-            "No Data found to Export",
-            Optional.of("No simulation data is available for export. Please run a simulation first.")
-        );
-        return;
-    }
-
-    try {
-        // Factory determines strategy based on file extension.
-        final var strategy = strategyFactory.createStrategyFor(file);
-        
-        if (strategy.isEmpty()) {
-            AlertMonitor.errorNotify(
-                "Unsupported File Format",
-                Optional.of("The selected file format is not supported.")
+        if (currentData.isEmpty()) {
+            AlertMonitor.warningNotify(
+                "No Data found to Export",
+                Optional.of("No simulation data is available for export. Please run a simulation first.")
             );
             return;
         }
 
-        // Set the strategy and export the data.
-        fileManager.setStrategy(strategy.get());
-        fileManager.exportDataToFile(currentData, file); 
-        
-        AlertMonitor.infoNotify(
-            "Export Successful!",
-            Optional.of("Successfully exported " + currentData.size() + " data points to: " + file.getName())
-        );
-        
-    } catch (final Exception e) {
-        AlertMonitor.errorNotify(
-            "Export Failed :(",
-            Optional.of("Failed to export data: " + e.getMessage())
-        );
-    }
+        try {
+            // Factory determines strategy based on file extension.
+            final var strategy = strategyFactory.createStrategyFor(file);
+
+            if (strategy.isEmpty()) {
+                AlertMonitor.errorNotify(
+                    "Unsupported File Format",
+                    Optional.of("The selected file format is not supported.")
+                );
+                return;
+            }
+
+            // Set the strategy and export the data.
+            fileManager.setStrategy(strategy.get());
+            fileManager.exportDataToFile(currentData, file); 
+
+            AlertMonitor.infoNotify(
+                "Export Successful!",
+                Optional.of("Successfully exported " + currentData.size() + " data points to: " + file.getName())
+            );
+
+        } catch (final IOException e) {
+            AlertMonitor.errorNotify(
+                "Export Failed :(",
+                Optional.of("Failed to export data: " + e.getMessage())
+            );
+        } catch (final IllegalStateException e) {
+            AlertMonitor.errorNotify(
+                "Export Configuration Error",
+                Optional.of("FileManager strategy not properly configured: " + e.getMessage())
+            );
+        }
     }
 
     /**
@@ -203,7 +209,7 @@ public class ControllerImpl implements Controller {
         try {
             // Use factory to determine strategy based on file extension.
             final var strategy = strategyFactory.createStrategyFor(file);
-            
+
             if (strategy.isEmpty()) {
                 AlertMonitor.errorNotify(
                     "Unsupported File Format",
@@ -211,11 +217,11 @@ public class ControllerImpl implements Controller {
                 );
                 return;
             }
-            
+
             // Set the strategy and import the data.
             fileManager.setStrategy(strategy.get());
             final List<ElaboratedData> importedList = fileManager.importDataFromFile(file);
-            
+
             if (importedList.isEmpty()) {
                 AlertMonitor.warningNotify(
                     "Empty File",
@@ -223,21 +229,26 @@ public class ControllerImpl implements Controller {
                 );
                 return;
             }
-            
-            // Update the view with the imported data.
+
+            // Update the view with the imported data.S
             if (Objects.nonNull(view)) {
                 view.update(Collections.unmodifiableList(importedList));
             }
-            
+
             AlertMonitor.infoNotify(
-                "Import Successful!",
+                "Import SucScessful!",
                 Optional.of("Successfully imported " + importedList.size() + " data points from: " + file.getName())
             );
-            
-        } catch (final Exception e) {
+
+        } catch (final IOException e) {
             AlertMonitor.errorNotify(
                 "Import Failed :(",
                 Optional.of("Failed to import data: " + e.getMessage())
+            );
+        } catch (final IllegalStateException e) {
+            AlertMonitor.errorNotify(
+                "Import Configuration Error", 
+                Optional.of("FileManager strategy not properly configured: " + e.getMessage())
             );
         }
     }

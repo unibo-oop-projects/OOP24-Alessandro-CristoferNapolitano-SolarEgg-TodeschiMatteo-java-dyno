@@ -82,5 +82,5 @@ public interface Controller {
     /**
      * Test method for importing data.
      */
-    public void importDataTest();
+    void importDataTest();
 }
