@@ -2,10 +2,8 @@ package it.unibo.javadyno.controller.api;
 
 import java.io.File;
 import java.util.Optional;
-import java.util.List;
 
 import it.unibo.javadyno.model.data.api.DataSource;
-import it.unibo.javadyno.model.data.api.ElaboratedData;
 import it.unibo.javadyno.view.api.View;
 import javafx.stage.Stage;
 
@@ -75,12 +73,11 @@ public interface Controller {
     void exportCurrentData(File file);
 
     /**
-     * Imports data from a file and returns it as a List.
+     * Imports data from a file and displays it in the current view.
      *
      * @param file The source file.
-     * @return The imported data, or empty list if import fails.
      */
-    List<ElaboratedData> importDataFromFile(File file);
+    void importDataFromFile(File file);
 
     /**
      * Test method for importing data.

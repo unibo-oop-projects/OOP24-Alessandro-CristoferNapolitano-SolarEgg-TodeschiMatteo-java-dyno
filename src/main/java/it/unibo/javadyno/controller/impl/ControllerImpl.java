@@ -2,13 +2,11 @@ package it.unibo.javadyno.controller.impl;
 
 import java.io.File;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Queue;
 import java.util.Random;
 import it.unibo.javadyno.controller.api.Controller;
 import it.unibo.javadyno.controller.api.NotificationType;
@@ -158,8 +156,8 @@ public class ControllerImpl implements Controller {
         @Override
     public void exportCurrentData(final File file) {
         // Get all collected data from the dataCollector as a List
-        final List<ElaboratedData> currentData = new ArrayList<>(dataCollector.getFullData());
-        
+        final List<ElaboratedData> currentData = dataCollector.getFullData();
+
         if (currentData.isEmpty()) {
             AlertMonitor.warningNotify(
                 "No Data found to Export",
@@ -201,7 +199,8 @@ public class ControllerImpl implements Controller {
      * {@inheritDoc}
      */
     @Override
-    public List<ElaboratedData> importDataFromFile(final File file) {
+    public void importDataFromFile(final File file) {
+        try {
             // Use factory to determine strategy based on file extension.
             final var strategy = strategyFactory.createStrategyFor(file);
             
@@ -210,7 +209,7 @@ public class ControllerImpl implements Controller {
                     "Unsupported File Format",
                     Optional.of("The selected file format is not supported.")
                 );
-                return Collections.emptyList();
+                return;
             }
             
             // Set the strategy and import the data.
@@ -222,7 +221,12 @@ public class ControllerImpl implements Controller {
                     "Empty File",
                     Optional.of("The selected file is empty or doesn't have valid data.")
                 );
-                return Collections.emptyList(); // Changed from new LinkedList<>()
+                return;
+            }
+            
+            // Update the view with the imported data.
+            if (Objects.nonNull(view)) {
+                view.update(Collections.unmodifiableList(importedList));
             }
             
             AlertMonitor.infoNotify(
@@ -230,15 +234,11 @@ public class ControllerImpl implements Controller {
                 Optional.of("Successfully imported " + importedList.size() + " data points from: " + file.getName())
             );
             
-            // Return the list directly - no conversion needed!
-            return importedList; // Changed: removed Queue conversion
-            
         } catch (final Exception e) {
             AlertMonitor.errorNotify(
                 "Import Failed :(",
                 Optional.of("Failed to import data: " + e.getMessage())
             );
-            return Collections.emptyList(); // Changed from new LinkedList<>()
         }
     }
 
