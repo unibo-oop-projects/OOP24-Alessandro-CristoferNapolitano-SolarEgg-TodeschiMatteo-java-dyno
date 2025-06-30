@@ -130,7 +130,7 @@ public class SimulationView extends Application implements View {
      * @param y2Value the second y-axis value to be added to the graph
      */
     private void updateGraph(final Number xValue, final Number yValue, final Number y2Value) {
-        this.chartsPanel.addPointToChart(xValue, yValue, y2Value);
+        this.chartsPanel.addSingleData(xValue, yValue, y2Value);
     }
 
     /**
@@ -150,7 +150,7 @@ public class SimulationView extends Application implements View {
 
     @Override
     public void update(List<ElaboratedData> data) {
-        this.chartsPanel.insertAllData(
+        this.chartsPanel.addAllData(
             data.stream()
                 .map(i -> (Number) i.rawData().engineRPM().orElse(0))
                 .toList(),

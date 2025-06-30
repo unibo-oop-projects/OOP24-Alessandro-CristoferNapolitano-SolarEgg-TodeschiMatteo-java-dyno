@@ -115,7 +115,7 @@ public class SimulationViewOld extends Application implements View {
      * @param y2Value the second y-axis value to be added to the graph
      */
     public void updateGraph(final Number xValue, final Number yValue, final Number y2Value) {
-        this.centerColumn.addPointToChart(xValue, yValue, y2Value);
+        this.centerColumn.addSingleData(xValue, yValue, y2Value);
     }
 
     /**
