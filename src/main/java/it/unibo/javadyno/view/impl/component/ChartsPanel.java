@@ -58,7 +58,7 @@ public final class ChartsPanel extends VBox {
         this.getChildren().add(viewer);
     }
 
-        /**
+    /**
      * Adds a single data point to the charts panel.
      *
      * @param xValue the x-axis value
@@ -72,9 +72,11 @@ public final class ChartsPanel extends VBox {
     /**
      * Inserts all data of a list into the charts panel.
      *
-     * @param data the list of data to be inserted
+     * @param xValues the list of x-axis values
+     * @param yValues the list of y-axis values
+     * @param y2Values the list of second y-axis values
      */
-    public void addAllData(List<Number> xValues, List<Number> yValues, List<Number> y2Values) {
+    public void addAllData(final List<Number> xValues, final List<Number> yValues, final List<Number> y2Values) {
         final String seriesName = IMPORTED_SERIES_NAME;
         chartManager.addNewSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.FIRST);
         chartManager.addNewSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.SECOND);
@@ -85,6 +87,7 @@ public final class ChartsPanel extends VBox {
     /**
      * Adds a point to the speed chart.
      *
+     * @param seriesName the name of the series to which the point will be added
      * @param xValue the x-axis value
      * @param yValue the y-axis value
      * @param y2Value the second y-axis value

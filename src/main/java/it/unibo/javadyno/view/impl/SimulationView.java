@@ -96,28 +96,6 @@ public class SimulationView extends Application implements View {
      * {@inheritDoc}
      */
     @Override
-    public void update(final ElaboratedData data) {
-        updateGauges(data.rawData().engineRPM().orElse(0),
-                     data.rawData().vehicleSpeed().orElse(0),
-                     data.rawData().engineTemperature().orElse(0.0));
-        updateGraph(data.rawData().engineRPM().orElse(0),
-                    data.enginePowerHP(),
-                    data.engineCorrectedTorque());
-        updateStats(data.rawData().engineRPM().orElse(0),
-                     data.engineCorrectedTorque(),
-                     data.enginePowerHP(),
-                     data.enginePowerKW());
-        if (controller.isPollingRunning()) {
-            chartsPanel.setBackgroundVisible(false);
-        } else {
-            chartsPanel.setBackgroundVisible(true);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void begin(final Stage primaryStage) {
         this.start(primaryStage);
     }
@@ -148,8 +126,33 @@ public class SimulationView extends Application implements View {
         this.statsPanel.updateStats(rpm, torque, horsePower, kiloWatts);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void update(List<ElaboratedData> data) {
+    public void update(final ElaboratedData data) {
+        updateGauges(data.rawData().engineRPM().orElse(0),
+                     data.rawData().vehicleSpeed().orElse(0),
+                     data.rawData().engineTemperature().orElse(0.0));
+        updateGraph(data.rawData().engineRPM().orElse(0),
+                    data.enginePowerHP(),
+                    data.engineCorrectedTorque());
+        updateStats(data.rawData().engineRPM().orElse(0),
+                     data.engineCorrectedTorque(),
+                     data.enginePowerHP(),
+                     data.enginePowerKW());
+        if (controller.isPollingRunning()) {
+            chartsPanel.setBackgroundVisible(false);
+        } else {
+            chartsPanel.setBackgroundVisible(true);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void update(final List<ElaboratedData> data) {
         this.chartsPanel.addAllData(
             data.stream()
                 .map(i -> (Number) i.rawData().engineRPM().orElse(0))

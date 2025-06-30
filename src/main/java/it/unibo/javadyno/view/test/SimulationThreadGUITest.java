@@ -50,6 +50,15 @@ public class SimulationThreadGUITest extends Application implements View {
      * {@inheritDoc}
      */
     @Override
+    public void begin(final Stage primaryStage) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'begin'");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void update(final ElaboratedData data) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'update'");
@@ -59,16 +68,7 @@ public class SimulationThreadGUITest extends Application implements View {
      * {@inheritDoc}
      */
     @Override
-    public void begin(final Stage primaryStage) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'begin'");
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void update(List<ElaboratedData> data) {
+    public void update(final List<ElaboratedData> data) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'update'");
     }

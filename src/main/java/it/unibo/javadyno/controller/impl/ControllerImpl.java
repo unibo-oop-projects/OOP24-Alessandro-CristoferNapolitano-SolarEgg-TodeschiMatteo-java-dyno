@@ -32,10 +32,11 @@ import javafx.stage.Stage;
  */
 public class ControllerImpl implements Controller {
 
+    private static final int MAX_RPM = 7000;
     private static final String SIMULATION_POLLING_THREAD_NAME = "SimulationPollingThread";
     private final DataCollector dataCollector;
     private DataElaborator dataElaborator;
-    private boolean pollingRunning;
+    private boolean isRunning;
     private Dyno dyno;
     private View view;
 
@@ -120,9 +121,9 @@ public class ControllerImpl implements Controller {
      * This method runs in a loop while the dyno is active, collecting data and updating the graphics.
      */
     private void polling() {
-        this.pollingRunning = true;
+        this.isRunning = true;
         this.dataElaborator.getElaboratedData();
-        while (Objects.nonNull(dyno) && dyno.isActive()) {
+        while (Objects.nonNull(dyno) && dyno.isActive() && this.isRunning) {
             //TODO Call the DataCollector to collect data
             //TODO Update Graphics
             //RANDOM NUMER GENERATION FOR TESTING
@@ -135,7 +136,7 @@ public class ControllerImpl implements Controller {
                 break;
             }
         }
-        this.pollingRunning = false;
+        this.isRunning = false;
         view.update(this.dataElaborator.getElaboratedData());
     }
 
@@ -162,7 +163,7 @@ public class ControllerImpl implements Controller {
      */
     @Override
     public boolean isPollingRunning() {
-        return this.pollingRunning;
+        return this.isRunning;
     }
 
     /**
@@ -189,15 +190,17 @@ public class ControllerImpl implements Controller {
     @Override
     public void importData() {
         final List<ElaboratedData> list = new LinkedList<>();
-        for(int i = 0; i < 7000; i++) {
+        for (int i = 0; i < MAX_RPM; i++) {
             final RawData rawData = RawData.builder()
                     .engineRPM(Optional.of(i))
                     .vehicleSpeed(Optional.of(i / 10))
-                    .ambientAirTemperature(Optional.of(20))
-                    .baroPressure(Optional.of(101))
                     .timestamp(Optional.of(Instant.now()))
                     .build();
-            final ElaboratedData elaboratedData = new ElaboratedData(rawData, Double.valueOf(i*10), Double.valueOf(i*10), Double.valueOf(i*15));
+            final ElaboratedData elaboratedData = new ElaboratedData(
+                rawData,
+                0.0,
+                Double.valueOf(i * 10),
+                Double.valueOf(i * 15));
             list.add(elaboratedData);
         }
         view.update(Collections.unmodifiableList(list));

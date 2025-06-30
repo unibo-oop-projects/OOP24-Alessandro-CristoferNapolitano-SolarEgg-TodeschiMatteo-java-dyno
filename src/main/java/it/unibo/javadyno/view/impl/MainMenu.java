@@ -89,16 +89,19 @@ public class MainMenu extends Application implements View {
      * {@inheritDoc}
      */
     @Override
+    public void begin(final Stage primaryStage) {
+        this.start(primaryStage);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void update(final ElaboratedData data) { }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void begin(final Stage primaryStage) {
-        this.start(primaryStage);
-    }
-
-    @Override
-    public void update(List<ElaboratedData> data) { }
+    public void update(final List<ElaboratedData> data) { }
 }

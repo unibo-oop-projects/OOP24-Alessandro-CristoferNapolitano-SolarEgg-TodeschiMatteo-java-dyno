@@ -90,7 +90,7 @@ public class ChartsManagerImpl implements ChartsManager {
      */
     @Override
     public void setBackgroundImage(final JFreeChart chart, final String imagePath) {
-        try (InputStream inputStream = getClass().getResourceAsStream(imagePath)) {
+        try (InputStream inputStream = ChartsManagerImpl.class.getResourceAsStream(imagePath)) {
             final BufferedImage image = ImageIO.read(inputStream);
             chart.getXYPlot().setBackgroundImage(image);
         } catch (final IOException e) {
