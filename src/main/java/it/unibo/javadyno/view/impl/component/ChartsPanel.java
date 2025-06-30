@@ -34,6 +34,7 @@ public final class ChartsPanel extends VBox {
     private final JFreeChart lineChart;
     private final ChartsFactory chartsFactory = new DefaultChartsFactory();
     private final ChartsManager chartManager = new ChartsManagerImpl();
+    private int importedOreder;
 
     /**
      * Default constructor for ChartsPanel.
@@ -77,7 +78,7 @@ public final class ChartsPanel extends VBox {
      * @param y2Values the list of second y-axis values
      */
     public void addAllData(final List<Number> xValues, final List<Number> yValues, final List<Number> y2Values) {
-        final String seriesName = IMPORTED_SERIES_NAME;
+        final String seriesName = IMPORTED_SERIES_NAME + " " + importedOreder++;
         chartManager.addNewSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.FIRST);
         chartManager.addNewSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.SECOND);
         chartManager.addAllPointsToSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.FIRST, xValues, yValues);

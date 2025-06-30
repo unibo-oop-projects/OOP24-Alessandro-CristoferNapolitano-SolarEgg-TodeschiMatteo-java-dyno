@@ -190,6 +190,7 @@ public class ControllerImpl implements Controller {
     @Override
     public void importData() {
         final List<ElaboratedData> list = new LinkedList<>();
+        final Random rand = new Random();
         for (int i = 0; i < MAX_RPM; i++) {
             final RawData rawData = RawData.builder()
                     .engineRPM(Optional.of(i))
@@ -199,8 +200,9 @@ public class ControllerImpl implements Controller {
             final ElaboratedData elaboratedData = new ElaboratedData(
                 rawData,
                 0.0,
-                Double.valueOf(i * 10),
-                Double.valueOf(i * 15));
+                Double.valueOf(i * 10 + rand.nextDouble() * 1000),
+                Double.valueOf(i * 15 - rand.nextDouble() * 1000)
+            );
             list.add(elaboratedData);
         }
         view.update(Collections.unmodifiableList(list));
