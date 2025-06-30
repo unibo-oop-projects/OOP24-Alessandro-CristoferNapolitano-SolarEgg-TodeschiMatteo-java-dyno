@@ -3,6 +3,7 @@ package it.unibo.javadyno.view.impl;
 import java.util.List;
 
 import it.unibo.javadyno.controller.api.Controller;
+import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.api.ElaboratedData;
 import it.unibo.javadyno.view.api.View;
 import it.unibo.javadyno.view.impl.component.LabelsType;
@@ -52,10 +53,10 @@ public class MainMenu extends Application implements View {
         final Button chartsViewerButton = new Button("Charts");
         final Button settingsButton = new Button("Settings");
         simulatedDynoButton.setOnAction(e -> {
-            controller.showView(primaryStage, new EvaluatingView(controller, LabelsType.SIMULATED));
+            controller.showView(primaryStage, new EvaluatingView(controller, LabelsType.SIMULATED, DataSource.SIMULATED_DYNO));
         });
         realDynoButton.setOnAction(e -> {
-            controller.showView(primaryStage, new EvaluatingView(controller, LabelsType.REAL));
+            controller.showView(primaryStage, new EvaluatingView(controller, LabelsType.REAL, DataSource.REAL_DYNO));
         });
         chartsViewerButton.setOnAction(e -> {
             controller.showView(primaryStage, new ChartsViewer(controller));
