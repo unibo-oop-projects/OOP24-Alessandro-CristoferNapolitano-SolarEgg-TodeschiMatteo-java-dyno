@@ -94,24 +94,24 @@ public final class DataElaboratorImpl implements DataElaborator {
             airDensity = rawData.baroPressure().get() * 1000
                 / (SPECIFIC_GAS_COSTANT_DRY_AIR * temperatureInKelvin);
         } else {
-            airDensity = UserSettings.AIR_DENSITY.getDefaultValue();
+            airDensity = UserSettings.getAirDensity();
         }
         final Double acceleration = vehicleSpeedDelta / (timeDelta / 1000) / KMH_TO_MS;
-        final Double inertialForce = acceleration * UserSettings.VEHICLE_MASS.getDefaultValue();
+        final Double inertialForce = acceleration * UserSettings.getVehicleMass();
 
-        final Double rollingResistanceForce = UserSettings.ROLLING_RESISTANCE_COEFFICIENT.getDefaultValue()
-            * UserSettings.VEHICLE_MASS.getDefaultValue()
+        final Double rollingResistanceForce = UserSettings.getRollingResistanceCoefficient()
+            * UserSettings.getVehicleMass()
             * HEARTH_GRAVITY_ACCELERATION;
 
         final Double aerodynamicDragForce = 0.5
-            * UserSettings.AIR_DRAG_COEFFICIENT.getDefaultValue()
-            * UserSettings.FRONTAL_AREA.getDefaultValue()
+            * UserSettings.getAirDragCoefficient()
+            * UserSettings.getFrontalArea()
             * airDensity
             * Math.pow(rawData.vehicleSpeed().get() / KMH_TO_MS, 2);
 
         final Double totalForce = inertialForce + rollingResistanceForce + aerodynamicDragForce;
         final Double enginePowerKW = totalForce * (rawData.vehicleSpeed().get() / KMH_TO_MS)
-            / UserSettings.DRIVE_TRAIN_EFFICIENCY.getDefaultValue();
+            / UserSettings.getDriveTrainEfficiency();
         final Double enginePowerHP = enginePowerKW * KW_TO_HP_MULTIPLIER;
         final Double engineCorrectedTorque = enginePowerKW
             * ENGINE_POWER_KW_DIVISOR / rawData.engineRPM().orElseThrow();
@@ -140,7 +140,7 @@ public final class DataElaboratorImpl implements DataElaborator {
             return null;
         }
         final Double engineCorrectedTorque = rawData.torque().get()
-            * UserSettings.LOADCELL_LEVER_LENGTH.getDefaultValue();
+            * UserSettings.getLoadcellLeverLength();
         final Double enginePowerKW = engineCorrectedTorque * rawData.engineRPM().get() / ENGINE_POWER_KW_DIVISOR;
         final Double enginePowerHP = enginePowerKW * KW_TO_HP_MULTIPLIER;
         return new ElaboratedData(
