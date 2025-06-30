@@ -335,36 +335,37 @@ classDiagram
 
 **Soluzione:** viene fatto ampio utilizzo degli `Optional` per immagazzinare i dati in un _record_ `RawData` attraverso il pattern **Builder**. Quest'ultimo permette di creare `RawData` in maniera facilmente interpretabile e specificando solo i dati davvero utili. Infatti i restanti risulteranno essere un `Optional` vuoto, evitando di doverli impostare a un valore nullo o zero. In questo modo i clienti possono facilmente maneggiare i dati evitando eccezioni e controlli su eventuali valori _null_.
 
-### 2.2.1 Surname Name
-#### Subject
-
+### 2.2.2 Todeschi Matteo
+#### Gestione di simulazione concorrente
 ```mermaid
 UML TODO
-
-```
-
-**Problema:** TODO. 
-
-**Soluzione:** TODO. 
-
----
-#### Subject
-
-```mermaid
-UML TODO
-
 ```
 
 **Problema:** TODO.
 
-**Soluzione:** TODO.
-
+**Soluzione:** TODO. 
+#### Riutilizzo dei componenti della view
 ```mermaid
 UML TODO
-
 ```
 
-TODO
+**Problema:** TODO.
+
+**Soluzione:** TODO. 
+#### Visualizzazione di grafici multipli
+```mermaid
+UML TODO
+```
+
+**Problema:** TODO.
+
+**Soluzione:** TODO. 
+
+### 2.2.3 Surname Name
+#### Subject
+```mermaid
+UML TODO
+```
 
 # Capitolo 3 - Sviluppo
 ## 3.1 Testing automatizzato
