@@ -28,13 +28,12 @@ public final class ChartsPanel extends VBox {
     private static final String X_AXIS_LABEL = "RPM (Revolutions Per Minute)";
     private static final String Y_AXIS_LABEL = "Horsepower (HP)";
     private static final String Y2_AXIS_LABEL = "Torque (Nm)";
-    private static final String GENERATED_SERIES_NAME = "Power (Generated)";
-    private static final String IMPORTED_SERIES_NAME = "Power (Imported)";
+    private static final String GENERAL_SERIES_NAME = "Power";
 
     private final JFreeChart lineChart;
     private final ChartsFactory chartsFactory = new DefaultChartsFactory();
     private final ChartsManager chartManager = new ChartsManagerImpl();
-    private int importedOreder;
+    private int importedOrder;
 
     /**
      * Default constructor for ChartsPanel.
@@ -51,12 +50,27 @@ public final class ChartsPanel extends VBox {
         final ChartViewer viewer = new ChartViewer(this.lineChart);
         viewer.setPrefSize(screenBounds.getWidth() * CHART_WIDTH_FACTOR, screenBounds.getHeight() * CHART_HEIGH_FACTOR);
         viewer.setMinSize(screenBounds.getWidth() * CHART_MINIMUM_FACTOR, screenBounds.getHeight() * CHART_MINIMUM_FACTOR);
-        chartManager.addNewSeries(this.lineChart, GENERATED_SERIES_NAME, ChartsManager.YAxisLevel.FIRST);
+        chartManager.addNewSeries(this.lineChart, GENERAL_SERIES_NAME, ChartsManager.YAxisLevel.FIRST);
         chartManager.addYAxis(this.lineChart, Y2_AXIS_LABEL);
-        chartManager.addNewSeries(this.lineChart, GENERATED_SERIES_NAME, ChartsManager.YAxisLevel.SECOND);
+        chartManager.addNewSeries(this.lineChart, GENERAL_SERIES_NAME, ChartsManager.YAxisLevel.SECOND);
         chartManager.setDarkTheme(this.lineChart);
         chartManager.setBackgroundImage(this.lineChart, BG_IMAGE);
         this.getChildren().add(viewer);
+    }
+
+    /**
+     * Generates a unique name for imported data series.
+     *
+     * @return a unique name for the imported data series
+     */
+    private String generateImportedName(){
+        final StringBuilder stringBuilder = new StringBuilder();
+        return stringBuilder
+            .append(GENERAL_SERIES_NAME)
+            .append("(Import ")
+            .append(++this.importedOrder)
+            .append(")")
+            .toString();
     }
 
     /**
@@ -67,7 +81,7 @@ public final class ChartsPanel extends VBox {
      * @param y2Valu the second y-axis value
      */
     public void addSingleData(final Number xValue, final Number yValue, final Number y2Valu) {
-        addPointToChart(GENERATED_SERIES_NAME, xValue, yValue, y2Valu);
+        addPointToChart(GENERAL_SERIES_NAME, xValue, yValue, y2Valu);
     }
 
     /**
@@ -78,7 +92,7 @@ public final class ChartsPanel extends VBox {
      * @param y2Values the list of second y-axis values
      */
     public void addAllData(final List<Number> xValues, final List<Number> yValues, final List<Number> y2Values) {
-        final String seriesName = IMPORTED_SERIES_NAME + " " + importedOreder++;
+        final String seriesName = generateImportedName();
         chartManager.addNewSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.FIRST);
         chartManager.addNewSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.SECOND);
         chartManager.addAllPointsToSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.FIRST, xValues, yValues);
