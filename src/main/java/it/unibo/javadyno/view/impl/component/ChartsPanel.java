@@ -64,13 +64,7 @@ public final class ChartsPanel extends VBox {
      * @return a unique name for the imported data series
      */
     private String generateImportedName() {
-        final StringBuilder stringBuilder = new StringBuilder();
-        return stringBuilder
-            .append(GENERAL_SERIES_NAME)
-            .append("(Import ")
-            .append(++this.importedOrder)
-            .append(')')
-            .toString();
+        return String.format("%s(Import %d)", GENERAL_SERIES_NAME, ++this.importedOrder);
     }
 
     /**
