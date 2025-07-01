@@ -12,8 +12,9 @@ public interface DataCollector {
      * Clear all datas form Queue.
      *
      * @param dynoSource the source of the dynamometer data.
+     * @param userSettings the user settings to be used for data collection.
      */
-    void initialize(Dyno dynoSource);
+    void initialize(Dyno dynoSource, UserSettings userSettings);
 
     /**
      * @return a queue of all the datas collected.

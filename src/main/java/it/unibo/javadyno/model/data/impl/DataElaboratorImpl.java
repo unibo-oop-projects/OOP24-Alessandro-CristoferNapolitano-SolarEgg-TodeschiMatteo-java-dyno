@@ -23,18 +23,21 @@ public final class DataElaboratorImpl implements DataElaborator {
     private static final int ENGINE_POWER_KW_DIVISOR = 9549;
     private static final double SPECIFIC_GAS_COSTANT_DRY_AIR = 287.05;
     private static final double ZERO_CELSIUS_IN_KELVIN = 273.15;
-    private RawData prevRawData;
+    private final UserSettings userSettings;
     private final Dyno dyno;
     private final DataSource dataSource;
+    private RawData prevRawData;
 
     /**
      * Constructor for DataElaboratorImpl.
      *
      * @param dynoSource the source of the dynamometer data
+     * @param userSettings the user settings to be used for data elaboration
      */
-    public DataElaboratorImpl(final Dyno dynoSource) {
+    public DataElaboratorImpl(final Dyno dynoSource, final UserSettings userSettings) {
         this.dyno = Objects.requireNonNull(dynoSource, "Dyno source cannot be null");
         this.dataSource = dyno.getDynoType();
+        this.userSettings = Objects.requireNonNull(userSettings, "User settings cannot be null");
     }
 
     /**
@@ -94,24 +97,24 @@ public final class DataElaboratorImpl implements DataElaborator {
             airDensity = rawData.baroPressure().get() * 1000
                 / (SPECIFIC_GAS_COSTANT_DRY_AIR * temperatureInKelvin);
         } else {
-            airDensity = UserSettings.getAirDensity();
+            airDensity = userSettings.getAirDensity();
         }
         final Double acceleration = vehicleSpeedDelta / (timeDelta / 1000) / KMH_TO_MS;
-        final Double inertialForce = acceleration * UserSettings.getVehicleMass();
+        final Double inertialForce = acceleration * userSettings.getVehicleMass();
 
-        final Double rollingResistanceForce = UserSettings.getRollingResistanceCoefficient()
-            * UserSettings.getVehicleMass()
+        final Double rollingResistanceForce = userSettings.getRollingResistanceCoefficient()
+            * userSettings.getVehicleMass()
             * HEARTH_GRAVITY_ACCELERATION;
 
         final Double aerodynamicDragForce = 0.5
-            * UserSettings.getAirDragCoefficient()
-            * UserSettings.getFrontalArea()
+            * userSettings.getAirDragCoefficient()
+            * userSettings.getFrontalArea()
             * airDensity
             * Math.pow(rawData.vehicleSpeed().get() / KMH_TO_MS, 2);
 
         final Double totalForce = inertialForce + rollingResistanceForce + aerodynamicDragForce;
         final Double enginePowerKW = totalForce * (rawData.vehicleSpeed().get() / KMH_TO_MS)
-            / UserSettings.getDriveTrainEfficiency();
+            / userSettings.getDriveTrainEfficiency();
         final Double enginePowerHP = enginePowerKW * KW_TO_HP_MULTIPLIER;
         final Double engineCorrectedTorque = enginePowerKW
             * ENGINE_POWER_KW_DIVISOR / rawData.engineRPM().orElseThrow();
@@ -140,7 +143,7 @@ public final class DataElaboratorImpl implements DataElaborator {
             return null;
         }
         final Double engineCorrectedTorque = rawData.torque().get()
-            * UserSettings.getLoadcellLeverLength();
+            * userSettings.getLoadcellLeverLength();
         final Double enginePowerKW = engineCorrectedTorque * rawData.engineRPM().get() / ENGINE_POWER_KW_DIVISOR;
         final Double enginePowerHP = enginePowerKW * KW_TO_HP_MULTIPLIER;
         return new ElaboratedData(

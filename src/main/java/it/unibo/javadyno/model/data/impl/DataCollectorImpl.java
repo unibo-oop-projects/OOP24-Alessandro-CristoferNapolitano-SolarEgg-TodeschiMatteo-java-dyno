@@ -7,6 +7,7 @@ import java.util.Queue;
 import it.unibo.javadyno.model.data.api.DataCollector;
 import it.unibo.javadyno.model.data.api.DataElaborator;
 import it.unibo.javadyno.model.data.api.ElaboratedData;
+import it.unibo.javadyno.model.data.api.UserSettings;
 import it.unibo.javadyno.model.dyno.api.Dyno;
 
 /**
@@ -26,9 +27,11 @@ public final class DataCollectorImpl implements DataCollector {
     }
 
     @Override
-    public void initialize(final Dyno dynoSource) {
+    public void initialize(final Dyno dynoSource, final UserSettings userSettings) {
         this.datas.clear();
-        this.dataElaborator = new DataElaboratorImpl(Objects.requireNonNull(dynoSource, "Dyno source cannot be null"));
+        this.dataElaborator = new DataElaboratorImpl(
+            Objects.requireNonNull(dynoSource, "Dyno source cannot be null"), 
+            Objects.requireNonNull(userSettings, "User settings cannot be null"));
     }
 
     @Override
