@@ -144,7 +144,9 @@ public final class ControllerImpl implements Controller {
      * This method runs in a loop while the dyno is active, collecting data and updating the graphics.
      */
     private void polling() {
-        this.dataCollector.collectData();
+        if (this.dyno.getDynoType().equals(DataSource.OBD2)) {
+            this.dataCollector.collectData();
+        }
         while (Objects.nonNull(dyno) && dyno.isActive() && this.isRunning) {
             final ElaboratedData data = this.dataCollector.collectData();
             if (Objects.nonNull(data)) {

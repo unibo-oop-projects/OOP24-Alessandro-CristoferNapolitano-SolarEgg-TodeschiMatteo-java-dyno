@@ -62,6 +62,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
                     controller.getUserSettings().getWheelRadius())
                 .withBenchBrake(bench)
                 .withWeatherStation(weatherStation)
+                .withThermalParams(20.0, 100_000.0, 500.0)
                 .buildVehiclewithRigidModel();
             this.simulationThread = new Thread(this, SIMULATED_DYNO_THREAD_NAME);
             this.simulationThread.start();
@@ -77,7 +78,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
         if (Objects.nonNull(simulationThread)) {
             this.simulationThread.interrupt();
         }
-        System.out.println("Simulation thread interrupted.");
+        System.out.println("Simulation thread interrupted by thread: " + Thread.currentThread().getName());
         this.running = false;
     }
 
@@ -117,7 +118,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
      */
     @Override
     public RawData getRawData() {
-        if (Objects.nonNull(this.datas)) {
+        if (Objects.isNull(this.datas)) {
             AlertMonitor.errorNotify(
                 "Unable to retrieve datas form Simulated Dyno",
                 Optional.empty()

@@ -16,6 +16,7 @@ public enum UserSettingDef {
     DYNO_TYPE(DataSource.REAL_DYNO.ordinal()),
     ROLLING_COEFF(0.012),
     MAX_RPM_SIMULATION(8000.0),
+
     BASE_TORQUE(120.0),
     TORQUE_PER_RAD(0.05),
     ENGINE_INERTIA(0.4),
