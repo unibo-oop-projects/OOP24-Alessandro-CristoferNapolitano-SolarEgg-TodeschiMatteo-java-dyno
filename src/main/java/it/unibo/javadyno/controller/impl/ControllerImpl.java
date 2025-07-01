@@ -155,7 +155,6 @@ public final class ControllerImpl implements Controller {
                 );
             }
             try {
-                // TODO sleep based on system performance (match to x fps)
                 Thread.sleep(100);
             } catch (final InterruptedException e) {
                 Thread.currentThread().interrupt();

@@ -159,9 +159,13 @@ public abstract class AbstractWebSocketCommunicator<T> implements MCUCommunicato
         @Override
         public void onError(final Exception ex) {
             AlertMonitor.warningNotify(
-                "WebSocket error: " + ex.getMessage(),
+                "WebSocket error, restart the dyno and try again.",
                 Optional.of(ex.getMessage())
             );
+            disconnect();
+            for (final Consumer<T> listener : messageListeners) {
+                listener.accept(null);
+            }
         }
     }
 }

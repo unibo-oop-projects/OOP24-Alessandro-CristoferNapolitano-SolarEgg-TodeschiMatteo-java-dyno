@@ -77,7 +77,6 @@ public final class RealDynoImpl extends AbstractPhysicalDyno<Pair<JsonScheme, Do
                 "Unknown message type",
                 Optional.of(message.getKey().toString())
             );
-            //throw new IllegalArgumentException("Unknown message type: " + message.getKey());
         }
     }
 
