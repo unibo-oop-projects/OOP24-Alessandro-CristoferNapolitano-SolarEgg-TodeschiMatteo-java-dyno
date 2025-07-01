@@ -15,9 +15,9 @@ public interface WeatherStation {
     /**
      * Atmospheric pressure.
      *
-     * @return pressure in [hPa]
+     * @return pressure in [kPa]
      */
-    double getPressure();
+    int getPressure();
 
     /**
      * Humidity in air.
