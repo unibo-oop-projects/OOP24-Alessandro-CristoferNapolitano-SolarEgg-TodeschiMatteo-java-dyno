@@ -169,7 +169,6 @@ public final class VehicleBuilder {
     /**
      * VehicleBuilder with temperature model for the engine, params injected.
      *
-     * @param ambientStartValue ambient start temperature for the thermal model [°C]
      * @param thermalCapacityValue thermal capacity [J/°C]
      * @param coolingCoeffValue cooling coefficient [W/°C]
      * @return VehicleBuilder
