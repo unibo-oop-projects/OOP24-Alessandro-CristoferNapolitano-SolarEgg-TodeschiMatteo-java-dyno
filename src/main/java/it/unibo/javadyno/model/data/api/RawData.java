@@ -15,6 +15,7 @@ import java.util.Optional;
  * @param throttlePosition the throttle position
  * @param baroPressure the boost pressure
  * @param ambientAirTemperature the ambient air pressure
+ * @param ambientHumidity the ambient humidity
  * @param exhaustGasTemperature the exhaust gas temperature
  */
 public record RawData(
@@ -27,7 +28,9 @@ public record RawData(
     Optional<Double> throttlePosition,
     Optional<Integer> baroPressure,
     Optional<Integer> ambientAirTemperature,
+    Optional<Integer> ambientHumidity,
     Optional<Double> exhaustGasTemperature
+
 ) {
 
     /**
@@ -42,6 +45,7 @@ public record RawData(
      * @param throttlePosition the throttle position
      * @param baroPressure the boost pressure
      * @param ambientAirTemperature the ambient air pressure
+     * @param ambientHumidity the ambient humidity
      * @param exhaustGasTemperature the exhaust gas temperature
      */
     public static Builder builder() {
@@ -61,6 +65,7 @@ public record RawData(
         private Optional<Double> throttlePosition = Optional.empty();
         private Optional<Integer> baroPressure = Optional.empty();
         private Optional<Integer> ambientAirTemperature = Optional.empty();
+        private Optional<Integer> ambientHumidity = Optional.empty();
         private Optional<Double> exhaustGasTemperature = Optional.empty();
 
         /**
@@ -163,6 +168,17 @@ public record RawData(
         }
 
         /**
+         * Sets the ambient humidity.
+         *
+         * @param humidity the ambient Humidity (Optional)
+         * @return this builder instance
+         */
+        public Builder ambientHumidity(final Optional<Integer> humidity) {
+            this.ambientHumidity = humidity;
+            return this;
+        }
+
+        /**
          * Sets the exhaust gas temperature.
          *
          * @param valueExhaustGasTemperature the exhaust gas temperature (Optional)
@@ -190,6 +206,7 @@ public record RawData(
                 throttlePosition,
                 baroPressure,
                 ambientAirTemperature,
+                ambientHumidity,
                 exhaustGasTemperature
             );
         }
