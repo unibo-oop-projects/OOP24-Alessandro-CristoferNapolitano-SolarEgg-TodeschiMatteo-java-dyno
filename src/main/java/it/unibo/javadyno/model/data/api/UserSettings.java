@@ -197,6 +197,25 @@ public final class UserSettings implements Serializable {
     }
 
     /**
+     * Creates a copy of the current UserSettings instance.
+     *
+     * @return a new UserSettings instance with the same values
+     */
+    public UserSettings copy() {
+        final UserSettings copy = new UserSettings();
+        copy.simulationUpdateTimeDelta = this.simulationUpdateTimeDelta;
+        copy.loadcellLeverLength = this.loadcellLeverLength;
+        copy.vehicleMass = this.vehicleMass;
+        copy.rollingResistanceCoefficient = this.rollingResistanceCoefficient;
+        copy.airDragCoefficient = this.airDragCoefficient;
+        copy.frontalArea = this.frontalArea;
+        copy.airDensity = this.airDensity;
+        copy.driveTrainEfficiency = this.driveTrainEfficiency;
+        copy.dynoType = this.dynoType;
+        return copy;
+    }
+
+    /**
      * Resets all settings to their default values.
      */
     public void resetToDefaults() {

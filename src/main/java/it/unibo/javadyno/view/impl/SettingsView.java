@@ -51,11 +51,8 @@ public class SettingsView extends Application implements View {
     private static final double GRID_SPACING = 15.0;
     private static final double LABEL_MIN_WIDTH = 200.0;
     private static final double TITLE_FONT_SIZE = 24.0;
-
     private final Controller controller;
     private final UserSettings userSettings;
-
-    // UI Components
     private Spinner<Double> loadcellLeverLengthSpinner;
     private Spinner<Double> vehicleMassSpinner;
     private Spinner<Double> driveTrainEfficiencySpinner;
@@ -165,7 +162,6 @@ public class SettingsView extends Application implements View {
         grid.setAlignment(Pos.CENTER);
         grid.getStyleClass().add("settings-grid");
 
-        // Configure column constraints
         final ColumnConstraints labelColumn = new ColumnConstraints();
         labelColumn.setHalignment(HPos.RIGHT);
         labelColumn.setMinWidth(LABEL_MIN_WIDTH);
@@ -176,7 +172,6 @@ public class SettingsView extends Application implements View {
 
         grid.getColumnConstraints().addAll(labelColumn, controlColumn);
 
-        // Add settings controls
         addLoadcellLeverLengthSetting(grid, 0);
         addVehicleMassSetting(grid, 1);
         addDriveTrainEfficiencySetting(grid, 2);
@@ -263,7 +258,6 @@ public class SettingsView extends Application implements View {
         dynoTypeComboBox.setValue(this.userSettings.getDynoType());
         dynoTypeComboBox.getStyleClass().add("combo-box");
 
-        // Custom cell factory to display the actual names
         dynoTypeComboBox.setCellFactory(listView -> new javafx.scene.control.ListCell<>() {
             @Override
             protected void updateItem(final DataSource item, final boolean empty) {
@@ -352,7 +346,7 @@ public class SettingsView extends Application implements View {
      * Resets all settings to their default values.
      */
     private void resetToDefaults() {
-        this.userSettings.resetToDefaults();
+        this.controller.resetUserSettings();
         loadCurrentSettings();
     }
 

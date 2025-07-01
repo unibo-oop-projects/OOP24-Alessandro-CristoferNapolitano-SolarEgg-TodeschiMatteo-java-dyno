@@ -148,13 +148,19 @@ public final class ControllerImpl implements Controller {
             final ElaboratedData data = this.dataCollector.collectData();
             if (Objects.nonNull(data)) {
                 this.view.update(data);
+            } else {
+                this.stopEvaluation();
+                AlertMonitor.warningNotify(
+                    "Raw data incoherent",
+                    Optional.of("The raw data collected is not coherent, try again by restarting the evaluation.")
+                );
             }
             try {
                 // TODO sleep based on system performance (match to x fps)
                 Thread.sleep(100);
             } catch (final InterruptedException e) {
                 Thread.currentThread().interrupt();
-                break;
+                this.stopEvaluation();
             }
         }
         this.isRunning = false;
@@ -278,6 +284,7 @@ public final class ControllerImpl implements Controller {
         if (this.dyno.isActive()) {
             this.dyno.end();
             this.dyno = null;
+            this.isRunning = false;
         }
     }
 
@@ -328,7 +335,13 @@ public final class ControllerImpl implements Controller {
 
     @Override
     public UserSettings getUserSettings() {
-        return this.userSettings;
+        return this.userSettings.copy();
+    }
+
+    @Override
+    public void resetUserSettings() {
+        this.userSettings.resetToDefaults();
+        saveUserSettingsToFile(SETTINGS_FILE_NAME, this.userSettings);
     }
 
     /**
@@ -405,8 +418,12 @@ public final class ControllerImpl implements Controller {
         final File directory = new File(appDir);
 
         // Create directory if it doesn't exist
-        if (!directory.exists()) {
-            directory.mkdirs();
+        if (!directory.exists() && !directory.mkdirs()) {
+            AlertMonitor.errorNotify(
+                "Could not create application directory",
+                Optional.of("Failed to create directory: " + appDir)
+            );
+            return;
         }
 
         final String filePath = appDir + File.separator + settingsFileName;
@@ -442,8 +459,8 @@ public final class ControllerImpl implements Controller {
         private static final int MIN_SPEED_INCREASE = 1;
 
         // Timestamp constants
-        private static final int MIN_DELAY_MILLIS = 800;
-        private static final int MAX_DELAY_MILLIS = 1100;
+        private static final int MIN_DELAY_MILLIS = 300;
+        private static final int MAX_DELAY_MILLIS = 500;
         private final Random rand = new Random();
         private RawData prevRawData;
         private boolean isActive;
