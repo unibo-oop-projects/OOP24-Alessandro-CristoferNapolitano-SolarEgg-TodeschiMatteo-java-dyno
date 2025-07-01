@@ -87,9 +87,7 @@ public final class VehicleImpl implements Vehicle {
         //ambient data
         final int ambientTemperature = (int) weatherStation.getTemperature();
         final int ambientPressure = weatherStation.getPressure();
-        //int ambientHumidity = weatherStation.getHumidity();
-        // TODO : change pressure to kPa
-        // TODO : change in rawdata ambienttemp in double
+        final int ambientHumidity = weatherStation.getHumidity();
 
         return RawData.builder()
                 .engineRPM(Optional.of(engineRpm))
@@ -98,6 +96,7 @@ public final class VehicleImpl implements Vehicle {
                 .vehicleSpeed(Optional.of(speedKmh))
                 .throttlePosition(Optional.of(throttle))
                 .ambientAirTemperature(Optional.of(ambientTemperature))
+                .ambientHumidity(Optional.of(ambientHumidity))
                 .baroPressure(Optional.of(ambientPressure))
                 .build();
     }

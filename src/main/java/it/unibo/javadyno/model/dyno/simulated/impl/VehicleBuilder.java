@@ -30,11 +30,11 @@ public final class VehicleBuilder {
     private double[] gearRatio;
     // --- thermal model parameters (with defaults) ---
     /** ambient start temperature for the thermal model [°C]. */
-    private double ambientStart = 20;
+    private double ambientStart;
     /** thermal capacity [J/°C]. */
-    private double thermalCapacity = 100000;
+    private double thermalCapacity;
     /** cooling coefficient [W/°C]. */
-    private double coolingCoeff = 500;
+    private double coolingCoeff;
     /** custom temperature model, if injected. */
     private TemperatureModel temperatureModel;
     // --- wheel parameters ---
@@ -51,9 +51,7 @@ public final class VehicleBuilder {
     // --- bench brake torque ---
     private BrakeTorqueProvider benchBrakeTorqueProvider;
 
-    // --- simulation timing and enviroment ---
-    /** simulation step [s]. */
-    private double deltaTime;
+    // --- simulation enviroment status---
     private WeatherStation weatherStation;
 
     private VehicleBuilder() { }
@@ -149,17 +147,6 @@ public final class VehicleBuilder {
     }
 
     /**
-     * VehicleBuilder with delta time.
-     *
-     * @param deltaTimeValue simulation step [s]
-     * @return VehicleBuilder
-     */
-    public VehicleBuilder withDeltaTime(final double deltaTimeValue) {
-        this.deltaTime = deltaTimeValue;
-        return this;
-    }
-
-    /**
      * VehicleBuilder with weather station.
      *
      * @param ws WeatherStation implementation
@@ -207,7 +194,6 @@ public final class VehicleBuilder {
      * - wheelMass
      * - wheelRadius
      * - benchBrakeTorqueProvider
-     * - deltaTime
      * - weatherStation
      * - TemperatureModel.
      *
@@ -245,6 +231,6 @@ public final class VehicleBuilder {
 
         final DriveTrain sim = new RigidDriveTrainSim(engine, transmission, loads);
 
-        return new VehicleImpl(sim, weatherStation, wheelRadius, Double.valueOf(0));
+        return new VehicleImpl(sim, weatherStation, wheelRadius, 0);
     }
 }

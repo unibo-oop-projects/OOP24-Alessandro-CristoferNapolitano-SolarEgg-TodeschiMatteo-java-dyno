@@ -1,9 +1,6 @@
 package it.unibo.javadyno.model.data.impl;
 
 import java.util.Objects;
-import java.util.Optional;
-
-import it.unibo.javadyno.controller.impl.AlertMonitor;
 import it.unibo.javadyno.model.data.api.DataElaborator;
 import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.api.ElaboratedData;
@@ -72,10 +69,6 @@ public final class DataElaboratorImpl implements DataElaborator {
         if (!rawData.vehicleSpeed().isPresent()
             || !rawData.engineRPM().isPresent()
             || !rawData.timestamp().isPresent()) {
-            AlertMonitor.warningNotify(
-                "Raw data must contain speed, rpm and timestamp.",
-                Optional.empty()
-            );
             return null;
         } else if (Objects.isNull(prevRawData)) {
             prevRawData = rawData;
@@ -85,10 +78,6 @@ public final class DataElaboratorImpl implements DataElaborator {
         final Double timeDelta = (double) (rawData.timestamp().get().toEpochMilli()
             - prevRawData.timestamp().orElseThrow().toEpochMilli());
         if (vehicleSpeedDelta <= 0) {
-            AlertMonitor.warningNotify(
-                "Vehicle speed cannot decrease in OBD2 data processing.",
-                Optional.of("The vehicle speed must increase or remain constant between data points.")
-            );
             return null;
         }
         final Double airDensity;
@@ -136,10 +125,6 @@ public final class DataElaboratorImpl implements DataElaborator {
      */
     private ElaboratedData processDynoData(final RawData rawData) {
         if (!rawData.torque().isPresent() || !rawData.engineRPM().isPresent()) {
-            AlertMonitor.warningNotify(
-                "Raw data must contain both torque and RPM values",
-                Optional.of("To process dyno data, both torque and RPM values are required.")
-            );
             return null;
         }
         final Double engineCorrectedTorque = rawData.torque().get()

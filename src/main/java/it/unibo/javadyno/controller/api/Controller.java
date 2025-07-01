@@ -78,10 +78,14 @@ public interface Controller {
     /**
      * Gets the current user settings.
      *
-     * @return the current user settings, not as a copy but as a reference 
-     *     to the original object, so changes to the settings will be reflected
+     * @return the current user settings as a defensive copy
      */
     UserSettings getUserSettings();
+
+    /**
+     * Resets the user settings to their default values.
+     */
+    void resetUserSettings();
 
     /**
      * Exports current simulation data to a file.
