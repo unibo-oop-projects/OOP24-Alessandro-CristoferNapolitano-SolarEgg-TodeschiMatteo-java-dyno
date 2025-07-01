@@ -419,6 +419,9 @@ public final class UserSettings implements Serializable {
         copy.wheelMass = this.wheelMass;
         copy.wheelRadius = this.wheelRadius;
         copy.rollingCoeff = this.rollingCoeff;
+        copy.airTemperature = this.airTemperature;
+        copy.airPressure = this.airPressure;
+        copy.airHumidity = this.airHumidity;
         return copy;
     }
 
@@ -443,5 +446,8 @@ public final class UserSettings implements Serializable {
         wheelMass = UserSettingDef.WHEEL_MASS.getDefaultValue();
         wheelRadius = UserSettingDef.WHEEL_RADIUS.getDefaultValue();
         rollingCoeff = UserSettingDef.ROLLING_COEFF.getDefaultValue();
+        airTemperature = UserSettingDef.AIR_TEMPERATURE.getDefaultValue();
+        airPressure = UserSettingDef.AIR_PRESSURE.getDefaultValue();
+        airHumidity = UserSettingDef.AIR_HUMIDITY.getDefaultValue();
     }
 }
