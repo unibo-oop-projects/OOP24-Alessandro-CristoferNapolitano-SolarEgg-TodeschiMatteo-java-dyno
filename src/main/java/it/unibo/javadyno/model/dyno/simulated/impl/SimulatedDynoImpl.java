@@ -8,7 +8,6 @@ import it.unibo.javadyno.controller.impl.AlertMonitor;
 import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.api.RawData;
 import it.unibo.javadyno.model.dyno.simulated.api.Bench;
-import it.unibo.javadyno.model.dyno.simulated.api.DriveTrain;
 import it.unibo.javadyno.model.dyno.simulated.api.SimulatedDyno;
 import it.unibo.javadyno.model.dyno.simulated.api.Vehicle;
 import it.unibo.javadyno.model.dyno.simulated.api.WeatherStation;
@@ -19,16 +18,13 @@ import it.unibo.javadyno.model.dyno.simulated.api.WeatherStation;
 public class SimulatedDynoImpl implements SimulatedDyno {
 
     private static final String SIMULATED_DYNO_THREAD_NAME = "SimulatedDynoThread";
-    private static final int ENGINE_RPM = 2000;
-    private static final double ENGINE_TEMPERATURE = 90.0;
-    private static final int UPDATE_TIME_DELTA = 10; // in milliseconds
-    private volatile boolean running;
     private final Controller controller;
+    private long updateTimeDelta;
     private Thread simulationThread;
     private Vehicle vehicle;
     private Bench bench;
-    private DriveTrain driveTrain;
     private WeatherStation weatherStation;
+    private volatile boolean running;
     private volatile RawData datas;
 
     /**
@@ -42,7 +38,6 @@ public class SimulatedDynoImpl implements SimulatedDyno {
         this.simulationThread = null;
         this.vehicle = null;
         this.bench = null;
-        this.driveTrain = null;
         this.weatherStation = null;
         this.datas = null;
     }
@@ -53,14 +48,17 @@ public class SimulatedDynoImpl implements SimulatedDyno {
     @Override
     public void begin() {
         if (!running) {
+            this.updateTimeDelta = (long) controller.getUserSettings().getSimulationUpdateTimeDelta();
             this.running = true;
             this.bench = new BenchImpl();
             this.vehicle = VehicleBuilder.builder()
-                .withBaseTorque(0.0)
-                .withTorquePerRad(0.0)
-                .withEngineInertia(ENGINE_RPM)
-                .withGearRatios(null)
-                .withWheel(ENGINE_TEMPERATURE, ENGINE_RPM)
+                .withBaseTorque(controller.getUserSettings().getBaseTorque())
+                .withTorquePerRad(controller.getUserSettings().getTorquePerRad())
+                .withEngineInertia(controller.getUserSettings().getEngineInertia())
+                .withGearRatios(controller.getUserSettings().getGearRatios())
+                .withWheel(
+                    controller.getUserSettings().getWheelMass(),
+                    controller.getUserSettings().getWheelRadius())
                 .withBenchBrake(null)
                 .withWeatherStation(null)
                 .buildVehiclewithRigidModel();
@@ -100,7 +98,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
         while (this.running) {
             this.datas = vehicle.getRawData();
             try {
-                Thread.sleep(UPDATE_TIME_DELTA);
+                Thread.sleep(this.updateTimeDelta);
             } catch (final InterruptedException e) {
                 this.end();
             }
