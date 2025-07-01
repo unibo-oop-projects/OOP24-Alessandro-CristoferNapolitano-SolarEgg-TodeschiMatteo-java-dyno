@@ -52,6 +52,11 @@ public class SimulatedDynoImpl implements SimulatedDyno {
             this.updateTimeDelta = (long) controller.getUserSettings().getSimulationUpdateTimeDelta();
             this.running = true;
             this.bench = new BenchBrakeTorqueHolder();
+            this.weatherStation = new WeatherStationImpl(
+                controller.getUserSettings().getAirTemperatire(),
+                controller.getUserSettings().getAirPressure(),
+                controller.getUserSettings().getAirHumidity()
+            );
             this.vehicle = VehicleBuilder.builder()
                 .withBaseTorque(controller.getUserSettings().getBaseTorque())
                 .withTorquePerRad(controller.getUserSettings().getTorquePerRad())

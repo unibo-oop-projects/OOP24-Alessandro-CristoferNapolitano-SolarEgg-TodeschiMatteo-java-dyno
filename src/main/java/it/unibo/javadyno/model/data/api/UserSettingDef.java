@@ -20,7 +20,10 @@ public enum UserSettingDef {
     ENGINE_INERTIA(0.4),
     GEAR_RATIOS(1.3),
     WHEEL_MASS(20.0),
-    WHEEL_RADIUS(0.3);
+    WHEEL_RADIUS(0.3),
+    AIR_TEMPERATURE(20.0),
+    AIR_PRESSURE(101.3),
+    AIR_HUMIDITY(50.0);
 
     private final double defaultValue;
 

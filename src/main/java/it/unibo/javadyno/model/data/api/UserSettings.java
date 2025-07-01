@@ -26,6 +26,9 @@ public final class UserSettings implements Serializable {
     private double wheelMass;
     private double wheelRadius;
     private double rollingCoeff;
+    private double airTemperature;
+    private double airPressure;
+    private double airHumidity;
 
     /**
      * Private constructor to prevent instantiation.
@@ -336,6 +339,60 @@ public final class UserSettings implements Serializable {
      */
     public void setRollingCoeff(final double rollingCoeff) {
         this.rollingCoeff = rollingCoeff;
+    }
+
+    /**
+     * Gets the air temperature.
+     *
+     * @return the air temperature in Celsius
+     */
+    public double getAirTemperature() {
+        return airTemperature;
+    }
+
+    /**
+     * Sets the air temperature.
+     *
+     * @param airTemperature the air temperature in Celsius
+     */
+    public void setAirTemperature(final double airTemperature) {
+        this.airTemperature = airTemperature;
+    }
+
+    /**
+     * Gets the air pressure.
+     *
+     * @return airPressure the air pressure in hPa
+     */
+    public double getAirPressure() {
+        return airPressure;
+    }
+
+    /**
+     * Sets the air pressure.
+     *
+     * @param airPressure the air pressure in hPa
+     */
+    public void setAirPressure(final double airPressure) {
+        this.airPressure = airPressure;
+    }
+    
+    /**
+     * Gets the air humidity.
+     *
+     * @return airHumidity the air humidity in percentage
+     */
+    public double getAirHumidity() {
+        return airHumidity;
+    }
+
+    /**
+     * Sets the air humidity.
+     *
+     * @param airHumidity the air humidity in percentage
+     */
+    public void setAirHumidity(final double airHumidity) {
+        this.airHumidity = airHumidity;
     }
 
     /**
