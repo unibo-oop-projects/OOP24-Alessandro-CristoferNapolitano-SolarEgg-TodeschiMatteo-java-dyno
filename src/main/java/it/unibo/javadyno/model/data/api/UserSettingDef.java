@@ -25,7 +25,9 @@ public enum UserSettingDef {
     WHEEL_RADIUS(0.3),
     AIR_TEMPERATURE(20.0),
     AIR_PRESSURE(101.3),
-    AIR_HUMIDITY(50.0);
+    AIR_HUMIDITY(50.0),
+    TARGET_TEMPERATURE(80.0),
+    TARGET_TIME_TEMPERATURE_COEFF(20.0);
 
     private final double defaultValue;
 

@@ -55,6 +55,8 @@ public final class UserSettings implements Serializable {
         wheelMass = UserSettingDef.WHEEL_MASS.getDefaultValue();
         wheelRadius = UserSettingDef.WHEEL_RADIUS.getDefaultValue();
         rollingCoeff = UserSettingDef.ROLLING_COEFF.getDefaultValue();
+        targetTemperature = UserSettingDef.TARGET_TEMPERATURE.getDefaultValue();
+        targeTimeTemperatureCoeff = UserSettingDef.TARGET_TIME_TEMPERATURE_COEFF.getDefaultValue();
     }
 
     /**
