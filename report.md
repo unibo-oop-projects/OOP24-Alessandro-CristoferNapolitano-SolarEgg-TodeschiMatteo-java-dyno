@@ -100,6 +100,7 @@ direction TB
     DataCollector --o ElaboratedData
     OBD2 --|> Dyno
     FileManager --* FileStrategy
+    FileManager --> DataCollector
 
     class MCUCommunicator {
 	    +connect()
