@@ -194,7 +194,6 @@ public final class VehicleBuilder {
      * - wheelMass
      * - wheelRadius
      * - benchBrakeTorqueProvider
-     * - deltaTime
      * - weatherStation
      * - TemperatureModel.
      *
@@ -232,6 +231,6 @@ public final class VehicleBuilder {
 
         final DriveTrain sim = new RigidDriveTrainSim(engine, transmission, loads);
 
-        return new VehicleImpl(sim, weatherStation, wheelRadius, Double.valueOf(0));
+        return new VehicleImpl(sim, weatherStation, wheelRadius, 0);
     }
 }
