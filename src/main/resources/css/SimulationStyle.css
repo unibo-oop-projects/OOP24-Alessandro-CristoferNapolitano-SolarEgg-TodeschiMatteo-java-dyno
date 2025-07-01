@@ -68,6 +68,9 @@
 }
 
 /* Charts section */
+.charts-panel {
+    -fx-background-color: #262626;
+}
 .charts-panel .chart-title {
     -fx-text-fill: white;
 }
@@ -86,4 +89,9 @@
 }
 .charts-panel .chart-legend {
     -fx-background-color: transparent;
+}
+.popup-panel {
+    -fx-background-color: #124d77;
+    -fx-padding: 10;
+    -fx-border-color: gray;
 }

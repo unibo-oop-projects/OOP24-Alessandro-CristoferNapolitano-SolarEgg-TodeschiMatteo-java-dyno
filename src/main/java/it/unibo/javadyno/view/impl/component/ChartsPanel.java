@@ -1,5 +1,6 @@
 package it.unibo.javadyno.view.impl.component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jfree.chart.JFreeChart;
@@ -14,6 +15,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.stage.Popup;
 import javafx.stage.Screen;
 
 /**
@@ -21,7 +23,9 @@ import javafx.stage.Screen;
  */
 public final class ChartsPanel extends VBox {
     private static final String CSS_CHARTS_PANEL_TAG = "charts-panel";
+    private static final String CSS_POPUP_TAG = "popup-panel";
     private static final String BG_IMAGE = "/images/logo_no_bg.png";
+    private static final int POPUP_SPACING = 5;
     private static final double CHART_HEIGH_FACTOR = 0.7;
     private static final double CHART_WIDTH_FACTOR = 0.6;
     private static final double CHART_MINIMUM_FACTOR = 0.5;
@@ -34,6 +38,9 @@ public final class ChartsPanel extends VBox {
 
     private final JFreeChart lineChart;
     private final ChartViewer viewer;
+    private final List<Button> deleteButtons = new ArrayList<>();
+    private final Button manageButtons = new Button("Manage Series");
+    private final Popup deletePopup = new Popup();
     private final ChartsFactory chartsFactory = new DefaultChartsFactory();
     private final ChartsManager chartManager = new ChartsManagerImpl();
     private int importedOrder=1;
@@ -42,7 +49,7 @@ public final class ChartsPanel extends VBox {
      * Default constructor for ChartsPanel.
      */
     public ChartsPanel() {
-        this.setAlignment(Pos.TOP_RIGHT);
+        this.setAlignment(Pos.CENTER);
         this.getStyleClass().add(CSS_CHARTS_PANEL_TAG);
         final Rectangle2D screenBounds = Screen.getPrimary().getBounds();
         this.lineChart = chartsFactory.createEmptyCharts(
@@ -50,6 +57,20 @@ public final class ChartsPanel extends VBox {
             X_AXIS_LABEL,
             Y_AXIS_LABEL
         );
+        manageButtons.setOnAction(e -> {
+            if (deleteButtons.isEmpty()) {
+                return;
+            }
+            VBox popupContent = new VBox(POPUP_SPACING);
+            popupContent.getStyleClass().add(CSS_POPUP_TAG);
+            popupContent.getChildren().setAll(deleteButtons);
+            deletePopup.getContent().setAll(popupContent);
+            if (!deletePopup.isShowing()) {
+                deletePopup.show(this.getScene().getWindow());
+            } else {
+                deletePopup.hide();
+            }
+        });
         viewer = new ChartViewer(this.lineChart);
         viewer.setPrefSize(screenBounds.getWidth() * CHART_WIDTH_FACTOR, screenBounds.getHeight() * CHART_HEIGH_FACTOR);
         viewer.setMinSize(screenBounds.getWidth() * CHART_MINIMUM_FACTOR, screenBounds.getHeight() * CHART_MINIMUM_FACTOR);
@@ -58,7 +79,7 @@ public final class ChartsPanel extends VBox {
         chartManager.addNewSeries(this.lineChart, GENERAL_SERIES_NAME, ChartsManager.YAxisLevel.SECOND);
         chartManager.setDarkTheme(this.lineChart);
         chartManager.setBackgroundImage(this.lineChart, BG_IMAGE);
-        this.getChildren().add(viewer);
+        this.getChildren().addAll(viewer, manageButtons);
     }
 
     /**
@@ -94,9 +115,15 @@ public final class ChartsPanel extends VBox {
         final int order = this.importedOrder;
         deleteButton.setOnAction(e -> {
             chartManager.disableSeries(this.lineChart, order);
-            this.getChildren().remove(deleteButton);
+            deleteButtons.remove(deleteButton);
+            if (deletePopup.isShowing()) {
+                ((VBox) deletePopup.getContent().get(0)).getChildren().remove(deleteButton);
+                if (deleteButtons.isEmpty()) {
+                    deletePopup.hide();
+                }
+            }
         });
-        this.getChildren().add(deleteButton);
+        deleteButtons.add(deleteButton);
         this.importedOrder++;
         chartManager.addNewSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.FIRST);
         chartManager.addNewSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.SECOND);
