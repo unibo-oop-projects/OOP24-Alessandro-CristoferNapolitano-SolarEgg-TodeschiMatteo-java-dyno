@@ -117,9 +117,9 @@ public final class ControllerImpl implements Controller {
     public void startEvaluation(final DataSource dynoType) {
         if (!Objects.nonNull(this.dyno) || !this.dyno.getDynoType().equals(dynoType)) {
             switch (dynoType) {
-                case SIMULATED_DYNO -> this.dyno = new TestOBD2Dyno(); // TODO replace with simulation
+                case SIMULATED_DYNO -> this.dyno = new TestRealDyno(); // TODO replace with simulation
                 case OBD2 -> this.dyno = new OBD2Dyno();
-                case REAL_DYNO -> this.dyno = new RealDynoImpl(new JsonWebSocketCommunicator());
+                case REAL_DYNO -> this.dyno = new RealDynoImpl(new JsonWebSocketCommunicator()); // Using test implementation for simulation
             }
         }
         if (!this.dyno.isActive()) {
@@ -425,80 +425,106 @@ public final class ControllerImpl implements Controller {
         }
     }
 
-    private final class TestOBD2Dyno implements Dyno {
-        // Initial values
-        private static final Integer INITIAL_ENGINE_RPM = 500;
-        private static final Integer INITIAL_VEHICLE_SPEED = 2;
-        private static final Integer INITIAL_AMBIENT_TEMPERATURE = 20;
-        private static final Integer INITIAL_BARO_PRESSURE = 101;
-
-        // Engine RPM constants
-        private static final double RPM_INCREASE_FACTOR = 1.05;
-        private static final int MAX_ENGINE_RPM = 7000;
-
-        // Vehicle speed constants
-        private static final int MAX_VEHICLE_SPEED = 180;
-        private static final int MAX_SPEED_INCREASE = 8;
-        private static final int MIN_SPEED_INCREASE = 1;
-
-        // Timestamp constants
-        private static final int MIN_DELAY_MILLIS = 300;
-        private static final int MAX_DELAY_MILLIS = 500;
+    /**
+     * Test implementation of a Real Dyno for simulation purposes.
+     * This class generates realistic dyno data with torque and engine RPM
+     */
+    private final class TestRealDyno implements Dyno {
+        private static final Integer INITIAL_ENGINE_RPM = 1000;
+        private static final Double INITIAL_TORQUE = 50.0;
+        private static final Double INITIAL_ENGINE_TEMPERATURE = 85.0;
+        private static final Double INITIAL_THROTTLE_POSITION = 10.0;
+        private static final double RPM_INCREASE_FACTOR = 1.03;
+        private static final int MAX_ENGINE_RPM = 6500;
+        private static final int MIN_ENGINE_RPM = 800;
+        private static final double MAX_TORQUE = 400.0;
+        private static final double TORQUE_PEAK_RPM = 3500.0;
+        private static final double TORQUE_VARIATION = 15.0;
+        private static final double TEMP_INCREASE_RATE = 0.1;
+        private static final double MAX_ENGINE_TEMPERATURE = 105.0;
+        private static final double MIN_ENGINE_TEMPERATURE = 80.0;
+        private static final double THROTTLE_INCREASE_RATE = 1.5;
+        private static final double MAX_THROTTLE_POSITION = 100.0;
+        private static final double MIN_THROTTLE_POSITION = 5.0;
+        private static final int MIN_DELAY_MILLIS = 200;
+        private static final int MAX_DELAY_MILLIS = 400;
         private final Random rand = new Random();
         private RawData prevRawData;
         private boolean isActive;
+        private boolean isIncreasing = true;
 
-        TestOBD2Dyno() {
+        TestRealDyno() {
             this.prevRawData = RawData.builder()
                     .engineRPM(Optional.of(INITIAL_ENGINE_RPM))
-                    .vehicleSpeed(Optional.of(INITIAL_VEHICLE_SPEED))
-                    .ambientAirTemperature(Optional.of(INITIAL_AMBIENT_TEMPERATURE))
-                    .baroPressure(Optional.of(INITIAL_BARO_PRESSURE))
+                    .torque(Optional.of(INITIAL_TORQUE))
+                    .engineTemperature(Optional.of(INITIAL_ENGINE_TEMPERATURE))
+                    .throttlePosition(Optional.of(INITIAL_THROTTLE_POSITION))
                     .timestamp(Optional.of(Instant.now()))
                     .build();
         }
 
         @Override
         public RawData getRawData() {
-            if (prevRawData.engineRPM().get() >= MAX_ENGINE_RPM) {
-                this.isActive = false;
+            if (!isActive) {
+                return prevRawData;
             }
-            // Calculate dynamic engine RPM - increase by percentage each call, with max limit
+
             final int currentRpm = this.prevRawData.engineRPM().get();
-            final Integer newRpm = Math.min(MAX_ENGINE_RPM, (int) (currentRpm * RPM_INCREASE_FACTOR));
+            final Integer newRpm;
 
-            // Calculate dynamic vehicle speed - logarithmic growth for realistic acceleration
-            // Fast initial acceleration that slows down as it approaches max speed
-            final int currentSpeed = this.prevRawData.vehicleSpeed().get();
-            final double accelerationFactor = 1.0 - (double) currentSpeed / MAX_VEHICLE_SPEED;
-            final int speedIncrease = Math.max(MIN_SPEED_INCREASE, (int) (MAX_SPEED_INCREASE * accelerationFactor));
-            final Integer newSpeed = Math.min(MAX_VEHICLE_SPEED, currentSpeed + speedIncrease);
+            if (isIncreasing) {
+                newRpm = Math.min(MAX_ENGINE_RPM, (int) (currentRpm * RPM_INCREASE_FACTOR));
+                if (newRpm >= MAX_ENGINE_RPM) {
+                    isActive = false;
+                }
+            } else {
+                newRpm = Math.max(MIN_ENGINE_RPM, (int) (currentRpm / RPM_INCREASE_FACTOR));
+                if (newRpm <= MIN_ENGINE_RPM) {
+                    isIncreasing = true;
+                }
+            }
 
-            // Keep ambient temperature and barometric pressure constant
-            final Integer ambientTemp = this.prevRawData.ambientAirTemperature().get();
-            final Integer baroPressure = this.prevRawData.baroPressure().get();
+            final double rpmRatio = (double) newRpm / TORQUE_PEAK_RPM;
+            final double baseTorque;
+            if (rpmRatio <= 1.0) {
+                baseTorque = INITIAL_TORQUE + (MAX_TORQUE - INITIAL_TORQUE) * Math.sin(rpmRatio * Math.PI / 2);
+            } else {
+                baseTorque = MAX_TORQUE * Math.cos((rpmRatio - 1.0) * Math.PI / 4);
+            }
+            
+            final double torqueVariation = (rand.nextDouble() - 0.5) * TORQUE_VARIATION;
+            final Double newTorque = Math.max(10.0, baseTorque + torqueVariation);
 
-            // Generate realistic timestamp with variable delay between measurements
+            final double currentTemp = this.prevRawData.engineTemperature().get();
+            final double tempIncrease = (newRpm > 4000) ? TEMP_INCREASE_RATE : -TEMP_INCREASE_RATE * 0.3;
+            final Double newTemperature = Math.max(MIN_ENGINE_TEMPERATURE, 
+                Math.min(MAX_ENGINE_TEMPERATURE, currentTemp + tempIncrease + rand.nextGaussian() * 0.5));
+
+            final double currentThrottle = this.prevRawData.throttlePosition().get();
+            final double throttleChange = isIncreasing ? THROTTLE_INCREASE_RATE : -THROTTLE_INCREASE_RATE;
+            final Double newThrottlePosition = Math.max(MIN_THROTTLE_POSITION,
+                Math.min(MAX_THROTTLE_POSITION, currentThrottle + throttleChange + rand.nextGaussian() * 2.0));
+
             final Instant prevTimestamp = this.prevRawData.timestamp().get();
             final int delayMillis = (int) (MIN_DELAY_MILLIS
-                + this.rand.nextDouble()
-                * (MAX_DELAY_MILLIS - MIN_DELAY_MILLIS));
+                + this.rand.nextDouble() * (MAX_DELAY_MILLIS - MIN_DELAY_MILLIS));
             final Instant newTimestamp = prevTimestamp.plusMillis(delayMillis);
 
             final RawData rawData = RawData.builder()
                     .engineRPM(Optional.of(newRpm))
-                    .vehicleSpeed(Optional.of(newSpeed))
-                    .ambientAirTemperature(Optional.of(ambientTemp))
-                    .baroPressure(Optional.of(baroPressure))
+                    .torque(Optional.of(newTorque))
+                    .engineTemperature(Optional.of(newTemperature))
+                    .throttlePosition(Optional.of(newThrottlePosition))
                     .timestamp(Optional.of(newTimestamp))
                     .build();
+
             this.prevRawData = rawData;
             return rawData;
         }
 
         @Override
         public DataSource getDynoType() {
-            return DataSource.OBD2;
+            return DataSource.REAL_DYNO;
         }
 
         @Override
