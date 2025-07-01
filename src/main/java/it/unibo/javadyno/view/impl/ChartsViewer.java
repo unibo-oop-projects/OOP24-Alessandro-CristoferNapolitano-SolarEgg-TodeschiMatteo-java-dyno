@@ -59,7 +59,7 @@ public class ChartsViewer extends Application implements View {
             controller.importDataFromFile(new FileChooser().showOpenDialog(primaryStage));
         });
         backToMenuButton.setOnAction(e -> {
-            controller.showMainMenu(primaryStage);
+            this.controller.showMainMenu(primaryStage);
         });
         mainContainer.getStyleClass().add(CSS_MAIN_CONTAINER_TAG);
         mainContainer.getChildren().addAll(buttonsPanel, chartsPanel);
@@ -81,7 +81,7 @@ public class ChartsViewer extends Application implements View {
      */
     @Override
     public void stop() {
-        controller.closeApp();
+        this.controller.closeApp();
     }
 
     /**

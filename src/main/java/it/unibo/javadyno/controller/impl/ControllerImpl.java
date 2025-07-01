@@ -1,7 +1,11 @@
 package it.unibo.javadyno.controller.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -15,6 +19,8 @@ import it.unibo.javadyno.model.data.api.DataCollector;
 import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.api.ElaboratedData;
 import it.unibo.javadyno.model.data.api.RawData;
+import it.unibo.javadyno.model.data.api.UserSettingDef;
+import it.unibo.javadyno.model.data.api.UserSettings;
 import it.unibo.javadyno.model.data.communicator.impl.JsonWebSocketCommunicator;
 import it.unibo.javadyno.model.data.impl.DataCollectorImpl;
 import it.unibo.javadyno.model.dyno.api.Dyno;
@@ -35,14 +41,17 @@ import javafx.stage.Stage;
 /**
  * Controller implementation.
  */
-public class ControllerImpl implements Controller {
+public final class ControllerImpl implements Controller {
 
     private static final int MAX_RPM = 7000;
     private static final String SIMULATION_POLLING_THREAD_NAME = "SimulationPollingThread";
+    private static final String SETTINGS_FILE_NAME = "user-settings.ser";
+    private static final String PROJECT_DIR_NAME = "javadyno";
     private final DataCollector dataCollector;
     private final Random rand = new Random();
     private final FileManager fileManager;
     private final FileStrategyFactory strategyFactory;
+    private final UserSettings userSettings;
     private boolean isRunning;
     private Dyno dyno;
     private View view;
@@ -57,6 +66,7 @@ public class ControllerImpl implements Controller {
         this.dataCollector = new DataCollectorImpl();
         this.fileManager = new FileManagerImpl();
         this.strategyFactory = new FileStrategyFactoryImpl();
+        this.userSettings = loadUserSettingsFromFile(SETTINGS_FILE_NAME);
     }
 
     /**
@@ -114,7 +124,7 @@ public class ControllerImpl implements Controller {
             }
         }
         if (!this.dyno.isActive()) {
-            this.dataCollector.initialize(this.dyno);
+            this.dataCollector.initialize(this.dyno, this.userSettings);
             this.dyno.begin();
             this.isRunning = true;
             Thread.ofVirtual()
@@ -299,6 +309,30 @@ public class ControllerImpl implements Controller {
 
     /**
      * {@inheritDoc}
+     */
+    @Override
+    public void updateSetting(final UserSettingDef setting, final double value) {
+        switch (setting) {
+            case SIMULATION_UPDATE_TIME_DELTA -> this.userSettings.setSimulationUpdateTimeDelta(value);
+            case LOADCELL_LEVER_LENGTH -> this.userSettings.setLoadcellLeverLength(value);
+            case VEHICLE_MASS -> this.userSettings.setVehicleMass(value);
+            case ROLLING_RESISTANCE_COEFFICIENT -> this.userSettings.setRollingResistanceCoefficient(value);
+            case AIR_DRAG_COEFFICIENT -> this.userSettings.setAirDragCoefficient(value);
+            case FRONTAL_AREA -> this.userSettings.setFrontalArea(value);
+            case AIR_DENSITY -> this.userSettings.setAirDensity(value);
+            case DRIVE_TRAIN_EFFICIENCY -> this.userSettings.setDriveTrainEfficiency(value);
+            case DYNO_TYPE -> this.userSettings.setDynoType(value);
+        }
+        saveUserSettingsToFile(SETTINGS_FILE_NAME, this.userSettings);
+    }
+
+    @Override
+    public UserSettings getUserSettings() {
+        return this.userSettings;
+    }
+
+    /**
+     * {@inheritDoc}
      * Updated to use the file import system instead of generating demo data.
      */
     @Override
@@ -320,6 +354,75 @@ public class ControllerImpl implements Controller {
             list.add(elaboratedData);
         }
         view.update(Collections.unmodifiableList(list));
+    }
+
+    /**
+     * Loads user settings from a serialized file in the user home directory.
+     * If the file doesn't exist or cannot be loaded, returns a new UserSettings with default values.
+     *
+     * @param settingsFileName the name of the file to load settings from
+     * @return the loaded UserSettings or a new instance with defaults
+     */
+    private UserSettings loadUserSettingsFromFile(final String settingsFileName) {
+        final String userHome = System.getProperty("user.home");
+        final String appDir = userHome + File.separator + PROJECT_DIR_NAME;
+        final String filePath = appDir + File.separator + settingsFileName;
+        final File file = new File(filePath);
+
+        if (!file.exists()) {
+            return new UserSettings();
+        }
+
+        try (var fileInputStream = new FileInputStream(file);
+            var objectInputStream = new ObjectInputStream(fileInputStream)) {
+            final Object loadedObject = objectInputStream.readObject();
+            if (loadedObject instanceof UserSettings) {
+                return (UserSettings) loadedObject;
+            } else {
+                return new UserSettings();
+            }
+
+        } catch (final IOException | ClassNotFoundException e) {
+            // Error loading file or class not found, return default settings
+            AlertMonitor.errorNotify(
+                "Could not load user settings",
+                Optional.of("Using default settings. Error: " + e.getMessage())
+            );
+            return new UserSettings();
+        }
+    }
+
+    /**
+     * Saves user settings to a serialized file.
+     * If the file cannot be saved, shows an error notification.
+     *
+     * @param settingsFileName the name of the file to save settings to
+     * @param settings the UserSettings object to save
+     */
+    private void saveUserSettingsToFile(final String settingsFileName, final UserSettings settings) {
+        final String userHome = System.getProperty("user.home");
+        final String appDir = userHome + File.separator + PROJECT_DIR_NAME;
+        final File directory = new File(appDir);
+
+        // Create directory if it doesn't exist
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
+        final String filePath = appDir + File.separator + settingsFileName;
+
+        try (var fileOutputStream = new FileOutputStream(filePath);
+            var objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
+            objectOutputStream.writeObject(settings);
+            objectOutputStream.flush();
+
+        } catch (final IOException e) {
+            // Error saving file, show notification
+            AlertMonitor.errorNotify(
+                "Could not save user settings",
+                Optional.of("Settings were not saved. Error: " + e.getMessage())
+            );
+        }
     }
 
     private final class TestOBD2Dyno implements Dyno {

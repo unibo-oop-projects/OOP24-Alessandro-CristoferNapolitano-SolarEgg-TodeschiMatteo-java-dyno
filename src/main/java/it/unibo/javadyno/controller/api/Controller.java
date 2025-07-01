@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.Optional;
 
 import it.unibo.javadyno.model.data.api.DataSource;
+import it.unibo.javadyno.model.data.api.UserSettingDef;
+import it.unibo.javadyno.model.data.api.UserSettings;
 import it.unibo.javadyno.view.api.View;
 import javafx.stage.Stage;
 
@@ -64,6 +66,22 @@ public interface Controller {
      * @param explanation the explanation of the alert
      */
     void showAlert(NotificationType type, String message, Optional<String> explanation);
+
+    /**
+     * Updates the setting with the given value.
+     *
+     * @param setting the setting to update
+     * @param value the new value for the setting
+     */
+    void updateSetting(UserSettingDef setting, double value);
+
+    /**
+     * Gets the current user settings.
+     *
+     * @return the current user settings, not as a copy but as a reference 
+     *     to the original object, so changes to the settings will be reflected
+     */
+    UserSettings getUserSettings();
 
     /**
      * Exports current simulation data to a file.

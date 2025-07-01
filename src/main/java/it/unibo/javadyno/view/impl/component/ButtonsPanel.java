@@ -8,6 +8,7 @@ import it.unibo.javadyno.view.impl.EvaluatingView;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 /**
@@ -15,6 +16,8 @@ import javafx.stage.Stage;
  */
 public final class ButtonsPanel extends VBox {
 
+    private static final double MENU_WIDTH_RATIO = 0.3;
+    private static final double MENU_HEIGHT_RATIO = 0.5;
     private final Button startSimulationButton;
     private final Button stopSimulationButton;
     private final Button saveDataButton;
@@ -30,8 +33,10 @@ public final class ButtonsPanel extends VBox {
      * @param type the type of buttons to be created
      * @param dataSource the data source to be used for the simulation
      */
-    public ButtonsPanel(final Controller controller, final Stage primaryStage,
-            final LabelsType type, final DataSource dataSource) {
+    public ButtonsPanel(
+            final Controller controller, final Stage primaryStage,
+            final LabelsType type, final DataSource dataSource
+        ) {
         startSimulationButton = new Button(type.getStartButton());
         startSimulationButton.setId("start-button");
         stopSimulationButton = new Button(type.getStopButton());
@@ -60,6 +65,9 @@ public final class ButtonsPanel extends VBox {
         });
         backToMenuButton.setOnAction(e -> {
             controller.showMainMenu(primaryStage);
+            primaryStage.setWidth(Screen.getPrimary().getBounds().getWidth() * MENU_WIDTH_RATIO);
+            primaryStage.setHeight(Screen.getPrimary().getBounds().getHeight() * MENU_HEIGHT_RATIO);
+            primaryStage.centerOnScreen();
         });
         this.getChildren().addAll(startSimulationButton, backToMenuButton);
     }
@@ -113,6 +121,9 @@ public final class ButtonsPanel extends VBox {
      */
     public void reachedEnd() {
         this.getChildren().remove(stopSimulationButton);
+        this.getChildren().remove(reloadButton);
+        this.getChildren().remove(saveDataButton);
+        this.getChildren().remove(importDataButton);
         this.getChildren().addFirst(importDataButton);
         this.getChildren().addFirst(saveDataButton);
         this.getChildren().addFirst(reloadButton);

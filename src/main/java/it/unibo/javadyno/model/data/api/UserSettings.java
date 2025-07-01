@@ -1,35 +1,214 @@
 package it.unibo.javadyno.model.data.api;
 
+import java.io.Serializable;
+
 /**
- * Enum representing user settings with default values.
+ * Class representing user settings with default values.
  */
-public enum UserSettings {
-    SIMULATION_UPDATE_TIME_DELTA(100.0),
-    LOADCELL_LEVER_LENGTH(0.5),
-    VEHICLE_MASS(1500.0),
-    ROLLING_RESISTANCE_COEFFICIENT(0.012),
-    AIR_DRAG_COEFFICIENT(0.32),
-    FRONTAL_AREA(2.2),
-    AIR_DENSITY(1.225),
-    DRIVE_TRAIN_EFFICIENCY(0.85);
+public final class UserSettings implements Serializable {
 
-    private final Double defaultValue;
+    private static final long serialVersionUID = 1L;
+
+    private double simulationUpdateTimeDelta;
+    private double loadcellLeverLength;
+    private double vehicleMass;
+    private double rollingResistanceCoefficient;
+    private double airDragCoefficient;
+    private double frontalArea;
+    private double airDensity;
+    private double driveTrainEfficiency;
+    private double dynoType;
 
     /**
-     * Constructor for UserSettings enum.
-     *
-     * @param defaultValue the default value for the setting
+     * Private constructor to prevent instantiation.
      */
-    UserSettings(final Double defaultValue) {
-        this.defaultValue = defaultValue;
+    public UserSettings() {
+        simulationUpdateTimeDelta = UserSettingDef.SIMULATION_UPDATE_TIME_DELTA.getDefaultValue();
+        loadcellLeverLength = UserSettingDef.LOADCELL_LEVER_LENGTH.getDefaultValue();
+        vehicleMass = UserSettingDef.VEHICLE_MASS.getDefaultValue();
+        rollingResistanceCoefficient = UserSettingDef.ROLLING_RESISTANCE_COEFFICIENT.getDefaultValue();
+        airDragCoefficient = UserSettingDef.AIR_DRAG_COEFFICIENT.getDefaultValue();
+        frontalArea = UserSettingDef.FRONTAL_AREA.getDefaultValue();
+        airDensity = UserSettingDef.AIR_DENSITY.getDefaultValue();
+        driveTrainEfficiency = UserSettingDef.DRIVE_TRAIN_EFFICIENCY.getDefaultValue();
+        dynoType = UserSettingDef.DYNO_TYPE.getDefaultValue();
     }
 
     /**
-     * Retrieves the default value of the setting.
+     * Gets the simulation update time delta.
      *
-     * @return the default value
+     * @return the simulation update time delta in milliseconds
      */
-    public Double getDefaultValue() {
-        return this.defaultValue;
+    public double getSimulationUpdateTimeDelta() {
+        return simulationUpdateTimeDelta;
     }
+
+    /**
+     * Gets the loadcell lever length.
+     *
+     * @return the loadcell lever length in meters
+     */
+    public double getLoadcellLeverLength() {
+        return loadcellLeverLength;
+    }
+
+    /**
+     * Gets the vehicle mass.
+     *
+     * @return the vehicle mass in kilograms
+     */
+    public double getVehicleMass() {
+        return vehicleMass;
+    }
+
+    /**
+     * Gets the rolling resistance coefficient.
+     *
+     * @return the rolling resistance coefficient
+     */
+    public double getRollingResistanceCoefficient() {
+        return rollingResistanceCoefficient;
+    }
+
+    /**
+     * Gets the air drag coefficient.
+     *
+     * @return the air drag coefficient
+     */
+    public double getAirDragCoefficient() {
+        return airDragCoefficient;
+    }
+
+    /**
+     * Gets the frontal area.
+     *
+     * @return the frontal area in square meters
+     */
+    public double getFrontalArea() {
+        return frontalArea;
+    }
+
+    /**
+     * Gets the air density.
+     *
+     * @return the air density in kg/m³
+     */
+    public double getAirDensity() {
+        return airDensity;
+    }
+
+    /**
+     * Gets the drive train efficiency.
+     *
+     * @return the drive train efficiency as a decimal (0 - 1.0)
+     */
+    public double getDriveTrainEfficiency() {
+        return driveTrainEfficiency;
+    }
+
+    /**
+     * Gets the dyno type.
+     *
+     * @return the dyno type
+     */
+    public DataSource getDynoType() {
+        return DataSource.values()[(int) dynoType];
+    }
+
+    /**
+     * Sets the simulation update time delta.
+     *
+     * @param simulationUpdateTimeDelta the simulation update time delta in milliseconds
+     */
+    public void setSimulationUpdateTimeDelta(final double simulationUpdateTimeDelta) {
+        this.simulationUpdateTimeDelta = simulationUpdateTimeDelta;
+    }
+
+    /**
+     * Sets the loadcell lever length.
+     *
+     * @param loadcellLeverLength the loadcell lever length in meters
+     */
+    public void setLoadcellLeverLength(final double loadcellLeverLength) {
+        this.loadcellLeverLength = loadcellLeverLength;
+    }
+
+    /**
+     * Sets the vehicle mass.
+     *
+     * @param vehicleMass the vehicle mass in kilograms
+     */
+    public void setVehicleMass(final double vehicleMass) {
+        this.vehicleMass = vehicleMass;
+    }
+
+    /**
+     * Sets the rolling resistance coefficient.
+     *
+     * @param rollingResistanceCoefficient the rolling resistance coefficient
+     */
+    public void setRollingResistanceCoefficient(final double rollingResistanceCoefficient) {
+        this.rollingResistanceCoefficient = rollingResistanceCoefficient;
+    }
+
+    /**
+     * Sets the air drag coefficient.
+     *
+     * @param airDragCoefficient the air drag coefficient
+     */
+    public void setAirDragCoefficient(final double airDragCoefficient) {
+        this.airDragCoefficient = airDragCoefficient;
+    }
+
+    /**
+     * Sets the frontal area.
+     *
+     * @param frontalArea the frontal area in square meters
+     */
+    public void setFrontalArea(final double frontalArea) {
+        this.frontalArea = frontalArea;
+    }
+
+    /**
+     * Sets the air density.
+     *
+     * @param airDensity the air density in kg/m³
+     */
+    public void setAirDensity(final double airDensity) {
+        this.airDensity = airDensity;
+    }
+
+    /**
+     * Sets the drive train efficiency.
+     *
+     * @param driveTrainEfficiency the drive train efficiency as a decimal (0-1)
+     */
+    public void setDriveTrainEfficiency(final double driveTrainEfficiency) {
+        this.driveTrainEfficiency = driveTrainEfficiency;
+    }
+
+    /**
+     * Sets the dyno type.
+     *
+     * @param dynoType the dyno type
+     */
+    public void setDynoType(final double dynoType) {
+        this.dynoType = dynoType;
+    }
+
+    /**
+     * Resets all settings to their default values.
+     */
+    public void resetToDefaults() {
+        simulationUpdateTimeDelta = UserSettingDef.SIMULATION_UPDATE_TIME_DELTA.getDefaultValue();
+        loadcellLeverLength = UserSettingDef.LOADCELL_LEVER_LENGTH.getDefaultValue();
+        vehicleMass = UserSettingDef.VEHICLE_MASS.getDefaultValue();
+        rollingResistanceCoefficient = UserSettingDef.ROLLING_RESISTANCE_COEFFICIENT.getDefaultValue();
+        airDragCoefficient = UserSettingDef.AIR_DRAG_COEFFICIENT.getDefaultValue();
+        frontalArea = UserSettingDef.FRONTAL_AREA.getDefaultValue();
+        airDensity = UserSettingDef.AIR_DENSITY.getDefaultValue();
+        driveTrainEfficiency = UserSettingDef.DRIVE_TRAIN_EFFICIENCY.getDefaultValue();
+        dynoType = UserSettingDef.DYNO_TYPE.getDefaultValue();
+    }
+
 }
