@@ -78,7 +78,6 @@ public class RigidDriveTrainSim implements DriveTrain {
 
     /**
      * {@inheritDoc}
-     * //TODO : creation of a clutch component to synchronize engine and wheel speed
      */
     @Override
     public void shiftDown() {
@@ -94,7 +93,6 @@ public class RigidDriveTrainSim implements DriveTrain {
 
     /**
      * {@inheritDoc}
-     * //TODO : creation of a clutch component to synchronize engine and wheel speed
      */
     @Override
     public void shiftUp() {
