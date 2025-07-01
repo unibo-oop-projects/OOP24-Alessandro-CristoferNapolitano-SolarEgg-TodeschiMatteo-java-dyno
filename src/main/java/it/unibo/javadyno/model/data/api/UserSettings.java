@@ -19,6 +19,7 @@ public final class UserSettings implements Serializable {
     private double driveTrainEfficiency;
     private double dynoType;
 
+    private double maxRpmSimulation;
     private double baseTorque;
     private double torquePerRad;
     private double engineInertia;
@@ -44,6 +45,7 @@ public final class UserSettings implements Serializable {
         driveTrainEfficiency = UserSettingDef.DRIVE_TRAIN_EFFICIENCY.getDefaultValue();
         dynoType = UserSettingDef.DYNO_TYPE.getDefaultValue();
 
+        maxRpmSimulation = UserSettingDef.MAX_RPM_SIMULATION.getDefaultValue();
         baseTorque = UserSettingDef.BASE_TORQUE.getDefaultValue();
         torquePerRad = UserSettingDef.TORQUE_PER_RAD.getDefaultValue();
         engineInertia = UserSettingDef.ENGINE_INERTIA.getDefaultValue();
@@ -213,6 +215,24 @@ public final class UserSettings implements Serializable {
      */
     public void setDynoType(final double dynoType) {
         this.dynoType = dynoType;
+    }
+
+    /**
+     * Maximum RPM for simulation purposes.
+     *
+     * @return the maximum RPM for simulation
+     */
+    public double getMaxRpmSimulation() {
+        return maxRpmSimulation;
+    }
+
+    /**
+     * Sets the maximum RPM for simulation purposes.
+     *
+     * @param maxRpmSimulation
+     */
+    public void setMaxRpmSimulation(final double maxRpmSimulation) {
+        this.maxRpmSimulation = maxRpmSimulation;
     }
 
     /**
@@ -411,7 +431,7 @@ public final class UserSettings implements Serializable {
         copy.airDensity = this.airDensity;
         copy.driveTrainEfficiency = this.driveTrainEfficiency;
         copy.dynoType = this.dynoType;
-
+        copy.maxRpmSimulation = this.maxRpmSimulation;
         copy.baseTorque = this.baseTorque;
         copy.torquePerRad = this.torquePerRad;
         copy.engineInertia = this.engineInertia;
@@ -438,7 +458,7 @@ public final class UserSettings implements Serializable {
         airDensity = UserSettingDef.AIR_DENSITY.getDefaultValue();
         driveTrainEfficiency = UserSettingDef.DRIVE_TRAIN_EFFICIENCY.getDefaultValue();
         dynoType = UserSettingDef.DYNO_TYPE.getDefaultValue();
-
+        maxRpmSimulation = UserSettingDef.MAX_RPM_SIMULATION.getDefaultValue();
         baseTorque = UserSettingDef.BASE_TORQUE.getDefaultValue();
         torquePerRad = UserSettingDef.TORQUE_PER_RAD.getDefaultValue();
         engineInertia = UserSettingDef.ENGINE_INERTIA.getDefaultValue();

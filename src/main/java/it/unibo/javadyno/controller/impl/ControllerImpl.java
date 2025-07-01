@@ -26,6 +26,7 @@ import it.unibo.javadyno.model.data.impl.DataCollectorImpl;
 import it.unibo.javadyno.model.dyno.api.Dyno;
 import it.unibo.javadyno.model.dyno.obd2.impl.OBD2Dyno;
 import it.unibo.javadyno.model.dyno.real.impl.RealDynoImpl;
+import it.unibo.javadyno.model.dyno.simulated.impl.SimulatedDynoImpl;
 import it.unibo.javadyno.model.filemanager.api.FileManager;
 import it.unibo.javadyno.model.filemanager.api.FileStrategyFactory;
 import it.unibo.javadyno.model.filemanager.impl.FileManagerImpl;
@@ -118,7 +119,7 @@ public final class ControllerImpl implements Controller {
     public void startEvaluation(final DataSource dynoType) {
         if (!Objects.nonNull(this.dyno) || !this.dyno.getDynoType().equals(dynoType)) {
             switch (dynoType) {
-                case SIMULATED_DYNO -> this.dyno = new TestOBD2Dyno(); // TODO replace with simulation
+                case SIMULATED_DYNO -> this.dyno = new SimulatedDynoImpl(this); // TODO replace with simulation
                 case OBD2 -> this.dyno = new OBD2Dyno();
                 case REAL_DYNO -> this.dyno = new RealDynoImpl(new JsonWebSocketCommunicator());
             }
@@ -334,6 +335,7 @@ public final class ControllerImpl implements Controller {
             case AIR_TEMPERATURE -> this.userSettings.setAirTemperature(value);
             case AIR_PRESSURE -> this.userSettings.setAirPressure(value);
             case AIR_HUMIDITY -> this.userSettings.setAirHumidity(value);
+            case MAX_RPM_SIMULATION -> this.userSettings.setMaxRpmSimulation(value);
         }
         saveUserSettingsToFile(SETTINGS_FILE_NAME, this.userSettings);
     }

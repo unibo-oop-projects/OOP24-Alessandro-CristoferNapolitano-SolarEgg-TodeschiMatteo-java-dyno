@@ -96,7 +96,9 @@ public class SimulatedDynoImpl implements SimulatedDyno {
      */
     @Override
     public void run() {
-        while (this.running) {
+        while ( this.running && Objects.nonNull(this.datas) &&
+                this.datas.engineRPM().get() < controller.getUserSettings().getMaxRpmSimulation()
+            ) {
             this.datas = vehicle.getRawData();
             try {
                 Thread.sleep(this.updateTimeDelta);
@@ -104,6 +106,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
                 this.end();
             }
         }
+        this.end();
     }
 
     /**
