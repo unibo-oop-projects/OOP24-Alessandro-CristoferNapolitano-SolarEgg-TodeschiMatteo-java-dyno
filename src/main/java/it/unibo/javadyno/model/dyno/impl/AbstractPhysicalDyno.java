@@ -92,9 +92,12 @@ public abstract class AbstractPhysicalDyno<T> implements Dyno, Runnable {
     @Override
     public void run() {
         while (this.isActive()) {
+            if (!this.communicator.isConnected()) {
+                this.end();
+            }
             final String outgoingMessage = this.getOutgoingMessage();
             Objects.requireNonNull(outgoingMessage, "Outgoing message cannot be null");
-            if (!outgoingMessage.isBlank() && this.communicator.isConnected()) {
+            if (!outgoingMessage.isBlank()) {
                 this.communicator.send(outgoingMessage);
             }
 
