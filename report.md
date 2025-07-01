@@ -391,6 +391,7 @@ Per risolvere il problema si è scelto di creare un interfaccia intemedia tra `D
 classDiagram
     class AlertMonitor {
         <<utility>>
+        +setController(Controller)
         +showError(String)
         +showWarning(String)
         +showInfo(String)
@@ -398,21 +399,22 @@ classDiagram
 
     class AlertType {
         <<enumeration>>
-        +ERROR
+        +INFORMATION
         +WARNING
-        +INFO
+        +ERROR
     }
 
     class Object {
     }
 
     class AlertDisplayer{
-        <<interface>>
-        +showAlert(AlertType, String)
+        <<utility>>
+        +showAlert(AlertType, String, Optional~String~)
     }
 
     class Controller {
-        +showAlert(AlertType, String)
+        <<interface>>
+        +showAlert(AlertType, String, Optional~String~)
     }
 
     Object ..> AlertMonitor : use
@@ -427,13 +429,29 @@ Gestire gli errori in modo centralizzato e fornire un feedback all'utente senza 
 
 **Soluzione:**
 Per risolvere il problema si è scelto di implementare un monitor dedicato (`AlertMonitor`) implementato come utility statica.
-Ad essa viene abbinato un `Controller` che si occupa di instradare correttamente gli errori ad un componente della view che si occupa di visualizzarli (`AlertDIsplayer`).
+Ad essa viene abbinato un `Controller` che si occupa di instradare correttamente gli errori ad un componente della view che si occupa di visualizzarli (`AlertDisplayer`).
 I messaggi di errore hanno diverse priorità e vengono gestiti attraverso un enumerativo `AlertType` che permette di distinguere tra errori, avvisi e informazioni. In questo modo, l'utente può essere informato in modo chiaro e preciso senza bloccare l'applicazione.
 
 
 #### Riutilizzo dei componenti della view
 ```mermaid
-UML TODO
+classDiagram
+    class View {
+        <<interface>>
+        +update(ElaboratedData)
+        +update(List~ElaboratedData~)
+        +begin(Stage)
+    }
+
+    class EvaluationView {
+        +update(ElaboratedData)
+        +update(List~ElaboratedData~)
+        +begin(Stage)
+    }
+
+    class ButtosPanel
+
+    View <|-- EvaluationView
 ```
 
 **Problema:** TODO.
