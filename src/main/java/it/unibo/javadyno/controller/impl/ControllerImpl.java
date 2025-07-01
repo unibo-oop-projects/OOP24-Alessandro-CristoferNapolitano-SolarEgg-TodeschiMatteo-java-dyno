@@ -119,7 +119,7 @@ public final class ControllerImpl implements Controller {
             switch (dynoType) {
                 case SIMULATED_DYNO -> this.dyno = new TestRealDyno(); // TODO replace with simulation
                 case OBD2 -> this.dyno = new OBD2Dyno();
-                case REAL_DYNO -> this.dyno = new RealDynoImpl(new JsonWebSocketCommunicator()); // Using test implementation for simulation
+                case REAL_DYNO -> this.dyno = new RealDynoImpl(new JsonWebSocketCommunicator());
             }
         }
         if (!this.dyno.isActive()) {
@@ -484,14 +484,14 @@ public final class ControllerImpl implements Controller {
                 }
             }
 
-            final double rpmRatio = (double) newRpm / TORQUE_PEAK_RPM;
+            final double rpmRatio = newRpm / TORQUE_PEAK_RPM;
             final double baseTorque;
             if (rpmRatio <= 1.0) {
                 baseTorque = INITIAL_TORQUE + (MAX_TORQUE - INITIAL_TORQUE) * Math.sin(rpmRatio * Math.PI / 2);
             } else {
                 baseTorque = MAX_TORQUE * Math.cos((rpmRatio - 1.0) * Math.PI / 4);
             }
-            
+
             final double torqueVariation = (rand.nextDouble() - 0.5) * TORQUE_VARIATION;
             final Double newTorque = Math.max(10.0, baseTorque + torqueVariation);
 

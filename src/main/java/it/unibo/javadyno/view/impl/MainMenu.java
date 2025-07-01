@@ -65,7 +65,8 @@ public class MainMenu extends Application implements View {
             primaryStage.centerOnScreen();
         });
         realDynoButton.setOnAction(e -> {
-            controller.showView(primaryStage, new EvaluatingView(controller, LabelsType.REAL, controller.getUserSettings().getDynoType()));
+            controller.showView(primaryStage,
+                new EvaluatingView(controller, LabelsType.REAL, controller.getUserSettings().getDynoType()));
             primaryStage.setWidth(Screen.getPrimary().getBounds().getWidth() * EvaluatingView.EVALUATING_RATIO);
             primaryStage.setHeight(Screen.getPrimary().getBounds().getHeight() * EvaluatingView.EVALUATING_RATIO);
             primaryStage.centerOnScreen();
