@@ -132,7 +132,7 @@ public abstract class AbstractPhysicalDyno<T> implements Dyno, Runnable {
      */
     protected abstract String getThreadName();
 
-    private void listenForError(T message) {
+    private void listenForError(final T message) {
         if (Objects.isNull(message)) {
             this.end();
             return;

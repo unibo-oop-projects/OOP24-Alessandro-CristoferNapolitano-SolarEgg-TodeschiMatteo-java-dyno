@@ -3,12 +3,8 @@ package it.unibo.javadyno.model.data.communicator.impl;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONStringer;
-import org.json.JSONWriter;
-
 import it.unibo.javadyno.controller.impl.AlertMonitor;
 import it.unibo.javadyno.model.data.communicator.api.JsonScheme;
 import javafx.util.Pair;
