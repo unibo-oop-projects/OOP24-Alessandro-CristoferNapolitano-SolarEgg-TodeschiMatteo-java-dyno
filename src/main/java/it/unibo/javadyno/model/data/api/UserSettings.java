@@ -354,6 +354,7 @@ public final class UserSettings implements Serializable {
         copy.airDensity = this.airDensity;
         copy.driveTrainEfficiency = this.driveTrainEfficiency;
         copy.dynoType = this.dynoType;
+
         copy.baseTorque = this.baseTorque;
         copy.torquePerRad = this.torquePerRad;
         copy.engineInertia = this.engineInertia;
@@ -377,6 +378,13 @@ public final class UserSettings implements Serializable {
         airDensity = UserSettingDef.AIR_DENSITY.getDefaultValue();
         driveTrainEfficiency = UserSettingDef.DRIVE_TRAIN_EFFICIENCY.getDefaultValue();
         dynoType = UserSettingDef.DYNO_TYPE.getDefaultValue();
-    }
 
+        baseTorque = UserSettingDef.BASE_TORQUE.getDefaultValue();
+        torquePerRad = UserSettingDef.TORQUE_PER_RAD.getDefaultValue();
+        engineInertia = UserSettingDef.ENGINE_INERTIA.getDefaultValue();
+        gearRatios = new double[]{UserSettingDef.GEAR_RATIOS.getDefaultValue()};
+        wheelMass = UserSettingDef.WHEEL_MASS.getDefaultValue();
+        wheelRadius = UserSettingDef.WHEEL_RADIUS.getDefaultValue();
+        rollingCoeff = UserSettingDef.ROLLING_COEFF.getDefaultValue();
+    }
 }
