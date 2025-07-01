@@ -354,6 +354,13 @@ public final class UserSettings implements Serializable {
         copy.airDensity = this.airDensity;
         copy.driveTrainEfficiency = this.driveTrainEfficiency;
         copy.dynoType = this.dynoType;
+        copy.baseTorque = this.baseTorque;
+        copy.torquePerRad = this.torquePerRad;
+        copy.engineInertia = this.engineInertia;
+        copy.gearRatios = this.gearRatios.clone();
+        copy.wheelMass = this.wheelMass;
+        copy.wheelRadius = this.wheelRadius;
+        copy.rollingCoeff = this.rollingCoeff;
         return copy;
     }
 
