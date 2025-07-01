@@ -412,14 +412,12 @@ public final class ControllerImpl implements Controller {
         final File directory = new File(appDir);
 
         // Create directory if it doesn't exist
-        if (!directory.exists()) {
-            if (!directory.mkdirs()) {
-                AlertMonitor.errorNotify(
-                    "Could not create application directory",
-                    Optional.of("Failed to create directory: " + appDir)
-                );
-                return;
-            }
+        if (!directory.exists() && !directory.mkdirs()) {
+            AlertMonitor.errorNotify(
+                "Could not create application directory",
+                Optional.of("Failed to create directory: " + appDir)
+            );
+            return;
         }
 
         final String filePath = appDir + File.separator + settingsFileName;
