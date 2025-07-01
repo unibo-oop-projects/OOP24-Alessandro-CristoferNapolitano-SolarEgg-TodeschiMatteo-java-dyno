@@ -262,7 +262,7 @@ public final class UserSettings implements Serializable {
      *
      * @param engineInertia the engine inertia
      */
-    public void setEngineInertia(double engineInertia) {
+    public void setEngineInertia(final double engineInertia) {
         this.engineInertia = engineInertia;
     }
 
@@ -272,16 +272,16 @@ public final class UserSettings implements Serializable {
      * @return an array of gear ratios
      */
     public double[] getGearRatios() {
-        return gearRatios;
+        return gearRatios.clone();
     }
 
     /**
      * Sets the gear ratios of the vehicle.
      *
-     * @param gearRatios
+     * @param gearRatios an array of gear ratios
      */
-    public void setGearRatios(double[] gearRatios) {
-        this.gearRatios = gearRatios;
+    public void setGearRatios(final double[] gearRatios) {
+        this.gearRatios = gearRatios.clone();
     }
 
     /**
@@ -298,7 +298,7 @@ public final class UserSettings implements Serializable {
      *
      * @param wheelMass the mass of the wheels
      */
-    public void setWheelMass(double wheelMass) {
+    public void setWheelMass(final double wheelMass) {
         this.wheelMass = wheelMass;
     }
 
@@ -316,7 +316,7 @@ public final class UserSettings implements Serializable {
      *
      * @param wheelRadius the radius of the wheels
      */
-    public void setWheelRadius(double wheelRadius) {
+    public void setWheelRadius(final double wheelRadius) {
         this.wheelRadius = wheelRadius;
     }
 
@@ -334,7 +334,7 @@ public final class UserSettings implements Serializable {
      *
      * @param rollingCoeff the rolling coefficient
      */
-    public void setRollingCoeff(double rollingCoeff) {
+    public void setRollingCoeff(final double rollingCoeff) {
         this.rollingCoeff = rollingCoeff;
     }
 

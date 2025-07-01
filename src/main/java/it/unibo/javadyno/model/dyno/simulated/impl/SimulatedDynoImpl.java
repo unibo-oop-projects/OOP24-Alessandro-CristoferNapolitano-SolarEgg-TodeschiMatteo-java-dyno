@@ -2,7 +2,6 @@ package it.unibo.javadyno.model.dyno.simulated.impl;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.time.Instant;
 
 import it.unibo.javadyno.controller.api.Controller;
 import it.unibo.javadyno.controller.impl.AlertMonitor;
@@ -34,8 +33,10 @@ public class SimulatedDynoImpl implements SimulatedDyno {
 
     /**
      * Constructor.
+     *
+     * @param controller the controller that will be used to retrieve user settings
      */
-    public SimulatedDynoImpl(Controller controller) {
+    public SimulatedDynoImpl(final Controller controller) {
         this.controller = controller;
         this.running = false;
         this.simulationThread = null;

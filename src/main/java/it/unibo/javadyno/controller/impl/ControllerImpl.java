@@ -331,10 +331,6 @@ public final class ControllerImpl implements Controller {
             case WHEEL_MASS -> this.userSettings.setWheelMass(value);
             case WHEEL_RADIUS -> this.userSettings.setWheelRadius(value);
             case ROLLING_COEFF -> this.userSettings.setRollingCoeff(value);
-            default -> AlertMonitor.errorNotify(
-                "Unknown setting",
-                Optional.of("The setting " + setting + " is not recognized.")
-            );
         }
         saveUserSettingsToFile(SETTINGS_FILE_NAME, this.userSettings);
     }
