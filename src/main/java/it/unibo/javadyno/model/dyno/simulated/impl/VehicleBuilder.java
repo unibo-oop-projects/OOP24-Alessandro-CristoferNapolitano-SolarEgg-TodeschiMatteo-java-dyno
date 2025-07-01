@@ -30,11 +30,11 @@ public final class VehicleBuilder {
     private double[] gearRatio;
     // --- thermal model parameters (with defaults) ---
     /** ambient start temperature for the thermal model [°C]. */
-    private double ambientStart = 20;
+    private double ambientStart;
     /** thermal capacity [J/°C]. */
-    private double thermalCapacity = 100000;
+    private double thermalCapacity;
     /** cooling coefficient [W/°C]. */
-    private double coolingCoeff = 500;
+    private double coolingCoeff;
     /** custom temperature model, if injected. */
     private TemperatureModel temperatureModel;
     // --- wheel parameters ---
