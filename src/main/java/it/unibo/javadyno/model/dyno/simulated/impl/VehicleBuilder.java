@@ -31,8 +31,8 @@ public final class VehicleBuilder {
     // --- thermal model parameters (with defaults) ---
     /** target temperature [°C]. */
     private double targetTemperature;
-    /** time constant [s]. */
-    private double timeCostant;
+    /** time coeff [s]. */
+    private double targetTimeTemperatureCoeff;
     /** custom temperature model, if injected. */
     private TemperatureModel temperatureModel;
     // --- wheel parameters ---
@@ -169,13 +169,13 @@ public final class VehicleBuilder {
     /**
      * VehicleBuilder with temperature model for the engine, params injected.
      *
-     * @param targetTemperature target temperture [°C]
-     * @param timeCostant time constant [s]
+     * @param targetTemp target temperture [°C]
+     * @param timeCoeff time coeff to extimate target temp arrival [s]
      * @return VehicleBuilder
      */
-    public VehicleBuilder withThermalParams(final double targettemperature, final double timecostant) {
-        this.targetTemperature = targettemperature;
-        this.timeCostant = timecostant;
+    public VehicleBuilder withThermalParams(final double targetTemp, final double timeCoeff) {
+        this.targetTemperature = targetTemp;
+        this.targetTimeTemperatureCoeff = timeCoeff;
         return this;
     }
 
@@ -208,7 +208,7 @@ public final class VehicleBuilder {
         //if no custom TemperatureModel
         TemperatureModel tm = this.temperatureModel;
         if (tm == null) {
-            tm = new TargetTemperatureModel(weatherStation.getTemperature(), targetTemperature, timeCostant);
+            tm = new TargetTemperatureModel(weatherStation.getTemperature(), targetTemperature, targetTimeTemperatureCoeff);
         }
 
         //computing the inertia of the power train
