@@ -30,6 +30,8 @@ public final class UserSettings implements Serializable {
     private double airTemperature;
     private double airPressure;
     private double airHumidity;
+    private double targetTemperature;
+    private double targeTimeTemperatureCoeff;
 
     /**
      * Private constructor to prevent instantiation.
@@ -229,7 +231,7 @@ public final class UserSettings implements Serializable {
     /**
      * Sets the maximum RPM for simulation purposes.
      *
-     * @param maxRpmSimulation
+     * @param maxRpmSimulation max rpm wich the simulation can have
      */
     public void setMaxRpmSimulation(final double maxRpmSimulation) {
         this.maxRpmSimulation = maxRpmSimulation;
@@ -386,6 +388,24 @@ public final class UserSettings implements Serializable {
      */
     public double getAirPressure() {
         return airPressure;
+    }
+
+    /**
+     * get target time temperature coefficient of TemperatureModel.
+     *
+     * @return target time temperature coefficient 
+     */
+    public double getTargeTimeTemperatureCoeff() {
+        return targeTimeTemperatureCoeff;
+    }
+
+    /**
+     * get target temperature of TemperatureModel.
+     *
+     * @return target temperature
+     */
+    public double getTargetTemperature() {
+        return targetTemperature;
     }
 
     /**
