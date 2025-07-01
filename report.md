@@ -384,7 +384,7 @@ classDiagram
 Far si che ogni implementazione di `SimulatedDyno` possa essere eseguita in modo concorrente, permettendo in primis di generare dati e aggiornarsi molto più velocemente rispetto alla frequenza di aggiornamento dell'appplicazione e dando inoltre all'utente la possibilità di interagire con l'applicazione senza blocchi o rallentamenti.
 
 **Soluzione:**
-Per risolvere il problema si è scelto di creare un interfaccia intemedia tra `Dyno` e `SimulatedDyno` che implementa l'interfaccia `Runnable`. In questo modo ogni implementazione di `SimulatedDyno` deve essere eseguita in un thread separato, permettendo di generare i dati in modo asincrono. La classe `SimulatedDynoImpl` implementa questa logica, gestendo la generazione dei dati e l'aggiornamento dello stato in modo concorrente.
+Per risolvere il problema si è scelto di creare un interfaccia intermedia tra `Dyno` e `SimulatedDyno` che implementa l'interfaccia `Runnable`. In questo modo ogni implementazione di `SimulatedDyno` deve essere eseguita in un thread separato, permettendo di generare i dati in modo asincrono. La classe `SimulatedDynoImpl` implementa questa logica, gestendo la generazione dei dati e l'aggiornamento dello stato in modo concorrente.
 
 #### Gestione degli errori con Monitor dedicato 
 ```mermaid
@@ -413,11 +413,75 @@ UML TODO
 
 **Soluzione:** TODO. 
 
-### 2.2.3 Surname Name
-#### Subject
+### 2.2.3 Crimaldi Ivan
+#### Salvataggio e Caricamento dati da File
 ```mermaid
-UML TODO
+classDiagram
+    direction LR
+    
+    class FileManagerImpl {
+        +setStrategy(strategy)
+        +exportDataToFile(data, file)
+        +importDataFromFile(file)
+    }
+
+    class FileStrategy {
+        <<interface>>
+        +exportData(data, file)
+        +importData(file)
+    }
+
+    class CsvStrategy {
+        ...
+    }
+
+    class JsonStrategy {
+        ...
+    }
+
+    FileManagerImpl ..> FileStrategy : uses
+    FileStrategy <|.. CsvStrategy : implements
+    FileStrategy <|.. JsonStrategy : implements
 ```
+**Problema:**
+L'applicazione deve essere in grado di salvare i dati generati dalla prova, e di poter caricare i dati generati da prove precedenti. Inoltre, l'applicazione deve essere in grado di supportare diversi formati di file, con la possibilità di aggiungere nuovi formati supportati nel futuro.
+
+**Soluzione:**
+Per risolvere il problema, ho utilizzato il design pattern **Strategy**, così da separare la logica di gestione dei file dalla logica specifica di ogni formato. 
+`FileStrategy` definisce il contratto comune per tutte le strategie, che si specializzano nel gestire un solo formato, come `CsvStrategy` e `JsonStrategy`.
+`FileManager` è il Context per la Strategy, delegando alla strategia corrente l'esecuzione delle operazioni.
+
+```mermaid
+classDiagram
+    direction LR
+
+    class FileStrategyFactoryImpl {
+        +createStrategyFor(file): Optional~FileStrategy~
+    }
+
+    class FileStrategyFactory {
+        <<interface>>
+        +createStrategyFor(file): Optional~FileStrategy~
+    }
+    
+    class CsvStrategy {
+        ...
+    }
+
+    class JsonStrategy {
+        ...
+    }
+
+    FileStrategyFactory <|.. FileStrategyFactoryImpl : implements
+    FileStrategyFactoryImpl ..> CsvStrategy : creates
+    FileStrategyFactoryImpl ..> JsonStrategy : creates
+```
+
+**Problema:**
+Con l'introduzione di più Strategie, il client (Controller) deve contenere la logica condizionale su quale strategia creare in base all'estensione del file.
+
+**Soluzione:**
+Per risolvere il problema, ho utilizzato  il pattern **Factory**: `FileStrategyFactory` definisce un metodo per creare la strategia appropriata, e `FileStrategyFactoryImpl` la implementa, scegliendo la strategia (oggetto `FileStrategy`) in base all'estensione del file. Sarà quindi l'unica componente del Model da cambiare qualora si volesse aggiungere un nuovo  tipo di file
 
 # Capitolo 3 - Sviluppo
 ## 3.1 Testing automatizzato
