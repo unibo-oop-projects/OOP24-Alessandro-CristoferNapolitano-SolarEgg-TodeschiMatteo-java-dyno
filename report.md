@@ -456,20 +456,21 @@ TODO
 
 # Capitolo 4 - Commenti finali
 ## 4.1 Autovalutazione e lavori futuri
-### Surname Name
+### 4.1.1 Porcheddu Alessandro
+Nonostante le difficoltà iniziali mi ritengo molto soddisfatto del progetto, in quanto sono contento di aver lavorato su un _proof-of-concept_ orientato verso l'utilizzo nel mondo reale. Sono altrettanto contento di essere riuscivo a scrivere codice e migliorarlo iterativamente ogni volta che pensavo di riuscire ad astrarre meglio alcuni concetti, anche se riconosco di aver tralasciato alcune parti secondarie per questioni di tempo. In particolare, non mi sarei dovuto far spavantare dall'idea di mettermi troppo presto a scrivere codice e non mi sarei dovuto fossilizzare troppo sull'analisi progettuale. Ritengo quest'ultima molto importante ma riconosco anche che il coordinamento di gruppo sull'analisi di un dominio non molto documentato è risultata molto lenta e macchinosa. Per quanto riguarda il mio ruolo nel progetto sono molto soddisfatto di essermi messo spesso in prima fila per aiutare i colleghi e, poichè il dominio del progetto era stato proposto da me, mi ritenevo anche in parte responsabile qualora sorgesse un dubbio. Inoltre sono anche particolarmente fiero di aver iniziato ad usare diversi strumenti accessori come _GitHub workflows_, estensioni per _VSCode_ (in particolare averne creata una ad-hoc per i report di _Gradle_) e macchine virtuali in locale per testare l'applicativo su diversi sistemi operativi. Aggiungo infine che sono molto propenso a continuare lo sviluppo di questo software per provare a fornire un'alternativa gratuita ed _open source_ a quelli attualmente in utilizzo nel panorama automobilistico, soprattuto amatoriale.
+
+### 4.1.2 Surname Name
 TODO
 
-### Surname Name
+### 4.1.3 Surname Name
 TODO
 
-### Surname Name
-TODO
-
-### Surname Name
+### 4.1.4 Surname Name
 TODO
 
 ## 4.2 Difficoltà incontrate e commenti per i docenti
-TODO
+### 4.2.1 Porcheddu Alessandro
+Le difficoltà iniziali accennate nel paragrafo precedente fanno riferimento al non aver mai svolto un lavoro di gruppo prima d'ora, il che ha portato a una mia sottovalutazione della necessità di organizzarsi fin da subito in maniera efficace. Ho personalmente riscontrato anche difficoltà soprattutto nella parte iniziale di analisi, per la quale mi sembrava di avere pochi strumenti a mia disposizione. In particolare sarebbe stato utile aver avuto maggiore esposizione a sviluppare concetti _UML_ con una struttura guidata. Non nascondo, infatti, che la maggior difficoltà è stata mettersi a scrivere codice con ancora qualche dubbio sull'analisi e il design di alto livello. A questo proposito suggerirei ai docenti di fornine qualche tipo di strumento (anche magari una semplice _check list_) che permetta agli studenti di aver dei parametri oggettivi su cui basarsi per capire quando poter passare all'implementazione con un grado di confidenza mediamente alto.
 
 # Appendice A - Guida utente
 TODO
