@@ -103,6 +103,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
         while ( this.running && Objects.nonNull(this.datas) &&
                 this.datas.engineRPM().get() < controller.getUserSettings().getMaxRpmSimulation()
             ) {
+            this.vehicle.update(0.1);
             this.datas = vehicle.getRawData();
             try {
                 Thread.sleep(this.updateTimeDelta);
