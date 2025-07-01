@@ -10,7 +10,7 @@ import javafx.scene.control.Alert.AlertType;
 /**
  * Utility class to display alerts in the JavaFX application.
  */
-public class AlertDisplayer {
+public final class AlertDisplayer {
     /**
      * Private constructor to prevent instantiation.
      */
