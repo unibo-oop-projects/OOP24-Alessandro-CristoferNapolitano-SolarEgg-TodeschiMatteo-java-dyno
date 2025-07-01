@@ -22,8 +22,6 @@ public class SimulatedDynoImpl implements SimulatedDyno {
     private long updateTimeDelta;
     private Thread simulationThread;
     private Vehicle vehicle;
-    private BrakeTorqueProvider bench;
-    private WeatherStation weatherStation;
     private volatile boolean running;
     private volatile RawData datas;
 
@@ -37,8 +35,6 @@ public class SimulatedDynoImpl implements SimulatedDyno {
         this.running = false;
         this.simulationThread = null;
         this.vehicle = null;
-        this.bench = null;
-        this.weatherStation = null;
         this.datas = null;
     }
 
@@ -50,8 +46,8 @@ public class SimulatedDynoImpl implements SimulatedDyno {
         if (!running) {
             this.updateTimeDelta = (long) controller.getUserSettings().getSimulationUpdateTimeDelta();
             this.running = true;
-            this.bench = new BenchBrakeTorqueHolder();
-            this.weatherStation = new WeatherStationImpl(
+            final BrakeTorqueProvider bench = new BenchBrakeTorqueHolder();
+            final WeatherStation weatherStation = new WeatherStationImpl(
                 controller.getUserSettings().getAirTemperature(),
                 (int) controller.getUserSettings().getAirPressure(),
                 (int) controller.getUserSettings().getAirHumidity()
@@ -64,8 +60,8 @@ public class SimulatedDynoImpl implements SimulatedDyno {
                 .withWheel(
                     controller.getUserSettings().getWheelMass(),
                     controller.getUserSettings().getWheelRadius())
-                .withBenchBrake(this.bench)
-                .withWeatherStation(this.weatherStation)
+                .withBenchBrake(bench)
+                .withWeatherStation(weatherStation)
                 .buildVehiclewithRigidModel();
             this.simulationThread = new Thread(this, SIMULATED_DYNO_THREAD_NAME);
             this.simulationThread.start();

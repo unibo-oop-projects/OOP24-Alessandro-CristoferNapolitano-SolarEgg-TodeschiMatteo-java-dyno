@@ -376,7 +376,7 @@ public final class UserSettings implements Serializable {
     public void setAirPressure(final double airPressure) {
         this.airPressure = airPressure;
     }
-    
+
     /**
      * Gets the air humidity.
      *

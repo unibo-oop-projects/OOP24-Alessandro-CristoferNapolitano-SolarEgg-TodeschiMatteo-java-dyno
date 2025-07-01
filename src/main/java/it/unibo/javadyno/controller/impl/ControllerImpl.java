@@ -331,6 +331,9 @@ public final class ControllerImpl implements Controller {
             case WHEEL_MASS -> this.userSettings.setWheelMass(value);
             case WHEEL_RADIUS -> this.userSettings.setWheelRadius(value);
             case ROLLING_COEFF -> this.userSettings.setRollingCoeff(value);
+            case AIR_TEMPERATURE -> this.userSettings.setAirTemperature(value);
+            case AIR_PRESSURE -> this.userSettings.setAirPressure(value);
+            case AIR_HUMIDITY -> this.userSettings.setAirHumidity(value);
         }
         saveUserSettingsToFile(SETTINGS_FILE_NAME, this.userSettings);
     }
