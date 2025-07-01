@@ -24,7 +24,6 @@ public final class EngineImpl implements Engine {
      * @param inertia value in [kg * m^2] [must be >0]
      * @param map torque map implementation [nonnull]
      * @param temperatureModel temperature model
-     * @param weatherStation weather station
      */
     public EngineImpl(final double inertia,
                       final TorqueMap map,
