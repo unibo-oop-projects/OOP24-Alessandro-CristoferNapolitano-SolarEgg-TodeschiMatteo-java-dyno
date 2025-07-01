@@ -448,21 +448,41 @@ classDiagram
         +update(List~ElaboratedData~)
         +begin(Stage)
     }
-
     class EvaluationView {
-        +update(ElaboratedData)
-        +update(List~ElaboratedData~)
-        +begin(Stage)
+    }
+    class ChartsView {
+    }
+    class ButtonsPanel {
+    }
+    class GaugePanel {
+    }
+    class StatsPanel {
+    }
+    class ChartsPanel {
     }
 
-    class ButtosPanel
-
+    ButtonsPanel --|> VBox
+    ChartsPanel --|> VBox
+    StatsPanel --|> VBox
+    GaugePanel --|> HBox
     View <|-- EvaluationView
+    View <|-- ChartsView
+    EvaluationView *-- ButtonsPanel
+    EvaluationView *-- ChartsPanel
+    EvaluationView *-- GaugePanel
+    EvaluationView *-- StatsPanel
+    ChartsView *-- ChartsPanel
 ```
 
-**Problema:** TODO.
+**Problema:**
+Le view vanno pensate in modo da essere facilmente costruibili e soprattutto il più scarne possibile.
+Esse infatti avranno diverse parti in comune e sarebbe sbagliato doverle riscrivere ogni volta che si vuole creare una nuova schermata. Inoltre, la view deve essere facilmente estendibile.
+Sivorrebbe inoltre far si che una view possa in futoro essere estesa anche con altri componenti non ancora implementati.
 
-**Soluzione:** TODO. 
+**Soluzione:**
+Per risolvere il problema si è scelto di implementare un pattern compositivo per la view, in modo da poter riutilizzare i componenti della view in diverse schermate. In particolare, sono stati creati diversi pannelli (`ButtonsPanel`, `ChartsPanel`, `GaugePanel`, `StatsPanel`) che possono essere combinati per creare diverse schermate.
+Essi, nella nostra implementazione con JavaFX, estendono i componenti `VBox` e `HBox` (che a loro volta estendono `Pane`) in modo da poter essere facilmente inseriti in varie view.
+
 #### Visualizzazione di grafici multipli
 ```mermaid
 UML TODO
