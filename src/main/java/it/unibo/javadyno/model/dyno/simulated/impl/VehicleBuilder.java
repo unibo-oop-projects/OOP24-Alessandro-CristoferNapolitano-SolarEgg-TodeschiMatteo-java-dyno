@@ -51,9 +51,7 @@ public final class VehicleBuilder {
     // --- bench brake torque ---
     private BrakeTorqueProvider benchBrakeTorqueProvider;
 
-    // --- simulation timing and enviroment ---
-    /** simulation step [s]. */
-    private double deltaTime;
+    // --- simulation enviroment status---
     private WeatherStation weatherStation;
 
     private VehicleBuilder() { }
@@ -145,17 +143,6 @@ public final class VehicleBuilder {
      */
     public VehicleBuilder withBenchBrake(final BrakeTorqueProvider provider) {
         this.benchBrakeTorqueProvider = provider;
-        return this;
-    }
-
-    /**
-     * VehicleBuilder with delta time.
-     *
-     * @param deltaTimeValue simulation step [s]
-     * @return VehicleBuilder
-     */
-    public VehicleBuilder withDeltaTime(final double deltaTimeValue) {
-        this.deltaTime = deltaTimeValue;
         return this;
     }
 
