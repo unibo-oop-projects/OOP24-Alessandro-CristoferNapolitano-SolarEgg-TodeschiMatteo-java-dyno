@@ -68,7 +68,7 @@ public final class EngineImpl implements Engine {
     public void update(final double loadTorque, final double deltaTime) {
         final double generatedTorque = map.getTorque(throttle, omega);
         final double netTorque = generatedTorque - loadTorque;
-        omega = omega + (netTorque / inertia) * deltaTime;
+        omega = omega + netTorque / inertia * deltaTime;
         if (omega < 0) {
             omega = 0;
         }
