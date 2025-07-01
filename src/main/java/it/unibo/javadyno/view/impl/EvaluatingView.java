@@ -14,12 +14,10 @@ import it.unibo.javadyno.view.impl.component.StatsPanel;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 /**
@@ -29,8 +27,6 @@ public class EvaluatingView extends Application implements View {
     private static final String CSS_FILE = "css/SimulationStyle.css";
     private static final String CSS_SETTINGS_PANEL_TAG = "left-column";
     private static final String CSS_MAIN_CONTAINER_TAG = "main-container";
-    private static final double WIDTH_RATIO = 0.8; //percentage of screen width
-    private static final double HEIGHT_RATIO = 0.8; //percentage of screen height
 
     private final Controller controller;
     private final LabelsType buttonsType;
@@ -82,15 +78,11 @@ public class EvaluatingView extends Application implements View {
         mainContainer.getStyleClass().add(CSS_MAIN_CONTAINER_TAG);
         mainContainer.getChildren().addAll(leftPanel, rightPanel);
 
-        final Rectangle2D screenBounds = Screen.getPrimary().getBounds();
-        final double width = screenBounds.getWidth() * WIDTH_RATIO;
-        final double height = screenBounds.getHeight() * HEIGHT_RATIO;
-        final Scene scene = new Scene(mainContainer, width, height);
+        final Scene scene = new Scene(mainContainer);
         scene.getStylesheets().add(ClassLoader.getSystemResource(CSS_FILE).toExternalForm());
         primaryStage.setTitle(this.buttonsType.getTitle());
         primaryStage.setScene(scene);
         primaryStage.show();
-        primaryStage.centerOnScreen();
     }
 
     /**

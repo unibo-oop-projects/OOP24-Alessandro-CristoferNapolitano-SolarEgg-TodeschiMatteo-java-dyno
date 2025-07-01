@@ -55,10 +55,10 @@ public class ChartsViewer extends Application implements View {
         buttonsPanel.getStyleClass().add("buttons-panel");
         buttonsPanel.getChildren().addAll(importDataButton, backToMenuButton);
         importDataButton.setOnAction(e -> {
-            controller.importData();
+            this.controller.importData();
         });
         backToMenuButton.setOnAction(e -> {
-            controller.showMainMenu(primaryStage);
+            this.controller.showMainMenu(primaryStage);
         });
         mainContainer.getStyleClass().add(CSS_MAIN_CONTAINER_TAG);
         mainContainer.getChildren().addAll(buttonsPanel, chartsPanel);
@@ -80,7 +80,7 @@ public class ChartsViewer extends Application implements View {
      */
     @Override
     public void stop() {
-        controller.closeApp();
+        this.controller.closeApp();
     }
 
     /**
