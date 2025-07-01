@@ -23,13 +23,13 @@ import javafx.geometry.Rectangle2D;
  * Main GUI class for the JavaDyno application.
  */
 public class MainMenu extends Application implements View {
-    // final Parent root = FXMLLoader.load(ClassLoader.getSystemResource("layouts/SimpleGui.fxml"));
+
+    public static final double WIDTH_RATIO = 0.3; //percentage of screen width
+    public static final double HEIGHT_RATIO = 0.5; //percentage of screen height
 
     private static final String CSS_FILE = "css/MenuStyle.css";
     private static final String ICON_PATH = "images/icon.png";
     private static final String HOME_IMAGE = "images/logo_no_bg.png";
-    private static final double WIDTH_RATIO = 0.3; //percentage of screen width
-    private static final double HEIGHT_RATIO = 0.5; //percentage of screen height
     private static final double EVALUATING_RATIO = 0.8; //percentage of screen width/height for new evaluating window
     private static final double IMAGE_WIDTH = 0.6;
     private static final double IMAGE_HEIGHT = 0.4;
@@ -68,6 +68,9 @@ public class MainMenu extends Application implements View {
         });
         chartsViewerButton.setOnAction(e -> {
             controller.showView(primaryStage, new ChartsViewer(controller));
+            primaryStage.setWidth(Screen.getPrimary().getBounds().getWidth() * EVALUATING_RATIO);
+            primaryStage.setHeight(Screen.getPrimary().getBounds().getHeight() * EVALUATING_RATIO);
+            primaryStage.centerOnScreen();
         });
         settingsButton.setOnAction(e -> {
             controller.showView(primaryStage, new SettingsView(controller));

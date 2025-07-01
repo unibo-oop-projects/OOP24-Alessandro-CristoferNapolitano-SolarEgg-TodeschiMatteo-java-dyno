@@ -59,6 +59,9 @@ public class ChartsViewer extends Application implements View {
         });
         backToMenuButton.setOnAction(e -> {
             this.controller.showMainMenu(primaryStage);
+            primaryStage.setWidth(Screen.getPrimary().getBounds().getWidth() * MainMenu.WIDTH_RATIO);
+            primaryStage.setHeight(Screen.getPrimary().getBounds().getHeight() * MainMenu.HEIGHT_RATIO);
+            primaryStage.centerOnScreen();
         });
         mainContainer.getStyleClass().add(CSS_MAIN_CONTAINER_TAG);
         mainContainer.getChildren().addAll(buttonsPanel, chartsPanel);
