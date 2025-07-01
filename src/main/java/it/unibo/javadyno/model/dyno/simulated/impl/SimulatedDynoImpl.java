@@ -62,7 +62,8 @@ public class SimulatedDynoImpl implements SimulatedDyno {
                     controller.getUserSettings().getWheelRadius())
                 .withBenchBrake(bench)
                 .withWeatherStation(weatherStation)
-                .withThermalParams(20.0, 100_000.0, 500.0)
+                .withThermalParams(controller.getUserSettings().getTargetTemperature(),
+                                   controller.getUserSettings().getTargeTimeTemperatureCoeff())
                 .buildVehiclewithRigidModel();
             this.vehicle.setThrottle(1.0);
             this.simulationThread = new Thread(this, SIMULATED_DYNO_THREAD_NAME);
@@ -100,10 +101,10 @@ public class SimulatedDynoImpl implements SimulatedDyno {
     @Override
     public void run() {
         this.datas = vehicle.getRawData();
-        while ( this.running && Objects.nonNull(this.datas) &&
-                this.datas.engineRPM().get() < controller.getUserSettings().getMaxRpmSimulation()
+        while (this.running && Objects.nonNull(this.datas) 
+                             && this.datas.engineRPM().get() < controller.getUserSettings().getMaxRpmSimulation()
             ) {
-            this.vehicle.update(0.1);
+            this.vehicle.update(this.updateTimeDelta);
             this.datas = vehicle.getRawData();
             try {
                 Thread.sleep(this.updateTimeDelta);
@@ -129,7 +130,6 @@ public class SimulatedDynoImpl implements SimulatedDyno {
         } else {
             return this.datas;
         }
-        
     }
 
     /**
