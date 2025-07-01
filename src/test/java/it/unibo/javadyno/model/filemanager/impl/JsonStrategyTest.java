@@ -40,6 +40,7 @@ final class JsonStrategyTest {
     private static final double TEST_PWR_KW_1 = 62.83;
     private static final double TEST_POWER_HP_1 = 84.25;
     private static final double TEST_CORRECTED_TORQUE_1 = 205.0;
+    private static final int TEST_AMBIENT_HUMIDITY_1 = 60;
 
     private static final int TEST_ENGINE_RPM_2 = 3500;
     private static final int TEST_ROLLER_RPM_2 = 3200;
@@ -50,6 +51,7 @@ final class JsonStrategyTest {
     private static final double TEST_PWR_KW_2 = 78.45;
     private static final double TEST_POWER_HP_2 = 105.2;
     private static final double TEST_CORRECTED_TORQUE_2 = 220.5;
+    private static final int TEST_AMBIENT_HUMIDITY_2 = 65;
 
     private static final double DELTA = 0.001;
 
@@ -135,6 +137,7 @@ final class JsonStrategyTest {
             .throttlePosition(Optional.of(TEST_THROTTLE_POS_1))
             .baroPressure(Optional.of(TEST_BARO_PRESSURE_1))
             .ambientAirTemperature(Optional.of(TEST_AMBIENT_TEMP_1))
+            .ambientHumidity(Optional.of(TEST_AMBIENT_HUMIDITY_1))
             .exhaustGasTemperature(Optional.of(TEST_EXHAUST_TEMP_1))
             .build();
 
@@ -149,6 +152,7 @@ final class JsonStrategyTest {
             .throttlePosition(Optional.of(TEST_THROTTLE_POS_2))
             .baroPressure(Optional.of(TEST_BARO_PRESSURE_2))
             .ambientAirTemperature(Optional.empty())
+            .ambientHumidity(Optional.of(TEST_AMBIENT_HUMIDITY_2))
             .exhaustGasTemperature(Optional.of(TEST_EXHAUST_TEMP_2))
             .build();
 
