@@ -29,7 +29,8 @@ public final class CsvStrategy implements FileStrategy {
     // Defines the header of the CSV file.
     private static final String[] HEADER = {
         "timestamp", "engineRPM", "engineTemperature", "rollerRPM", "torque",
-        "vehicleSpeed", "throttlePosition", "baroPressure", "ambientAirTemperature", "exhaustGasTemperature",
+        "vehicleSpeed", "throttlePosition", "baroPressure", "ambientAirTemperature", 
+        "ambientHumidity", "exhaustGasTemperature",
         "enginePowerKW", "enginePowerHP", "engineCorrectedTorque",
     };
 
@@ -43,10 +44,11 @@ public final class CsvStrategy implements FileStrategy {
     private static final int INDEX_THROTTLE_POSITION = 6;
     private static final int INDEX_BARO_PRESSURE = 7;
     private static final int INDEX_AMBIENT_AIR_TEMPERATURE = 8;
-    private static final int INDEX_EXHAUST_GAS_TEMPERATURE = 9;
-    private static final int INDEX_ENGINE_POWER_KW = 10;
-    private static final int INDEX_ENGINE_POWER_HP = 11;
-    private static final int INDEX_ENGINE_CORRECTED_TORQUE = 12;
+    private static final int INDEX_AMBIENT_HUMIDITY = 9;
+    private static final int INDEX_EXHAUST_GAS_TEMPERATURE = 10;
+    private static final int INDEX_ENGINE_POWER_KW = 11;
+    private static final int INDEX_ENGINE_POWER_HP = 12;
+    private static final int INDEX_ENGINE_CORRECTED_TORQUE = 13;
 
     /**
      * {@inheritDoc}
@@ -69,6 +71,7 @@ public final class CsvStrategy implements FileStrategy {
                     raw.throttlePosition().map(Object::toString).orElse(""),
                     raw.baroPressure().map(Object::toString).orElse(""),
                     raw.ambientAirTemperature().map(Object::toString).orElse(""),
+                    raw.ambientHumidity().map(Object::toString).orElse(""), 
                     raw.exhaustGasTemperature().map(Object::toString).orElse(""),
                     String.valueOf(elaborated.enginePowerKW()),
                     String.valueOf(elaborated.enginePowerHP()),
@@ -111,6 +114,7 @@ public final class CsvStrategy implements FileStrategy {
                     .throttlePosition(parseOptional(fields[INDEX_THROTTLE_POSITION], Double::parseDouble))
                     .baroPressure(parseOptional(fields[INDEX_BARO_PRESSURE], Integer::parseInt))
                     .ambientAirTemperature(parseOptional(fields[INDEX_AMBIENT_AIR_TEMPERATURE], Integer::parseInt))
+                    .ambientHumidity(parseOptional(fields[INDEX_AMBIENT_HUMIDITY], Integer::parseInt))
                     .exhaustGasTemperature(parseOptional(fields[INDEX_EXHAUST_GAS_TEMPERATURE], Double::parseDouble))
                     .build();
 
