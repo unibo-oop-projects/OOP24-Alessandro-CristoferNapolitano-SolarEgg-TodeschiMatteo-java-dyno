@@ -64,6 +64,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
                 .withWeatherStation(weatherStation)
                 .withThermalParams(20.0, 100_000.0, 500.0)
                 .buildVehiclewithRigidModel();
+            this.vehicle.setThrottle(1.0);
             this.simulationThread = new Thread(this, SIMULATED_DYNO_THREAD_NAME);
             this.simulationThread.start();
         }
