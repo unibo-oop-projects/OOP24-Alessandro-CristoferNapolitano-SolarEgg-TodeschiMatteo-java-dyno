@@ -7,7 +7,7 @@ import it.unibo.javadyno.model.dyno.simulated.api.TemperatureModel;
  */
 public class TargetTemperatureModel implements TemperatureModel {
     private final double targetTemperature;  // °C
-    private final double timeConstant;       // [s]
+    private final double timeCoeff;       // [s]
     private double temperature;              // current [°C]
 
     /**
@@ -15,17 +15,17 @@ public class TargetTemperatureModel implements TemperatureModel {
      *
      * @param initialTemperature  starting temperature [°C]
      * @param targetTemperature   target temperature [°C]
-     * @param timeConstant        time constant [s], [must be > 0]
+     * @param timeCoeff        time coeff [s], [must be > 0]
      */
-    public TargetTemperatureModel(double initialTemperature, double targetTemperature, double timeConstant) {
-        if (timeConstant <= 0) {
+    public TargetTemperatureModel(final double initialTemperature, final double targetTemperature, final double timeCoeff) {
+        if (timeCoeff <= 0) {
             throw new IllegalArgumentException("timeConstant must be > 0");
         }
         this.temperature = initialTemperature;
         this.targetTemperature = targetTemperature;
-        this.timeConstant = timeConstant;
+        this.timeCoeff = timeCoeff;
     }
-    
+
     /**
      * Advances the model by dt seconds
      * simply moves T toward targetTemperature with time constant.
@@ -33,12 +33,12 @@ public class TargetTemperatureModel implements TemperatureModel {
      * @param deltaTime timestep dt [s]; must be > 0
      */
     @Override
-    public void update(double deltaTime) {
+    public void update(final double deltaTime) {
         if (deltaTime <= 0) {
             throw new IllegalArgumentException("deltaTime must be > 0");
         }
         // exponential approach
-        double dT = (targetTemperature - temperature) / timeConstant * deltaTime;
+        final double dT = (targetTemperature - temperature) / timeCoeff * deltaTime;
         temperature += dT;
     }
 
@@ -49,5 +49,4 @@ public class TargetTemperatureModel implements TemperatureModel {
     public double getTemperature() {
         return this.temperature;
     }
-    
 }
