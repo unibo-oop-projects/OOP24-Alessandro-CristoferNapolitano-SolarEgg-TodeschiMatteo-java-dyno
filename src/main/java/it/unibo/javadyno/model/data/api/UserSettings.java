@@ -42,7 +42,12 @@ public final class UserSettings implements Serializable {
         dynoType = UserSettingDef.DYNO_TYPE.getDefaultValue();
 
         baseTorque = UserSettingDef.BASE_TORQUE.getDefaultValue();
-        
+        torquePerRad = UserSettingDef.TORQUE_PER_RAD.getDefaultValue();
+        engineInertia = UserSettingDef.ENGINE_INERTIA.getDefaultValue();
+        gearRatios = new double[]{UserSettingDef.GEAR_RATIOS.getDefaultValue()};
+        wheelMass = UserSettingDef.WHEEL_MASS.getDefaultValue();
+        wheelRadius = UserSettingDef.WHEEL_RADIUS.getDefaultValue();
+        rollingCoeff = UserSettingDef.ROLLING_COEFF.getDefaultValue();
     }
 
     /**
@@ -205,6 +210,132 @@ public final class UserSettings implements Serializable {
      */
     public void setDynoType(final double dynoType) {
         this.dynoType = dynoType;
+    }
+
+    /**
+     * Gets the base torque of the engine.
+     *
+     * @return the base torque
+     */
+    public double getBaseTorque() {
+        return baseTorque;
+    }
+
+    /**
+     * Sets the base torque of the engine.
+     *
+     * @param baseTorque the base torque
+     */
+    public void setBaseTorque(final double baseTorque) {
+        this.baseTorque = baseTorque;
+    }
+
+    /**
+     * Gets the torque per radian of the engine.
+     *
+     * @return the torque per radian
+     */
+    public double getTorquePerRad() {
+        return torquePerRad;
+    }
+
+    /**
+     * Sets the torque per radian of the engine.
+     *
+     * @param torquePerRad the torque per radian
+     */
+    public void setTorquePerRad(final double torquePerRad) {
+        this.torquePerRad = torquePerRad;
+    }
+
+    /**
+     * Gets the engine inertia.
+     *
+     * @return the engine inertia
+     */
+    public double getEngineInertia() {
+        return engineInertia;
+    }
+
+    /**
+     * Sets the engine inertia.
+     *
+     * @param engineInertia the engine inertia
+     */
+    public void setEngineInertia(double engineInertia) {
+        this.engineInertia = engineInertia;
+    }
+
+    /**
+     * Gets the gear ratios of the vehicle.
+     *
+     * @return an array of gear ratios
+     */
+    public double[] getGearRatios() {
+        return gearRatios;
+    }
+
+    /**
+     * Sets the gear ratios of the vehicle.
+     *
+     * @param gearRatios
+     */
+    public void setGearRatios(double[] gearRatios) {
+        this.gearRatios = gearRatios;
+    }
+
+    /**
+     * Gets the mass of the wheels.
+     *
+     * @return the mass of the wheels
+     */
+    public double getWheelMass() {
+        return wheelMass;
+    }
+
+    /**
+     * Sets the mass of the wheels.
+     *
+     * @param wheelMass the mass of the wheels
+     */
+    public void setWheelMass(double wheelMass) {
+        this.wheelMass = wheelMass;
+    }
+
+    /**
+     * Gets the radius of the wheels.
+     *
+     * @return the radius of the wheels
+     */
+    public double getWheelRadius() {
+        return wheelRadius;
+    }
+
+    /**
+     * Sets the radius of the wheels.
+     *
+     * @param wheelRadius the radius of the wheels
+     */
+    public void setWheelRadius(double wheelRadius) {
+        this.wheelRadius = wheelRadius;
+    }
+
+    /**
+     * Gets the rolling coefficient.
+     *
+     * @return the rolling coefficient
+     */
+    public double getRollingCoeff() {
+        return rollingCoeff;
+    }
+
+    /**
+     * Sets the rolling coefficient.
+     *
+     * @param rollingCoeff the rolling coefficient
+     */
+    public void setRollingCoeff(double rollingCoeff) {
+        this.rollingCoeff = rollingCoeff;
     }
 
     /**
