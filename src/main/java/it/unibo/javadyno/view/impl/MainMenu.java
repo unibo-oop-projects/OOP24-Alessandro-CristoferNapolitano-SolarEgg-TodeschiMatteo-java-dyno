@@ -30,8 +30,10 @@ public class MainMenu extends Application implements View {
     private static final String HOME_IMAGE = "images/logo_no_bg.png";
     private static final double WIDTH_RATIO = 0.3; //percentage of screen width
     private static final double HEIGHT_RATIO = 0.5; //percentage of screen height
+    private static final double NEW_RATIO = 0.8; //percentage of screen width/height for new window
     private static final double IMAGE_WIDTH = 0.6;
     private static final double IMAGE_HEIGHT = 0.4;
+
     private static Controller controller;
 
     /**
@@ -54,9 +56,15 @@ public class MainMenu extends Application implements View {
         final Button settingsButton = new Button("Settings");
         simulatedDynoButton.setOnAction(e -> {
             controller.showView(primaryStage, new EvaluatingView(controller, LabelsType.SIMULATED, DataSource.SIMULATED_DYNO));
+            primaryStage.setWidth(Screen.getPrimary().getBounds().getWidth() * NEW_RATIO);
+            primaryStage.setHeight(Screen.getPrimary().getBounds().getHeight() * NEW_RATIO);
+            primaryStage.centerOnScreen();
         });
         realDynoButton.setOnAction(e -> {
             controller.showView(primaryStage, new EvaluatingView(controller, LabelsType.REAL, DataSource.REAL_DYNO));
+            primaryStage.setWidth(Screen.getPrimary().getBounds().getWidth() * NEW_RATIO);
+            primaryStage.setHeight(Screen.getPrimary().getBounds().getHeight() * NEW_RATIO);
+            primaryStage.centerOnScreen();
         });
         chartsViewerButton.setOnAction(e -> {
             controller.showView(primaryStage, new ChartsViewer(controller));
