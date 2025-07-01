@@ -140,12 +140,16 @@ public final class ChartsPanel extends VBox {
     /**
      * Adds a point to the speed chart.
      *
-     * @param seriesName the name of the series to which the point will be added
+     * @param firstSeriesName the name of the first series (Power)
+     * @param secondSeriesName the name of the second series (Torque)
      * @param xValue the x-axis value
      * @param yValue the y-axis value
      * @param y2Value the second y-axis value
      */
-    private void addPointToChart(final String firstSeriesName, final String secondSeriesName, final Number xValue, final Number yValue, final Number y2Value) {
+    private void addPointToChart(
+        final String firstSeriesName, final String secondSeriesName,
+        final Number xValue, final Number yValue, final Number y2Value
+    ) {
         chartManager.addPointToSeries(
             this.lineChart,
             firstSeriesName,

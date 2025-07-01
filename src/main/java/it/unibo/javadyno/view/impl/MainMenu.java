@@ -75,7 +75,6 @@ public class MainMenu extends Application implements View {
             primaryStage.setWidth(Screen.getPrimary().getBounds().getWidth() * ChartsViewer.WIDTH_RATIO);
             primaryStage.setHeight(Screen.getPrimary().getBounds().getHeight() * ChartsViewer.HEIGHT_RATIO);
             primaryStage.centerOnScreen();
-            
         });
         settingsButton.setOnAction(e -> {
             controller.showView(primaryStage, new SettingsView(controller));

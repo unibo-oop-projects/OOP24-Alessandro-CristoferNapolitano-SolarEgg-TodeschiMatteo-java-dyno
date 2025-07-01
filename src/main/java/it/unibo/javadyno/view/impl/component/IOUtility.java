@@ -7,7 +7,16 @@ import it.unibo.javadyno.controller.api.Controller;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-public class IOUtility {
+/**
+ * Utility class for handling file import and export operations.
+ */
+public final class IOUtility {
+
+    /**
+     * Private constructor to prevent instantiation.
+     */
+    private IOUtility() { }
+
     /**
      * Sets proper file chooser configuration for the file export.
      *
