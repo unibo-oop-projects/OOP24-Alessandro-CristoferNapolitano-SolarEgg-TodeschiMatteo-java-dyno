@@ -23,8 +23,8 @@ public class SimulatedDynoImpl implements SimulatedDyno {
     private static final int UPDATE_TIME_DELTA = 10; // in milliseconds
     private volatile boolean running;
     private Thread simulationThread;
-    private Bench bench;
     private Vehicle vehicle;
+    private Bench bench;
     private DriveTrain driveTrain;
     private WeatherStation weatherStation;
     private volatile RawData datas;
@@ -35,14 +35,11 @@ public class SimulatedDynoImpl implements SimulatedDyno {
     public SimulatedDynoImpl() {
         this.running = false;
         this.simulationThread = null;
-        this.bench = null;
         this.vehicle = null;
+        this.bench = null;
         this.driveTrain = null;
         this.weatherStation = null;
-        // Bench
-        // Vehicle (with builder for the parameters)
-        // Drive Train + call for throttle/timedelta
-        // Weather
+        this.datas = null;
     }
 
     /**
@@ -53,7 +50,16 @@ public class SimulatedDynoImpl implements SimulatedDyno {
         if (!running) {
             this.running = true;
             this.bench = new BenchImpl();
-            // this.vehicle = new VehicleImpl();
+            this.vehicle = VehicleBuilder.builder()
+                .withBaseTorque(ENGINE_RPM)
+                .withTorquePerRad(0.0)
+                .withEngineInertia(ENGINE_RPM)
+                .withGearRatios(null)
+                .withWheel(ENGINE_TEMPERATURE, ENGINE_RPM)
+                .withBenchBrake(null)
+                .withWeatherStation(null)
+                .buildVehiclewithRigidModel();
+
             this.simulationThread = new Thread(this, SIMULATED_DYNO_THREAD_NAME);
             this.simulationThread.start();
         }
@@ -95,7 +101,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
                     .rollerRPM(Optional.of(this.bench.getRollerRPM()))
                     .build();
             try {
-                Thread.sleep(UPDATE_TIME_DELTA); // frequency setted by user
+                Thread.sleep(UPDATE_TIME_DELTA);
             } catch (final InterruptedException e) {
                 this.end();
             }
