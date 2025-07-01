@@ -14,13 +14,13 @@ public enum UserSettingDef {
     AIR_DENSITY(1.225),
     DRIVE_TRAIN_EFFICIENCY(0.85),
     DYNO_TYPE(DataSource.REAL_DYNO.ordinal()),
-    BASE_TORQUE(0.0),
-    TORQUE_PER_RAD(0.0),
-    ENGINE_INERTIA(0.0),
-    GEAR_RATIOS(1.0),
-    WHEEL_MASS(10.0),
-    WHEEL_RADIUS(0.3),
-    ROLLING_COEFF(0.012);
+    ROLLING_COEFF(0.012),
+    BASE_TORQUE(120.0),
+    TORQUE_PER_RAD(0.05),
+    ENGINE_INERTIA(0.4),
+    GEAR_RATIOS(1.3),
+    WHEEL_MASS(20.0),
+    WHEEL_RADIUS(0.3);
 
     private final double defaultValue;
 

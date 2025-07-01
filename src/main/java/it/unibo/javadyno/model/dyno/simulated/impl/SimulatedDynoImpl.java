@@ -8,6 +8,7 @@ import it.unibo.javadyno.controller.impl.AlertMonitor;
 import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.api.RawData;
 import it.unibo.javadyno.model.dyno.simulated.api.Bench;
+import it.unibo.javadyno.model.dyno.simulated.api.BrakeTorqueProvider;
 import it.unibo.javadyno.model.dyno.simulated.api.SimulatedDyno;
 import it.unibo.javadyno.model.dyno.simulated.api.Vehicle;
 import it.unibo.javadyno.model.dyno.simulated.api.WeatherStation;
@@ -22,7 +23,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
     private long updateTimeDelta;
     private Thread simulationThread;
     private Vehicle vehicle;
-    private Bench bench;
+    private BrakeTorqueProvider bench;
     private WeatherStation weatherStation;
     private volatile boolean running;
     private volatile RawData datas;
@@ -50,7 +51,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
         if (!running) {
             this.updateTimeDelta = (long) controller.getUserSettings().getSimulationUpdateTimeDelta();
             this.running = true;
-            this.bench = new BenchImpl();
+            this.bench = new BenchBrakeTorqueHolder();
             this.vehicle = VehicleBuilder.builder()
                 .withBaseTorque(controller.getUserSettings().getBaseTorque())
                 .withTorquePerRad(controller.getUserSettings().getTorquePerRad())
