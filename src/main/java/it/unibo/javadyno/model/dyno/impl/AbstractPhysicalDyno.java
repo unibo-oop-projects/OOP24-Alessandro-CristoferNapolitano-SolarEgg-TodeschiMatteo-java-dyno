@@ -94,14 +94,17 @@ public abstract class AbstractPhysicalDyno<T> implements Dyno, Runnable {
         while (this.isActive()) {
             final String outgoingMessage = this.getOutgoingMessage();
             Objects.requireNonNull(outgoingMessage, "Outgoing message cannot be null");
-            if (!outgoingMessage.isBlank()) {
+            if (!outgoingMessage.isBlank() && this.communicator.isConnected()) {
                 this.communicator.send(outgoingMessage);
             }
 
             try {
                 Thread.sleep(this.polling);
             } catch (final InterruptedException e) {
-                // Tell alert monitor
+                AlertMonitor.errorNotify(
+                    "Dyno thread interrupted",
+                    Optional.of("Error: " + e.getMessage())
+                );
                 Thread.currentThread().interrupt();
             }
         }
