@@ -391,7 +391,11 @@ classDiagram
 Far si che ogni implementazione di `SimulatedDyno` possa essere eseguita in modo concorrente, permettendo in primis di generare dati e aggiornarsi molto più velocemente rispetto alla frequenza di aggiornamento dell'appplicazione e dando inoltre all'utente la possibilità di interagire con l'applicazione senza blocchi o rallentamenti.
 
 **Soluzione:**
-Per risolvere il problema si è scelto di creare un interfaccia intemedia tra `Dyno` e `SimulatedDyno` che implementa l'interfaccia `Runnable`. In questo modo ogni implementazione di `SimulatedDyno` deve essere eseguita in un thread separato, permettendo di generare i dati in modo asincrono. La classe `SimulatedDynoImpl` implementa questa logica, gestendo la generazione dei dati e l'aggiornamento dello stato in modo concorrente.
+Per risolvere il problema si è scelto di creare un interfaccia intemedia tra `Dyno` e `SimulatedDyno` che implementa l'interfaccia `Runnable`.  
+In questo modo ogni implementazione di `SimulatedDyno` deve essere eseguita in un thread separato, permettendo di generare i dati in modo asincrono.  
+La classe `SimulatedDynoImpl` implementa questa logica, gestendo la generazione dei dati e l'aggiornamento dello stato in modo concorrente.  
+Degno di nota è anche il fatto che a fare le chiamate al nuovo Thread generato è il `Controller` tramite un suo Thread virtuale, in modo da non bloccare l'interfaccia utente e permettere all'utente di interagire con l'applicazione mentre la simulazione è in corso.  
+Questa scelta permette inoltre di disaccoppiare il tempo di aggiornamento dello schermo da quello della generazione dei dati, permettendo di avere un'interfaccia utente sempre reattiva ma generando comunque tutti i dati necessari per l'elaborazione e il salvataggio.
 
 #### Gestione degli errori con Monitor dedicato 
 ```mermaid
@@ -432,11 +436,12 @@ classDiagram
 ```
 
 **Problema:**
-Gestire gli errori in modo centralizzato e fornire un feedback all'utente senza bloccare l'applicazione. In particolare, è necessario gestire errori di comunicazione con l'hardware esterno, errori di elaborazione dei dati e altri errori generici.
+Gestire gli errori in modo centralizzato e fornire un feedback all'utente senza bloccare l'applicazione.  
+In particolare, è necessario gestire errori di comunicazione con l'hardware esterno, errori di elaborazione dei dati e altri errori generici.
 
 **Soluzione:**
-Per risolvere il problema si è scelto di implementare un monitor dedicato (`AlertMonitor`) implementato come utility statica.
-Ad essa viene abbinato un `Controller` che si occupa di instradare correttamente gli errori ad un componente della view che si occupa di visualizzarli (`AlertDisplayer`).
+Per risolvere il problema si è scelto di implementare un monitor dedicato (`AlertMonitor`) implementato come utility statica.  
+Ad essa viene abbinato un `Controller` che si occupa di instradare correttamente gli errori ad un componente della view che si occupa di visualizzarli (`AlertDisplayer`).  
 I messaggi di errore hanno diverse priorità e vengono gestiti attraverso un enumerativo `AlertType` che permette di distinguere tra errori, avvisi e informazioni. In questo modo, l'utente può essere informato in modo chiaro e preciso senza bloccare l'applicazione.
 
 
@@ -445,9 +450,9 @@ I messaggi di errore hanno diverse priorità e vengono gestiti attraverso un enu
 classDiagram
     class View {
         <<interface>>
+        +begin(Stage)
         +update(ElaboratedData)
         +update(List~ElaboratedData~)
-        +begin(Stage)
     }
     class EvaluationView {
     }
@@ -477,16 +482,33 @@ classDiagram
 
 **Problema:**
 Le view vanno pensate in modo da essere facilmente costruibili e soprattutto il più scarne possibile.
-Esse infatti avranno diverse parti in comune e sarebbe sbagliato doverle riscrivere ogni volta che si vuole creare una nuova schermata. Inoltre, la view deve essere facilmente estendibile.
+Esse infatti avranno diverse parti in comune e sarebbe sbagliato doverle riscrivere ogni volta che si vuole creare una nuova schermata.  
+Inoltre, la view deve essere facilmente estendibile.
 Sivorrebbe inoltre far si che una view possa in futoro essere estesa anche con altri componenti non ancora implementati.
 
 **Soluzione:**
-Per risolvere il problema si è scelto di implementare un pattern compositivo per la view, in modo da poter riutilizzare i componenti della view in diverse schermate. In particolare, sono stati creati diversi pannelli (`ButtonsPanel`, `ChartsPanel`, `GaugePanel`, `StatsPanel`) che possono essere combinati per creare diverse schermate.
+Per risolvere il problema si è scelto di implementare un pattern compositivo per la view, in modo da poter riutilizzare i componenti della view in diverse schermate.  
+In particolare, sono stati creati diversi pannelli (`ButtonsPanel`, `ChartsPanel`, `GaugePanel`, `StatsPanel`) che possono essere combinati per creare diverse schermate.  
 Essi, nella nostra implementazione con JavaFX, estendono i componenti `VBox` e `HBox` (che a loro volta estendono `Pane`) in modo da poter essere facilmente inseriti in varie view.
 
 #### Visualizzazione di grafici multipli
 ```mermaid
-UML TODO
+classDiagram
+    class ChartsView {
+        <<interface>>
+        +begin(Stage)
+        +update(ElaboratedData)
+        +update(List~ElaboratedData~)
+    }
+    class JFreeCharts {
+    }
+    class ChartFactory {
+        <<interface>>
+    }
+    class ChartFactory {
+        <<interface>>
+    }
+
 ```
 
 **Problema:** TODO.
