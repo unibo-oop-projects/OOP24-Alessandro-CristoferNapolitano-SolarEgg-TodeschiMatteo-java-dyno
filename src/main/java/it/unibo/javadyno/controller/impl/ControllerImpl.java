@@ -32,10 +32,9 @@ import it.unibo.javadyno.model.filemanager.impl.FileManagerImpl;
 import it.unibo.javadyno.model.filemanager.impl.FileStrategyFactoryImpl;
 import it.unibo.javadyno.view.api.View;
 import it.unibo.javadyno.view.impl.MainMenu;
+import it.unibo.javadyno.view.impl.component.AlertDisplayer;
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
+
 import javafx.stage.Stage;
 
 /**
@@ -296,17 +295,7 @@ public final class ControllerImpl implements Controller {
      */
     @Override
     public void showAlert(final NotificationType type, final String message, final Optional<String> explanation) {
-        Platform.runLater(() -> {
-            final Alert alert = new Alert(switch (type) {
-                case WARNING -> AlertType.WARNING;
-                case ERROR -> AlertType.ERROR;
-                default -> AlertType.INFORMATION;
-            });
-            alert.setTitle(type.getType());
-            alert.setHeaderText(message);
-            explanation.ifPresent(alert::setContentText);
-            alert.showAndWait();
-        });
+        AlertDisplayer.showAlert(type, message, explanation);
     }
 
     /**
