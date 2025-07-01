@@ -7,7 +7,6 @@ import it.unibo.javadyno.controller.api.Controller;
 import it.unibo.javadyno.controller.impl.AlertMonitor;
 import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.api.RawData;
-import it.unibo.javadyno.model.dyno.simulated.api.Bench;
 import it.unibo.javadyno.model.dyno.simulated.api.BrakeTorqueProvider;
 import it.unibo.javadyno.model.dyno.simulated.api.SimulatedDyno;
 import it.unibo.javadyno.model.dyno.simulated.api.Vehicle;
@@ -53,9 +52,9 @@ public class SimulatedDynoImpl implements SimulatedDyno {
             this.running = true;
             this.bench = new BenchBrakeTorqueHolder();
             this.weatherStation = new WeatherStationImpl(
-                controller.getUserSettings().getAirTemperatire(),
-                controller.getUserSettings().getAirPressure(),
-                controller.getUserSettings().getAirHumidity()
+                controller.getUserSettings().getAirTemperature(),
+                (int) controller.getUserSettings().getAirPressure(),
+                (int) controller.getUserSettings().getAirHumidity()
             );
             this.vehicle = VehicleBuilder.builder()
                 .withBaseTorque(controller.getUserSettings().getBaseTorque())
@@ -65,8 +64,8 @@ public class SimulatedDynoImpl implements SimulatedDyno {
                 .withWheel(
                     controller.getUserSettings().getWheelMass(),
                     controller.getUserSettings().getWheelRadius())
-                .withBenchBrake(null)
-                .withWeatherStation(null)
+                .withBenchBrake(this.bench)
+                .withWeatherStation(this.weatherStation)
                 .buildVehiclewithRigidModel();
             this.simulationThread = new Thread(this, SIMULATED_DYNO_THREAD_NAME);
             this.simulationThread.start();
