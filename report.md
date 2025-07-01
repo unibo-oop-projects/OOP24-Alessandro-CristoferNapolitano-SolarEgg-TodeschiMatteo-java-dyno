@@ -88,6 +88,7 @@ direction TB
     SimulatedDyno --|> Dyno
     Dyno -- RawData
     DataElaborator --o RawData
+    DataElaborator --o UserSettings
     DataElaborator --o ElaboratedData
     DataCollector --* DataElaborator
     DataCollector --o ElaboratedData
@@ -111,9 +112,9 @@ direction TB
     }
 
     class DataCollector {
-	    +initialize(Dyno)
+	    +initialize(Dyno, UserSettings)
 	    +collectData() ElaboratedData
-	    +getFullData() Queue~ElaboratedData~
+	    +getFullData() List~ElaboratedData~
     }
 
     class DataElaborator {
@@ -122,7 +123,7 @@ direction TB
 
     class FileManager {
 	    +setStrategy(FileStrategy)
-	    +exportDataToFile(Queue~ElaboratedData~, File)
+	    +exportDataToFile(List~ElaboratedData~, File)
 	    +importDataFromFile(File) List~ElaboratedData~
     }
 
@@ -152,6 +153,9 @@ direction TB
     class SimulatedDyno {
     }
 
+    class UserSettings {
+    }
+
 	<<interface>> MCUCommunicator
 	<<interface>> Dyno
 	<<interface>> DataElaborator
@@ -179,22 +183,26 @@ classDiagram
     
     class Controller {
         <<interface>>
-        +startSimulation()
-        +stopSimulation()
+        +startEvaluation()
+        +stopEvaluation()
+        +showMainMenu(Stage)
+        +showView(Stage, View)
+        +closeApp()
     }
     
     class Dyno {
         <<interface>>
         +getRawData() RawData
+        +getgetDynoType() DataSource
         +begin()
         +end()
         +isActive() boolean
     }
     
     class DataCollector {
-        +initialize(Dyno)
+        +initialize(Dyno, UserSettings)
         +collectData() ElaboratedData
-        +getFullData() Queue
+        +getFullData() List
     }
     
     class DataElaborator {

@@ -1,13 +1,11 @@
 package it.unibo.javadyno.view.impl.component;
 
-import java.io.File;
-
 import it.unibo.javadyno.controller.api.Controller;
 import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.view.impl.EvaluatingView;
+import it.unibo.javadyno.view.impl.MainMenu;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -16,8 +14,8 @@ import javafx.stage.Stage;
  */
 public final class ButtonsPanel extends VBox {
 
-    private static final double MENU_WIDTH_RATIO = 0.3;
-    private static final double MENU_HEIGHT_RATIO = 0.5;
+    private static final String START_BUTTON_ID = "start-button";
+    private static final String STOP_BUTTON_ID = "stop-button";
     private final Button startSimulationButton;
     private final Button stopSimulationButton;
     private final Button saveDataButton;
@@ -38,9 +36,9 @@ public final class ButtonsPanel extends VBox {
             final LabelsType type, final DataSource dataSource
         ) {
         startSimulationButton = new Button(type.getStartButton());
-        startSimulationButton.setId("start-button");
+        startSimulationButton.setId(START_BUTTON_ID);
         stopSimulationButton = new Button(type.getStopButton());
-        stopSimulationButton.setId("stop-button");
+        stopSimulationButton.setId(STOP_BUTTON_ID);
         saveDataButton = new Button(type.getSaveButton());
         importDataButton = new Button(type.getLoadButton());
         backToMenuButton = new Button(type.getBackToMenu());
@@ -56,64 +54,20 @@ public final class ButtonsPanel extends VBox {
         });
 
         // Uses a private method to handle file import properly.
-        importDataButton.setOnAction(e -> handleImport(controller, primaryStage));
+        importDataButton.setOnAction(e -> IOUtility.handleImport(controller, primaryStage));
         // Uses a private method to handle file export properly.
-        saveDataButton.setOnAction(e -> handleExport(controller, primaryStage));
+        saveDataButton.setOnAction(e -> IOUtility.handleExport(controller, primaryStage));
 
         reloadButton.setOnAction(e -> {
             controller.showView(primaryStage, new EvaluatingView(controller, type, dataSource));
         });
         backToMenuButton.setOnAction(e -> {
             controller.showMainMenu(primaryStage);
-            primaryStage.setWidth(Screen.getPrimary().getBounds().getWidth() * MENU_WIDTH_RATIO);
-            primaryStage.setHeight(Screen.getPrimary().getBounds().getHeight() * MENU_HEIGHT_RATIO);
+            primaryStage.setWidth(Screen.getPrimary().getBounds().getWidth() * MainMenu.WIDTH_RATIO);
+            primaryStage.setHeight(Screen.getPrimary().getBounds().getHeight() * MainMenu.HEIGHT_RATIO);
             primaryStage.centerOnScreen();
         });
         this.getChildren().addAll(startSimulationButton, backToMenuButton);
-    }
-
-    /**
-     * Sets proper file chooser configuration for the file export.
-     *
-     * @param controller the controller to handle the export
-     * @param stage the stage for the file dialog
-     */
-    private void handleExport(final Controller controller, final Stage stage) {
-        final FileChooser fileChooser = new FileChooser();
-        // Set file extension filters
-        fileChooser.getExtensionFilters().addAll(
-            new FileChooser.ExtensionFilter("JSON files", "*.json"),
-            new FileChooser.ExtensionFilter("CSV files", "*.csv")
-        );
-
-        // Show save dialog and handle the result
-        final File file = fileChooser.showSaveDialog(stage);
-        if (file != null) {
-            controller.exportCurrentData(file);
-        }
-    }
-
-    /**
-     * Sets proper file chooser configuration for the file import.
-     *
-     * @param controller the controller to handle the import
-     * @param stage the stage for the file dialog
-     */
-    private void handleImport(final Controller controller, final Stage stage) {
-        final FileChooser fileChooser = new FileChooser();
-
-        // Set file extension filters
-        fileChooser.getExtensionFilters().addAll(
-            new FileChooser.ExtensionFilter("JSON files", "*.json"),
-            new FileChooser.ExtensionFilter("CSV files", "*.csv")
-        );
-
-        // Show open dialog and handle the result
-        final File file = fileChooser.showOpenDialog(stage);
-        if (file != null) {
-            // Controller handles import and automatically updates the view
-            controller.importDataFromFile(file);
-        }
     }
 
     /**

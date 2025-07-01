@@ -13,7 +13,19 @@ public enum UserSettingDef {
     FRONTAL_AREA(2.2),
     AIR_DENSITY(1.225),
     DRIVE_TRAIN_EFFICIENCY(0.85),
-    DYNO_TYPE(DataSource.REAL_DYNO.ordinal());
+    DYNO_TYPE(DataSource.REAL_DYNO.ordinal()),
+    ROLLING_COEFF(0.012),
+    MAX_RPM_SIMULATION(8000.0),
+
+    BASE_TORQUE(120.0),
+    TORQUE_PER_RAD(0.05),
+    ENGINE_INERTIA(0.4),
+    GEAR_RATIOS(1.3),
+    WHEEL_MASS(20.0),
+    WHEEL_RADIUS(0.3),
+    AIR_TEMPERATURE(20.0),
+    AIR_PRESSURE(101.3),
+    AIR_HUMIDITY(50.0);
 
     private final double defaultValue;
 

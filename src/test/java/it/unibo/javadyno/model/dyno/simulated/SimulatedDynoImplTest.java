@@ -2,6 +2,7 @@ package it.unibo.javadyno.model.dyno.simulated;
 
 import org.junit.jupiter.api.Test;
 
+import it.unibo.javadyno.controller.impl.ControllerImpl;
 import it.unibo.javadyno.model.dyno.simulated.api.SimulatedDyno;
 import it.unibo.javadyno.model.dyno.simulated.impl.SimulatedDynoImpl;
 
@@ -18,7 +19,7 @@ class SimulatedDynoImplTest {
      */
     @Test
     void testBeginning() {
-        final SimulatedDyno dyno = new SimulatedDynoImpl();
+        final SimulatedDyno dyno = new SimulatedDynoImpl(new ControllerImpl());
         assertFalse(dyno.isActive(), "The simulation shouldn't run at the start");
     }
 
@@ -27,7 +28,7 @@ class SimulatedDynoImplTest {
      */
     @Test
     void testStartAndStopSimulation() {
-        final SimulatedDyno dyno = new SimulatedDynoImpl();
+        final SimulatedDyno dyno = new SimulatedDynoImpl(new ControllerImpl());
         dyno.begin();
         assertTrue(dyno.isActive(), "The simulation should run after start");
         dyno.end();
@@ -39,7 +40,7 @@ class SimulatedDynoImplTest {
      */
     @Test
     void testStopSimulationWhenNotStarted() {
-        final SimulatedDyno dyno = new SimulatedDynoImpl();
+        final SimulatedDyno dyno = new SimulatedDynoImpl(new ControllerImpl());
         dyno.end(); // Exception should be suppressed
         assertFalse(dyno.isActive(), "The simulation should still not be running.");
     }
