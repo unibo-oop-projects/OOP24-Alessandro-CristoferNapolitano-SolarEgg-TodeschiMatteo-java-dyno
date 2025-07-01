@@ -29,8 +29,6 @@ public final class VehicleBuilder {
     /** transmission gear ratios. */
     private double[] gearRatio;
     // --- thermal model parameters (with defaults) ---
-    /** ambient start temperature for the thermal model [°C]. */
-    private double ambientStart;
     /** thermal capacity [J/°C]. */
     private double thermalCapacity;
     /** cooling coefficient [W/°C]. */
@@ -176,10 +174,8 @@ public final class VehicleBuilder {
      * @param coolingCoeffValue cooling coefficient [W/°C]
      * @return VehicleBuilder
      */
-    public VehicleBuilder withThermalParams(final double ambientStartValue,
-                                            final double thermalCapacityValue,
+    public VehicleBuilder withThermalParams(final double thermalCapacityValue,
                                             final double coolingCoeffValue) {
-        this.ambientStart = ambientStartValue;
         this.thermalCapacity = thermalCapacityValue;
         this.coolingCoeff = coolingCoeffValue;
         return this;
@@ -214,7 +210,7 @@ public final class VehicleBuilder {
         //if no custom TemperatureModel
         TemperatureModel tm = this.temperatureModel;
         if (tm == null) {
-            tm = new SimpleTemperatureModel(ambientStart, thermalCapacity, coolingCoeff);
+            tm = new SimpleTemperatureModel(weatherStation.getTemperature(), thermalCapacity, coolingCoeff);
         }
 
         //computing the inertia of the power train
