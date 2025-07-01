@@ -5,11 +5,11 @@ import it.unibo.javadyno.model.dyno.simulated.api.BrakeTorqueProvider;
 /**
  * a mutable holder of brake torque power for the BenchLoad.
  */
-public class BenchBrakeTorqueHolder implements BrakeTorqueProvider{
+public class BenchBrakeTorqueHolder implements BrakeTorqueProvider {
     private double currentBrakeTorque;
-    
+
     /**
-     * {@inheritDoc }
+     * {@inheritDoc}
      */
     @Override
     public double getBrakeTorque() {
@@ -21,11 +21,10 @@ public class BenchBrakeTorqueHolder implements BrakeTorqueProvider{
      *
      * @param benchBrakeTorque bench brake torque, value must be >= 0
      */
-    public void setBrakeTorque(double benchBrakeTorque) {
+    public void setBrakeTorque(final double benchBrakeTorque) {
         if (benchBrakeTorque < 0) {
             throw new IllegalArgumentException("brake torque must be >= 0");
         }
         this.currentBrakeTorque = benchBrakeTorque;
-    }
-    
+    } 
 }
