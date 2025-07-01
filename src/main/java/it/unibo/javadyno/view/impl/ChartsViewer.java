@@ -63,7 +63,7 @@ public class ChartsViewer extends Application implements View {
         });
         mainContainer.getStyleClass().add(CSS_MAIN_CONTAINER_TAG);
         mainContainer.getChildren().addAll(buttonsPanel, chartsPanel);
-        this.chartsPanel.removeDefaultSeries();
+        this.chartsPanel.hideDefaultVisibility();
 
         final Rectangle2D screenBounds = Screen.getPrimary().getBounds();
         final double width = screenBounds.getWidth() * WIDTH_RATIO;
