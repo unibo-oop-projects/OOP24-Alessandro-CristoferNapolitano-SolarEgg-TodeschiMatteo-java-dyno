@@ -4,7 +4,6 @@ package it.unibo.javadyno.model.dyno.simulated.api;
  * Interface used to realized to model temperature variation in an Engine.
  */
 public interface TemperatureModel {
-    
     /**
      * update of temperature model by deltaTime.
      *
