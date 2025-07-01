@@ -36,7 +36,9 @@ Ivan Crimaldi
     - #### [3.2.2 Surname Name](#322-surname-name-1)
 ## [4. Commenti finali](#capitolo-4---commenti-finali)
 - ### [4.1 Autovalutazione e lavori futuri](#41-autovalutazione-e-lavori-futuri-1)
+    - #### [4.1.1 Porcheddu Alessandro](#41-autovalutazione-e-lavori-futuri-1)
 - ### [4.2 Difficoltà incontrate e commenti per i docenti](#42-difficoltà-incontrate-e-commenti-per-i-docenti-1)
+    - #### [4.2.1 Porcheddu Alessandro](#42-difficoltà-incontrate-e-commenti-per-i-docenti-1)
 ## [Appendice A - Guida utente](#appendice-a---guida-utente-1)
 ## [Appendice B - Esercitazioni di laboratorio](#appendice-b---esercitazioni-di-laboratorio-1)
 - ### [B.0.1 alessandro.porcheddu@studio.unibo.it](#b01-alessandroporcheddustudiouniboit-1)
@@ -473,8 +475,31 @@ TODO
 Le difficoltà iniziali accennate nel paragrafo precedente fanno riferimento al non aver mai svolto un lavoro di gruppo prima d'ora, il che ha portato a una mia sottovalutazione della necessità di organizzarsi fin da subito in maniera efficace. Ho personalmente riscontrato anche difficoltà soprattutto nella parte iniziale di analisi, per la quale mi sembrava di avere pochi strumenti a mia disposizione. In particolare sarebbe stato utile aver avuto maggiore esposizione a sviluppare concetti _UML_ con una struttura guidata. Non nascondo, infatti, che la maggior difficoltà è stata mettersi a scrivere codice con ancora qualche dubbio sull'analisi e il design di alto livello. A questo proposito suggerirei ai docenti di fornine qualche tipo di strumento (anche magari una semplice _check list_) che permetta agli studenti di aver dei parametri oggettivi su cui basarsi per capire quando poter passare all'implementazione con un grado di confidenza mediamente alto.
 
 # Appendice A - Guida utente
-TODO
+## A.1 Schermata Home
 
+In questa schermata l'utente può rapidamente decidere di premere i pulsanti che, in ordine dall'alto verso il basso, permettono di:
+- **Dyno**: accedere alle prove con strumentazione fisica (OBD2 o banco prova)
+- **Simulation**: accedere alla sala simulazioni
+- **Charts**: accedere all'interfaccia per confrontare i grafici salvati
+- **Settings**: accedere alle impostazioni utente che servono per gestire sia simulazione che prove fisiche  
+
+![](src/main/resources/images/Main_View.png)
+
+## A.2 Demo del software
+Per avviare una demo dell'applicativo basta cliccare il pulsante per entrare nella **simulazione** e successivamente premere **Start Simulation**.
+Verrà simulata una prova a banco di un motore endotermico generico che terminerà in automatico una volta raggiunto il numero di giri impostato nei [Settings](#a3-impostazioni-utente).
+Una volta conclusa la prova si potrà:
+- farla ripartire da zero
+- salvare i dati generati dall simulazione in un file
+- importare dei dati per confrontarli _on-the-fly_
+- tornare alla [Schermata Home](#a1-schermata-home)
+
+![](src/main/resources/images/Simulation_View.png)
+
+## A.3 Impostazioni utente
+In questa sezione si possono personalizzare i valori di _default_ per quanto riguarda simulazione e prova reale.
+Si può anche scegliere il tipo di dinamometro da utilizzare per la prova (quindi reale oppure attraverso OBD2) attraverso una selezione a tendina.
+Si noti che il pulsante **Save** salva i dati in un file nella _home directory_ dell'utente che verrà poi utilizzato da quel momento in avanti.
 
 # Appendice B - Esercitazioni di laboratorio
 ## B.0.1 alessandro.porcheddu@studio.unibo.it
