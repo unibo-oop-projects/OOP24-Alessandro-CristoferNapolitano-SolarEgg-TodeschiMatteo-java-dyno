@@ -53,6 +53,7 @@ public class SettingsView extends Application implements View {
     private static final double TITLE_FONT_SIZE = 24.0;
 
     private final Controller controller;
+    private final UserSettings userSettings;
 
     // UI Components
     private Spinner<Double> loadcellLeverLengthSpinner;
@@ -67,6 +68,7 @@ public class SettingsView extends Application implements View {
      */
     public SettingsView(final Controller controller) {
         this.controller = controller;
+        this.userSettings = controller.getUserSettings();
     }
 
     /**
@@ -194,7 +196,7 @@ public class SettingsView extends Application implements View {
         label.getStyleClass().add(SETTING_LABEL_STYLE);
 
         loadcellLeverLengthSpinner = createDoubleSpinner(
-            UserSettings.getLoadcellLeverLength(),
+            this.userSettings.getLoadcellLeverLength(),
             MIN_VALUE,
             MAX_VALUE,
             STEP
@@ -215,7 +217,7 @@ public class SettingsView extends Application implements View {
         label.getStyleClass().add(SETTING_LABEL_STYLE);
 
         vehicleMassSpinner = createDoubleSpinner(
-            UserSettings.getVehicleMass(),
+            this.userSettings.getVehicleMass(),
             MIN_VALUE,
             MAX_VALUE,
             VEHICLE_MASS_STEP
@@ -236,7 +238,7 @@ public class SettingsView extends Application implements View {
         label.getStyleClass().add(SETTING_LABEL_STYLE);
 
         driveTrainEfficiencySpinner = createDoubleSpinner(
-            UserSettings.getDriveTrainEfficiency(),
+            this.userSettings.getDriveTrainEfficiency(),
             EFFICIENCY_MIN,
             1.0,
             STEP
@@ -258,7 +260,7 @@ public class SettingsView extends Application implements View {
 
         dynoTypeComboBox = new ComboBox<>();
         dynoTypeComboBox.getItems().addAll(DataSource.OBD2, DataSource.REAL_DYNO);
-        dynoTypeComboBox.setValue(UserSettings.getDynoType());
+        dynoTypeComboBox.setValue(this.userSettings.getDynoType());
         dynoTypeComboBox.getStyleClass().add("combo-box");
 
         // Custom cell factory to display the actual names
@@ -350,7 +352,7 @@ public class SettingsView extends Application implements View {
      * Resets all settings to their default values.
      */
     private void resetToDefaults() {
-        UserSettings.resetToDefaults();
+        this.userSettings.resetToDefaults();
         loadCurrentSettings();
     }
 
@@ -358,9 +360,9 @@ public class SettingsView extends Application implements View {
      * Loads current settings into the UI controls.
      */
     private void loadCurrentSettings() {
-        loadcellLeverLengthSpinner.getValueFactory().setValue(UserSettings.getLoadcellLeverLength());
-        vehicleMassSpinner.getValueFactory().setValue(UserSettings.getVehicleMass());
-        driveTrainEfficiencySpinner.getValueFactory().setValue(UserSettings.getDriveTrainEfficiency());
-        dynoTypeComboBox.setValue(UserSettings.getDynoType());
+        loadcellLeverLengthSpinner.getValueFactory().setValue(this.userSettings.getLoadcellLeverLength());
+        vehicleMassSpinner.getValueFactory().setValue(this.userSettings.getVehicleMass());
+        driveTrainEfficiencySpinner.getValueFactory().setValue(this.userSettings.getDriveTrainEfficiency());
+        dynoTypeComboBox.setValue(this.userSettings.getDynoType());
     }
 }

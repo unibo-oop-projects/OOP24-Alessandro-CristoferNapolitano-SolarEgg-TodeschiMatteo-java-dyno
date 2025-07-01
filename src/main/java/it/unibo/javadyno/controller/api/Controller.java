@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.api.UserSettingDef;
+import it.unibo.javadyno.model.data.api.UserSettings;
 import it.unibo.javadyno.view.api.View;
 import javafx.stage.Stage;
 
@@ -72,6 +73,14 @@ public interface Controller {
      * @param value the new value for the setting
      */
     void updateSetting(UserSettingDef setting, double value);
+
+    /**
+     * Gets the current user settings.
+     *
+     * @return the current user settings, not as a copy but as a reference 
+     *     to the original object, so changes to the settings will be reflected
+     */
+    UserSettings getUserSettings();
 
     /**
      * Imports prevoious data from a file.

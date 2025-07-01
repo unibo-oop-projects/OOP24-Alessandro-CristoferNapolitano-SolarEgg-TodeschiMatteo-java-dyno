@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.api.ElaboratedData;
 import it.unibo.javadyno.model.data.api.RawData;
+import it.unibo.javadyno.model.data.api.UserSettings;
 import it.unibo.javadyno.model.dyno.api.Dyno;
 
 class DataElaboratorImplTest {
@@ -21,7 +22,7 @@ class DataElaboratorImplTest {
 
     @BeforeEach
     void setUp() {
-        this.dataElaborator = new DataElaboratorImpl(new TestOBD2Dyno());
+        this.dataElaborator = new DataElaboratorImpl(new TestOBD2Dyno(), new UserSettings());
     }
 
     @Test
