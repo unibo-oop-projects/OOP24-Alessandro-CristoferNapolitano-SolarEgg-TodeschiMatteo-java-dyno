@@ -436,7 +436,6 @@ public final class ControllerImpl implements Controller {
         private static final Double INITIAL_THROTTLE_POSITION = 10.0;
         private static final double RPM_INCREASE_FACTOR = 1.03;
         private static final int MAX_ENGINE_RPM = 6500;
-        private static final int MIN_ENGINE_RPM = 800;
         private static final double MAX_TORQUE = 400.0;
         private static final double TORQUE_PEAK_RPM = 3500.0;
         private static final double TORQUE_VARIATION = 15.0;
@@ -451,7 +450,6 @@ public final class ControllerImpl implements Controller {
         private final Random rand = new Random();
         private RawData prevRawData;
         private boolean isActive;
-        private boolean isIncreasing = true;
 
         TestRealDyno() {
             this.prevRawData = RawData.builder()
@@ -471,18 +469,11 @@ public final class ControllerImpl implements Controller {
 
             final int currentRpm = this.prevRawData.engineRPM().get();
             final Integer newRpm;
-
-            if (isIncreasing) {
-                newRpm = Math.min(MAX_ENGINE_RPM, (int) (currentRpm * RPM_INCREASE_FACTOR));
-                if (newRpm >= MAX_ENGINE_RPM) {
-                    isActive = false;
-                }
-            } else {
-                newRpm = Math.max(MIN_ENGINE_RPM, (int) (currentRpm / RPM_INCREASE_FACTOR));
-                if (newRpm <= MIN_ENGINE_RPM) {
-                    isIncreasing = true;
-                }
+            newRpm = Math.min(MAX_ENGINE_RPM, (int) (currentRpm * RPM_INCREASE_FACTOR));
+            if (newRpm >= MAX_ENGINE_RPM) {
+                isActive = false;
             }
+
 
             final double rpmRatio = newRpm / TORQUE_PEAK_RPM;
             final double baseTorque;
@@ -501,7 +492,7 @@ public final class ControllerImpl implements Controller {
                 Math.min(MAX_ENGINE_TEMPERATURE, currentTemp + tempIncrease + rand.nextGaussian() * 0.5));
 
             final double currentThrottle = this.prevRawData.throttlePosition().get();
-            final double throttleChange = isIncreasing ? THROTTLE_INCREASE_RATE : -THROTTLE_INCREASE_RATE;
+            final double throttleChange = THROTTLE_INCREASE_RATE;
             final Double newThrottlePosition = Math.max(MIN_THROTTLE_POSITION,
                 Math.min(MAX_THROTTLE_POSITION, currentThrottle + throttleChange + rand.nextGaussian() * 2.0));
 
