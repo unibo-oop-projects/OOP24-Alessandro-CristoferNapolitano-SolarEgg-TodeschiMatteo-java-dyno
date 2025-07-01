@@ -80,7 +80,6 @@ public abstract class AbstractSerialCommunicator<T> implements MCUCommunicator<T
                         "No serial ports available for connection",
                         Optional.of("Verify USB connection or drivers.")
                     );
-                    //throw new IllegalStateException("No serial ports available for connection.");
                 }
                 for (final SerialPort serialPort : ports) {
                     if (serialPort.getVendorID() != INVALID_VENDOR_ID) {
@@ -90,10 +89,9 @@ public abstract class AbstractSerialCommunicator<T> implements MCUCommunicator<T
                 }
                 AlertMonitor.warningNotify(
                     "No valid serial ports found.", 
-                    Optional.empty()
+                    Optional.of("Check if the Dyno is connected or if the drivers are installed.")
                 );
-                //throw new IllegalStateException("No valid serial ports.");
-
+                return;
             } else {
                 this.commPort = SerialPort.getCommPort(this.suppliedPort);
 
@@ -273,6 +271,9 @@ public abstract class AbstractSerialCommunicator<T> implements MCUCommunicator<T
                     "Serial port disconnected: " + commPort.getSystemPortName(),
                     Optional.empty()
                 );
+                for (final Consumer<T> listener : messageListeners) {
+                    listener.accept(null);
+                }
             }
         }
     }

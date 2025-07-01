@@ -36,8 +36,14 @@ Ivan Crimaldi
     - #### [3.2.2 Surname Name](#322-surname-name-1)
 ## [4. Commenti finali](#capitolo-4---commenti-finali)
 - ### [4.1 Autovalutazione e lavori futuri](#41-autovalutazione-e-lavori-futuri-1)
+    - #### [4.1.1 Porcheddu Alessandro](#41-autovalutazione-e-lavori-futuri-1)
 - ### [4.2 Difficoltà incontrate e commenti per i docenti](#42-difficoltà-incontrate-e-commenti-per-i-docenti-1)
+    - #### [4.2.1 Porcheddu Alessandro](#42-difficoltà-incontrate-e-commenti-per-i-docenti-1)
 ## [Appendice A - Guida utente](#appendice-a---guida-utente-1)
+- ### [A.1 Schermata home](#a1-schermata-home)
+- ### [A.2 Demo del software](#a2-demo-del-software)
+- ### [A.3 Impostazioni utente](#a3-impostazioni-utente)
+- ### [A.4 Confronto Grafici](#a4-confronto-grafici)
 ## [Appendice B - Esercitazioni di laboratorio](#appendice-b---esercitazioni-di-laboratorio-1)
 - ### [B.0.1 alessandro.porcheddu@studio.unibo.it](#b01-alessandroporcheddustudiouniboit-1)
 - ### [B.0.2 matteo.todeschi@studio.unibo.it](#b02-matteotodeschistudiouniboit-1)
@@ -509,24 +515,54 @@ TODO
 
 # Capitolo 4 - Commenti finali
 ## 4.1 Autovalutazione e lavori futuri
-### Surname Name
+### 4.1.1 Porcheddu Alessandro
+Nonostante le difficoltà iniziali mi ritengo molto soddisfatto del progetto, in quanto sono contento di aver lavorato su un _proof-of-concept_ orientato verso l'utilizzo nel mondo reale. Sono altrettanto contento di essere riuscivo a scrivere codice e migliorarlo iterativamente ogni volta che pensavo di riuscire ad astrarre meglio alcuni concetti, anche se riconosco di aver tralasciato alcune parti secondarie per questioni di tempo. In particolare, non mi sarei dovuto far spavantare dall'idea di mettermi troppo presto a scrivere codice e non mi sarei dovuto fossilizzare troppo sull'analisi progettuale. Ritengo quest'ultima molto importante ma riconosco anche che il coordinamento di gruppo sull'analisi di un dominio non molto documentato è risultata molto lenta e macchinosa. Per quanto riguarda il mio ruolo nel progetto sono molto soddisfatto di essermi messo spesso in prima fila per aiutare i colleghi e, poichè il dominio del progetto era stato proposto da me, mi ritenevo anche in parte responsabile qualora sorgesse un dubbio. Inoltre sono anche particolarmente fiero di aver iniziato ad usare diversi strumenti accessori come _GitHub workflows_, estensioni per _VSCode_ (in particolare averne creata una ad-hoc per i report di _Gradle_) e macchine virtuali in locale per testare l'applicativo su diversi sistemi operativi. Aggiungo infine che sono molto propenso a continuare lo sviluppo di questo software per provare a fornire un'alternativa gratuita ed _open source_ a quelli attualmente in utilizzo nel panorama automobilistico, soprattuto amatoriale.
+
+### 4.1.2 Surname Name
 TODO
 
-### Surname Name
+### 4.1.3 Surname Name
 TODO
 
-### Surname Name
-TODO
-
-### Surname Name
+### 4.1.4 Surname Name
 TODO
 
 ## 4.2 Difficoltà incontrate e commenti per i docenti
-TODO
+### 4.2.1 Porcheddu Alessandro
+Le difficoltà iniziali accennate nel paragrafo precedente fanno riferimento al non aver mai svolto un lavoro di gruppo prima d'ora, il che ha portato a una mia sottovalutazione della necessità di organizzarsi fin da subito in maniera efficace. Ho personalmente riscontrato anche difficoltà soprattutto nella parte iniziale di analisi, per la quale mi sembrava di avere pochi strumenti a mia disposizione. In particolare sarebbe stato utile aver avuto maggiore esposizione a sviluppare concetti _UML_ con una struttura guidata. Non nascondo, infatti, che la maggior difficoltà è stata mettersi a scrivere codice con ancora qualche dubbio sull'analisi e il design di alto livello. A questo proposito suggerirei ai docenti di fornine qualche tipo di strumento (anche magari una semplice _check list_) che permetta agli studenti di aver dei parametri oggettivi su cui basarsi per capire quando poter passare all'implementazione con un grado di confidenza mediamente alto.
 
 # Appendice A - Guida utente
-TODO
+## A.1 Schermata Home
 
+In questa schermata l'utente può rapidamente decidere di premere i pulsanti che, in ordine dall'alto verso il basso, permettono di:
+- **Dyno**: accedere alle prove con strumentazione fisica (OBD2 o banco prova)
+- **Simulation**: accedere alla sala simulazioni
+- **Charts**: accedere all'interfaccia per confrontare i grafici salvati
+- **Settings**: accedere alle impostazioni utente che servono per gestire sia simulazione che prove fisiche  
+
+![](src/main/resources/images/Main_View.png)
+
+## A.2 Demo del software
+Per avviare una demo dell'applicativo basta cliccare il pulsante per entrare nella **simulazione** e successivamente premere **Start Simulation**.
+Verrà simulata una prova a banco di un motore endotermico generico che terminerà in automatico una volta raggiunto il numero di giri impostato nei [Settings](#a3-impostazioni-utente).
+Una volta conclusa la prova si potrà:
+- farla ripartire da zero
+- salvare i dati generati dall simulazione in un file
+- importare dei dati per confrontarli _on-the-fly_
+- tornare alla [Schermata Home](#a1-schermata-home)
+
+![](src/main/resources/images/Simulation_View.png)
+
+## A.3 Impostazioni utente
+In questa sezione si possono personalizzare i valori di _default_ per quanto riguarda simulazione e prova reale.
+Si può anche scegliere il tipo di dinamometro da utilizzare per la prova (quindi reale oppure attraverso OBD2) attraverso una selezione a tendina.
+Si noti che il pulsante **Save** salva i dati in un file nella _home directory_ dell'utente che verrà poi utilizzato da quel momento in avanti.
+
+## A.4 Confronto grafici
+L'interfaccia di questa schermata è molto semplice e permette di importare dei grafici attraverso il relativo pulsante.
+Una volta importato almeno un grafico si potrà scegliere di nascondere o rivelare le curve importate con il pulsante nella parte inferiore e il relativo menù a comparsa.
+
+![](src/main/resources/images/Charts_View.png)
 
 # Appendice B - Esercitazioni di laboratorio
 ## B.0.1 alessandro.porcheddu@studio.unibo.it

@@ -47,7 +47,7 @@ public final class ButtonsPanel extends VBox {
         backToMenuButton = new Button(type.getBackToMenu());
         reloadButton = new Button(type.getReloadButton());
         startSimulationButton.setOnAction(e -> {
-            controller.startEvaluation(dataSource);
+            controller.startEvaluation(controller.getUserSettings().getDynoType());
             this.getChildren().remove(startSimulationButton);
             this.getChildren().addFirst(stopSimulationButton);
         });
