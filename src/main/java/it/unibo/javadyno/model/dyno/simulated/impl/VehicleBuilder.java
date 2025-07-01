@@ -29,10 +29,10 @@ public final class VehicleBuilder {
     /** transmission gear ratios. */
     private double[] gearRatio;
     // --- thermal model parameters (with defaults) ---
-    /** thermal capacity [J/°C]. */
-    private double thermalCapacity;
-    /** cooling coefficient [W/°C]. */
-    private double coolingCoeff;
+    /** target temperature [°C]. */
+    private double targetTemperature;
+    /** time constant [s]. */
+    private double timeCostant;
     /** custom temperature model, if injected. */
     private TemperatureModel temperatureModel;
     // --- wheel parameters ---
@@ -169,14 +169,13 @@ public final class VehicleBuilder {
     /**
      * VehicleBuilder with temperature model for the engine, params injected.
      *
-     * @param thermalCapacityValue thermal capacity [J/°C]
-     * @param coolingCoeffValue cooling coefficient [W/°C]
+     * @param targetTemperature target temperture [°C]
+     * @param timeCostant time constant [s]
      * @return VehicleBuilder
      */
-    public VehicleBuilder withThermalParams(final double thermalCapacityValue,
-                                            final double coolingCoeffValue) {
-        this.thermalCapacity = thermalCapacityValue;
-        this.coolingCoeff = coolingCoeffValue;
+    public VehicleBuilder withThermalParams(final double targettemperature, final double timecostant) {
+        this.targetTemperature = targettemperature;
+        this.timeCostant = timecostant;
         return this;
     }
 
@@ -209,7 +208,7 @@ public final class VehicleBuilder {
         //if no custom TemperatureModel
         TemperatureModel tm = this.temperatureModel;
         if (tm == null) {
-            tm = new SimpleTemperatureModel(weatherStation.getTemperature(), thermalCapacity, coolingCoeff);
+            tm = new TargetTemperatureModel(weatherStation.getTemperature(), targetTemperature, timeCostant);
         }
 
         //computing the inertia of the power train
