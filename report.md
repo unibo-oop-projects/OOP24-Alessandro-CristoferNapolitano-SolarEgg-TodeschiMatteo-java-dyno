@@ -424,9 +424,11 @@ UML TODO
 Sono stati realizzati test automatici per le principali parti di Model in modo da facilitare lo sviluppo fin dalle prime fasi.
 Per tale scopo è stato adottato _JUnit_ e componenti derivate che, inoltre, ci hanno permesso di controllare il risultato di tali test su più piattaforme in contemporanea grazie all'integrazione con _Gradle_ e _GitHub workflows_.
 
-* OBD2DynoTest: test progettato per verificare il corretto funzionamento della logica di acquisizione dati tramite l'interfaccia OBD2. Vengono inoltre simulati diversi scenari di input per assicurare che i dati, come i giri del motore e la velocità del veicolo, vengano interpretati correttamente e che le operazioni di conversione siano accurate.
-* SerialCommunicatorTest: classe implementata per un veloce riscontro all'inizio dello sviluppo per quanto riguarda l'interfacciamento con la libreria _jSerialComm_
-* DataElaboratorImplTest: in questo caso il test prevede la crezione di dati pseudo realistici per la verifica della correttezza dei calcoli sapendo il "trend" a priori. In particolare viene testata la componente di calcolo dell'OBD2 che risulta molto più articolata di quella del banco reale.
+* `OBD2DynoTest`: test progettato per verificare il corretto funzionamento della logica di acquisizione dati tramite l'interfaccia OBD2. Vengono inoltre simulati diversi scenari di input per assicurare che i dati, come i giri del motore e la velocità del veicolo, vengano interpretati correttamente e che le operazioni di conversione siano accurate.
+* `SerialCommunicatorTest`: classe implementata per un veloce riscontro all'inizio dello sviluppo per quanto riguarda l'interfacciamento con la libreria _jSerialComm_
+* `DataElaboratorImplTest`: in questo caso il test prevede la crezione di dati pseudo realistici per la verifica della correttezza dei calcoli sapendo il "trend" a priori. In particolare viene testata la componente di calcolo dell'OBD2 che risulta molto più articolata di quella del banco reale.
+* `build-and-deploy`: questo test prevede l'esecuzione in remoto su 3 _GitHub runners_ con sistemi operativi diversi (Ubuntu, Windows e MacOs) dei test di JUnit per assicurarsi la compatibilità multipiattaforma. Se nessun test fallisce viene anche rilasciato nel repo github un _fat jar_ dell'applicazione nella sezione _Releases_. Si noti che tutto ciò avviene solo in caso di rilevamento di _git tag_ per gestire il controllo delle versioni dell'applicazione e per rispettare i consumi previsti dal piano gratuito di _GitHub_.
+
 ## 3.2 Note di sviluppo
 ### 3.2.1 Porcheddu Alessandro
 #### Utilizzo di `LoopingIterator` dalla libreria **Apache Commons Collections**
