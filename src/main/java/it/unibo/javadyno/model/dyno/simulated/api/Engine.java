@@ -47,5 +47,4 @@ public interface Engine {
      * @return engine temperature [°C]
      */
     double getEngineTemperature();
-    
 }
