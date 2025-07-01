@@ -36,7 +36,8 @@ public final class ChartsPanel extends VBox {
     private static final String X_AXIS_LABEL = "RPM (Revolutions Per Minute)";
     private static final String Y_AXIS_LABEL = "Horsepower (HP)";
     private static final String Y2_AXIS_LABEL = "Torque (Nm)";
-    private static final String GENERAL_SERIES_NAME = "Power";
+    private static final String FIRST_SERIES_NAME = "Power";
+    private static final String SECOND_SERIES_NAME = "Torque";
 
     private final JFreeChart lineChart;
     private final ChartViewer viewer;
@@ -79,9 +80,9 @@ public final class ChartsPanel extends VBox {
         viewer = new ChartViewer(this.lineChart);
         viewer.setPrefSize(screenBounds.getWidth() * CHART_WIDTH_FACTOR, screenBounds.getHeight() * CHART_HEIGH_FACTOR);
         viewer.setMinSize(screenBounds.getWidth() * CHART_MINIMUM_FACTOR, screenBounds.getHeight() * CHART_MINIMUM_FACTOR);
-        chartManager.addNewSeries(this.lineChart, GENERAL_SERIES_NAME, ChartsManager.YAxisLevel.FIRST);
+        chartManager.addNewSeries(this.lineChart, FIRST_SERIES_NAME, ChartsManager.YAxisLevel.FIRST);
         chartManager.addYAxis(this.lineChart, Y2_AXIS_LABEL);
-        chartManager.addNewSeries(this.lineChart, GENERAL_SERIES_NAME, ChartsManager.YAxisLevel.SECOND);
+        chartManager.addNewSeries(this.lineChart, SECOND_SERIES_NAME, ChartsManager.YAxisLevel.SECOND);
         chartManager.setDarkTheme(this.lineChart);
         chartManager.setBackgroundImage(this.lineChart, BG_IMAGE);
         this.getChildren().addAll(viewer, manageButtons);
@@ -104,7 +105,7 @@ public final class ChartsPanel extends VBox {
      * @param y2Valu the second y-axis value
      */
     public void addSingleData(final Number xValue, final Number yValue, final Number y2Valu) {
-        addPointToChart(GENERAL_SERIES_NAME, xValue, yValue, y2Valu);
+        addPointToChart(FIRST_SERIES_NAME, SECOND_SERIES_NAME, xValue, yValue, y2Valu);
     }
 
     /**
@@ -115,24 +116,25 @@ public final class ChartsPanel extends VBox {
      * @param y2Values the list of second y-axis values
      */
     public void addAllData(final List<Number> xValues, final List<Number> yValues, final List<Number> y2Values) {
-        final String seriesName = String.format("%s(Import %d)", GENERAL_SERIES_NAME, this.importedOrder);
-        final Button deleteButton = new Button("Hide " + seriesName);
+        final String firstSeriesName = String.format("%s(%d)", FIRST_SERIES_NAME, this.importedOrder);
+        final String secondSeriesName = String.format("%s(%d)", SECOND_SERIES_NAME, this.importedOrder);
         final int order = this.importedOrder;
+        final Button deleteButton = new Button("Hide Series " + order);
         deleteButtons.put(deleteButton, true);
         deleteButton.setOnAction(e -> {
             chartManager.setSeriesVisibility(this.lineChart, order, !this.deleteButtons.get(deleteButton));
             this.deleteButtons.put(deleteButton, !this.deleteButtons.get(deleteButton));
             if (this.deleteButtons.get(deleteButton)) {
-                deleteButton.setText("Hide " + seriesName);
+                deleteButton.setText("Hide Series " + order);
             } else {
-                deleteButton.setText("Show " + seriesName);
+                deleteButton.setText("Show Series " + order);
             }
         });
         this.importedOrder++;
-        chartManager.addNewSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.FIRST);
-        chartManager.addNewSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.SECOND);
-        chartManager.addAllPointsToSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.FIRST, xValues, yValues);
-        chartManager.addAllPointsToSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.SECOND, xValues, y2Values);
+        chartManager.addNewSeries(this.lineChart, firstSeriesName, ChartsManager.YAxisLevel.FIRST);
+        chartManager.addNewSeries(this.lineChart, secondSeriesName, ChartsManager.YAxisLevel.SECOND);
+        chartManager.addAllPointsToSeries(this.lineChart, firstSeriesName, ChartsManager.YAxisLevel.FIRST, xValues, yValues);
+        chartManager.addAllPointsToSeries(this.lineChart, secondSeriesName, ChartsManager.YAxisLevel.SECOND, xValues, y2Values);
     }
 
     /**
@@ -143,17 +145,17 @@ public final class ChartsPanel extends VBox {
      * @param yValue the y-axis value
      * @param y2Value the second y-axis value
      */
-    private void addPointToChart(final String seriesName, final Number xValue, final Number yValue, final Number y2Value) {
+    private void addPointToChart(final String firstSeriesName, final String secondSeriesName, final Number xValue, final Number yValue, final Number y2Value) {
         chartManager.addPointToSeries(
             this.lineChart,
-            seriesName,
+            firstSeriesName,
             ChartsManager.YAxisLevel.FIRST,
             xValue,
             yValue
         );
         chartManager.addPointToSeries(
             this.lineChart,
-            seriesName,
+            secondSeriesName,
             ChartsManager.YAxisLevel.SECOND,
             xValue,
             y2Value

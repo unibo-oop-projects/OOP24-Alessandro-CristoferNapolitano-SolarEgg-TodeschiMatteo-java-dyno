@@ -23,11 +23,14 @@ import javafx.stage.Stage;
  * Simulation view class for the JavaDyno application.
  */
 public class ChartsViewer extends Application implements View {
+
+    public static final double WIDTH_RATIO = 0.8; //percentage of screen width
+    public static final double HEIGHT_RATIO = 0.8; //percentage of screen height
+
     private static final String STAGE_TITLE = "JavaDyno - Charts Viewer";
     private static final String CSS_FILE = "css/SimulationStyle.css";
     private static final String CSS_MAIN_CONTAINER_TAG = "main-container";
-    private static final double WIDTH_RATIO = 0.8; //percentage of screen width
-    private static final double HEIGHT_RATIO = 0.8; //percentage of screen height
+    private static final String CSS_BUTTONS_TAG = "buttons-panel";
 
     private final Controller controller;
     private final ChartsPanel chartsPanel = new ChartsPanel();
@@ -53,13 +56,16 @@ public class ChartsViewer extends Application implements View {
         buttonsPanel.setAlignment(Pos.CENTER);
         final Button importDataButton = new Button(LabelsType.OBD.getLoadButton());
         final Button backToMenuButton = new Button(LabelsType.OBD.getBackToMenu());
-        buttonsPanel.getStyleClass().add("buttons-panel");
+        buttonsPanel.getStyleClass().add(CSS_BUTTONS_TAG);
         buttonsPanel.getChildren().addAll(importDataButton, backToMenuButton);
         importDataButton.setOnAction(e -> {
             IOUtility.handleImport(this.controller, primaryStage);
         });
         backToMenuButton.setOnAction(e -> {
             this.controller.showMainMenu(primaryStage);
+            primaryStage.setWidth(Screen.getPrimary().getBounds().getWidth() * MainMenu.WIDTH_RATIO);
+            primaryStage.setHeight(Screen.getPrimary().getBounds().getHeight() * MainMenu.HEIGHT_RATIO);
+            primaryStage.centerOnScreen();
         });
         mainContainer.getStyleClass().add(CSS_MAIN_CONTAINER_TAG);
         mainContainer.getChildren().addAll(buttonsPanel, chartsPanel);
