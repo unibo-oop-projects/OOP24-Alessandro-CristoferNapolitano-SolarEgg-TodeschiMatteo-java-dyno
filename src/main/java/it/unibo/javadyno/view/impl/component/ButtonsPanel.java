@@ -63,6 +63,9 @@ public final class ButtonsPanel extends VBox {
      */
     public void reachedEnd() {
         this.getChildren().remove(stopSimulationButton);
+        this.getChildren().remove(reloadButton);
+        this.getChildren().remove(saveDataButton);
+        this.getChildren().remove(importDataButton);
         this.getChildren().addFirst(importDataButton);
         this.getChildren().addFirst(saveDataButton);
         this.getChildren().addFirst(reloadButton);
