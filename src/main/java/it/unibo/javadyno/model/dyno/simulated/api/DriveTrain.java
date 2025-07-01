@@ -39,6 +39,8 @@ public interface DriveTrain {
 
     /**
      * get current transmission gear.
+     *
+     * @return index of transmission gear (one-based)
      */
     int getCurrentGear();
 
@@ -51,9 +53,8 @@ public interface DriveTrain {
 
     /**
      * get engine generated torque.
-     * 
+     *
      * @return generated torque [Nm]
      */
     double getGeneratedTorque();
-    
 }
