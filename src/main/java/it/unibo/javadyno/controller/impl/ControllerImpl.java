@@ -324,6 +324,17 @@ public final class ControllerImpl implements Controller {
             case AIR_DENSITY -> this.userSettings.setAirDensity(value);
             case DRIVE_TRAIN_EFFICIENCY -> this.userSettings.setDriveTrainEfficiency(value);
             case DYNO_TYPE -> this.userSettings.setDynoType(value);
+            case BASE_TORQUE -> this.userSettings.setBaseTorque(value);
+            case TORQUE_PER_RAD -> this.userSettings.setTorquePerRad(value);
+            case ENGINE_INERTIA -> this.userSettings.setEngineInertia(value);
+            case GEAR_RATIOS -> this.userSettings.setGearRatios(new double[]{value});
+            case WHEEL_MASS -> this.userSettings.setWheelMass(value);
+            case WHEEL_RADIUS -> this.userSettings.setWheelRadius(value);
+            case ROLLING_COEFF -> this.userSettings.setRollingCoeff(value);
+            default -> AlertMonitor.errorNotify(
+                "Unknown setting",
+                Optional.of("The setting " + setting + " is not recognized.")
+            );
         }
         saveUserSettingsToFile(SETTINGS_FILE_NAME, this.userSettings);
     }
