@@ -126,7 +126,7 @@ public class ChartsManagerImpl implements ChartsManager {
      * {@inheritDoc}
      */
     @Override
-    public void setSeriesVisibility(JFreeChart chart, int seriesIndex, boolean isVisible) {
+    public void setSeriesVisibility(final JFreeChart chart, final int seriesIndex, final boolean isVisible) {
         for (final ChartsManager.YAxisLevel level : ChartsManager.YAxisLevel.values()) {
         final var plot = chart.getXYPlot();
             if (plot.getRenderer(level.getLevel()) != null) {

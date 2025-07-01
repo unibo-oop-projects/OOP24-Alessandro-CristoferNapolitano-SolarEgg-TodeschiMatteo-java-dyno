@@ -30,7 +30,8 @@ public final class ChartsPanel extends VBox {
     private static final double CHART_HEIGH_FACTOR = 0.7;
     private static final double CHART_WIDTH_FACTOR = 0.6;
     private static final double CHART_MINIMUM_FACTOR = 0.5;
-
+    private static final String MANAGE_BUTTON = "Manage Series";
+    private static final String CLOSE_BUTTON = "Close";
     private static final String CHARTS_NAME = "RPM vs Power";
     private static final String X_AXIS_LABEL = "RPM (Revolutions Per Minute)";
     private static final String Y_AXIS_LABEL = "Horsepower (HP)";
@@ -40,11 +41,11 @@ public final class ChartsPanel extends VBox {
     private final JFreeChart lineChart;
     private final ChartViewer viewer;
     private final Map<Button, Boolean> deleteButtons = new LinkedHashMap<>();
-    private final Button manageButtons = new Button("Manage Series");
+    private final Button manageButtons = new Button(MANAGE_BUTTON);
     private final Popup deletePopup = new Popup();
     private final ChartsFactory chartsFactory = new DefaultChartsFactory();
     private final ChartsManager chartManager = new ChartsManagerImpl();
-    private int importedOrder=1;
+    private int importedOrder = 1;
 
     /**
      * Default constructor for ChartsPanel.
@@ -62,8 +63,8 @@ public final class ChartsPanel extends VBox {
             if (deleteButtons.isEmpty()) {
                 return;
             }
-            VBox popupContent = new VBox(POPUP_SPACING);
-            Button closeButton = new Button("Close");
+            final VBox popupContent = new VBox(POPUP_SPACING);
+            final Button closeButton = new Button(CLOSE_BUTTON);
             closeButton.setOnAction(event -> deletePopup.hide());
             popupContent.getStyleClass().add(CSS_POPUP_TAG);
             popupContent.getChildren().setAll(deleteButtons.keySet());
