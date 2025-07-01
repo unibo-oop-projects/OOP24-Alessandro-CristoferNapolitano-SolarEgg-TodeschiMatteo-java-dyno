@@ -271,6 +271,9 @@ public abstract class AbstractSerialCommunicator<T> implements MCUCommunicator<T
                     "Serial port disconnected: " + commPort.getSystemPortName(),
                     Optional.empty()
                 );
+                for (final Consumer<T> listener : messageListeners) {
+                    listener.accept(null);
+                }
             }
         }
     }

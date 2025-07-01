@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
+import org.json.JSONWriter;
 
 import it.unibo.javadyno.controller.impl.AlertMonitor;
 import it.unibo.javadyno.model.data.communicator.api.JsonScheme;
@@ -41,10 +42,8 @@ public final class JsonWebSocketCommunicator extends AbstractWebSocketCommunicat
     @Override
     public void send(final String message) {
         Objects.requireNonNull(message, "Message cannot be null");
-        final String jsonMessage = new JSONStringer()
-            .object()
-            .key(PAYLOAD_STRING)
-            .value(message)
+        final String jsonMessage = new JSONObject()
+            .put(PAYLOAD_STRING, message)
             .toString();
         super.send(jsonMessage);
     }
