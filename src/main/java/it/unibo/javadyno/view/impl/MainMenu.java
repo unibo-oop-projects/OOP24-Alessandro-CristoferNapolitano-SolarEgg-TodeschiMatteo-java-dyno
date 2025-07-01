@@ -68,6 +68,7 @@ public class MainMenu extends Application implements View {
         });
         chartsViewerButton.setOnAction(e -> {
             controller.showView(primaryStage, new ChartsViewer(controller));
+            
         });
         settingsButton.setOnAction(e -> {
             controller.showView(primaryStage, new SettingsView(controller));

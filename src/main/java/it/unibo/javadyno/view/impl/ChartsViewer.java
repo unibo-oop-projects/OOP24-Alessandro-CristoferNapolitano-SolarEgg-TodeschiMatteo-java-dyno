@@ -7,6 +7,7 @@ import it.unibo.javadyno.model.data.api.ElaboratedData;
 import it.unibo.javadyno.view.api.View;
 import it.unibo.javadyno.view.impl.component.LabelsType;
 import it.unibo.javadyno.view.impl.component.ChartsPanel;
+import it.unibo.javadyno.view.impl.component.IOUtility;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
@@ -15,7 +16,6 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -56,7 +56,7 @@ public class ChartsViewer extends Application implements View {
         buttonsPanel.getStyleClass().add("buttons-panel");
         buttonsPanel.getChildren().addAll(importDataButton, backToMenuButton);
         importDataButton.setOnAction(e -> {
-            controller.importDataFromFile(new FileChooser().showOpenDialog(primaryStage));
+            IOUtility.handleImport(this.controller, primaryStage);
         });
         backToMenuButton.setOnAction(e -> {
             this.controller.showMainMenu(primaryStage);
