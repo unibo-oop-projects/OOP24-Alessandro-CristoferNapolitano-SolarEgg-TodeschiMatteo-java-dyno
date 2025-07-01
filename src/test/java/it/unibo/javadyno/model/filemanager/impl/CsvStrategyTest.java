@@ -21,10 +21,32 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 final class CsvStrategyTest {
 
+    // Test constants to avoid magic numbers
+    private static final int TEST_ENGINE_RPM_1 = 3000;
+    private static final double TEST_ENGINE_TEMP_1 = 90.5;
+    private static final int TEST_ROLLER_RPM_1 = 1500;
+    private static final double TEST_TORQUE_1 = 200.0;
+    private static final int TEST_VEHICLE_SPEED_1 = 100;
+    private static final double TEST_THROTTLE_POS_1 = 75.5;
+    private static final int TEST_BARO_PRESSURE_1 = 1013;
+    private static final int TEST_AMBIENT_TEMP_1 = 25;
+    private static final double TEST_EXHAUST_TEMP_1 = 800.0;
+    private static final double TEST_POWER_KW_1 = 62.83;
+    private static final double TEST_POWER_HP_1 = 84.25;
+    private static final double TEST_CORRECTED_TORQUE_1 = 205.0;
+
+    private static final int TEST_ENGINE_RPM_2 = 3100;
+    private static final double TEST_ENGINE_TEMP_2 = 91.0;
+    private static final int TEST_ROLLER_RPM_2 = 1550;
+    private static final double TEST_TORQUE_2 = 210.0;
+    private static final int TEST_BARO_PRESSURE_2 = 1012;
+    private static final double TEST_EXHAUST_TEMP_2 = 810.0;
+    private static final double TEST_POWER_KW_2 = 67.9;
+    private static final double TEST_POWER_HP_2 = 91.0;
+    private static final double TEST_CORRECTED_TORQUE_2 = 215.0;
+
     private CsvStrategy strategy;
 
-    // @TempDir provides a temporary directory for file I/O operations during tests.
-    // This directory and its contents are automatically deleted after the test runs.
     @TempDir
     private File tempDir;
 
@@ -35,74 +57,69 @@ final class CsvStrategyTest {
 
     @Test
     void testExportAndImportRoundTrip() throws IOException {
-        // 1. Arrange: Create sample data and a temporary file path.
         final List<ElaboratedData> originalData = createSampleData();
         final File testFile = new File(tempDir, "test_data.csv");
 
-        // 2. Act: Export the data, then import it back.
+        // Exports and imports the data.
         this.strategy.exportData(originalData, testFile);
         final List<ElaboratedData> importedData = this.strategy.importData(testFile);
 
-        // 3. Assert: Verify that the imported data matches the original data.
+        // Verifies results.
         assertNotNull(importedData);
         assertEquals(originalData.size(), importedData.size());
-        // The record's default equals() method provides a deep comparison.
         assertEquals(originalData, importedData);
     }
 
     @Test
     void testExportEmptyList() throws IOException {
-        // 1. Arrange: Create an empty list and a temporary file path.
         final List<ElaboratedData> emptyList = List.of();
         final File testFile = new File(tempDir, "empty_data.csv");
 
-        // 2. Act: Export the empty list.
         this.strategy.exportData(emptyList, testFile);
 
-        // 3. Assert: The file should exist and not be empty (it should contain the header).
         assertTrue(testFile.exists());
-        assertTrue(testFile.length() > 0);
+        assertTrue(testFile.length() > 0); // Should contain at least the header.
 
-        // Optional: Verify that importing from this file results in an empty list.
         final List<ElaboratedData> importedData = this.strategy.importData(testFile);
         assertNotNull(importedData);
         assertTrue(importedData.isEmpty());
     }
 
     /**
-     * Helper method to generate a list of sample data for testing.
+     * Helper method to generate sample test data.
+     *
      * @return A list containing sample ElaboratedData objects.
      */
     private List<ElaboratedData> createSampleData() {
-        // A data point with all fields present.
+        // First data point with all fields present.
         final RawData raw1 = RawData.builder()
             .timestamp(Optional.of(Instant.parse("2025-01-10T10:00:00Z")))
-            .engineRPM(Optional.of(3000))
-            .engineTemperature(Optional.of(90.5))
-            .rollerRPM(Optional.of(1500))
-            .torque(Optional.of(200.0))
-            .vehicleSpeed(Optional.of(100))
-            .throttlePosition(Optional.of(75.5))
-            .baroPressure(Optional.of(1013)) // Fixed: was boostPressure
-            .ambientAirTemperature(Optional.of(25)) // Added: missing field
-            .exhaustGasTemperature(Optional.of(800.0))
+            .engineRPM(Optional.of(TEST_ENGINE_RPM_1))
+            .engineTemperature(Optional.of(TEST_ENGINE_TEMP_1))
+            .rollerRPM(Optional.of(TEST_ROLLER_RPM_1))
+            .torque(Optional.of(TEST_TORQUE_1))
+            .vehicleSpeed(Optional.of(TEST_VEHICLE_SPEED_1))
+            .throttlePosition(Optional.of(TEST_THROTTLE_POS_1))
+            .baroPressure(Optional.of(TEST_BARO_PRESSURE_1))
+            .ambientAirTemperature(Optional.of(TEST_AMBIENT_TEMP_1))
+            .exhaustGasTemperature(Optional.of(TEST_EXHAUST_TEMP_1))
             .build();
-        final ElaboratedData elaborated1 = new ElaboratedData(raw1, 62.83, 84.25, 205.0);
+        final ElaboratedData elaborated1 = new ElaboratedData(raw1, TEST_POWER_KW_1, TEST_POWER_HP_1, TEST_CORRECTED_TORQUE_1);
 
-        // A data point with some optional fields missing.
+        // Second data point with some empty fields.
         final RawData raw2 = RawData.builder()
             .timestamp(Optional.of(Instant.parse("2025-01-10T10:00:01Z")))
-            .engineRPM(Optional.of(3100))
-            .engineTemperature(Optional.of(91.0))
-            .rollerRPM(Optional.of(1550))
-            .torque(Optional.of(210.0))
+            .engineRPM(Optional.of(TEST_ENGINE_RPM_2))
+            .engineTemperature(Optional.of(TEST_ENGINE_TEMP_2))
+            .rollerRPM(Optional.of(TEST_ROLLER_RPM_2))
+            .torque(Optional.of(TEST_TORQUE_2))
             .vehicleSpeed(Optional.empty()) // Missing data
             .throttlePosition(Optional.empty()) // Missing data
-            .baroPressure(Optional.of(1012)) // Fixed: was boostPressure
-            .ambientAirTemperature(Optional.empty()) // Added: missing field (empty to test Optional handling)
-            .exhaustGasTemperature(Optional.of(810.0))
+            .baroPressure(Optional.of(TEST_BARO_PRESSURE_2))
+            .ambientAirTemperature(Optional.empty()) // Empty
+            .exhaustGasTemperature(Optional.of(TEST_EXHAUST_TEMP_2))
             .build();
-        final ElaboratedData elaborated2 = new ElaboratedData(raw2, 67.9, 91.0, 215.0);
+        final ElaboratedData elaborated2 = new ElaboratedData(raw2, TEST_POWER_KW_2, TEST_POWER_HP_2, TEST_CORRECTED_TORQUE_2);
 
         return List.of(elaborated1, elaborated2);
     }
