@@ -28,13 +28,11 @@ public final class VehicleBuilder {
     private Double engineInertia;
     /** transmission gear ratios. */
     private double[] gearRatio;
-    // --- thermal model parameters (with defaults) ---
-    /** ambient start temperature for the thermal model [°C]. */
-    private double ambientStart;
-    /** thermal capacity [J/°C]. */
-    private double thermalCapacity;
-    /** cooling coefficient [W/°C]. */
-    private double coolingCoeff;
+    // --- thermal model parameters ---
+    /** target Temperature for engine [°C]. */
+    private double targetTemperature;
+    /** target time temperature coefficient [s]. */
+    private double targetTimeTemperatureCoeff;
     /** custom temperature model, if injected. */
     private TemperatureModel temperatureModel;
     // --- wheel parameters ---
@@ -171,17 +169,14 @@ public final class VehicleBuilder {
     /**
      * VehicleBuilder with temperature model for the engine, params injected.
      *
-     * @param ambientStartValue ambient start temperature for the thermal model [°C]
-     * @param thermalCapacityValue thermal capacity [J/°C]
-     * @param coolingCoeffValue cooling coefficient [W/°C]
+     * @param targetTemp temperature temperature for the thermal model [°C]
+     * @param targeTimeCoeff thermal capacity [s]
      * @return VehicleBuilder
      */
-    public VehicleBuilder withThermalParams(final double ambientStartValue,
-                                            final double thermalCapacityValue,
-                                            final double coolingCoeffValue) {
-        this.ambientStart = ambientStartValue;
-        this.thermalCapacity = thermalCapacityValue;
-        this.coolingCoeff = coolingCoeffValue;
+    public VehicleBuilder withThermalParams(final double targetTemp,
+                                            final double targeTimeCoeff) {
+        this.targetTemperature = targetTemp;
+        this.targetTimeTemperatureCoeff = targeTimeCoeff;
         return this;
     }
 
@@ -214,14 +209,16 @@ public final class VehicleBuilder {
         //if no custom TemperatureModel
         TemperatureModel tm = this.temperatureModel;
         if (tm == null) {
-            tm = new SimpleTemperatureModel(ambientStart, thermalCapacity, coolingCoeff);
+            tm = new TargetTemperatureModel(weatherStation.getTemperature(), 
+                                            this.targetTemperature, 
+                                            this.targetTimeTemperatureCoeff);
         }
 
         //computing the inertia of the power train
         final double ratio = gearRatio[0];
         final double wheelInertia = wheelMass * wheelRadius * wheelRadius;
         final double inertiaEq = engineInertia + wheelInertia / (ratio * ratio);
-        final Engine engine = new EngineImpl(inertiaEq, new SimpleTorqueMap(baseTorque, torquePerRad), tm, weatherStation);
+        final Engine engine = new EngineImpl(inertiaEq, new SimpleTorqueMap(baseTorque, torquePerRad), tm);
         final Transmission transmission = new ManualTransmission(gearRatio);
         final List<LoadModel> loads = new ArrayList<>();
         if (enableRollingResistance) {
