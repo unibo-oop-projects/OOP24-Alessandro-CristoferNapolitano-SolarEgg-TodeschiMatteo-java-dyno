@@ -72,8 +72,7 @@ public final class EngineImpl implements Engine {
         if (omega < 0) {
             omega = 0;
         }
-        final double power = generatedTorque * omega;
-        temperatureModel.update(power, this.weatherStation.getTemperature(), deltaTime);
+        temperatureModel.update(deltaTime);
     }
 
     /**
