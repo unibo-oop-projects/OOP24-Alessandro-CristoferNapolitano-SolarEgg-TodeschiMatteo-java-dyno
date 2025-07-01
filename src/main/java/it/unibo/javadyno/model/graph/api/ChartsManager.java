@@ -9,7 +9,6 @@ import org.jfree.chart.JFreeChart;
  * Interface for managing charts in the JavaDyno application.
  *
  */
-@SuppressWarnings("PMD.ImplicitFunctionalInterface")
 public interface ChartsManager {
 
     /**
@@ -78,6 +77,14 @@ public interface ChartsManager {
      * @param level the Y-axis level for the series
      */
     void addNewSeries(JFreeChart chart, String seriesName, ChartsManager.YAxisLevel level);
+
+    /**
+     * Disables the specified series in the chart.
+     *
+     * @param chart the chart containing the series
+     * @param seriesIndex the index of the series to be disabled
+     */
+    void disableSeries(JFreeChart chart, int seriesIndex);
 
     /**
      * Adds a point to the specified series in the chart.

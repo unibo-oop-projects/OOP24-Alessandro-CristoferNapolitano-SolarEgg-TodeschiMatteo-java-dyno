@@ -126,6 +126,19 @@ public class ChartsManagerImpl implements ChartsManager {
      * {@inheritDoc}
      */
     @Override
+    public void disableSeries(JFreeChart chart, int seriesIndex) {
+        for (final ChartsManager.YAxisLevel level : ChartsManager.YAxisLevel.values()) {
+        final var plot = chart.getXYPlot();
+            if (plot.getRenderer(level.getLevel()) != null) {
+                plot.getRenderer(level.getLevel()).setSeriesVisible(seriesIndex, false);
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void addPointToSeries(
         final JFreeChart chart, final String seriesName, final ChartsManager.YAxisLevel level,
         final Number xValue, final Number yValue

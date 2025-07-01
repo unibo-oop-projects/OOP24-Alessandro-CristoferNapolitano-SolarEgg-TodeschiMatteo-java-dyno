@@ -1,11 +1,9 @@
 package it.unibo.javadyno.view.impl.component;
 
 import java.util.List;
-import java.util.Objects;
 
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.fx.ChartViewer;
-import org.jfree.data.xy.XYSeriesCollection;
 
 import it.unibo.javadyno.model.graph.api.ChartsFactory;
 import it.unibo.javadyno.model.graph.api.ChartsManager;
@@ -13,6 +11,7 @@ import it.unibo.javadyno.model.graph.impl.ChartsManagerImpl;
 import it.unibo.javadyno.model.graph.impl.DefaultChartsFactory;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.control.Button;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
@@ -37,7 +36,7 @@ public final class ChartsPanel extends VBox {
     private final ChartViewer viewer;
     private final ChartsFactory chartsFactory = new DefaultChartsFactory();
     private final ChartsManager chartManager = new ChartsManagerImpl();
-    private int importedOrder;
+    private int importedOrder=1;
 
     /**
      * Default constructor for ChartsPanel.
@@ -72,15 +71,6 @@ public final class ChartsPanel extends VBox {
     }
 
     /**
-     * Generates a unique name for imported data series.
-     *
-     * @return a unique name for the imported data series
-     */
-    private String generateImportedName() {
-        return String.format("%s(Import %d)", GENERAL_SERIES_NAME, ++this.importedOrder);
-    }
-
-    /**
      * Adds a single data point to the charts panel.
      *
      * @param xValue the x-axis value
@@ -99,7 +89,15 @@ public final class ChartsPanel extends VBox {
      * @param y2Values the list of second y-axis values
      */
     public void addAllData(final List<Number> xValues, final List<Number> yValues, final List<Number> y2Values) {
-        final String seriesName = generateImportedName();
+        final String seriesName = String.format("%s(Import %d)", GENERAL_SERIES_NAME, this.importedOrder);
+        final Button deleteButton = new Button("Delete " + seriesName);
+        final int order = this.importedOrder;
+        deleteButton.setOnAction(e -> {
+            chartManager.disableSeries(this.lineChart, order);
+            this.getChildren().remove(deleteButton);
+        });
+        this.getChildren().add(deleteButton);
+        this.importedOrder++;
         chartManager.addNewSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.FIRST);
         chartManager.addNewSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.SECOND);
         chartManager.addAllPointsToSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.FIRST, xValues, yValues);
@@ -148,11 +146,6 @@ public final class ChartsPanel extends VBox {
      * Removes the first series from all Y-axis levels in the chart.
      */
     public void removeDefaultSeries() {
-        for (final ChartsManager.YAxisLevel level : ChartsManager.YAxisLevel.values()) {
-            final var dataset = (XYSeriesCollection) this.lineChart.getXYPlot().getDataset(level.getLevel());
-            if (Objects.nonNull(dataset) && dataset.getSeriesCount() > 0) {
-                dataset.removeSeries(0);
-            }
-        }
+        chartManager.disableSeries(this.lineChart, 0);
     }
 }
