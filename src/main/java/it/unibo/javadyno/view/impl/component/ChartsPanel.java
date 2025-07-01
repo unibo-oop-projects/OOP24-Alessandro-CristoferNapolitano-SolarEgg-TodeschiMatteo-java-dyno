@@ -115,13 +115,18 @@ public final class ChartsPanel extends VBox {
      */
     public void addAllData(final List<Number> xValues, final List<Number> yValues, final List<Number> y2Values) {
         final String seriesName = String.format("%s(Import %d)", GENERAL_SERIES_NAME, this.importedOrder);
-        final Button deleteButton = new Button("Show " + seriesName);
+        final Button deleteButton = new Button("Hide " + seriesName);
         final int order = this.importedOrder;
+        deleteButtons.put(deleteButton, true);
         deleteButton.setOnAction(e -> {
             chartManager.setSeriesVisibility(this.lineChart, order, !this.deleteButtons.get(deleteButton));
             this.deleteButtons.put(deleteButton, !this.deleteButtons.get(deleteButton));
+            if (this.deleteButtons.get(deleteButton)) {
+                deleteButton.setText("Hide " + seriesName);
+            } else {
+                deleteButton.setText("Show " + seriesName);
+            }
         });
-        deleteButtons.put(deleteButton, true);
         this.importedOrder++;
         chartManager.addNewSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.FIRST);
         chartManager.addNewSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.SECOND);
