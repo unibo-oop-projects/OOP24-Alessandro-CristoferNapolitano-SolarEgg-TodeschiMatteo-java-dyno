@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.time.Instant;
 
+import it.unibo.javadyno.controller.api.Controller;
 import it.unibo.javadyno.controller.impl.AlertMonitor;
 import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.api.RawData;
@@ -23,6 +24,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
     private static final double ENGINE_TEMPERATURE = 90.0;
     private static final int UPDATE_TIME_DELTA = 10; // in milliseconds
     private volatile boolean running;
+    private final Controller controller;
     private Thread simulationThread;
     private Vehicle vehicle;
     private Bench bench;
@@ -33,7 +35,8 @@ public class SimulatedDynoImpl implements SimulatedDyno {
     /**
      * Constructor.
      */
-    public SimulatedDynoImpl() {
+    public SimulatedDynoImpl(Controller controller) {
+        this.controller = controller;
         this.running = false;
         this.simulationThread = null;
         this.vehicle = null;
@@ -52,7 +55,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
             this.running = true;
             this.bench = new BenchImpl();
             this.vehicle = VehicleBuilder.builder()
-                .withBaseTorque(ENGINE_RPM)
+                .withBaseTorque(0.0)
                 .withTorquePerRad(0.0)
                 .withEngineInertia(ENGINE_RPM)
                 .withGearRatios(null)

@@ -19,6 +19,14 @@ public final class UserSettings implements Serializable {
     private double driveTrainEfficiency;
     private double dynoType;
 
+    private double baseTorque;
+    private double torquePerRad;
+    private double engineInertia;
+    private double[] gearRatios;
+    private double wheelMass;
+    private double wheelRadius;
+    private double rollingCoeff;
+
     /**
      * Private constructor to prevent instantiation.
      */
@@ -32,6 +40,9 @@ public final class UserSettings implements Serializable {
         airDensity = UserSettingDef.AIR_DENSITY.getDefaultValue();
         driveTrainEfficiency = UserSettingDef.DRIVE_TRAIN_EFFICIENCY.getDefaultValue();
         dynoType = UserSettingDef.DYNO_TYPE.getDefaultValue();
+
+        baseTorque = UserSettingDef.BASE_TORQUE.getDefaultValue();
+        
     }
 
     /**
