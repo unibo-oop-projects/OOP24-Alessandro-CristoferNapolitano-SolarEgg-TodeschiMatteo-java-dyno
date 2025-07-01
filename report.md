@@ -40,6 +40,10 @@ Ivan Crimaldi
 - ### [4.2 Difficoltà incontrate e commenti per i docenti](#42-difficoltà-incontrate-e-commenti-per-i-docenti-1)
     - #### [4.2.1 Porcheddu Alessandro](#42-difficoltà-incontrate-e-commenti-per-i-docenti-1)
 ## [Appendice A - Guida utente](#appendice-a---guida-utente-1)
+- ### [A.1 Schermata home](#a1-schermata-home)
+- ### [A.2 Demo del software](#a2-demo-del-software)
+- ### [A.3 Impostazioni utente](#a3-impostazioni-utente)
+- ### [A.4 Confronto Grafici](#a4-confronto-grafici)
 ## [Appendice B - Esercitazioni di laboratorio](#appendice-b---esercitazioni-di-laboratorio-1)
 - ### [B.0.1 alessandro.porcheddu@studio.unibo.it](#b01-alessandroporcheddustudiouniboit-1)
 - ### [B.0.2 matteo.todeschi@studio.unibo.it](#b02-matteotodeschistudiouniboit-1)
@@ -513,6 +517,12 @@ Una volta conclusa la prova si potrà:
 In questa sezione si possono personalizzare i valori di _default_ per quanto riguarda simulazione e prova reale.
 Si può anche scegliere il tipo di dinamometro da utilizzare per la prova (quindi reale oppure attraverso OBD2) attraverso una selezione a tendina.
 Si noti che il pulsante **Save** salva i dati in un file nella _home directory_ dell'utente che verrà poi utilizzato da quel momento in avanti.
+
+## A.4 Confronto grafici
+L'interfaccia di questa schermata è molto semplice e permette di importare dei grafici attraverso il relativo pulsante.
+Una volta importato almeno un grafico si potrà scegliere di nascondere o rivelare le curve importate con il pulsante nella parte inferiore e il relativo menù a comparsa.
+
+![](src/main/resources/images/Charts_View.png)
 
 # Appendice B - Esercitazioni di laboratorio
 ## B.0.1 alessandro.porcheddu@studio.unibo.it
