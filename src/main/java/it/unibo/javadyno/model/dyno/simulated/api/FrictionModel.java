@@ -3,6 +3,7 @@ package it.unibo.javadyno.model.dyno.simulated.api;
 /**
  * interface for computing rolling resistance torque of a wheel.
  */
+@FunctionalInterface
 public interface FrictionModel {
     /**
      * compute the resistance torque using the angular velocity of the wheel.
