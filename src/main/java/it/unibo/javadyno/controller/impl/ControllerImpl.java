@@ -335,7 +335,13 @@ public final class ControllerImpl implements Controller {
 
     @Override
     public UserSettings getUserSettings() {
-        return this.userSettings;
+        return this.userSettings.copy();
+    }
+
+    @Override
+    public void resetUserSettings() {
+        this.userSettings.resetToDefaults();
+        saveUserSettingsToFile(SETTINGS_FILE_NAME, this.userSettings);
     }
 
     /**
@@ -453,8 +459,8 @@ public final class ControllerImpl implements Controller {
         private static final int MIN_SPEED_INCREASE = 1;
 
         // Timestamp constants
-        private static final int MIN_DELAY_MILLIS = 800;
-        private static final int MAX_DELAY_MILLIS = 1100;
+        private static final int MIN_DELAY_MILLIS = 300;
+        private static final int MAX_DELAY_MILLIS = 500;
         private final Random rand = new Random();
         private RawData prevRawData;
         private boolean isActive;
