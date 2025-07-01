@@ -47,4 +47,11 @@ public interface Engine {
      * @return engine temperature [°C]
      */
     double getEngineTemperature();
+
+    /**
+     * method that returns a defesive copy of the instance.
+     *
+     * @return Engine copy
+     */
+    Engine copy();
 }
