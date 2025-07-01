@@ -396,10 +396,30 @@ classDiagram
         +showInfo(String)
     }
 
+    class AlertType {
+        <<enumeration>>
+        +ERROR
+        +WARNING
+        +INFO
+    }
+
     class Object {
     }
 
-    AlertMonitor ..> Object
+    class AlertDisplayer{
+        <<interface>>
+        +showAlert(AlertType, String)
+    }
+
+    class Controller {
+        +showAlert(AlertType, String)
+    }
+
+    Object ..> AlertMonitor : use
+    AlertMonitor ..> AlertType : use
+    AlertMonitor ..> Controller : invoke
+    Controller ..> AlertDisplayer : notify
+    AlertDisplayer ..> AlertType : use
 ```
 
 **Problema:**
@@ -407,6 +427,8 @@ Gestire gli errori in modo centralizzato e fornire un feedback all'utente senza 
 
 **Soluzione:**
 Per risolvere il problema si è scelto di implementare un monitor dedicato (`AlertMonitor`) implementato come utility statica.
+Ad essa viene abbinato un `Controller` che si occupa di instradare correttamente gli errori ad un componente della view che si occupa di visualizzarli (`AlertDIsplayer`).
+I messaggi di errore hanno diverse priorità e vengono gestiti attraverso un enumerativo `AlertType` che permette di distinguere tra errori, avvisi e informazioni. In questo modo, l'utente può essere informato in modo chiaro e preciso senza bloccare l'applicazione.
 
 
 #### Riutilizzo dei componenti della view
