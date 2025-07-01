@@ -245,11 +245,6 @@ public final class ControllerImpl implements Controller {
                 view.update(Collections.unmodifiableList(importedList));
             }
 
-            AlertMonitor.infoNotify(
-                "Import SucScessful!",
-                Optional.of("Successfully imported " + importedList.size() + " data points from: " + file.getName())
-            );
-
         } catch (final IOException e) {
             AlertMonitor.errorNotify(
                 "Import Failed :(",
