@@ -1,7 +1,8 @@
 package it.unibo.javadyno.view.impl.component;
 
-import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.fx.ChartViewer;
@@ -38,7 +39,7 @@ public final class ChartsPanel extends VBox {
 
     private final JFreeChart lineChart;
     private final ChartViewer viewer;
-    private final List<Button> deleteButtons = new ArrayList<>();
+    private final Map<Button, Boolean> deleteButtons = new LinkedHashMap<>();
     private final Button manageButtons = new Button("Manage Series");
     private final Popup deletePopup = new Popup();
     private final ChartsFactory chartsFactory = new DefaultChartsFactory();
@@ -62,8 +63,11 @@ public final class ChartsPanel extends VBox {
                 return;
             }
             VBox popupContent = new VBox(POPUP_SPACING);
+            Button closeButton = new Button("Close");
+            closeButton.setOnAction(event -> deletePopup.hide());
             popupContent.getStyleClass().add(CSS_POPUP_TAG);
-            popupContent.getChildren().setAll(deleteButtons);
+            popupContent.getChildren().setAll(deleteButtons.keySet());
+            popupContent.getChildren().add(closeButton);
             deletePopup.getContent().setAll(popupContent);
             if (!deletePopup.isShowing()) {
                 deletePopup.show(this.getScene().getWindow());
@@ -111,19 +115,13 @@ public final class ChartsPanel extends VBox {
      */
     public void addAllData(final List<Number> xValues, final List<Number> yValues, final List<Number> y2Values) {
         final String seriesName = String.format("%s(Import %d)", GENERAL_SERIES_NAME, this.importedOrder);
-        final Button deleteButton = new Button("Delete " + seriesName);
+        final Button deleteButton = new Button("Show " + seriesName);
         final int order = this.importedOrder;
         deleteButton.setOnAction(e -> {
-            chartManager.disableSeries(this.lineChart, order);
-            deleteButtons.remove(deleteButton);
-            if (deletePopup.isShowing()) {
-                ((VBox) deletePopup.getContent().get(0)).getChildren().remove(deleteButton);
-                if (deleteButtons.isEmpty()) {
-                    deletePopup.hide();
-                }
-            }
+            chartManager.setSeriesVisibility(this.lineChart, order, !this.deleteButtons.get(deleteButton));
+            this.deleteButtons.put(deleteButton, !this.deleteButtons.get(deleteButton));
         });
-        deleteButtons.add(deleteButton);
+        deleteButtons.put(deleteButton, true);
         this.importedOrder++;
         chartManager.addNewSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.FIRST);
         chartManager.addNewSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.SECOND);
@@ -172,7 +170,7 @@ public final class ChartsPanel extends VBox {
     /**
      * Removes the first series from all Y-axis levels in the chart.
      */
-    public void removeDefaultSeries() {
-        chartManager.disableSeries(this.lineChart, 0);
+    public void hideDefaultVisibility() {
+        chartManager.setSeriesVisibility(this.lineChart, 0, false);
     }
 }

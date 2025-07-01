@@ -79,12 +79,13 @@ public interface ChartsManager {
     void addNewSeries(JFreeChart chart, String seriesName, ChartsManager.YAxisLevel level);
 
     /**
-     * Disables the specified series in the chart.
+     * Sets the visibility of a series in the chart.
      *
      * @param chart the chart containing the series
-     * @param seriesIndex the index of the series to be disabled
+     * @param seriesIndex the index of the series to be set visible or invisible
+     * @param isVisible true to make the series visible, false to hide it
      */
-    void disableSeries(JFreeChart chart, int seriesIndex);
+    void setSeriesVisibility(JFreeChart chart, int seriesIndex, boolean isVisible);
 
     /**
      * Adds a point to the specified series in the chart.
