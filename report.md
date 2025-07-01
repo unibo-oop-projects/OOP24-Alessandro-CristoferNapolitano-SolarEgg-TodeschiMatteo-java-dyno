@@ -28,7 +28,7 @@ Ivan Crimaldi
 - ### [2.1 Architettura](#21-architettura-1)
 - ### [2.2 Design dettagliato](#22-design-dettagliato-1)
     - #### [2.2.1 Porcheddu Alessandro](#221-porcheddu-alessandro-1)
-    - #### [2.2.2 Surname Name](#222-surname-name-1)
+    - #### [2.2.2 Todeschi Matteo](#222-todeschi-matteo-1)
 ## [3. Sviluppo](#capitolo-3---sviluppo)
 - ### [3.1 Testing automatizzato](#31-testing-automatizzato-1)
 - ### [3.2 Note di sviluppo](#32-note-di-sviluppo-1)
@@ -388,14 +388,27 @@ Per risolvere il problema si è scelto di creare un interfaccia intemedia tra `D
 
 #### Gestione degli errori con Monitor dedicato 
 ```mermaid
-UML TODO
+classDiagram
+    class AlertMonitor {
+        <<utility>>
+        +showError(String)
+        +showWarning(String)
+        +showInfo(String)
+    }
+
+    class Object {
+    }
+
+    AlertMonitor ..> Object
 ```
 
-**Problema:** TODO.
+**Problema:**
+Gestire gli errori in modo centralizzato e fornire un feedback all'utente senza bloccare l'applicazione. In particolare, è necessario gestire errori di comunicazione con l'hardware esterno, errori di elaborazione dei dati e altri errori generici.
 
-**Soluzione:** TODO. 
+**Soluzione:**
+Per risolvere il problema si è scelto di implementare un monitor dedicato (`AlertMonitor`) implementato come utility statica.
 
-**Soluzione:** TODO. 
+
 #### Riutilizzo dei componenti della view
 ```mermaid
 UML TODO
