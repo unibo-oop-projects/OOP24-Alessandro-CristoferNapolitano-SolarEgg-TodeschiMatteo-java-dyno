@@ -6,23 +6,23 @@ import it.unibo.javadyno.model.dyno.simulated.api.TemperatureModel;
  * temperature model that approaces a target temperature.
  */
 public class TargetTemperatureModel implements TemperatureModel {
-    private final double targetTemperature;  // °C
-    private final double timeCoeff;       // [s]
-    private double temperature;              // current [°C]
+    private final double targetTemperature; // °C
+    private final double timeCoeff; // [s]
+    private double temperature; //current temp
 
     /**
      * simple constructor for TargetTemperatureModel.
      *
-     * @param initialTemperature  starting temperature [°C]
-     * @param targetTemperature   target temperature [°C]
-     * @param timeCoeff        time coeff [s], [must be > 0]
+     * @param temperature  starting temperature [°C]
+     * @param targetTemperature target temperature [°C]
+     * @param timeCoeff time coeff [s], [must be > 0]
      */
-    public TargetTemperatureModel(final double initialTemperature, final double targetTemperature, final double timeCoeff) {
+    public TargetTemperatureModel(final double targetTemperature, final double temperature, final double timeCoeff) {
         if (timeCoeff <= 0) {
             throw new IllegalArgumentException("timeConstant must be > 0");
         }
-        this.temperature = initialTemperature;
         this.targetTemperature = targetTemperature;
+        this.temperature = temperature;
         this.timeCoeff = timeCoeff;
     }
 
