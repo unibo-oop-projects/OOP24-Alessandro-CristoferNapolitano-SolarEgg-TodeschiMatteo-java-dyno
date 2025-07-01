@@ -10,6 +10,7 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.List;
@@ -104,7 +105,7 @@ final class JsonStrategyTest {
     void testImportMalformedJsonThrowsIOException() throws IOException {
         final File testFile = tempDir.resolve("malformed.json").toFile();
 
-        try (FileWriter writer = new FileWriter(testFile)) {
+        try (FileWriter writer = new FileWriter(testFile, StandardCharsets.UTF_8)) {
             writer.write("{ this is not valid json [");
         }
 
