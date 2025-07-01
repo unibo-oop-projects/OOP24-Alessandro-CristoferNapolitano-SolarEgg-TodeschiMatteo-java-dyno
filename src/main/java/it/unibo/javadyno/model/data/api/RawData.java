@@ -15,6 +15,7 @@ import java.util.Optional;
  * @param throttlePosition the throttle position
  * @param baroPressure the boost pressure
  * @param ambientAirTemperature the ambient air pressure
+ * @param ambientHumidity the ambient humidity
  * @param exhaustGasTemperature the exhaust gas temperature
  */
 public record RawData(
@@ -29,7 +30,7 @@ public record RawData(
     Optional<Integer> ambientAirTemperature,
     Optional<Integer> ambientHumidity,
     Optional<Double> exhaustGasTemperature
-    
+
 ) {
 
     /**
@@ -169,11 +170,11 @@ public record RawData(
         /**
          * Sets the ambient humidity.
          *
-         * @param ambientHumidity the ambient Humidity (Optional)
+         * @param humidity the ambient Humidity (Optional)
          * @return this builder instance
          */
-        public Builder ambientHumidity(final Optional<Integer> ambientHumidity) {
-            this.ambientHumidity = ambientHumidity;
+        public Builder ambientHumidity(final Optional<Integer> humidity) {
+            this.ambientHumidity = humidity;
             return this;
         }
 
