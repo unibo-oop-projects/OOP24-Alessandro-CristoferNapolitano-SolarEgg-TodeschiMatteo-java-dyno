@@ -119,7 +119,7 @@ public final class ControllerImpl implements Controller {
     public void startEvaluation(final DataSource dynoType) {
         if (!Objects.nonNull(this.dyno) || !this.dyno.getDynoType().equals(dynoType)) {
             switch (dynoType) {
-                case SIMULATED_DYNO -> this.dyno = new SimulatedDynoImpl(this); // TODO replace with simulation
+                case SIMULATED_DYNO -> this.dyno = new SimulatedDynoImpl(this);
                 case OBD2 -> this.dyno = new OBD2Dyno();
                 case REAL_DYNO -> this.dyno = new RealDynoImpl(new JsonWebSocketCommunicator());
             }

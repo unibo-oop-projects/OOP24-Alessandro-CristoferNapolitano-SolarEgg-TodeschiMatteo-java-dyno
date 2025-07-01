@@ -77,6 +77,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
         if (Objects.nonNull(simulationThread)) {
             this.simulationThread.interrupt();
         }
+        System.out.println("Simulation thread interrupted.");
         this.running = false;
     }
 
@@ -96,6 +97,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
      */
     @Override
     public void run() {
+        this.datas = vehicle.getRawData();
         while ( this.running && Objects.nonNull(this.datas) &&
                 this.datas.engineRPM().get() < controller.getUserSettings().getMaxRpmSimulation()
             ) {
@@ -106,6 +108,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
                 this.end();
             }
         }
+        System.out.println("Simulation ended.");
         this.end();
     }
 
@@ -114,13 +117,16 @@ public class SimulatedDynoImpl implements SimulatedDyno {
      */
     @Override
     public RawData getRawData() {
-        if (Objects.isNull(this.datas)) {
+        if (Objects.nonNull(this.datas)) {
             AlertMonitor.errorNotify(
                 "Unable to retrieve datas form Simulated Dyno",
                 Optional.empty()
             );
+            return RawData.builder().build();
+        } else {
+            return this.datas;
         }
-        return this.datas;
+        
     }
 
     /**
