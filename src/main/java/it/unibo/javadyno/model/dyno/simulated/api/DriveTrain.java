@@ -12,4 +12,49 @@ public interface DriveTrain {
      * @param deltatime step of duration in [s]
      */
     void step(double throttle, double deltatime);
+
+    /**
+     * shift transmission gear up.
+     */
+    void shiftUp();
+
+    /**
+     * shift transmission gear down.
+     */
+    void shiftDown();
+
+    /**
+     * get engine angular velocity.
+     *
+     * @return engine angular velocity [rad/s]
+     */
+    double getEngineOmega();
+
+    /**
+     * get wheel angular velocity.
+     *
+     * @return wheel angular velocity [rad/s]
+     */
+    double getWheelOmega();
+
+    /**
+     * get current transmission gear.
+     *
+     * @return index of transmission gear (one-based)
+     */
+    int getCurrentGear();
+
+    /**
+     * get engine temperature.
+     *
+     * @return engine temperature [°C]
+     */
+    double getEngineTemperature();
+
+    /**
+     * get engine generated torque.
+     *
+     * @return generated torque [Nm]
+     */
+    double getGeneratedTorque();
 }

@@ -26,6 +26,10 @@ import it.unibo.javadyno.model.data.impl.DataCollectorImpl;
 import it.unibo.javadyno.model.dyno.api.Dyno;
 import it.unibo.javadyno.model.dyno.obd2.impl.OBD2Dyno;
 import it.unibo.javadyno.model.dyno.real.impl.RealDynoImpl;
+import it.unibo.javadyno.model.filemanager.api.FileManager;
+import it.unibo.javadyno.model.filemanager.api.FileStrategyFactory;
+import it.unibo.javadyno.model.filemanager.impl.FileManagerImpl;
+import it.unibo.javadyno.model.filemanager.impl.FileStrategyFactoryImpl;
 import it.unibo.javadyno.view.api.View;
 import it.unibo.javadyno.view.impl.MainMenu;
 import javafx.application.Application;
@@ -45,6 +49,8 @@ public final class ControllerImpl implements Controller {
     private static final String PROJECT_DIR_NAME = "javadyno";
     private final DataCollector dataCollector;
     private final Random rand = new Random();
+    private final FileManager fileManager;
+    private final FileStrategyFactory strategyFactory;
     private final UserSettings userSettings;
     private boolean isRunning;
     private Dyno dyno;
@@ -58,6 +64,8 @@ public final class ControllerImpl implements Controller {
         this.dyno = null;
         this.view = null;
         this.dataCollector = new DataCollectorImpl();
+        this.fileManager = new FileManagerImpl();
+        this.strategyFactory = new FileStrategyFactoryImpl();
         this.userSettings = loadUserSettingsFromFile(SETTINGS_FILE_NAME);
     }
 
@@ -140,17 +148,120 @@ public final class ControllerImpl implements Controller {
             final ElaboratedData data = this.dataCollector.collectData();
             if (Objects.nonNull(data)) {
                 this.view.update(data);
+            } else {
+                this.stopEvaluation();
+                AlertMonitor.warningNotify(
+                    "Raw data incoherent",
+                    Optional.of("The raw data collected is not coherent, try again by restarting the evaluation.")
+                );
             }
             try {
                 // TODO sleep based on system performance (match to x fps)
                 Thread.sleep(100);
             } catch (final InterruptedException e) {
                 Thread.currentThread().interrupt();
-                break;
+                this.stopEvaluation();
             }
         }
         this.isRunning = false;
         this.view.update(dataCollector.collectData());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void exportCurrentData(final File file) {
+        // Get all collected data from the dataCollector as a List.
+        final List<ElaboratedData> currentData = dataCollector.getFullData();
+
+        if (currentData.isEmpty()) {
+            AlertMonitor.warningNotify(
+                "No Data found to Export",
+                Optional.of("No simulation data is available for export. Please run a simulation first.")
+            );
+            return;
+        }
+
+        try {
+            // Factory determines strategy based on file extension.
+            final var strategy = strategyFactory.createStrategyFor(file);
+
+            if (strategy.isEmpty()) {
+                AlertMonitor.errorNotify(
+                    "Unsupported File Format",
+                    Optional.of("The selected file format is not supported.")
+                );
+                return;
+            }
+
+            // Set the strategy and export the data.
+            fileManager.setStrategy(strategy.get());
+            fileManager.exportDataToFile(currentData, file); 
+
+            AlertMonitor.infoNotify(
+                "Export Successful!",
+                Optional.of("Successfully exported " + currentData.size() + " data points to: " + file.getName())
+            );
+
+        } catch (final IOException e) {
+            AlertMonitor.errorNotify(
+                "Export Failed :(",
+                Optional.of("Failed to export data: " + e.getMessage())
+            );
+        } catch (final IllegalStateException e) {
+            AlertMonitor.errorNotify(
+                "Export Configuration Error",
+                Optional.of("FileManager strategy not properly configured: " + e.getMessage())
+            );
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void importDataFromFile(final File file) {
+        try {
+            // Use factory to determine strategy based on file extension.
+            final var strategy = strategyFactory.createStrategyFor(file);
+
+            if (strategy.isEmpty()) {
+                AlertMonitor.errorNotify(
+                    "Unsupported File Format",
+                    Optional.of("The selected file format is not supported.")
+                );
+                return;
+            }
+
+            // Set the strategy and import the data.
+            fileManager.setStrategy(strategy.get());
+            final List<ElaboratedData> importedList = fileManager.importDataFromFile(file);
+
+            if (importedList.isEmpty()) {
+                AlertMonitor.warningNotify(
+                    "Empty File",
+                    Optional.of("The selected file is empty or doesn't have valid data.")
+                );
+                return;
+            }
+
+            // Update the view with the imported data.S
+            if (Objects.nonNull(view)) {
+                view.update(Collections.unmodifiableList(importedList));
+            }
+
+        } catch (final IOException e) {
+            AlertMonitor.errorNotify(
+                "Import Failed :(",
+                Optional.of("Failed to import data: " + e.getMessage())
+            );
+        } catch (final IllegalStateException e) {
+            AlertMonitor.errorNotify(
+                "Import Configuration Error", 
+                Optional.of("FileManager strategy not properly configured: " + e.getMessage())
+            );
+        }
     }
 
     /**
@@ -168,6 +279,7 @@ public final class ControllerImpl implements Controller {
         if (this.dyno.isActive()) {
             this.dyno.end();
             this.dyno = null;
+            this.isRunning = false;
         }
     }
 
@@ -218,14 +330,22 @@ public final class ControllerImpl implements Controller {
 
     @Override
     public UserSettings getUserSettings() {
-        return this.userSettings;
+        return this.userSettings.copy();
+    }
+
+    @Override
+    public void resetUserSettings() {
+        this.userSettings.resetToDefaults();
+        saveUserSettingsToFile(SETTINGS_FILE_NAME, this.userSettings);
     }
 
     /**
      * {@inheritDoc}
+     * Updated to use the file import system instead of generating demo data.
      */
     @Override
-    public void importData() {
+    public void importDataTest() {
+        // Kept for demo purposes
         final List<ElaboratedData> list = new LinkedList<>();
         for (int i = 0; i < MAX_RPM; i++) {
             final RawData rawData = RawData.builder()
@@ -293,8 +413,12 @@ public final class ControllerImpl implements Controller {
         final File directory = new File(appDir);
 
         // Create directory if it doesn't exist
-        if (!directory.exists()) {
-            directory.mkdirs();
+        if (!directory.exists() && !directory.mkdirs()) {
+            AlertMonitor.errorNotify(
+                "Could not create application directory",
+                Optional.of("Failed to create directory: " + appDir)
+            );
+            return;
         }
 
         final String filePath = appDir + File.separator + settingsFileName;
@@ -330,8 +454,8 @@ public final class ControllerImpl implements Controller {
         private static final int MIN_SPEED_INCREASE = 1;
 
         // Timestamp constants
-        private static final int MIN_DELAY_MILLIS = 800;
-        private static final int MAX_DELAY_MILLIS = 1100;
+        private static final int MIN_DELAY_MILLIS = 300;
+        private static final int MAX_DELAY_MILLIS = 500;
         private final Random rand = new Random();
         private RawData prevRawData;
         private boolean isActive;

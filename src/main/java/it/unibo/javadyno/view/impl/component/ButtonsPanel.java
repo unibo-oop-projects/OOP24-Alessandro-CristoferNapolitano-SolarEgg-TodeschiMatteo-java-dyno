@@ -14,6 +14,8 @@ import javafx.stage.Stage;
  */
 public final class ButtonsPanel extends VBox {
 
+    private static final String START_BUTTON_ID = "start-button";
+    private static final String STOP_BUTTON_ID = "stop-button";
     private final Button startSimulationButton;
     private final Button stopSimulationButton;
     private final Button saveDataButton;
@@ -34,9 +36,9 @@ public final class ButtonsPanel extends VBox {
             final LabelsType type, final DataSource dataSource
         ) {
         startSimulationButton = new Button(type.getStartButton());
-        startSimulationButton.setId("start-button");
+        startSimulationButton.setId(START_BUTTON_ID);
         stopSimulationButton = new Button(type.getStopButton());
-        stopSimulationButton.setId("stop-button");
+        stopSimulationButton.setId(STOP_BUTTON_ID);
         saveDataButton = new Button(type.getSaveButton());
         importDataButton = new Button(type.getLoadButton());
         backToMenuButton = new Button(type.getBackToMenu());
@@ -50,9 +52,12 @@ public final class ButtonsPanel extends VBox {
             controller.stopEvaluation();
             reachedEnd();
         });
-        importDataButton.setOnAction(e -> {
-            controller.importData();
-        });
+
+        // Uses a private method to handle file import properly.
+        importDataButton.setOnAction(e -> IOUtility.handleImport(controller, primaryStage));
+        // Uses a private method to handle file export properly.
+        saveDataButton.setOnAction(e -> IOUtility.handleExport(controller, primaryStage));
+
         reloadButton.setOnAction(e -> {
             controller.showView(primaryStage, new EvaluatingView(controller, type, dataSource));
         });

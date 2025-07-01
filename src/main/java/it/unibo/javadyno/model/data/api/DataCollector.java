@@ -1,6 +1,6 @@
 package it.unibo.javadyno.model.data.api;
 
-import java.util.Queue;
+import java.util.List;
 import it.unibo.javadyno.model.dyno.api.Dyno;
 
 /**
@@ -17,14 +17,16 @@ public interface DataCollector {
     void initialize(Dyno dynoSource, UserSettings userSettings);
 
     /**
-     * @return a queue of all the datas collected.
-     */
-    Queue<ElaboratedData> getFullData();
-
-    /**
-     * Collect the last data collected.
+     * Collects the latest data point.
      *
-     * @return the last data collected.
+     * @return The collected elaborated data.
      */
     ElaboratedData collectData();
+
+    /**
+     * Gets all collected data.
+     *
+     * @return A list containing all collected data.
+     */
+    List<ElaboratedData> getFullData();
 }

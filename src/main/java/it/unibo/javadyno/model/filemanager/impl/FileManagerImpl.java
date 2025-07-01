@@ -1,16 +1,12 @@
 package it.unibo.javadyno.model.filemanager.impl;
 
-import it.unibo.javadyno.controller.impl.AlertMonitor;
 import it.unibo.javadyno.model.data.api.ElaboratedData;
 import it.unibo.javadyno.model.filemanager.api.FileManager;
 import it.unibo.javadyno.model.filemanager.api.FileStrategy;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Queue;
 
 /**
  * A concrete implementation of the FileManager interface.
@@ -33,16 +29,12 @@ public final class FileManagerImpl implements FileManager {
      * {@inheritDoc}
      */
     @Override
-    public void exportDataToFile(final Queue<ElaboratedData> dataQueue, final File file) throws IOException {
+    public void exportDataToFile(final List<ElaboratedData> dataList, final File file) throws IOException {
         if (this.strategy == null) {
-            AlertMonitor.errorNotify(
-                "No file strategy has been set",
-                Optional.empty()
-            );
-            //throw new IOException("No file strategy has been set.");
+            throw new IllegalStateException("No file strategy has been set.");
         }
-        // The strategy works with a List, so we convert the Queue.
-        this.strategy.exportData(new ArrayList<>(dataQueue), file);
+        // No conversion needed - directly pass the list
+        this.strategy.exportData(dataList, file);
     }
 
     /**
@@ -51,11 +43,7 @@ public final class FileManagerImpl implements FileManager {
     @Override
     public List<ElaboratedData> importDataFromFile(final File file) throws IOException {
         if (this.strategy == null) {
-            AlertMonitor.errorNotify(
-                "No file strategy has been set",
-                Optional.empty()
-            );
-            //throw new IOException("No file strategy has been set.");
+            throw new IllegalStateException("No file strategy has been set.");
         }
         return this.strategy.importData(file);
     }

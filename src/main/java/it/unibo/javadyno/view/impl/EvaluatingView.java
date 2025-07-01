@@ -24,9 +24,14 @@ import javafx.stage.Stage;
  * Simulation view class for the JavaDyno application.
  */
 public class EvaluatingView extends Application implements View {
+
+    public static final double EVALUATING_RATIO = 0.8; //percentage of screen width/height for new evaluating window
+
     private static final String CSS_FILE = "css/SimulationStyle.css";
     private static final String CSS_SETTINGS_PANEL_TAG = "left-column";
     private static final String CSS_MAIN_CONTAINER_TAG = "main-container";
+    private static final String CSS_BUTTONS_TAG = "buttons-panel";
+    private static final String CSS_STATS_TAG = "stats-panel";
 
     private final Controller controller;
     private final LabelsType buttonsType;
@@ -67,8 +72,8 @@ public class EvaluatingView extends Application implements View {
         VBox.setVgrow(gaugePanel, Priority.NEVER);
         VBox.setVgrow(buttonsPanel, Priority.ALWAYS);
         VBox.setVgrow(statsPanel, Priority.ALWAYS);
-        buttonsPanel.getStyleClass().add("buttons-panel");
-        statsPanel.getStyleClass().add("stats-panel");
+        buttonsPanel.getStyleClass().add(CSS_BUTTONS_TAG);
+        statsPanel.getStyleClass().add(CSS_STATS_TAG);
         leftPanel.setAlignment(Pos.TOP_CENTER);
         leftPanel.getStyleClass().add(CSS_SETTINGS_PANEL_TAG);
         leftPanel.getChildren().addAll(buttonsPanel, statsPanel);

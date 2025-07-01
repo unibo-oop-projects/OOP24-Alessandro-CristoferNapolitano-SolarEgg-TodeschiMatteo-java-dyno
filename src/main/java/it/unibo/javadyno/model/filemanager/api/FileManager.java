@@ -1,10 +1,10 @@
 package it.unibo.javadyno.model.filemanager.api;
 
 import it.unibo.javadyno.model.data.api.ElaboratedData;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Queue;
 
 /**
  * Interface for filemanager.
@@ -20,13 +20,13 @@ public interface FileManager {
     void setStrategy(FileStrategy strategy);
 
     /**
-     * Exports a queue of ElaboratedData to file using the current strategy.
+     * Exports a list of ElaboratedData to file using the current strategy.
      *
-     * @param dataQueue The queue of data to export.
+     * @param dataList The list of data to export.
      * @param file The destination file where data will be saved.
      * @throws IOException If an I/O error occurs or if no strategy is set.
      */
-    void exportDataToFile(Queue<ElaboratedData> dataQueue, File file) throws IOException;
+    void exportDataToFile(List<ElaboratedData> dataList, File file) throws IOException;
 
     /**
      * Imports data from a file using the current strategy.

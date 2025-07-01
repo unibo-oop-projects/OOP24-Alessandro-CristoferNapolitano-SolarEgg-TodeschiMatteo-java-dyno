@@ -1,5 +1,6 @@
 package it.unibo.javadyno.controller.api;
 
+import java.io.File;
 import java.util.Optional;
 
 import it.unibo.javadyno.model.data.api.DataSource;
@@ -77,14 +78,31 @@ public interface Controller {
     /**
      * Gets the current user settings.
      *
-     * @return the current user settings, not as a copy but as a reference 
-     *     to the original object, so changes to the settings will be reflected
+     * @return the current user settings as a defensive copy
      */
     UserSettings getUserSettings();
 
     /**
-     * Imports prevoious data from a file.
+     * Resets the user settings to their default values.
      */
-    void importData();
+    void resetUserSettings();
 
+    /**
+     * Exports current simulation data to a file.
+     *
+     * @param file The destination file.
+     */
+    void exportCurrentData(File file);
+
+    /**
+     * Imports data from a file and displays it in the current view.
+     *
+     * @param file The source file.
+     */
+    void importDataFromFile(File file);
+
+    /**
+     * Test method for importing data.
+     */
+    void importDataTest();
 }

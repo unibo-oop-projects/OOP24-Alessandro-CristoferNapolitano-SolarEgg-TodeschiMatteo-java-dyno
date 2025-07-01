@@ -148,10 +148,12 @@ public abstract class AbstractWebSocketCommunicator<T> implements MCUCommunicato
 
         @Override
         public void onClose(final int code, final String reason, final boolean remote) {
-            AlertMonitor.infoNotify(
-                "WebSocket connection closed: " + reason,
-                Optional.of("Code: " + code)
-            );
+            if (code != -1) {
+                AlertMonitor.infoNotify(
+                    "WebSocket connection closed: " + reason,
+                    Optional.of("Code: " + code)
+                );
+            }
         }
 
         @Override
