@@ -402,6 +402,24 @@ public final class UserSettings implements Serializable {
     }
 
     /**
+     * sets target time temperature coefficient for TemperatureModel.
+     *
+     * @param targetTimeTemperatureCoeff target time temperature coefficient
+     */
+    public void setTargetTimeTemperatureCoeff(final double targetTimeTemperatureCoeff) {
+        this.targeTimeTemperatureCoeff = targetTimeTemperatureCoeff;
+    }
+
+    /**
+     * sets target temperature for TemperatureModel.
+     *
+     * @param targetTemperature target temperature
+     */
+    public void setTargetTemperature(final double targetTemperature) {
+        this.targetTemperature = targetTemperature;
+    }
+
+    /**
      * get target temperature of TemperatureModel.
      *
      * @return target temperature
