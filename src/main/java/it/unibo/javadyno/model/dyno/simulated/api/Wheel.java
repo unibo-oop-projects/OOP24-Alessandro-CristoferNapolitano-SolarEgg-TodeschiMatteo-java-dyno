@@ -3,7 +3,7 @@ package it.unibo.javadyno.model.dyno.simulated.api;
 /**
  * Wheels interface.
  */
-public interface Wheels {
+public interface Wheel extends RotationalComponent, LoadModel {
     /**
      * Radius of the wheel.
      *
