@@ -12,114 +12,207 @@ import it.unibo.javadyno.model.dyno.simulated.api.TemperatureModel;
 import it.unibo.javadyno.model.dyno.simulated.api.Transmission;
 import it.unibo.javadyno.model.dyno.simulated.api.WeatherStation;
 
-public class VehicleBuilder {
+/**
+ * Vehicle Builder wich enables to build a simulation of a vehicle
+ * Use static method ".builder" to start building the model
+ * add call to ".with..." method to initialize parameters of the full build
+ * at the end of calling method to inizialize parameters for the model call methods ".build...".
+ */
+public final class VehicleBuilder {
     // --- powertrain parameters ---
-    /** base torque [N*m] */
+    /** base torque [Nm]. */
     private Double baseTorque;
-    /** torque increase per rad/s [N*m/(rad/s)] */
+    /** torque increase per rad/s [Nm/(rad/s)]. */
     private Double torquePerRad;
-    /** engine rotational inertia [kg*m^2] */
+    /** engine rotational inertia [kg*m^2]. */
     private Double engineInertia;
-    /** transmission gear ratios */
+    /** transmission gear ratios. */
     private double[] gearRatio;
-    
     // --- thermal model parameters (with defaults) ---
-    /** ambient start temperature for the thermal model [°C] */
-    private double ambientStart    = 20;
-    /** thermal capacity [J/°C] */
+    /** ambient start temperature for the thermal model [°C]. */
+    private double ambientStart = 20;
+    /** thermal capacity [J/°C]. */
     private double thermalCapacity = 100000;
-    /** cooling coefficient [W/°C] */
-    private double coolingCoeff    = 500;
-    /** custom temperature model, if injected */
+    /** cooling coefficient [W/°C]. */
+    private double coolingCoeff = 500;
+    /** custom temperature model, if injected. */
     private TemperatureModel temperatureModel;
-    
     // --- wheel parameters ---
-    /** wheel mass [kg] */
+    /** wheel mass [kg]. */
     private Double wheelMass;
-    /** wheel radius [m] */
+    /** wheel radius [m]. */
     private Double wheelRadius;
 
     // --- rolling resistance ---
-    /** enable rolling resistance */
-    private boolean enableRollingResistance = false;
-    /** rolling resistance coefficient [N*m/(rad/s)] */
+    private boolean enableRollingResistance;
+    /** rolling resistance coefficient [Nm/(rad/s)]. */
     private Double rollingCoeff;
 
     // --- bench brake torque ---
     private BrakeTorqueProvider benchBrakeTorqueProvider;
 
     // --- simulation timing and enviroment ---
-    /** simulation step [s] */
+    /** simulation step [s]. */
     private double deltaTime;
-    /** weather station */
     private WeatherStation weatherStation;
 
     private VehicleBuilder() { }
 
+    /**
+     * starting method to build a vehicle implementation.
+     *
+     * @return VehicleBuilder
+     */
     public static VehicleBuilder builder() {
         return new VehicleBuilder();
     }
 
-    public VehicleBuilder withBaseTorque(double baseTorque) {
-        this.baseTorque = baseTorque;
+    /**
+     * VehicleBuilder with Base Torque for SimpleTorqueMap.
+     *
+     * @param baseTorqueValue base torque [Nm]
+     * @return VehicleBuider
+     */
+    public VehicleBuilder withBaseTorque(final double baseTorqueValue) {
+        this.baseTorque = baseTorqueValue;
         return this;
     }
 
-    public VehicleBuilder withTorquePerRad(double torquePerRad) {
-        this.torquePerRad = torquePerRad;
+    /**
+     * VehicleBuilder with Torque per Radiant for SimpleTorqueMap.
+     *
+     * @param torquePerRadValue torque increase per rad/s [Nm/(rad/s)]
+     * @return VehicleBuilder
+     */
+    public VehicleBuilder withTorquePerRad(final double torquePerRadValue) {
+        this.torquePerRad = torquePerRadValue;
         return this;
     }
 
-    public VehicleBuilder withEngineInertia(double engineInertia) {
-        this.engineInertia = engineInertia;
+    /**
+     * VehicleBuilder with Engine Inertia.
+     *
+     * @param engineInertiaValue engine rotational inertia [kg*m^2]
+     * @return VehicleBuilder
+     */
+    public VehicleBuilder withEngineInertia(final double engineInertiaValue) {
+        this.engineInertia = engineInertiaValue;
         return this;
     }
 
-    public VehicleBuilder withGearRatios(double... gearRatio) {
-        this.gearRatio = gearRatio.clone();
+    /**
+     * VehicleBuilder with a single or multiple gear ratios.
+     *
+     * @param gearRatioValue gear ratio
+     * @return VehicleBuilder
+     */
+    public VehicleBuilder withGearRatios(final double... gearRatioValue) {
+        this.gearRatio = gearRatioValue.clone();
         return this;
     }
 
-    public VehicleBuilder withWheel(double mass, double radius) {
-        this.wheelMass   = mass;
+    /**
+     * VehicleBuilder with Wheel data.
+     *
+     * @param mass wheel mass [kg]
+     * @param radius wheel radius [m]
+     * @return VehicleBuilder
+     */
+    public VehicleBuilder withWheel(final double mass, final double radius) {
+        this.wheelMass = mass;
         this.wheelRadius = radius;
         return this;
     }
 
-    public VehicleBuilder withRollingResistance(boolean enable, double coeff) {
+    /**
+     * VehicleBuilder with rolling resistance.
+     *
+     * @param enable true value if you want your model to inclue rolling resistance, false otherwise
+     * @param coeff rolling resistance coefficient [Nm/(rad/s)]
+     * @return VehicleBuilder
+     */
+    public VehicleBuilder withRollingResistance(final boolean enable, final double coeff) {
         this.enableRollingResistance = enable;
         this.rollingCoeff = coeff;
         return this;
     }
 
-    
-    public VehicleBuilder withBenchBrake(BrakeTorqueProvider provider) {
-        this.benchBrakeTorqueProvider  = provider;
+    /**
+     * VehicleBuilder with bench brake.
+     *
+     * @param provider BrakeTorqueProvider used to control bench brake torque
+     * @return VehicleBuilder
+     */
+    public VehicleBuilder withBenchBrake(final BrakeTorqueProvider provider) {
+        this.benchBrakeTorqueProvider = provider;
         return this;
     }
 
-    public VehicleBuilder withDeltaTime(double deltaTime) {
-        this.deltaTime = deltaTime;
+    /**
+     * VehicleBuilder with delta time.
+     *
+     * @param deltaTimeValue simulation step [s]
+     * @return VehicleBuilder
+     */
+    public VehicleBuilder withDeltaTime(final double deltaTimeValue) {
+        this.deltaTime = deltaTimeValue;
         return this;
     }
 
-    public VehicleBuilder withWeatherStation(WeatherStation ws) {
+    /**
+     * VehicleBuilder with weather station.
+     *
+     * @param ws WeatherStation implementation
+     * @return VehicleBuilder
+     */
+    public VehicleBuilder withWeatherStation(final WeatherStation ws) {
         this.weatherStation = Objects.requireNonNull(ws);
         return this;
     }
 
-    public VehicleBuilder withTemperatureModel(TemperatureModel model) {
+    /**
+     * VehicleBuilder with custom temperature model for the engine.
+     *
+     * @param model TemperatureModel
+     * @return VehicleBuilder
+     */
+    public VehicleBuilder withTemperatureModel(final TemperatureModel model) {
         this.temperatureModel = Objects.requireNonNull(model);
         return this;
     }
 
-    public VehicleBuilder withThermalParams(double ambientStart, double thermalCapacity, double coolingCoeff) {
-        this.ambientStart    = ambientStart;
-        this.thermalCapacity = thermalCapacity;
-        this.coolingCoeff    = coolingCoeff;
+    /**
+     * VehicleBuilder with temperature model for the engine, params injected.
+     *
+     * @param ambientStartValue ambient start temperature for the thermal model [°C]
+     * @param thermalCapacityValue thermal capacity [J/°C]
+     * @param coolingCoeffValue cooling coefficient [W/°C]
+     * @return VehicleBuilder
+     */
+    public VehicleBuilder withThermalParams(final double ambientStartValue,
+                                            final double thermalCapacityValue,
+                                            final double coolingCoeffValue) {
+        this.ambientStart = ambientStartValue;
+        this.thermalCapacity = thermalCapacityValue;
+        this.coolingCoeff = coolingCoeffValue;
         return this;
     }
 
+    /**
+     * building of a VehicleImpl with non null requirements for:
+     * - baseTorque
+     * - torquePerRad
+     * - engineInertia
+     * - gearRatio
+     * - wheelMass
+     * - wheelRadius
+     * - benchBrakeTorqueProvider
+     * - deltaTime
+     * - weatherStation
+     * - TemperatureModel.
+     *
+     * @return VehicleBuilder
+     */
     public VehicleImpl buildVehiclewithRigidModel() {
         Objects.requireNonNull(baseTorque, "baseTorque");
         Objects.requireNonNull(torquePerRad, "torquePerRad");
@@ -128,7 +221,6 @@ public class VehicleBuilder {
         Objects.requireNonNull(wheelMass, "wheelMass");
         Objects.requireNonNull(wheelRadius, "wheelRadius");
         Objects.requireNonNull(benchBrakeTorqueProvider, "benchBrakeTorqueProvider");
-        Objects.requireNonNull(deltaTime, "deltaTime");
         Objects.requireNonNull(weatherStation, "weatherStation");
         if (gearRatio.length == 0) {
             throw new IllegalArgumentException("at least one gearRatio");
@@ -140,18 +232,18 @@ public class VehicleBuilder {
         }
 
         //computing the inertia of the power train
-        double ratio = gearRatio[0];
-        double wheelInertia = wheelMass * wheelRadius * wheelRadius;
-        double inertiaEq = engineInertia + wheelInertia / (ratio * ratio);
-        Engine engine = new EngineImpl(inertiaEq, new SimpleTorqueMap(baseTorque, torquePerRad),tm, weatherStation);
-        Transmission transmission = new ManualTransmission(gearRatio);
-        List<LoadModel> loads = new ArrayList<>();
+        final double ratio = gearRatio[0];
+        final double wheelInertia = wheelMass * wheelRadius * wheelRadius;
+        final double inertiaEq = engineInertia + wheelInertia / (ratio * ratio);
+        final Engine engine = new EngineImpl(inertiaEq, new SimpleTorqueMap(baseTorque, torquePerRad), tm, weatherStation);
+        final Transmission transmission = new ManualTransmission(gearRatio);
+        final List<LoadModel> loads = new ArrayList<>();
         if (enableRollingResistance) {
             loads.add(new RollingResistance(rollingCoeff));
         }
         loads.add(new BenchLoad(benchBrakeTorqueProvider));
 
-        DriveTrain sim = new RigidDriveTrainSim(engine, transmission, loads, deltaTime);
+        final DriveTrain sim = new RigidDriveTrainSim(engine, transmission, loads);
 
         return new VehicleImpl(sim, weatherStation, wheelRadius, Double.valueOf(0));
     }
