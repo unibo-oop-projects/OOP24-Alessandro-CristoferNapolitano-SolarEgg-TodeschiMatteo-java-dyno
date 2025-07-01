@@ -6,16 +6,17 @@ import it.unibo.javadyno.model.dyno.simulated.api.BrakeTorqueProvider;
 import it.unibo.javadyno.model.dyno.simulated.api.LoadModel;
 
 /**
- * LoadModel that applies brake torque from BrakeTorqueProvider
+ * LoadModel that applies brake torque from BrakeTorqueProvider.
  */
-public class BenchLoad implements LoadModel{
+public class BenchLoad implements LoadModel {
     private final BrakeTorqueProvider provider;
 
     /**
-     * simple constructor for BenchLoad
+     * simple constructor for BenchLoad.
+     *
      * @param provider non null provider
      */
-    public BenchLoad(BrakeTorqueProvider provider) {
+    public BenchLoad(final BrakeTorqueProvider provider) {
         this.provider = Objects.requireNonNull(provider, "provider needed");
     }
 
@@ -23,8 +24,7 @@ public class BenchLoad implements LoadModel{
      * {@inheritDoc}
      */
     @Override
-    public double getLoadTorque(double engineOmega, double gearRatio) {
+    public double getLoadTorque(final double engineOmega, final double gearRatio) {
         return provider.getBrakeTorque();
     }
-    
 }
