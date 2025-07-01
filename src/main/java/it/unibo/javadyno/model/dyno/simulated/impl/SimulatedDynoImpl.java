@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.time.Instant;
 
+import it.unibo.javadyno.controller.impl.AlertMonitor;
 import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.api.RawData;
 import it.unibo.javadyno.model.dyno.simulated.api.Bench;
@@ -59,7 +60,6 @@ public class SimulatedDynoImpl implements SimulatedDyno {
                 .withBenchBrake(null)
                 .withWeatherStation(null)
                 .buildVehiclewithRigidModel();
-
             this.simulationThread = new Thread(this, SIMULATED_DYNO_THREAD_NAME);
             this.simulationThread.start();
         }
@@ -94,12 +94,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
     @Override
     public void run() {
         while (this.running) {
-            this.datas = RawData.builder()
-                    .timestamp(Optional.of(Instant.now()))
-                    .engineRPM(Optional.of(ENGINE_RPM))
-                    .engineTemperature(Optional.of(ENGINE_TEMPERATURE))
-                    .rollerRPM(Optional.of(this.bench.getRollerRPM()))
-                    .build();
+            this.datas = vehicle.getRawData();
             try {
                 Thread.sleep(UPDATE_TIME_DELTA);
             } catch (final InterruptedException e) {
@@ -113,7 +108,13 @@ public class SimulatedDynoImpl implements SimulatedDyno {
      */
     @Override
     public RawData getRawData() {
-        return Objects.requireNonNull(this.datas, "RawData not initialized");
+        if (Objects.isNull(this.datas)) {
+            AlertMonitor.errorNotify(
+                "Unable to retrieve datas form Simulated Dyno",
+                Optional.empty()
+            );
+        }
+        return this.datas;
     }
 
     /**
