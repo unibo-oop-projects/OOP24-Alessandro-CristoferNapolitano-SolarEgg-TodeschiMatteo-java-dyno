@@ -516,6 +516,32 @@ TODO
 #### Subject
 TODO
 
+### 3.2.3 Crimaldi Ivan
+#### Utilizzo della libreria **[Jackson](https://github.com/FasterXML/jackson)**
+Usata per la conversione automatica tra oggetti Java e JSON. 
+L'ObjectMapper è stato configurato per supportare tipi moderni, in questo esempio Instant.
+Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/main/src/main/java/it/unibo/javadyno/model/filemanager/impl/JsonStrategy.java#L27-L30
+
+#### Utilizzo della libreria **[opencsv](https://opencsv.sourceforge.net/)**
+Usata per leggere e scrivere i dati in formato CSV, gestendo la scrittura dell'header e la conversione da riga ad array di stringhe (e viceversa). Esempio utilizzo di CSVWriter e scrittura header
+Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/main/src/main/java/it/unibo/javadyno/model/filemanager/impl/CsvStrategy.java#L59-L60
+
+#### Utilizzo di `Optional` come return type per evitare null
+La Factory restituisce un `Optional<FileStrategy>` per indicare la possibilità che non esista/sia stata implementata una strategia per un dato tipo di file
+Permalink:https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/main/src/main/java/it/unibo/javadyno/model/filemanager/impl/FileStrategyFactoryImpl.java#L24-L41
+
+#### Utilizzo di Lambda Experessions e `Optional.map` per trasformaziono concise
+Utilizzato per gestire gli Optional e scrivere un valore di default se vuoti senza dover riempire il codice di statement if-else
+Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/main/src/main/java/it/unibo/javadyno/model/filemanager/impl/CsvStrategy.java#L65-L75
+
+#### Utilizzo di `TypeReference` per la deserializzazione di tipi generici
+Dato che Java a runtime 'dimentica' che una lista è una `List<ElaboratedData>` e la vede solo come una List, ho dovuto usare la classe `TypeReference` di Jackson. Questa classe permette a Jackson di deserializzare correttamente il JSON in una lista di oggetti ElaboratedData senza errori.
+Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/main/src/main/java/it/unibo/javadyno/model/filemanager/impl/JsonStrategy.java#L48-L50
+
+####Uso di Riferimenti a Metodi come `Function`
+Utilizzato `parseOptional` come metodo generico riutilizzabile per parsare ogni tipo di dato dal CSV, che accetta la logica specifica di parsing come un parametro di tipo `Function`. Ho inoltre usato la sinstassi concisa (`Integer: :parseInt`).
+Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/main/src/main/java/it/unibo/javadyno/model/filemanager/impl/CsvStrategy.java#L108-L118
+
 # Capitolo 4 - Commenti finali
 ## 4.1 Autovalutazione e lavori futuri
 ### Surname Name
