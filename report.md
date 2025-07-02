@@ -591,14 +591,14 @@ Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/7805a79e84493b
 Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/7805a79e84493b5acd015c3e7004dadca600180e/src/main/java/it/unibo/javadyno/model/graph/impl/ChartsManagerImpl.java#L47
 
 #### Utilizzo di `Thread` mediante implementazione di `Runnable`
-Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/7805a79e84493b5acd015c3e7004dadca600180e/src/main/java/it/unibo/javadyno/model/dyno/simulated/impl/SimulatedDynoImpl.java#L18
+Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/14b2e2312654e1e15f3c6588bfa4c498117637f8/src/main/java/it/unibo/javadyno/model/dyno/simulated/impl/SimulatedDynoImpl.java#L89-L103
 
 #### Utilizzo di `JavaFX` per la GUI
-Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/7805a79e84493b5acd015c3e7004dadca600180e/src/main/java/it/unibo/javadyno/view/impl/EvaluatingView.java
+Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/14b2e2312654e1e15f3c6588bfa4c498117637f8/src/main/java/it/unibo/javadyno/view/impl/EvaluatingView.java#L61-L91
 
 #### Utilizzo della libreria **[JFreeChart](https://github.com/jfree/jfreechart)** per la visualizzazione dei grafici
 L'utilizzo della libreria `JFreeChart` è accompagnato da un modulo dedicato alla compatibilità con JavaFX per inglobarlo in un container compatibile
-Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/7805a79e84493b5acd015c3e7004dadca600180e/src/main/java/it/unibo/javadyno/model/graph/impl/ChartsManagerImpl.java
+Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/14b2e2312654e1e15f3c6588bfa4c498117637f8/src/main/java/it/unibo/javadyno/model/graph/impl/ChartsManagerImpl.java#L161-L176
 
 #### Utilizzo della libreria **[Medusa](https://github.com/HanSolo/medusa)** per la visualizzazione dei gauges
 Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/7805a79e84493b5acd015c3e7004dadca600180e/src/main/java/it/unibo/javadyno/model/graph/impl/DefaultGaugeFactory.java#L18
