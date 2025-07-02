@@ -29,6 +29,7 @@ Ivan Crimaldi
 - ### [2.2 Design dettagliato](#22-design-dettagliato-1)
     - #### [2.2.1 Porcheddu Alessandro](#221-porcheddu-alessandro-1)
     - #### [2.2.2 Todeschi Matteo](#222-todeschi-matteo-1)
+    - #### [2.2.3 Surname Name](#222-surname-name-1)
 ## [3. Sviluppo](#capitolo-3---sviluppo)
 - ### [3.1 Testing automatizzato](#31-testing-automatizzato-1)
 - ### [3.2 Note di sviluppo](#32-note-di-sviluppo-1)
@@ -38,6 +39,7 @@ Ivan Crimaldi
 ## [4. Commenti finali](#capitolo-4---commenti-finali)
 - ### [4.1 Autovalutazione e lavori futuri](#41-autovalutazione-e-lavori-futuri-1)
     - #### [4.1.1 Porcheddu Alessandro](#41-autovalutazione-e-lavori-futuri-1)
+    - #### [4.1.2 Todeschi Matteo](#41-autovalutazione-e-lavori-futuri-1)
 - ### [4.2 Difficoltà incontrate e commenti per i docenti](#42-difficoltà-incontrate-e-commenti-per-i-docenti-1)
     - #### [4.2.1 Porcheddu Alessandro](#42-difficoltà-incontrate-e-commenti-per-i-docenti-1)
 ## [Appendice A - Guida utente](#appendice-a---guida-utente-1)
@@ -615,8 +617,14 @@ TODO
 ### 4.1.1 Porcheddu Alessandro
 Nonostante le difficoltà iniziali mi ritengo molto soddisfatto del progetto, in quanto sono contento di aver lavorato su un _proof-of-concept_ orientato verso l'utilizzo nel mondo reale. Sono altrettanto contento di essere riuscivo a scrivere codice e migliorarlo iterativamente ogni volta che pensavo di riuscire ad astrarre meglio alcuni concetti, anche se riconosco di aver tralasciato alcune parti secondarie per questioni di tempo. In particolare, non mi sarei dovuto far spavantare dall'idea di mettermi troppo presto a scrivere codice e non mi sarei dovuto fossilizzare troppo sull'analisi progettuale. Ritengo quest'ultima molto importante ma riconosco anche che il coordinamento di gruppo sull'analisi di un dominio non molto documentato è risultata molto lenta e macchinosa. Per quanto riguarda il mio ruolo nel progetto sono molto soddisfatto di essermi messo spesso in prima fila per aiutare i colleghi e, poichè il dominio del progetto era stato proposto da me, mi ritenevo anche in parte responsabile qualora sorgesse un dubbio. Inoltre sono anche particolarmente fiero di aver iniziato ad usare diversi strumenti accessori come _GitHub workflows_, estensioni per _VSCode_ (in particolare averne creata una ad-hoc per i report di _Gradle_) e macchine virtuali in locale per testare l'applicativo su diversi sistemi operativi. Aggiungo infine che sono molto propenso a continuare lo sviluppo di questo software per provare a fornire un'alternativa gratuita ed _open source_ a quelli attualmente in utilizzo nel panorama automobilistico, soprattuto amatoriale.
 
-### 4.1.2 Surname Name
-TODO
+### 4.1.2 Todeschi Matteo
+Lavorare a questo progetto è stato molto interessante per diversi motivi. In primis ho apprezzato molto lavorare su un qualcosa che potrebbe essere utilizzato nel mondo reale, in secondo luogo è stato probabilmente il primo grande progetto a cui ho avuto modo di partecipare.
+Questo mi ha permesso di imparare molto su come si sviluppa un progetto e soprattutto di mettere in pratica le conoscenze acquisite.
+Mi sono reso conto che se le prime volte che cominciavo a lavorarci sopra mi sentivo un po' perso, con il passare del tempo ho iniziato a capire come muovermi e quindi realizzare piccole variazioni o nuove funzionalità non mi sembrava più così difficile.
+Devo inoltre riconoscere l'importanza del tempo dedicato alla progettazione e all'analisi, che mi ha permesso di avere una visione chiara di quello che dovevo fare fin dal primo momento.
+Un altro aspetto che mi ha reso molto fiero è il fatto di utiizzare tecnologie e librerie che non avevo mai utilizzato prima in ottica di costruire applicazioni più complesse, rendendomi quindi cosapevole di come anche in ambito professionale venga utilizzato spesso questo approccio per la produzione di software.
+Un ultimo appunto che devo fare è che l'utilizzo di strumenti per migliorare la qualità del codice, come _Checkstyle_, _SpotBugs_ e _PMD_, mi ha permesso di scrivere in modo più pulito e mantenibile, facilitando quindi non soltanto la lettura del mio codice ad altri, ma anche la mia stessa comprensione del codice scritto in precedenza.
+Concludo dicendo che, come ad altri membri del gruppo, mi piacerebbe continuare a lavorare su questo progetto, in modo da poterlo rendere un prodotto finito e utilizzabile da chiunque.
 
 ### 4.1.3 Surname Name
 TODO
