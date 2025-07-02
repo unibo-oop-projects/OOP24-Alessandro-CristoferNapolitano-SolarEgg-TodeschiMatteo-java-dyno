@@ -33,7 +33,6 @@ public final class FileManagerImpl implements FileManager {
         if (this.strategy == null) {
             throw new IllegalStateException("No file strategy has been set.");
         }
-        // No conversion needed - directly pass the list
         this.strategy.exportData(dataList, file);
     }
 

@@ -24,7 +24,8 @@ public interface FileManager {
      *
      * @param dataList The list of data to export.
      * @param file The destination file where data will be saved.
-     * @throws IOException If an I/O error occurs or if no strategy is set.
+     * @throws IOException If an I/O error occurs while writing the file.
+     * @throws IllegalStateException If no strategy has been set.
      */
     void exportDataToFile(List<ElaboratedData> dataList, File file) throws IOException;
 
@@ -33,7 +34,8 @@ public interface FileManager {
      *
      * @param file The source file, from which data will be imported.
      * @return A list of ElaboratedData (imported from the file).
-     * @throws IOException If an I/O error occurs or if no strategy is set.
+     * @throws IOException If an I/O error occurs while reading the file.
+     * @throws IllegalStateException If no strategy has been set.
      */
     List<ElaboratedData> importDataFromFile(File file) throws IOException;
 }

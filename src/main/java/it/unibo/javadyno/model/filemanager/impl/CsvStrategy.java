@@ -55,7 +55,6 @@ public final class CsvStrategy implements FileStrategy {
      */
     @Override
     public void exportData(final List<ElaboratedData> data, final File file) throws IOException {
-       // Using try-with-resources to make sure the writer is automatically closed.
        try (CSVWriter writer = new CSVWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
         writer.writeNext(HEADER);
 
@@ -91,19 +90,16 @@ public final class CsvStrategy implements FileStrategy {
         try (CSVReader reader = new CSVReader(new FileReader(file, StandardCharsets.UTF_8))) {
             reader.skip(1); // Skip the header row.
 
-            // Continues reading infinitely until end of file.
-            // Adds each row as an element in the importedData list, and skips potentially malformed lines.
             while (true) {
                 final String[] fields = reader.readNext();
                 if (fields == null) {
-                    break; // End of file reached.
+                    break;
                 }
 
                 if (fields.length < HEADER.length) {
-                    continue; // Skip malformed lines.
+                    continue;
                 }
 
-                // Creates a RawData object from the rawdata fields.
                 final RawData rawData = RawData.builder()
                     .timestamp(parseOptional(fields[INDEX_TIMESTAMP], Instant::parse))
                     .engineRPM(parseOptional(fields[INDEX_ENGINE_RPM], Integer::parseInt))
@@ -118,7 +114,6 @@ public final class CsvStrategy implements FileStrategy {
                     .exhaustGasTemperature(parseOptional(fields[INDEX_EXHAUST_GAS_TEMPERATURE], Double::parseDouble))
                     .build();
 
-                // Parses the elaborateddata fields.
                 final double powerKW = Double.parseDouble(fields[INDEX_ENGINE_POWER_KW]);
                 final double powerHP = Double.parseDouble(fields[INDEX_ENGINE_POWER_HP]);
                 final double correctedTorque = Double.parseDouble(fields[INDEX_ENGINE_CORRECTED_TORQUE]);

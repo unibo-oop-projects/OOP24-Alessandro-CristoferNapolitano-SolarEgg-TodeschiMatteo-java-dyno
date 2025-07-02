@@ -7,6 +7,8 @@ import java.util.List;
 
 /**
  * The Strategy interface for FileManager.
+ * Each implementation of this interface will provide the logic for reading and
+ * writing a specific file format (CSV, JSON).
  */
 public interface FileStrategy {
 
@@ -24,7 +26,7 @@ public interface FileStrategy {
      *
      * @param file the source file from which data will be imported.
      * @return a list of ElaboratedData imported from the file.
-     * @throws IOException if an I/O error occurs while the file is being read.
+     * @throws IOException if an I/O error occurs while reading the file.
      */
     List<ElaboratedData> importData(File file) throws IOException;
 }
