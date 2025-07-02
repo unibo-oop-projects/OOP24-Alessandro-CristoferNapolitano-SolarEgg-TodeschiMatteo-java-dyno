@@ -418,6 +418,99 @@ UML TODO
 ```mermaid
 UML TODO
 ```
+### 2.2.3 Napolitano Cristofer
+#### first
+``` mermaid
+classDiagram
+    %% Dati
+    class RawData
+
+    %% Interfacce
+    class BrakeTorqueProvider {
+      <<interface>>
+    }
+    class LoadModel {
+      <<interface>>
+    }
+    class Engine {
+      <<interface>>
+    }
+    class Transmission {
+      <<interface>>
+    }
+    class DriveTrain {
+      <<interface>>
+    }
+    class Vehicle {
+      <<interface>>
+    }
+    class TorqueMap {
+      <<interface>>
+    }
+    class TemperatureModel {
+      <<interface>>
+    }
+    class WeatherStation {
+      <<interface>>
+    }
+
+    %% Implementazioni concrete
+    class BenchBrakeTorqueHolder
+    class BenchLoad
+    class RollingResistance
+    class EngineImpl
+    class ManualTransmission
+    class SimpleTorqueMap
+    class TargetTemperatureModel
+    class WeatherStationImpl
+    class RigidDriveTrainSim
+    class VehicleImpl
+    class SimulatedDynoImpl
+    class VehicleBuilder
+
+    %% Realizzazioni
+    BrakeTorqueProvider <|-- BenchBrakeTorqueHolder
+    LoadModel         <|-- BenchLoad
+    LoadModel         <|-- RollingResistance
+    Engine            <|-- EngineImpl
+    Transmission      <|-- ManualTransmission
+    TorqueMap         <|-- SimpleTorqueMap
+    TemperatureModel  <|-- TargetTemperatureModel
+    WeatherStation    <|-- WeatherStationImpl
+    DriveTrain        <|-- RigidDriveTrainSim
+    Vehicle           <|-- VehicleImpl
+
+    %% Composizioni interne
+    RigidDriveTrainSim *-- Engine
+    RigidDriveTrainSim *-- Transmission
+    RigidDriveTrainSim *-- LoadModel
+
+    EngineImpl        *-- TorqueMap
+    EngineImpl        *-- TemperatureModel
+    EngineImpl        *-- WeatherStation
+
+    VehicleImpl       *-- DriveTrain
+    VehicleImpl       *-- WeatherStation
+
+    SimulatedDynoImpl *-- Vehicle
+
+    %% Flusso dati
+    VehicleImpl      --> RawData
+    SimulatedDynoImpl--> RawData
+
+    %% VehicleBuilder: dipende direttamente da TUTTE le implementazioni che istanzia
+    VehicleBuilder ..> EngineImpl
+    VehicleBuilder ..> ManualTransmission
+    VehicleBuilder ..> SimpleTorqueMap
+    VehicleBuilder ..> TargetTemperatureModel
+    VehicleBuilder ..> WeatherStationImpl
+    VehicleBuilder ..> BenchLoad
+    VehicleBuilder ..> RollingResistance
+    VehicleBuilder ..> RigidDriveTrainSim
+    VehicleBuilder ..> VehicleImpl
+    VehicleBuilder ..> BrakeTorqueProvider
+
+```
 
 # Capitolo 3 - Sviluppo
 ## 3.1 Testing automatizzato
