@@ -56,7 +56,7 @@ public final class JsonStrategy implements FileStrategy {
                 return Collections.emptyList();
             }
         } catch (final IOException e) {
-            // Re-throw with additional context about which file failed
+            // Specifies which file failed.
             throw new IOException("Failed to parse JSON file: " + file.getAbsolutePath(), e);
         }
     }
