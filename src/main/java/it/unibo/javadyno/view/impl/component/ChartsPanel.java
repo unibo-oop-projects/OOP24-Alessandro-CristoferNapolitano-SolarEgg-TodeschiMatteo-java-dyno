@@ -1,11 +1,11 @@
 package it.unibo.javadyno.view.impl.component;
 
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.fx.ChartViewer;
-import org.jfree.data.xy.XYSeriesCollection;
 
 import it.unibo.javadyno.model.graph.api.ChartsFactory;
 import it.unibo.javadyno.model.graph.api.ChartsManager;
@@ -13,8 +13,10 @@ import it.unibo.javadyno.model.graph.impl.ChartsManagerImpl;
 import it.unibo.javadyno.model.graph.impl.DefaultChartsFactory;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.control.Button;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.stage.Popup;
 import javafx.stage.Screen;
 
 /**
@@ -22,28 +24,35 @@ import javafx.stage.Screen;
  */
 public final class ChartsPanel extends VBox {
     private static final String CSS_CHARTS_PANEL_TAG = "charts-panel";
+    private static final String CSS_POPUP_TAG = "popup-panel";
     private static final String BG_IMAGE = "/images/logo_no_bg.png";
+    private static final int POPUP_SPACING = 5;
     private static final double CHART_HEIGH_FACTOR = 0.7;
     private static final double CHART_WIDTH_FACTOR = 0.6;
     private static final double CHART_MINIMUM_FACTOR = 0.5;
-
+    private static final String MANAGE_BUTTON = "Manage Series";
+    private static final String CLOSE_BUTTON = "Close";
     private static final String CHARTS_NAME = "RPM vs Power";
     private static final String X_AXIS_LABEL = "RPM (Revolutions Per Minute)";
     private static final String Y_AXIS_LABEL = "Horsepower (HP)";
     private static final String Y2_AXIS_LABEL = "Torque (Nm)";
-    private static final String GENERAL_SERIES_NAME = "Power";
+    private static final String FIRST_SERIES_NAME = "Power";
+    private static final String SECOND_SERIES_NAME = "Torque";
 
     private final JFreeChart lineChart;
     private final ChartViewer viewer;
+    private final Map<Button, Boolean> deleteButtons = new LinkedHashMap<>();
+    private final Button manageButtons = new Button(MANAGE_BUTTON);
+    private final Popup deletePopup = new Popup();
     private final ChartsFactory chartsFactory = new DefaultChartsFactory();
     private final ChartsManager chartManager = new ChartsManagerImpl();
-    private int importedOrder;
+    private int importedOrder = 1;
 
     /**
      * Default constructor for ChartsPanel.
      */
     public ChartsPanel() {
-        this.setAlignment(Pos.TOP_RIGHT);
+        this.setAlignment(Pos.CENTER);
         this.getStyleClass().add(CSS_CHARTS_PANEL_TAG);
         final Rectangle2D screenBounds = Screen.getPrimary().getBounds();
         this.lineChart = chartsFactory.createEmptyCharts(
@@ -51,15 +60,32 @@ public final class ChartsPanel extends VBox {
             X_AXIS_LABEL,
             Y_AXIS_LABEL
         );
+        manageButtons.setOnAction(e -> {
+            if (deleteButtons.isEmpty()) {
+                return;
+            }
+            final VBox popupContent = new VBox(POPUP_SPACING);
+            final Button closeButton = new Button(CLOSE_BUTTON);
+            closeButton.setOnAction(event -> deletePopup.hide());
+            popupContent.getStyleClass().add(CSS_POPUP_TAG);
+            popupContent.getChildren().setAll(deleteButtons.keySet());
+            popupContent.getChildren().add(closeButton);
+            deletePopup.getContent().setAll(popupContent);
+            if (!deletePopup.isShowing()) {
+                deletePopup.show(this.getScene().getWindow());
+            } else {
+                deletePopup.hide();
+            }
+        });
         viewer = new ChartViewer(this.lineChart);
         viewer.setPrefSize(screenBounds.getWidth() * CHART_WIDTH_FACTOR, screenBounds.getHeight() * CHART_HEIGH_FACTOR);
         viewer.setMinSize(screenBounds.getWidth() * CHART_MINIMUM_FACTOR, screenBounds.getHeight() * CHART_MINIMUM_FACTOR);
-        chartManager.addNewSeries(this.lineChart, GENERAL_SERIES_NAME, ChartsManager.YAxisLevel.FIRST);
+        chartManager.addNewSeries(this.lineChart, FIRST_SERIES_NAME, ChartsManager.YAxisLevel.FIRST);
         chartManager.addYAxis(this.lineChart, Y2_AXIS_LABEL);
-        chartManager.addNewSeries(this.lineChart, GENERAL_SERIES_NAME, ChartsManager.YAxisLevel.SECOND);
+        chartManager.addNewSeries(this.lineChart, SECOND_SERIES_NAME, ChartsManager.YAxisLevel.SECOND);
         chartManager.setDarkTheme(this.lineChart);
         chartManager.setBackgroundImage(this.lineChart, BG_IMAGE);
-        this.getChildren().add(viewer);
+        this.getChildren().addAll(viewer, manageButtons);
     }
 
     /**
@@ -72,23 +98,14 @@ public final class ChartsPanel extends VBox {
     }
 
     /**
-     * Generates a unique name for imported data series.
-     *
-     * @return a unique name for the imported data series
-     */
-    private String generateImportedName() {
-        return String.format("%s(Import %d)", GENERAL_SERIES_NAME, ++this.importedOrder);
-    }
-
-    /**
      * Adds a single data point to the charts panel.
      *
      * @param xValue the x-axis value
      * @param yValue the y-axis value
      * @param y2Valu the second y-axis value
      */
-    public void addSingleData(final Number xValue, final Number yValue, final Number y2Valu) {
-        addPointToChart(GENERAL_SERIES_NAME, xValue, yValue, y2Valu);
+    public void addSingleData(final Number xValue, final Number yValue, final Number y2Value) {
+        addPointToChart(FIRST_SERIES_NAME, SECOND_SERIES_NAME, xValue, yValue, y2Value);
     }
 
     /**
@@ -99,32 +116,50 @@ public final class ChartsPanel extends VBox {
      * @param y2Values the list of second y-axis values
      */
     public void addAllData(final List<Number> xValues, final List<Number> yValues, final List<Number> y2Values) {
-        final String seriesName = generateImportedName();
-        chartManager.addNewSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.FIRST);
-        chartManager.addNewSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.SECOND);
-        chartManager.addAllPointsToSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.FIRST, xValues, yValues);
-        chartManager.addAllPointsToSeries(this.lineChart, seriesName, ChartsManager.YAxisLevel.SECOND, xValues, y2Values);
+        final String firstSeriesName = String.format("%s(%d)", FIRST_SERIES_NAME, this.importedOrder);
+        final String secondSeriesName = String.format("%s(%d)", SECOND_SERIES_NAME, this.importedOrder);
+        final int order = this.importedOrder;
+        final Button deleteButton = new Button("Hide Series " + order);
+        deleteButtons.put(deleteButton, true);
+        deleteButton.setOnAction(e -> {
+            chartManager.setSeriesVisibility(this.lineChart, order, !this.deleteButtons.get(deleteButton));
+            this.deleteButtons.put(deleteButton, !this.deleteButtons.get(deleteButton));
+            if (this.deleteButtons.get(deleteButton)) {
+                deleteButton.setText("Hide Series " + order);
+            } else {
+                deleteButton.setText("Show Series " + order);
+            }
+        });
+        this.importedOrder++;
+        chartManager.addNewSeries(this.lineChart, firstSeriesName, ChartsManager.YAxisLevel.FIRST);
+        chartManager.addNewSeries(this.lineChart, secondSeriesName, ChartsManager.YAxisLevel.SECOND);
+        chartManager.addAllPointsToSeries(this.lineChart, firstSeriesName, ChartsManager.YAxisLevel.FIRST, xValues, yValues);
+        chartManager.addAllPointsToSeries(this.lineChart, secondSeriesName, ChartsManager.YAxisLevel.SECOND, xValues, y2Values);
     }
 
     /**
      * Adds a point to the speed chart.
      *
-     * @param seriesName the name of the series to which the point will be added
+     * @param firstSeriesName the name of the first series (Power)
+     * @param secondSeriesName the name of the second series (Torque)
      * @param xValue the x-axis value
      * @param yValue the y-axis value
      * @param y2Value the second y-axis value
      */
-    private void addPointToChart(final String seriesName, final Number xValue, final Number yValue, final Number y2Value) {
+    private void addPointToChart(
+        final String firstSeriesName, final String secondSeriesName,
+        final Number xValue, final Number yValue, final Number y2Value
+    ) {
         chartManager.addPointToSeries(
             this.lineChart,
-            seriesName,
+            firstSeriesName,
             ChartsManager.YAxisLevel.FIRST,
             xValue,
             yValue
         );
         chartManager.addPointToSeries(
             this.lineChart,
-            seriesName,
+            secondSeriesName,
             ChartsManager.YAxisLevel.SECOND,
             xValue,
             y2Value
@@ -147,12 +182,7 @@ public final class ChartsPanel extends VBox {
     /**
      * Removes the first series from all Y-axis levels in the chart.
      */
-    public void removeDefaultSeries() {
-        for (final ChartsManager.YAxisLevel level : ChartsManager.YAxisLevel.values()) {
-            final var dataset = (XYSeriesCollection) this.lineChart.getXYPlot().getDataset(level.getLevel());
-            if (Objects.nonNull(dataset) && dataset.getSeriesCount() > 0) {
-                dataset.removeSeries(0);
-            }
-        }
+    public void hideDefaultVisibility() {
+        chartManager.setSeriesVisibility(this.lineChart, 0, false);
     }
 }
