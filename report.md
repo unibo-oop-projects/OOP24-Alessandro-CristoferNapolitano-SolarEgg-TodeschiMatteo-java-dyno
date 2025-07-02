@@ -525,15 +525,20 @@ classDiagram
 
     GaugePanel --> GaugeFactory : uses
     ChartsPanel --> ChartsFactory : uses
-    ChartsPanel --> ChartsManager : controls via
+    ChartsPanel --> ChartsManager : controlled by
     View *-- GaugePanel
     View *-- ChartsPanel
 
 ```
 
-**Problema:** TODO.
+**Problema:**
+Permettere la personalizzazione degli elementi presenti in `GaugePanel` e `ChartsPanel` in modo da permettere un futuro una facile estensione e personalizzazione della view.
+Si vuole inoltre cercare di limitare le operazioni che l'utente può fare sui grafici, in modo da evitare errori e rendere l'interfaccia più intuitiva.
 
-**Soluzione:** TODO. 
+**Soluzione:**
+Utilizzare il pattern **Factory** per creare i grafici e i gauge, creando dunque un interfaccia funzionale per ognuno di questi componenti.
+`GaugeFactory` e `ChartsFactory` sono quindi le interfacce che definiscono i metodi per creare i gauge e i grafici e possiedono anche una loro implementazione standard che verrà poi utilizzata per creare i componenti di default nella nostra applicazione ma nulla vieta in futuro di implementare nuove classi che estendono queste interfacce e che permettono di creare grafici e gauge personalizzati.  
+Per quanto riguarda la gestione dei grafici, è stato creato rispettando il pattern **Façade** un `ChartsManager` che permette di limitare e standardizzare le operazioni che l'utente può fare sui grafici, come ad esempio aggiungere ulteriori asse Y, creare nuove serie, disabilitare serie esistenti.
 
 ### 2.2.3 Surname Name
 #### Subject
