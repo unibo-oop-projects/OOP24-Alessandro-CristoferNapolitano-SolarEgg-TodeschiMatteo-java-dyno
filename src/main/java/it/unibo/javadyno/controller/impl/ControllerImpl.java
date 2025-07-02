@@ -25,6 +25,7 @@ import it.unibo.javadyno.model.data.impl.DataCollectorImpl;
 import it.unibo.javadyno.model.dyno.api.Dyno;
 import it.unibo.javadyno.model.dyno.obd2.impl.OBD2Dyno;
 import it.unibo.javadyno.model.dyno.real.impl.RealDynoImpl;
+import it.unibo.javadyno.model.dyno.simulated.impl.SimulatedDynoImpl;
 import it.unibo.javadyno.model.filemanager.api.FileManager;
 import it.unibo.javadyno.model.filemanager.api.FileStrategyFactory;
 import it.unibo.javadyno.model.filemanager.impl.FileManagerImpl;
@@ -142,7 +143,9 @@ public final class ControllerImpl implements Controller {
      * This method runs in a loop while the dyno is active, collecting data and updating the graphics.
      */
     private void polling() {
-        this.dataCollector.collectData();
+        if (this.dyno.getDynoType().equals(DataSource.OBD2)) {
+            this.dataCollector.collectData();
+        }
         while (Objects.nonNull(dyno) && dyno.isActive() && this.isRunning) {
             final ElaboratedData data = this.dataCollector.collectData();
             if (Objects.nonNull(data)) {
@@ -313,6 +316,17 @@ public final class ControllerImpl implements Controller {
             case AIR_DENSITY -> this.userSettings.setAirDensity(value);
             case DRIVE_TRAIN_EFFICIENCY -> this.userSettings.setDriveTrainEfficiency(value);
             case DYNO_TYPE -> this.userSettings.setDynoType(value);
+            case BASE_TORQUE -> this.userSettings.setBaseTorque(value);
+            case TORQUE_PER_RAD -> this.userSettings.setTorquePerRad(value);
+            case ENGINE_INERTIA -> this.userSettings.setEngineInertia(value);
+            case GEAR_RATIOS -> this.userSettings.setGearRatios(new double[]{value});
+            case WHEEL_MASS -> this.userSettings.setWheelMass(value);
+            case WHEEL_RADIUS -> this.userSettings.setWheelRadius(value);
+            case ROLLING_COEFF -> this.userSettings.setRollingCoeff(value);
+            case AIR_TEMPERATURE -> this.userSettings.setAirTemperature(value);
+            case AIR_PRESSURE -> this.userSettings.setAirPressure(value);
+            case AIR_HUMIDITY -> this.userSettings.setAirHumidity(value);
+            case MAX_RPM_SIMULATION -> this.userSettings.setMaxRpmSimulation(value);
         }
         saveUserSettingsToFile(SETTINGS_FILE_NAME, this.userSettings);
     }

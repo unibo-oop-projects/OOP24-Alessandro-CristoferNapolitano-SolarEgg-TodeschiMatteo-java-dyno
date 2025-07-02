@@ -2,12 +2,12 @@ package it.unibo.javadyno.model.dyno.simulated.impl;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.time.Instant;
 
+import it.unibo.javadyno.controller.api.Controller;
+import it.unibo.javadyno.controller.impl.AlertMonitor;
 import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.model.data.api.RawData;
-import it.unibo.javadyno.model.dyno.simulated.api.Bench;
-import it.unibo.javadyno.model.dyno.simulated.api.DriveTrain;
+import it.unibo.javadyno.model.dyno.simulated.api.BrakeTorqueProvider;
 import it.unibo.javadyno.model.dyno.simulated.api.SimulatedDyno;
 import it.unibo.javadyno.model.dyno.simulated.api.Vehicle;
 import it.unibo.javadyno.model.dyno.simulated.api.WeatherStation;
@@ -18,31 +18,24 @@ import it.unibo.javadyno.model.dyno.simulated.api.WeatherStation;
 public class SimulatedDynoImpl implements SimulatedDyno {
 
     private static final String SIMULATED_DYNO_THREAD_NAME = "SimulatedDynoThread";
-    private static final int ENGINE_RPM = 2000;
-    private static final double ENGINE_TEMPERATURE = 90.0;
-    private static final int UPDATE_TIME_DELTA = 10; // in milliseconds
-    private volatile boolean running;
+    private final Controller controller;
+    private long updateTimeDelta;
     private Thread simulationThread;
-    private Bench bench;
     private Vehicle vehicle;
-    private DriveTrain driveTrain;
-    private WeatherStation weatherStation;
+    private volatile boolean running;
     private volatile RawData datas;
 
     /**
      * Constructor.
+     *
+     * @param controller the controller that will be used to retrieve user settings
      */
-    public SimulatedDynoImpl() {
+    public SimulatedDynoImpl(final Controller controller) {
+        this.controller = controller;
         this.running = false;
         this.simulationThread = null;
-        this.bench = null;
         this.vehicle = null;
-        this.driveTrain = null;
-        this.weatherStation = null;
-        // Bench
-        // Vehicle (with builder for the parameters)
-        // Drive Train + call for throttle/timedelta
-        // Weather
+        this.datas = null;
     }
 
     /**
@@ -51,9 +44,27 @@ public class SimulatedDynoImpl implements SimulatedDyno {
     @Override
     public void begin() {
         if (!running) {
+            this.updateTimeDelta = (long) controller.getUserSettings().getSimulationUpdateTimeDelta();
             this.running = true;
-            this.bench = new BenchImpl();
-            // this.vehicle = new VehicleImpl();
+            final BrakeTorqueProvider bench = new BenchBrakeTorqueHolder();
+            final WeatherStation weatherStation = new WeatherStationImpl(
+                controller.getUserSettings().getAirTemperature(),
+                (int) controller.getUserSettings().getAirPressure(),
+                (int) controller.getUserSettings().getAirHumidity()
+            );
+            this.vehicle = VehicleBuilder.builder()
+                .withBaseTorque(controller.getUserSettings().getBaseTorque())
+                .withTorquePerRad(controller.getUserSettings().getTorquePerRad())
+                .withEngineInertia(controller.getUserSettings().getEngineInertia())
+                .withGearRatios(controller.getUserSettings().getGearRatios())
+                .withWheel(
+                    controller.getUserSettings().getWheelMass(),
+                    controller.getUserSettings().getWheelRadius())
+                .withBenchBrake(bench)
+                .withWeatherStation(weatherStation)
+                .withThermalParams(20.0, 100_000.0, 500.0)
+                .buildVehiclewithRigidModel();
+            this.vehicle.setThrottle(1.0);
             this.simulationThread = new Thread(this, SIMULATED_DYNO_THREAD_NAME);
             this.simulationThread.start();
         }
@@ -68,6 +79,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
         if (Objects.nonNull(simulationThread)) {
             this.simulationThread.interrupt();
         }
+        System.out.println("Simulation thread interrupted by thread: " + Thread.currentThread().getName());
         this.running = false;
     }
 
@@ -87,19 +99,20 @@ public class SimulatedDynoImpl implements SimulatedDyno {
      */
     @Override
     public void run() {
-        while (this.running) {
-            this.datas = RawData.builder()
-                    .timestamp(Optional.of(Instant.now()))
-                    .engineRPM(Optional.of(ENGINE_RPM))
-                    .engineTemperature(Optional.of(ENGINE_TEMPERATURE))
-                    .rollerRPM(Optional.of(this.bench.getRollerRPM()))
-                    .build();
+        this.datas = vehicle.getRawData();
+        while ( this.running && Objects.nonNull(this.datas) &&
+                this.datas.engineRPM().get() < controller.getUserSettings().getMaxRpmSimulation()
+            ) {
+            this.vehicle.update(0.1);
+            this.datas = vehicle.getRawData();
             try {
-                Thread.sleep(UPDATE_TIME_DELTA); // frequency setted by user
+                Thread.sleep(this.updateTimeDelta);
             } catch (final InterruptedException e) {
                 this.end();
             }
         }
+        System.out.println("Simulation ended.");
+        this.end();
     }
 
     /**
@@ -107,7 +120,16 @@ public class SimulatedDynoImpl implements SimulatedDyno {
      */
     @Override
     public RawData getRawData() {
-        return Objects.requireNonNull(this.datas, "RawData not initialized");
+        if (Objects.isNull(this.datas)) {
+            AlertMonitor.errorNotify(
+                "Unable to retrieve datas form Simulated Dyno",
+                Optional.empty()
+            );
+            return RawData.builder().build();
+        } else {
+            return this.datas;
+        }
+        
     }
 
     /**
