@@ -105,7 +105,7 @@ public abstract class AbstractSerialCommunicator<T> implements MCUCommunicator<T
                     "Failed to setup the chip on port: " + this.commPort.getSystemPortName(),
                     Optional.empty()
                 );
-                //throw new IllegalStateException("Failed to setup the chip on port: " + this.commPort.getSystemPortName(), e);
+                return;
             }
             this.commPort.addDataListener(new DataListener());
             this.commPort.addDataListener(new DisconnectListener());
@@ -126,8 +126,7 @@ public abstract class AbstractSerialCommunicator<T> implements MCUCommunicator<T
                 AlertMonitor.warningNotify(
                     "Failed to close the serial port: " + this.commPort.getSystemPortName(),
                     Optional.empty()
-                    );
-                //throw new IllegalStateException("Failed to close the serial port: " + this.commPort.getSystemPortName());
+                );
             }
             this.messageListeners.clear();
             this.commPort.removeDataListener();

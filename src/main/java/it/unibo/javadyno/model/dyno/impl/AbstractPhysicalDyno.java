@@ -44,7 +44,7 @@ public abstract class AbstractPhysicalDyno<T> implements Dyno, Runnable {
                 "Polling interval must be greater than zero",
                 Optional.empty()
             );
-            //throw new IllegalArgumentException("Polling interval must be greater than zero");
+            throw new IllegalArgumentException("Polling interval must be greater than zero");
         }
         this.polling = polling;
     }

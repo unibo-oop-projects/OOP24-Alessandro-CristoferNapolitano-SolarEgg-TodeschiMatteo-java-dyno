@@ -47,26 +47,19 @@ class DataElaboratorImplTest {
     }
 
     private final class TestOBD2Dyno implements Dyno {
-
-        // Initial values
         private static final Integer INITIAL_ENGINE_RPM = 500;
         private static final Integer INITIAL_VEHICLE_SPEED = 2;
         private static final Integer INITIAL_AMBIENT_TEMPERATURE = 20;
         private static final Integer INITIAL_BARO_PRESSURE = 101;
-
-        // Engine RPM constants
         private static final double RPM_INCREASE_FACTOR = 1.05;
         private static final int MAX_ENGINE_RPM = 7000;
-
-        // Vehicle speed constants
         private static final int MAX_VEHICLE_SPEED = 180;
         private static final int MAX_SPEED_INCREASE = 8;
         private static final int MIN_SPEED_INCREASE = 1;
-
-        // Timestamp constants
         private static final int MIN_DELAY_MILLIS = 800;
         private static final int MAX_DELAY_MILLIS = 1100;
         private RawData prevRawData;
+        private boolean isActive;
 
         TestOBD2Dyno() {
             this.prevRawData = RawData.builder()
@@ -80,22 +73,17 @@ class DataElaboratorImplTest {
 
         @Override
         public RawData getRawData() {
-            // Calculate dynamic engine RPM - increase by percentage each call, with max limit
             final int currentRpm = this.prevRawData.engineRPM().get();
             final Integer newRpm = Math.min(MAX_ENGINE_RPM, (int) (currentRpm * RPM_INCREASE_FACTOR));
 
-            // Calculate dynamic vehicle speed - logarithmic growth for realistic acceleration
-            // Fast initial acceleration that slows down as it approaches max speed
             final int currentSpeed = this.prevRawData.vehicleSpeed().get();
             final double accelerationFactor = 1.0 - (double) currentSpeed / MAX_VEHICLE_SPEED;
             final int speedIncrease = Math.max(MIN_SPEED_INCREASE, (int) (MAX_SPEED_INCREASE * accelerationFactor));
             final Integer newSpeed = Math.min(MAX_VEHICLE_SPEED, currentSpeed + speedIncrease);
 
-            // Keep ambient temperature and barometric pressure constant
             final Integer ambientTemp = this.prevRawData.ambientAirTemperature().get();
             final Integer baroPressure = this.prevRawData.baroPressure().get();
 
-            // Generate realistic timestamp with variable delay between measurements
             final Instant prevTimestamp = this.prevRawData.timestamp().get();
             final int delayMillis = (int) (MIN_DELAY_MILLIS
                 + rand.nextDouble()
@@ -120,15 +108,17 @@ class DataElaboratorImplTest {
 
         @Override
         public void begin() {
+            this.isActive = true;
         }
 
         @Override
         public void end() {
+            this.isActive = false;
         }
 
         @Override
         public boolean isActive() {
-            return true;
+            return this.isActive;
         }
     }
 }

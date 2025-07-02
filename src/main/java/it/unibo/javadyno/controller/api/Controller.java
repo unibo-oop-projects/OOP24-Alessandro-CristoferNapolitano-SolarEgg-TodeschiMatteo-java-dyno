@@ -100,9 +100,5 @@ public interface Controller {
      * @param file The source file.
      */
     void importDataFromFile(File file);
-
-    /**
-     * Test method for importing data.
-     */
-    void importDataTest();
+    
 }
