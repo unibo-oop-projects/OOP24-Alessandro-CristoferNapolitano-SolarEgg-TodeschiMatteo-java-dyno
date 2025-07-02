@@ -19,8 +19,6 @@ public final class App {
      * @param args passed to JavaFX.
      */
     public static void main(final String[] args) {
-        // Application.launch(ViewImpl.class, args);
-        // ViewImpl.run(args);
         final Controller controller = new ControllerImpl();
         MainMenu.setController(controller);
         controller.launchApp(args);

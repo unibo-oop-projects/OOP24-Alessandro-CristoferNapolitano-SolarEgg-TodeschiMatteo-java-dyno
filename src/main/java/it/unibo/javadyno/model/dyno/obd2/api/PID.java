@@ -25,7 +25,7 @@ public enum PID {
     }
 
     PID(final int code, final String description) {
-        this(code, description, 0); // Default offset to 0
+        this(code, description, 0);
     }
 
     /**

@@ -8,7 +8,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.time.Instant;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -42,15 +41,14 @@ import javafx.stage.Stage;
  */
 public final class ControllerImpl implements Controller {
 
-    private static final int MAX_RPM = 7000;
     private static final String SIMULATION_POLLING_THREAD_NAME = "SimulationPollingThread";
     private static final String SETTINGS_FILE_NAME = "user-settings.ser";
     private static final String PROJECT_DIR_NAME = "javadyno";
     private final DataCollector dataCollector;
-    private final Random rand = new Random();
     private final FileManager fileManager;
     private final FileStrategyFactory strategyFactory;
     private final UserSettings userSettings;
+    private final String appDir;
     private boolean isRunning;
     private Dyno dyno;
     private View view;
@@ -62,6 +60,8 @@ public final class ControllerImpl implements Controller {
         AlertMonitor.setController(this);
         this.dyno = null;
         this.view = null;
+        final String userHome = System.getProperty("user.home");
+        this.appDir = userHome + File.separator + PROJECT_DIR_NAME;
         this.dataCollector = new DataCollectorImpl();
         this.fileManager = new FileManagerImpl();
         this.strategyFactory = new FileStrategyFactoryImpl();
@@ -117,7 +117,7 @@ public final class ControllerImpl implements Controller {
     public void startEvaluation(final DataSource dynoType) {
         if (!Objects.nonNull(this.dyno) || !this.dyno.getDynoType().equals(dynoType)) {
             switch (dynoType) {
-                case SIMULATED_DYNO -> this.dyno = new TestRealDyno(); // TODO replace with simulation
+                case SIMULATED_DYNO -> this.dyno = new TestRealDyno();
                 case OBD2 -> this.dyno = new OBD2Dyno();
                 case REAL_DYNO -> this.dyno = new RealDynoImpl(new JsonWebSocketCommunicator());
             }
@@ -304,6 +304,7 @@ public final class ControllerImpl implements Controller {
     public void updateSetting(final UserSettingDef setting, final double value) {
         switch (setting) {
             case SIMULATION_UPDATE_TIME_DELTA -> this.userSettings.setSimulationUpdateTimeDelta(value);
+            case SIMULATION_MAX_RPM -> this.userSettings.setSimulationMaxRPM(value);
             case LOADCELL_LEVER_LENGTH -> this.userSettings.setLoadcellLeverLength(value);
             case VEHICLE_MASS -> this.userSettings.setVehicleMass(value);
             case ROLLING_RESISTANCE_COEFFICIENT -> this.userSettings.setRollingResistanceCoefficient(value);
@@ -328,31 +329,6 @@ public final class ControllerImpl implements Controller {
     }
 
     /**
-     * {@inheritDoc}
-     * Updated to use the file import system instead of generating demo data.
-     */
-    @Override
-    public void importDataTest() {
-        // Kept for demo purposes
-        final List<ElaboratedData> list = new LinkedList<>();
-        for (int i = 0; i < MAX_RPM; i++) {
-            final RawData rawData = RawData.builder()
-                    .engineRPM(Optional.of(i))
-                    .vehicleSpeed(Optional.of(i / 10))
-                    .timestamp(Optional.of(Instant.now()))
-                    .build();
-            final ElaboratedData elaboratedData = new ElaboratedData(
-                rawData,
-                0.0,
-                i * 10 + rand.nextDouble() * 1000,
-                i * 15 - rand.nextDouble() * 1000
-            );
-            list.add(elaboratedData);
-        }
-        view.update(Collections.unmodifiableList(list));
-    }
-
-    /**
      * Loads user settings from a serialized file in the user home directory.
      * If the file doesn't exist or cannot be loaded, returns a new UserSettings with default values.
      *
@@ -360,8 +336,6 @@ public final class ControllerImpl implements Controller {
      * @return the loaded UserSettings or a new instance with defaults
      */
     private UserSettings loadUserSettingsFromFile(final String settingsFileName) {
-        final String userHome = System.getProperty("user.home");
-        final String appDir = userHome + File.separator + PROJECT_DIR_NAME;
         final String filePath = appDir + File.separator + settingsFileName;
         final File file = new File(filePath);
 
@@ -379,7 +353,6 @@ public final class ControllerImpl implements Controller {
             }
 
         } catch (final IOException | ClassNotFoundException e) {
-            // Error loading file or class not found, return default settings
             AlertMonitor.errorNotify(
                 "Could not load user settings",
                 Optional.of("Using default settings. Error: " + e.getMessage())
@@ -396,11 +369,8 @@ public final class ControllerImpl implements Controller {
      * @param settings the UserSettings object to save
      */
     private void saveUserSettingsToFile(final String settingsFileName, final UserSettings settings) {
-        final String userHome = System.getProperty("user.home");
-        final String appDir = userHome + File.separator + PROJECT_DIR_NAME;
         final File directory = new File(appDir);
 
-        // Create directory if it doesn't exist
         if (!directory.exists() && !directory.mkdirs()) {
             AlertMonitor.errorNotify(
                 "Could not create application directory",
@@ -417,7 +387,6 @@ public final class ControllerImpl implements Controller {
             objectOutputStream.flush();
 
         } catch (final IOException e) {
-            // Error saving file, show notification
             AlertMonitor.errorNotify(
                 "Could not save user settings",
                 Optional.of("Settings were not saved. Error: " + e.getMessage())
@@ -435,7 +404,6 @@ public final class ControllerImpl implements Controller {
         private static final Double INITIAL_ENGINE_TEMPERATURE = 85.0;
         private static final Double INITIAL_THROTTLE_POSITION = 10.0;
         private static final double RPM_INCREASE_FACTOR = 1.03;
-        private static final int MAX_ENGINE_RPM = 6500;
         private static final double MAX_TORQUE = 400.0;
         private static final double TORQUE_PEAK_RPM = 3500.0;
         private static final double TORQUE_VARIATION = 15.0;
@@ -447,6 +415,7 @@ public final class ControllerImpl implements Controller {
         private static final double MIN_THROTTLE_POSITION = 5.0;
         private static final int MIN_DELAY_MILLIS = 200;
         private static final int MAX_DELAY_MILLIS = 400;
+        private final int maxEngineRPM = (int) userSettings.getSimulationMaxRPM();
         private final Random rand = new Random();
         private RawData prevRawData;
         private boolean isActive;
@@ -469,11 +438,10 @@ public final class ControllerImpl implements Controller {
 
             final int currentRpm = this.prevRawData.engineRPM().get();
             final Integer newRpm;
-            newRpm = Math.min(MAX_ENGINE_RPM, (int) (currentRpm * RPM_INCREASE_FACTOR));
-            if (newRpm >= MAX_ENGINE_RPM) {
+            newRpm = Math.min(maxEngineRPM, (int) (currentRpm * RPM_INCREASE_FACTOR));
+            if (newRpm >= maxEngineRPM) {
                 isActive = false;
             }
-
 
             final double rpmRatio = newRpm / TORQUE_PEAK_RPM;
             final double baseTorque;

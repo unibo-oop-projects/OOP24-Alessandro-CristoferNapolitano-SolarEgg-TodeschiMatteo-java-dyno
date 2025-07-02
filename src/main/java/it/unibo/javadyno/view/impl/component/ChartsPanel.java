@@ -102,7 +102,7 @@ public final class ChartsPanel extends VBox {
      *
      * @param xValue the x-axis value
      * @param yValue the y-axis value
-     * @param y2Valu the second y-axis value
+     * @param y2Value the second y-axis value
      */
     public void addSingleData(final Number xValue, final Number yValue, final Number y2Value) {
         addPointToChart(FIRST_SERIES_NAME, SECOND_SERIES_NAME, xValue, yValue, y2Value);

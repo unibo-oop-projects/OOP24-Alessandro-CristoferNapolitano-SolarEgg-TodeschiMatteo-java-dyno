@@ -34,7 +34,7 @@ public abstract class AbstractWebSocketCommunicator<T> implements MCUCommunicato
      * The default server URI is {@value #DEFAULT_SERVER_URI}.
      */
     public AbstractWebSocketCommunicator() {
-        this(DEFAULT_SERVER_URI); // Default server URI and timeout
+        this(DEFAULT_SERVER_URI);
     }
 
     /**

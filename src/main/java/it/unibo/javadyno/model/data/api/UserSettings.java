@@ -10,6 +10,7 @@ public final class UserSettings implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private double simulationUpdateTimeDelta;
+    private double simulationMaxRPM;
     private double loadcellLeverLength;
     private double vehicleMass;
     private double rollingResistanceCoefficient;
@@ -24,6 +25,7 @@ public final class UserSettings implements Serializable {
      */
     public UserSettings() {
         simulationUpdateTimeDelta = UserSettingDef.SIMULATION_UPDATE_TIME_DELTA.getDefaultValue();
+        simulationMaxRPM = UserSettingDef.SIMULATION_MAX_RPM.getDefaultValue();
         loadcellLeverLength = UserSettingDef.LOADCELL_LEVER_LENGTH.getDefaultValue();
         vehicleMass = UserSettingDef.VEHICLE_MASS.getDefaultValue();
         rollingResistanceCoefficient = UserSettingDef.ROLLING_RESISTANCE_COEFFICIENT.getDefaultValue();
@@ -37,10 +39,19 @@ public final class UserSettings implements Serializable {
     /**
      * Gets the simulation update time delta.
      *
-     * @return the simulation update time delta in milliseconds
+     * @return imulation update time delta in milliseconds
      */
     public double getSimulationUpdateTimeDelta() {
-        return simulationUpdateTimeDelta;
+        return this.simulationUpdateTimeDelta;
+    }
+
+    /**
+     * Gets the simulation maximum RPM.
+     *
+     * @return the maximum RPM for the simulation
+     */
+    public double getSimulationMaxRPM() {
+        return this.simulationMaxRPM;
     }
 
     /**
@@ -49,7 +60,7 @@ public final class UserSettings implements Serializable {
      * @return the loadcell lever length in meters
      */
     public double getLoadcellLeverLength() {
-        return loadcellLeverLength;
+        return this.loadcellLeverLength;
     }
 
     /**
@@ -58,7 +69,7 @@ public final class UserSettings implements Serializable {
      * @return the vehicle mass in kilograms
      */
     public double getVehicleMass() {
-        return vehicleMass;
+        return this.vehicleMass;
     }
 
     /**
@@ -67,7 +78,7 @@ public final class UserSettings implements Serializable {
      * @return the rolling resistance coefficient
      */
     public double getRollingResistanceCoefficient() {
-        return rollingResistanceCoefficient;
+        return this.rollingResistanceCoefficient;
     }
 
     /**
@@ -76,7 +87,7 @@ public final class UserSettings implements Serializable {
      * @return the air drag coefficient
      */
     public double getAirDragCoefficient() {
-        return airDragCoefficient;
+        return this.airDragCoefficient;
     }
 
     /**
@@ -85,7 +96,7 @@ public final class UserSettings implements Serializable {
      * @return the frontal area in square meters
      */
     public double getFrontalArea() {
-        return frontalArea;
+        return this.frontalArea;
     }
 
     /**
@@ -94,7 +105,7 @@ public final class UserSettings implements Serializable {
      * @return the air density in kg/m³
      */
     public double getAirDensity() {
-        return airDensity;
+        return this.airDensity;
     }
 
     /**
@@ -103,7 +114,7 @@ public final class UserSettings implements Serializable {
      * @return the drive train efficiency as a decimal (0 - 1.0)
      */
     public double getDriveTrainEfficiency() {
-        return driveTrainEfficiency;
+        return this.driveTrainEfficiency;
     }
 
     /**
@@ -122,6 +133,15 @@ public final class UserSettings implements Serializable {
      */
     public void setSimulationUpdateTimeDelta(final double simulationUpdateTimeDelta) {
         this.simulationUpdateTimeDelta = simulationUpdateTimeDelta;
+    }
+
+    /**
+     * Sets the simulation maximum RPM.
+     *
+     * @param simulationMaxRPM the maximum RPM for the simulation
+     */
+    public void setSimulationMaxRPM(final double simulationMaxRPM) {
+        this.simulationMaxRPM = simulationMaxRPM;
     }
 
     /**
@@ -204,6 +224,7 @@ public final class UserSettings implements Serializable {
     public UserSettings copy() {
         final UserSettings copy = new UserSettings();
         copy.simulationUpdateTimeDelta = this.simulationUpdateTimeDelta;
+        copy.simulationMaxRPM = this.simulationMaxRPM;
         copy.loadcellLeverLength = this.loadcellLeverLength;
         copy.vehicleMass = this.vehicleMass;
         copy.rollingResistanceCoefficient = this.rollingResistanceCoefficient;
@@ -220,6 +241,7 @@ public final class UserSettings implements Serializable {
      */
     public void resetToDefaults() {
         simulationUpdateTimeDelta = UserSettingDef.SIMULATION_UPDATE_TIME_DELTA.getDefaultValue();
+        simulationMaxRPM = UserSettingDef.SIMULATION_MAX_RPM.getDefaultValue();
         loadcellLeverLength = UserSettingDef.LOADCELL_LEVER_LENGTH.getDefaultValue();
         vehicleMass = UserSettingDef.VEHICLE_MASS.getDefaultValue();
         rollingResistanceCoefficient = UserSettingDef.ROLLING_RESISTANCE_COEFFICIENT.getDefaultValue();
