@@ -624,7 +624,7 @@ Mi sono reso conto che se le prime volte che cominciavo a lavorarci sopra mi sen
 Devo inoltre riconoscere l'importanza del tempo dedicato alla progettazione e all'analisi, che mi ha permesso di avere una visione chiara di quello che dovevo fare fin dal primo momento.
 Un altro aspetto che mi ha reso molto fiero è il fatto di utiizzare tecnologie e librerie che non avevo mai utilizzato prima in ottica di costruire applicazioni più complesse, rendendomi quindi cosapevole di come anche in ambito professionale venga utilizzato spesso questo approccio per la produzione di software.
 Un ultimo appunto che devo fare è che l'utilizzo di strumenti per migliorare la qualità del codice, come _Checkstyle_, _SpotBugs_ e _PMD_, mi ha permesso di scrivere in modo più pulito e mantenibile, facilitando quindi non soltanto la lettura del mio codice ad altri, ma anche la mia stessa comprensione del codice scritto in precedenza.
-Concludo dicendo che, come ad altri membri del gruppo, mi piacerebbe continuare a lavorare su questo progetto, in modo da poterlo rendere un prodotto finito e utilizzabile da chiunque.
+Concludo dicendo che, come ad altri membri del gruppo, mi piacerebbe continuare a lavorare su questo progetto, in modo da poterlo rendere un prodotto aperto e utilizzabile da chiunque, cercando di generalizzare al massimo le funzionalità e rendendolo facilmente estendibile e personalizzabile.
 
 ### 4.1.3 Surname Name
 TODO
