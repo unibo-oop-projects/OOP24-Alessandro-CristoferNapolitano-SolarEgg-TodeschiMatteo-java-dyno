@@ -637,12 +637,12 @@ TODO
 Le difficoltà iniziali accennate nel paragrafo precedente fanno riferimento al non aver mai svolto un lavoro di gruppo prima d'ora, il che ha portato a una mia sottovalutazione della necessità di organizzarsi fin da subito in maniera efficace. Ho personalmente riscontrato anche difficoltà soprattutto nella parte iniziale di analisi, per la quale mi sembrava di avere pochi strumenti a mia disposizione. In particolare sarebbe stato utile aver avuto maggiore esposizione a sviluppare concetti _UML_ con una struttura guidata. Non nascondo, infatti, che la maggior difficoltà è stata mettersi a scrivere codice con ancora qualche dubbio sull'analisi e il design di alto livello. A questo proposito suggerirei ai docenti di fornine qualche tipo di strumento (anche magari una semplice _check list_) che permetta agli studenti di aver dei parametri oggettivi su cui basarsi per capire quando poter passare all'implementazione con un grado di confidenza mediamente alto.
 
 ### 4.2.2 Todeschi Matteo
-Le difficoltà principale cho ho riscontrato è stata principalmente quella di dover lavorare in gruppo, cosa che non avevo mai fatto prima su scala così grande.
+La difficoltà principale cho ho riscontrato è stata principalmente quella di dover lavorare in gruppo, cosa che non avevo mai fatto prima su scala così grande.
 Questo mi ha portato a dover imparare a gestire le dinamiche di gruppo, e soprattutto mi ha fatto capire l'importanza di avere una buona comunicazione e collaborazione tra i membri del gruppo, cosa che purtroppo non sempre è stata presente.
 Una conseguente difficoltà è stata quella di trovarsi a iniziare a scrivere il codice così tardi rispetto alla deadline prefissata per la consegna del progetto, cosa che ha portato a dover lavorare in modo molto intenso per cercare di recuperare il tempo perso pur comunque sforando il limite massimo.
 Credo infatti che sia stato impiegato troppo tempo nella fase di analisi e progettazione, che sebbene sia stata molto utile per avere una visione chiara del progetto, avrebbe potuto essere fatta in modo più rapido.
 Inoltre il dover partecipare alle numerose lezioni del secondo semestre e ininziare la sezione estiva ha fatto slittare di molto la data che ci eravamo prefissati per l'inizio dell'implementazione.
-Come consiglio per i docenti, oltre che concordare con il collega Alessandro su delle eventuali _check list_ da seguire, chiederei di rivalutare la scelta di non far coincidere la deadline con il periodo delle lezioni.
+Come consiglio per i docenti, oltre che concordare con il collega Alessandro su delle eventuali _check list_ da seguire, chiederei di rivalutare la scelta di non far coincidere la deadline con il periodo delle lezioni: capisco i motivi che hanno portato a questa scelta, ma credo che sarebbe più motivante per gli studenti poter lavorare al progetto nel periodo che preferiscono.
 
 # Appendice A - Guida utente
 ## A.1 Schermata Home
