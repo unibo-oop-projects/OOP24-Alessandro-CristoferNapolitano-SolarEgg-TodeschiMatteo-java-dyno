@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 final class CsvStrategyTest {
 
-    // Test constants to avoid magic numbers
+    // Test constants to avoid magic numbers.
     private static final int TEST_ENGINE_RPM_1 = 3000;
     private static final double TEST_ENGINE_TEMP_1 = 90.5;
     private static final int TEST_ROLLER_RPM_1 = 1500;
@@ -62,11 +62,9 @@ final class CsvStrategyTest {
         final List<ElaboratedData> originalData = createSampleData();
         final File testFile = new File(tempDir, "test_data.csv");
 
-        // Exports and imports the data.
         this.strategy.exportData(originalData, testFile);
         final List<ElaboratedData> importedData = this.strategy.importData(testFile);
 
-        // Verifies results.
         assertNotNull(importedData);
         assertEquals(originalData.size(), importedData.size());
         assertEquals(originalData, importedData);
@@ -80,7 +78,7 @@ final class CsvStrategyTest {
         this.strategy.exportData(emptyList, testFile);
 
         assertTrue(testFile.exists());
-        assertTrue(testFile.length() > 0); // Should contain at least the header.
+        assertTrue(testFile.length() > 0);
 
         final List<ElaboratedData> importedData = this.strategy.importData(testFile);
         assertNotNull(importedData);
@@ -93,7 +91,6 @@ final class CsvStrategyTest {
      * @return A list containing sample ElaboratedData objects.
      */
     private List<ElaboratedData> createSampleData() {
-        // First data point with all fields present.
         final RawData raw1 = RawData.builder()
             .timestamp(Optional.of(Instant.parse("2025-01-10T10:00:00Z")))
             .engineRPM(Optional.of(TEST_ENGINE_RPM_1))
@@ -109,17 +106,16 @@ final class CsvStrategyTest {
             .build();
         final ElaboratedData elaborated1 = new ElaboratedData(raw1, TEST_POWER_KW_1, TEST_POWER_HP_1, TEST_CORRECTED_TORQUE_1);
 
-        // Second data point with some empty fields.
         final RawData raw2 = RawData.builder()
             .timestamp(Optional.of(Instant.parse("2025-01-10T10:00:01Z")))
             .engineRPM(Optional.of(TEST_ENGINE_RPM_2))
             .engineTemperature(Optional.of(TEST_ENGINE_TEMP_2))
             .rollerRPM(Optional.of(TEST_ROLLER_RPM_2))
             .torque(Optional.of(TEST_TORQUE_2))
-            .vehicleSpeed(Optional.empty()) // Empty
-            .throttlePosition(Optional.empty()) // Empty
+            .vehicleSpeed(Optional.empty())
+            .throttlePosition(Optional.empty())
             .baroPressure(Optional.of(TEST_BARO_PRESSURE_2))
-            .ambientAirTemperature(Optional.empty()) // Empty
+            .ambientAirTemperature(Optional.empty())
             .ambientHumidity(Optional.of(TEST_AMBIENT_HUMIDITY_2))
             .exhaustGasTemperature(Optional.of(TEST_EXHAUST_TEMP_2))
             .build();

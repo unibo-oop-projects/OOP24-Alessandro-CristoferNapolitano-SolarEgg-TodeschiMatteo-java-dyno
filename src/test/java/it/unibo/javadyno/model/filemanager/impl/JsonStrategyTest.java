@@ -71,16 +71,14 @@ final class JsonStrategyTest {
     void testExportAndImportData() throws IOException {
         final File testFile = tempDir.resolve("test_data.json").toFile();
 
-        // Exports and imports the data.
         jsonStrategy.exportData(testData, testFile);
         final List<ElaboratedData> importedData = jsonStrategy.importData(testFile);
 
-        // Verifies results.
         assertTrue(testFile.exists());
         assertTrue(testFile.length() > 0);
         assertNotNull(importedData);
         assertEquals(testData.size(), importedData.size());
-        verifyDataEquality(testData, importedData);
+        assertDataEquality(testData, importedData);
     }
 
     @Test
@@ -126,7 +124,6 @@ final class JsonStrategyTest {
     }
 
     private List<ElaboratedData> createTestData() {
-        // First record with all data present.
         final RawData rawData1 = RawData.builder()
             .timestamp(Optional.of(Instant.parse("2023-12-25T10:00:00Z")))
             .engineRPM(Optional.of(TEST_ENGINE_RPM_1))
@@ -141,7 +138,6 @@ final class JsonStrategyTest {
             .exhaustGasTemperature(Optional.of(TEST_EXHAUST_TEMP_1))
             .build();
 
-        // Second record point with some empty fields.
         final RawData rawData2 = RawData.builder()
             .timestamp(Optional.of(Instant.parse("2023-12-25T10:01:00Z")))
             .engineRPM(Optional.of(TEST_ENGINE_RPM_2))
@@ -162,17 +158,15 @@ final class JsonStrategyTest {
         return List.of(elaborated1, elaborated2);
     }
 
-    private void verifyDataEquality(final List<ElaboratedData> original, final List<ElaboratedData> imported) {
+    private void assertDataEquality(final List<ElaboratedData> original, final List<ElaboratedData> imported) {
         for (int i = 0; i < original.size(); i++) {
             final ElaboratedData orig = original.get(i);
             final ElaboratedData imp = imported.get(i);
 
-            // Check elaborated data fields
             assertEquals(orig.enginePowerKW(), imp.enginePowerKW(), DELTA);
             assertEquals(orig.enginePowerHP(), imp.enginePowerHP(), DELTA);
             assertEquals(orig.engineCorrectedTorque(), imp.engineCorrectedTorque(), DELTA);
 
-            // Check raw data fields
             final RawData origRaw = orig.rawData();
             final RawData impRaw = imp.rawData();
 
