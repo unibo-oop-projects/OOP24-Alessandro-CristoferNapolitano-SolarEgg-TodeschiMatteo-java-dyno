@@ -6,6 +6,7 @@ package it.unibo.javadyno.model.data.api;
 public enum UserSettingDef {
 
     SIMULATION_UPDATE_TIME_DELTA(100.0),
+    SIMULATION_MAX_RPM(8000),
     LOADCELL_LEVER_LENGTH(0.5),
     VEHICLE_MASS(1500.0),
     ROLLING_RESISTANCE_COEFFICIENT(0.012),

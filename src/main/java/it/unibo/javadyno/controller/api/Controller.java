@@ -100,5 +100,5 @@ public interface Controller {
      * @param file The source file.
      */
     void importDataFromFile(File file);
-    
+
 }

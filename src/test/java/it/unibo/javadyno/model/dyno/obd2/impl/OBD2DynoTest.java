@@ -47,7 +47,7 @@ class OBD2DynoTest {
         assertFalse(dyno.isActive());
         dyno.begin();
         assertTrue(dyno.isActive());
-        
+
         Thread.sleep(THREAD_SLEEP_MS);
         dyno.end();
         assertFalse(dyno.isActive());

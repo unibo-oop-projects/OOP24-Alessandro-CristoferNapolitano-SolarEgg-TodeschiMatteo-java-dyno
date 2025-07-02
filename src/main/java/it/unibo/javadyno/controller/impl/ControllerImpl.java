@@ -304,6 +304,7 @@ public final class ControllerImpl implements Controller {
     public void updateSetting(final UserSettingDef setting, final double value) {
         switch (setting) {
             case SIMULATION_UPDATE_TIME_DELTA -> this.userSettings.setSimulationUpdateTimeDelta(value);
+            case SIMULATION_MAX_RPM -> this.userSettings.setSimulationMaxRPM(value);
             case LOADCELL_LEVER_LENGTH -> this.userSettings.setLoadcellLeverLength(value);
             case VEHICLE_MASS -> this.userSettings.setVehicleMass(value);
             case ROLLING_RESISTANCE_COEFFICIENT -> this.userSettings.setRollingResistanceCoefficient(value);
@@ -403,7 +404,6 @@ public final class ControllerImpl implements Controller {
         private static final Double INITIAL_ENGINE_TEMPERATURE = 85.0;
         private static final Double INITIAL_THROTTLE_POSITION = 10.0;
         private static final double RPM_INCREASE_FACTOR = 1.03;
-        private static final int MAX_ENGINE_RPM = 6500;
         private static final double MAX_TORQUE = 400.0;
         private static final double TORQUE_PEAK_RPM = 3500.0;
         private static final double TORQUE_VARIATION = 15.0;
@@ -415,6 +415,7 @@ public final class ControllerImpl implements Controller {
         private static final double MIN_THROTTLE_POSITION = 5.0;
         private static final int MIN_DELAY_MILLIS = 200;
         private static final int MAX_DELAY_MILLIS = 400;
+        private final int maxEngineRPM = (int) userSettings.getSimulationMaxRPM();
         private final Random rand = new Random();
         private RawData prevRawData;
         private boolean isActive;
@@ -437,8 +438,8 @@ public final class ControllerImpl implements Controller {
 
             final int currentRpm = this.prevRawData.engineRPM().get();
             final Integer newRpm;
-            newRpm = Math.min(MAX_ENGINE_RPM, (int) (currentRpm * RPM_INCREASE_FACTOR));
-            if (newRpm >= MAX_ENGINE_RPM) {
+            newRpm = Math.min(maxEngineRPM, (int) (currentRpm * RPM_INCREASE_FACTOR));
+            if (newRpm >= maxEngineRPM) {
                 isActive = false;
             }
 
