@@ -33,7 +33,8 @@ Ivan Crimaldi
 - ### [3.1 Testing automatizzato](#31-testing-automatizzato-1)
 - ### [3.2 Note di sviluppo](#32-note-di-sviluppo-1)
     - #### [3.2.1 Porcheddu Alessandro](#321-porcheddu-alessandro-1)
-    - #### [3.2.2 Surname Name](#322-surname-name-1)
+    - #### [3.2.2 Todeschi Matteo](#322-todeschi-matteo-1)
+    - #### [3.2.3 Surname Name](#323-surname-name-1)
 ## [4. Commenti finali](#capitolo-4---commenti-finali)
 - ### [4.1 Autovalutazione e lavori futuri](#41-autovalutazione-e-lavori-futuri-1)
     - #### [4.1.1 Porcheddu Alessandro](#41-autovalutazione-e-lavori-futuri-1)
@@ -558,9 +559,9 @@ Per tale scopo è stato adottato _JUnit_ e componenti derivate che, inoltre, ci 
 Considerando l'utilizzo di un Thread separato per l'esecuzione della gerenazione di dati al suo interno, testare il corretto avvio, fermo e verifica dello stato risultava di fondamentale importanza.
 * `build-and-deploy`: questo test prevede l'esecuzione in remoto su 3 _GitHub runners_ con sistemi operativi diversi (Ubuntu, Windows e MacOs) dei test di JUnit per assicurarsi la compatibilità multipiattaforma. Se nessun test fallisce viene anche rilasciato nel repo github un _fat jar_ dell'applicazione nella sezione _Releases_. Si noti che tutto ciò avviene solo in caso di rilevamento di _git tag_ per gestire il controllo delle versioni dell'applicazione e per rispettare i consumi previsti dal piano gratuito di _GitHub_.
 
-Per quanto riguarda il tetsing dei componenti grafici, non si è optato per librerie di testing automatizzato, ma è stata piuttosto scelta la strada di creare una GUI minimale che veniva impostata come mainView dell'applicazione.  
+Per quanto i componenti grafici, non si è optato per librerie di testing automatizzato, ma è stata piuttosto scelta la strada di creare una GUI minimale che veniva impostata come mainView dell'applicazione.  
 Su di essa venivano poi aggiunti i singoli componenti grafici da testare (anche in combinazione), in modo da poter verificare il corretto funzionamento di questi ultimi.  
-In `SimulatedDynoImplTest`è ancora possibile trovare uno scheletro di questa GUI di test senza componenti e metodi logici implementati.
+In `SimulatedDynoImplTest`è ancora possibile trovare lo scheletro di questa GUI di test senza componenti e metodi logici implementati.
 
 ## 3.2 Note di sviluppo
 ### 3.2.1 Porcheddu Alessandro
@@ -579,7 +580,29 @@ Esempio di estensione e implementazione: https://github.com/TodeschiMatteo/OOP24
 #### Utilizzo di `JSONObject` dalla libreria **[JSON-java](https://github.com/stleary/JSON-java)**
 Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/3ca4f9147495bf1de3cde73578cc8f701ab812c9/src/main/java/it/unibo/javadyno/model/dyno/real/impl/RealDynoImpl.java#L19
 
-### 3.2.2 Surname Name
+### 3.2.2 Todeschi Matteo
+
+#### Utilizzo di `Optional`
+Usati per rendere la descrizione degli Alert non obbligatoria  
+Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/7805a79e84493b5acd015c3e7004dadca600180e/src/main/java/it/unibo/javadyno/controller/impl/AlertMonitor.java#L35
+
+#### Utilizzo di `Stream`
+Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/7805a79e84493b5acd015c3e7004dadca600180e/src/main/java/it/unibo/javadyno/model/graph/impl/ChartsManagerImpl.java#L47
+
+#### Utilizzo di `Thread` mediante implementazione di `Runnable`
+Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/7805a79e84493b5acd015c3e7004dadca600180e/src/main/java/it/unibo/javadyno/model/dyno/simulated/impl/SimulatedDynoImpl.java#L18
+
+#### Utilizzo di `JavaFX` per la GUI
+Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/7805a79e84493b5acd015c3e7004dadca600180e/src/main/java/it/unibo/javadyno/view/impl/EvaluatingView.java
+
+#### Utilizzo della libreria **[JFreeChart](https://github.com/jfree/jfreechart)** per la visualizzazione dei grafici
+L'utilizzo della libreria `JFreeChart` è accompagnato da un modulo dedicato alla compatibilità con JavaFX per inglobarlo in un container compatibile
+Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/7805a79e84493b5acd015c3e7004dadca600180e/src/main/java/it/unibo/javadyno/model/graph/impl/ChartsManagerImpl.java
+
+#### Utilizzo della libreria **[Medusa](https://github.com/HanSolo/medusa)** per la visualizzazione dei gauges
+Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/7805a79e84493b5acd015c3e7004dadca600180e/src/main/java/it/unibo/javadyno/model/graph/impl/DefaultGaugeFactory.java#L18
+
+### 3.2.3 Surname Name
 #### Subject
 
 TODO
