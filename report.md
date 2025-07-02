@@ -625,7 +625,7 @@ Per tale scopo è stato adottato _JUnit_ e componenti derivate che, inoltre, ci 
 * `SimulatedDynoImplTest `: questa classe di test verifica il corretto funzionamento della simulazione del dinamometro, assicurandosi che le chiamate logiche su questo oggeto funzionino correttamente.
 Considerando l'utilizzo di un Thread separato per l'esecuzione della gerenazione di dati al suo interno, testare il corretto avvio, fermo e verifica dello stato risultava di fondamentale importanza.
 * `build-and-deploy`: questo test prevede l'esecuzione in remoto su 3 _GitHub runners_ con sistemi operativi diversi (Ubuntu, Windows e MacOs) dei test di JUnit per assicurarsi la compatibilità multipiattaforma. Se nessun test fallisce viene anche rilasciato nel repo github un _fat jar_ dell'applicazione nella sezione _Releases_. Si noti che tutto ciò avviene solo in caso di rilevamento di _git tag_ per gestire il controllo delle versioni dell'applicazione e per rispettare i consumi previsti dal piano gratuito di _GitHub_.
-* `JsonStrategy` e `CsvStrategy`: I test verificano la corretta serializzazione e deserializzazione dei dati (test di "round-trip"), assicurando che i dati esportati su file possano essere re-importati senza perdita o corruzione di informazioni. Vengono coperti anche casi limite (liste vuote, campi `Optional` assenti, file malformati o non esistenti), utilizzando la feature `@TempDir` di JUnit per garantire l'isolamento dei test (creando file e cartelle temporanei).
+* `JsonStrategy` e `CsvStrategy`: I test verificano la corretta serializzazione e deserializzazione dei dati (test di "round-trip"), assicurando che i dati esportati su file possano essere re-importati senza perdita o corruzione di informazioni. Vengono coperti anche casi limite (liste vuote, campi `Optional` assenti, file malformati o non esistenti), utilizzando la feature `@TempDir` di JUnit per garantire creare file e cartelle temporanei.
 
 Per quanto i componenti grafici, non si è optato per librerie di testing automatizzato, ma è stata piuttosto scelta la strada di creare una GUI minimale che veniva impostata come mainView dell'applicazione.  
 Su di essa venivano poi aggiunti i singoli componenti grafici da testare (anche in combinazione), in modo da poter verificare il corretto funzionamento di questi ultimi.  
@@ -674,27 +674,33 @@ Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/7805a79e84493b
 #### Utilizzo della libreria **[Jackson](https://github.com/FasterXML/jackson)**
 Usata per la conversione automatica tra oggetti Java e JSON. 
 L'ObjectMapper è stato configurato per supportare tipi moderni, in questo esempio Instant.
+
 Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/main/src/main/java/it/unibo/javadyno/model/filemanager/impl/JsonStrategy.java#L27-L30
 
 #### Utilizzo della libreria **[opencsv](https://opencsv.sourceforge.net/)**
-Usata per leggere e scrivere i dati in formato CSV, gestendo la scrittura dell'header e la conversione da riga ad array di stringhe (e viceversa). Esempio utilizzo di CSVWriter e scrittura header
-Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/main/src/main/java/it/unibo/javadyno/model/filemanager/impl/CsvStrategy.java#L59-L60
+Usata per leggere e scrivere i dati in formato CSV, gestendo la scrittura dell'header e la conversione da riga ad array di stringhe (e viceversa).
+
+Permalink esempio utilizzo di CSVWriter e scrittura header: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/main/src/main/java/it/unibo/javadyno/model/filemanager/impl/CsvStrategy.java#L59-L60
 
 #### Utilizzo di `Optional` come return type per evitare null
-La Factory restituisce un `Optional<FileStrategy>` per indicare la possibilità che non esista/sia stata implementata una strategia per un dato tipo di file
+La Factory restituisce un `Optional<FileStrategy>` per indicare la possibilità che non esista o non sia stata implementata una strategia per un dato tipo di file.
+
 Permalink:https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/main/src/main/java/it/unibo/javadyno/model/filemanager/impl/FileStrategyFactoryImpl.java#L24-L41
 
 #### Utilizzo di Lambda Experessions e `Optional.map` per trasformaziono concise
-Utilizzato per gestire gli Optional e scrivere un valore di default se vuoti senza dover riempire il codice di statement if-else
+Utilizzato per gestire gli Optional e scrivere un valore di default se vuoti senza dover riempire il codice di statement if-else.
+
 Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/main/src/main/java/it/unibo/javadyno/model/filemanager/impl/CsvStrategy.java#L65-L75
 
 #### Utilizzo di `TypeReference` per la deserializzazione di tipi generici
 Dato che Java a runtime 'dimentica' che una lista è una `List<ElaboratedData>` e la vede solo come una List, ho dovuto usare la classe `TypeReference` di Jackson. Questa classe permette a Jackson di deserializzare correttamente il JSON in una lista di oggetti ElaboratedData senza errori.
+
 Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/main/src/main/java/it/unibo/javadyno/model/filemanager/impl/JsonStrategy.java#L48-L50
 
 #### Uso di Riferimenti a Metodi come `Function`
 Utilizzato `parseOptional` come metodo generico riutilizzabile per parsare ogni tipo di dato dal CSV, che accetta la logica specifica di parsing come un parametro di tipo `Function`. Ho inoltre usato la sinstassi concisa (`Integer: :parseInt`).
-Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/main/src/main/java/it/unibo/javadyno/model/filemanager/impl/CsvStrategy.java#L112-L122
+
+Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/main/src/main/java/it/unibo/javadyno/model/filemanager/impl/CsvStrategy.java#L108-L118
 
 # Capitolo 4 - Commenti finali
 ## 4.1 Autovalutazione e lavori futuri
@@ -711,7 +717,7 @@ Un ultimo appunto che devo fare è che l'utilizzo di strumenti per migliorare la
 Concludo dicendo che, come ad altri membri del gruppo, mi piacerebbe continuare a lavorare su questo progetto, in modo da poterlo rendere un prodotto aperto e utilizzabile da chiunque, cercando di generalizzare al massimo le funzionalità e rendendolo facilmente estendibile e personalizzabile.
 
 ### 4.1.3 Crimaldi Ivan
-Il mio ruolo principale è stato quello di progettare ed implementare il sistema di gestione file ed assicurarmi che interagisse correttamente con il Controller e le strutture dati definite assieme al resto del gruppo, come ElaboratedData. Mi ritengo parzialmente soddisfatto del lavoro compiuto: è mancante la parte di preset e ripristino di preferenze, ma considero il filemanager molto robusto e facilmente estendibile (le operazioni necessarie per aggiungere nuovi formati di file richiede solo una minima modifica alla Factory). Nel gruppo c'è sempre stato un clima di collaborazione, e la fase di analisi svolta assieme ci ha permesso di iniziare il progetto con un'idea chiara su come partire e cosa fare. Ammetto che avrei dovuto passare alla fase di implementazione senza fermarmi più del dovuto sulla fase di design. Lavorare a questo progetto mi ha insegnato molto su cosa significa sviluppare qualcosa in gruppo, e l'importanza di rendere ogni componente quanto più indipendente possibile; inoltre mi ha insegnato l'importanza dell'utilizzo del SCM (Git), e degli strumenti come CheckStyle per migliorare la leggibilità e la qualità del codice. In futuro, per espandere il progetto, vorrei aggiungere la parte di preset impostazioni e preferenze, e supporto per nuovi formati.
+Il mio ruolo principale è stato quello di progettare ed implementare il sistema di gestione file ed assicurarmi che interagisse correttamente con il Controller e le strutture dati definite assieme al resto del gruppo, come ElaboratedData. Mi ritengo parzialmente soddisfatto del lavoro compiuto: è mancante la parte di preset e ripristino di preferenze, ma considero il filemanager molto robusto e facilmente estendibile (aggiungere nuovi formati di file richiede solo una minima modifica alla Factory). Nel gruppo c'è sempre stato un clima di collaborazione, e la fase di analisi svolta assieme ci ha permesso di iniziare il progetto con un'idea chiara su come partire e cosa fare. Ammetto che avrei dovuto passare alla fase di implementazione senza fermarmi più del dovuto sulla fase di design. Lavorare a questo progetto mi ha insegnato molto su cosa significa sviluppare in gruppo, e l'importanza di rendere ogni componente quanto più indipendente possibile dalle altre; inoltre mi ha insegnato l'importanza dell'utilizzo del SCM (Git), e degli strumenti per migliorare la leggibilità e la qualità del codice (come CheckStyle). In futuro, per espandere il progetto, vorrei aggiungere la parte di preset impostazioni e preferenze, e supporto per nuovi formati.
 
 ### 4.1.4 Surname Name
 TODO
