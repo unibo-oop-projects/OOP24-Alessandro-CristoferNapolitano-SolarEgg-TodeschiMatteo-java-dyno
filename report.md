@@ -494,20 +494,40 @@ Essi, nella nostra implementazione con JavaFX, estendono i componenti `VBox` e `
 #### Visualizzazione di grafici multipli
 ```mermaid
 classDiagram
-    class ChartsView {
-        <<interface>>
-        +begin(Stage)
-        +update(ElaboratedData)
-        +update(List~ElaboratedData~)
-    }
-    class JFreeCharts {
-    }
-    class ChartFactory {
+    class View {
         <<interface>>
     }
-    class ChartFactory {
-        <<interface>>
+    class GaugePanel {
+        +update(value: double)
     }
+
+    class GaugeFactory {
+        <<interface>>
+        +createGaugeChart(): Gauge
+    }
+    class ChartsPanel {
+        +getChart(): JFreeChart
+        +getSeriesIndex(name: String): int
+        +disableSeries(index: int): void
+    }
+
+    class ChartsFactory {
+        <<interface>>
+        +createChart(): JFreeChart
+    }
+
+    class ChartsManager {
+        <<interface>>
+        +addYAxis(label: String): void
+        +addSeries(name: String): int
+        +disableSeries(index: int): void
+    }
+
+    GaugePanel --> GaugeFactory : uses
+    ChartsPanel --> ChartsFactory : uses
+    ChartsPanel --> ChartsManager : controls via
+    View *-- GaugePanel
+    View *-- ChartsPanel
 
 ```
 
