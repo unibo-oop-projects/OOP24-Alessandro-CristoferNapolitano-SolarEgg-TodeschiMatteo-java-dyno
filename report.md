@@ -588,7 +588,7 @@ Usati per rendere la descrizione degli Alert non obbligatoria
 Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/7805a79e84493b5acd015c3e7004dadca600180e/src/main/java/it/unibo/javadyno/controller/impl/AlertMonitor.java#L35
 
 #### Utilizzo di `Stream`
-Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/7805a79e84493b5acd015c3e7004dadca600180e/src/main/java/it/unibo/javadyno/model/graph/impl/ChartsManagerImpl.java#L47
+Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/7805a79e84493b5acd015c3e7004dadca600180e/src/main/java/it/unibo/javadyno/model/graph/impl/ChartsManagerImpl.java#L47-L54
 
 #### Utilizzo di `Thread` mediante implementazione di `Runnable`
 Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/14b2e2312654e1e15f3c6588bfa4c498117637f8/src/main/java/it/unibo/javadyno/model/dyno/simulated/impl/SimulatedDynoImpl.java#L89-L103
