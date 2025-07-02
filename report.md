@@ -554,7 +554,13 @@ Per tale scopo è stato adottato _JUnit_ e componenti derivate che, inoltre, ci 
 * `OBD2DynoTest`: test progettato per verificare il corretto funzionamento della logica di acquisizione dati tramite l'interfaccia OBD2. Vengono inoltre simulati diversi scenari di input per assicurare che i dati, come i giri del motore e la velocità del veicolo, vengano interpretati correttamente e che le operazioni di conversione siano accurate.
 * `SerialCommunicatorTest`: classe implementata per un veloce riscontro all'inizio dello sviluppo per quanto riguarda l'interfacciamento con la libreria _jSerialComm_
 * `DataElaboratorImplTest`: in questo caso il test prevede la crezione di dati pseudo realistici per la verifica della correttezza dei calcoli sapendo il "trend" a priori. In particolare viene testata la componente di calcolo dell'OBD2 che risulta molto più articolata di quella del banco reale.
+* `SimulatedDynoImplTest `: questa classe di test verifica il corretto funzionamento della simulazione del dinamometro, assicurandosi che le chiamate logiche su questo oggeto funzionino correttamente.
+Considerando l'utilizzo di un Thread separato per l'esecuzione della gerenazione di dati al suo interno, testare il corretto avvio, fermo e verifica dello stato risultava di fondamentale importanza.
 * `build-and-deploy`: questo test prevede l'esecuzione in remoto su 3 _GitHub runners_ con sistemi operativi diversi (Ubuntu, Windows e MacOs) dei test di JUnit per assicurarsi la compatibilità multipiattaforma. Se nessun test fallisce viene anche rilasciato nel repo github un _fat jar_ dell'applicazione nella sezione _Releases_. Si noti che tutto ciò avviene solo in caso di rilevamento di _git tag_ per gestire il controllo delle versioni dell'applicazione e per rispettare i consumi previsti dal piano gratuito di _GitHub_.
+
+Per quanto riguarda il tetsing dei componenti grafici, non si è optato per librerie di testing automatizzato, ma è stata piuttosto scelta la strada di creare una GUI minimale che veniva impostata come mainView dell'applicazione.  
+Su di essa venivano poi aggiunti i singoli componenti grafici da testare (anche in combinazione), in modo da poter verificare il corretto funzionamento di questi ultimi.  
+In `SimulatedDynoImplTest`è ancora possibile trovare uno scheletro di questa GUI di test senza componenti e metodi logici implementati.
 
 ## 3.2 Note di sviluppo
 ### 3.2.1 Porcheddu Alessandro
