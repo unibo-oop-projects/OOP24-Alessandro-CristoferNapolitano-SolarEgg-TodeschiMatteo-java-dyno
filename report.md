@@ -501,29 +501,28 @@ classDiagram
         <<interface>>
     }
     class GaugePanel {
-        +update(value: double)
+        +updateGauges(Number, Number, Number)
     }
 
     class GaugeFactory {
         <<interface>>
-        +createGaugeChart(): Gauge
+        +createGaugeChart() Gauge
     }
     class ChartsPanel {
-        +getChart(): JFreeChart
-        +getSeriesIndex(name: String): int
-        +disableSeries(index: int): void
+        +addSingleData(Number, Number, Number)
+        +addAllData(List~Number~, List~Number~, List~Number~)
     }
 
     class ChartsFactory {
         <<interface>>
-        +createChart(): JFreeChart
+        +createEmptyCharts() JFreeChart
     }
 
     class ChartsManager {
         <<interface>>
-        +addYAxis(label: String): void
-        +addSeries(name: String): int
-        +disableSeries(index: int): void
+        +addYAxis(JFreeChart, String)
+        +setDarkTheme(JFreeChart)
+        +setSeriesVisibility(JFreeChart, int, boolean)
     }
 
     GaugePanel --> GaugeFactory : uses
