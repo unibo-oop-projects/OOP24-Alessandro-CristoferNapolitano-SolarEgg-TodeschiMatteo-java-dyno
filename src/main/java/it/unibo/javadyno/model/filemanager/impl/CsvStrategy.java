@@ -148,7 +148,6 @@ public final class CsvStrategy implements FileStrategy {
         try {
             return Optional.of(parser.apply(value));
         } catch (final IllegalArgumentException e) {
-            // Catching a more specific exception for parsing errors (e.g., NumberFormatException).
             return Optional.empty();
         }
     }
