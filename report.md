@@ -491,6 +491,7 @@ Per tale scopo è stato adottato _JUnit_ e componenti derivate che, inoltre, ci 
 * OBD2DynoTest: test progettato per verificare il corretto funzionamento della logica di acquisizione dati tramite l'interfaccia OBD2. Vengono inoltre simulati diversi scenari di input per assicurare che i dati, come i giri del motore e la velocità del veicolo, vengano interpretati correttamente e che le operazioni di conversione siano accurate.
 * SerialCommunicatorTest: classe implementata per un veloce riscontro all'inizio dello sviluppo per quanto riguarda l'interfacciamento con la libreria jSerialComm
 * DataElaboratorImplTest: in questo caso il test prevede la crezione di dati pseudo realistici la verifica della correttezza dei calcoli sapendo il "trend" a priori. In particolare viene testata la componente di calcolo dell'OBD2 che risulta molto più articolata di quella del banco reale.
+* JsonStrategy e CsvStrategy: I test verificano la corretta serializzazione e deserializzazione dei dati (test di "round-trip"), assicurando che i dati esportati su file possano essere re-importati senza perdita o corruzione di informazioni. Vengono coperti anche casi limite (liste vuote, campi `Optional` assenti, file malformati o non esistenti), utilizzando la feature `@TempDir` di JUnit per garantire l'isolamento dei test (creando file e cartelle temporanei).
 ## 3.2 Note di sviluppo
 ### 3.2.1 Porcheddu Alessandro
 #### Utilizzo di `LoopingIterator` dalla libreria **Apache Commons Collections**
