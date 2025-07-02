@@ -80,6 +80,7 @@ public abstract class AbstractSerialCommunicator<T> implements MCUCommunicator<T
                         "No serial ports available for connection",
                         Optional.of("Verify USB connection or drivers.")
                     );
+                    return;
                 }
                 for (final SerialPort serialPort : ports) {
                     if (serialPort.getVendorID() != INVALID_VENDOR_ID) {

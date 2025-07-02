@@ -25,7 +25,6 @@ import it.unibo.javadyno.model.data.impl.DataCollectorImpl;
 import it.unibo.javadyno.model.dyno.api.Dyno;
 import it.unibo.javadyno.model.dyno.obd2.impl.OBD2Dyno;
 import it.unibo.javadyno.model.dyno.real.impl.RealDynoImpl;
-import it.unibo.javadyno.model.dyno.simulated.impl.SimulatedDynoImpl;
 import it.unibo.javadyno.model.filemanager.api.FileManager;
 import it.unibo.javadyno.model.filemanager.api.FileStrategyFactory;
 import it.unibo.javadyno.model.filemanager.impl.FileManagerImpl;
@@ -34,7 +33,6 @@ import it.unibo.javadyno.view.api.View;
 import it.unibo.javadyno.view.impl.MainMenu;
 import it.unibo.javadyno.view.impl.component.AlertDisplayer;
 import javafx.application.Application;
-
 import javafx.stage.Stage;
 
 /**
@@ -326,7 +324,6 @@ public final class ControllerImpl implements Controller {
             case AIR_TEMPERATURE -> this.userSettings.setAirTemperature(value);
             case AIR_PRESSURE -> this.userSettings.setAirPressure(value);
             case AIR_HUMIDITY -> this.userSettings.setAirHumidity(value);
-            case MAX_RPM_SIMULATION -> this.userSettings.setMaxRpmSimulation(value);
         }
         saveUserSettingsToFile(SETTINGS_FILE_NAME, this.userSettings);
     }
