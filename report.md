@@ -539,7 +539,7 @@ Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/main/src/main/
 Dato che Java a runtime 'dimentica' che una lista è una `List<ElaboratedData>` e la vede solo come una List, ho dovuto usare la classe `TypeReference` di Jackson. Questa classe permette a Jackson di deserializzare correttamente il JSON in una lista di oggetti ElaboratedData senza errori.
 Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/main/src/main/java/it/unibo/javadyno/model/filemanager/impl/JsonStrategy.java#L48-L50
 
-####Uso di Riferimenti a Metodi come `Function`
+#### Uso di Riferimenti a Metodi come `Function`
 Utilizzato `parseOptional` come metodo generico riutilizzabile per parsare ogni tipo di dato dal CSV, che accetta la logica specifica di parsing come un parametro di tipo `Function`. Ho inoltre usato la sinstassi concisa (`Integer: :parseInt`).
 Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/main/src/main/java/it/unibo/javadyno/model/filemanager/impl/CsvStrategy.java#L108-L118
 
@@ -551,8 +551,8 @@ TODO
 ### Surname Name
 TODO
 
-### Surname Name
-TODO
+### Crimaldi Ivan
+Il mio ruolo principale è stato quello di progettare ed implementare il sistema di gestione file ed assicurarmi che interagisse correttamente con il Controller e le strutture dati definite assieme al resto del gruppo, come ElaboratedData. Mi ritengo parzialmente soddisfatto del lavoro compiuto: è mancante la parte di preset e ripristino di preferenze, ma considero il filemanager molto robusto e facilmente estendibile (le operazioni necessarie per aggiungere nuovi formati di file richiede solo una minima modifica alla Factory). Nel gruppo c'è sempre stato un clima di collaborazione, e la fase di analisi svolta assieme ci ha permesso di iniziare il progetto con un'idea chiara su come partire e cosa fare. In futuro, per espandere il progetto, vorrei aggiungere la parte di preset impostazioni e preferenze, e supporto per nuovi formati.
 
 ### Surname Name
 TODO
