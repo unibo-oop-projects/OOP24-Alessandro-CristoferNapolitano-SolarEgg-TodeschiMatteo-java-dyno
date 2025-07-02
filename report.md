@@ -542,11 +542,76 @@ Utilizzare il pattern **Factory** per creare i grafici e i gauge, creando dunque
 `GaugeFactory` e `ChartsFactory` sono quindi le interfacce che definiscono i metodi per creare i gauge e i grafici e possiedono anche una loro implementazione standard che verrà poi utilizzata per creare i componenti di default nella nostra applicazione ma nulla vieta in futuro di implementare nuove classi che estendono queste interfacce e che permettono di creare grafici e gauge personalizzati.  
 Per quanto riguarda la gestione dei grafici, è stato creato rispettando il pattern **Façade** un `ChartsManager` che permette di limitare e standardizzare le operazioni che l'utente può fare sui grafici, come ad esempio aggiungere ulteriori asse Y, creare nuove serie, disabilitare serie esistenti.
 
-### 2.2.3 Surname Name
-#### Subject
+### 2.2.3 Crimaldi Ivan
+#### Salvataggio e Caricamento dati da File
 ```mermaid
-UML TODO
+classDiagram
+    direction LR
+    
+    class FileManagerImpl {
+        +setStrategy(strategy)
+        +exportDataToFile(data, file)
+        +importDataFromFile(file)
+    }
+
+    class FileStrategy {
+        <<interface>>
+        +exportData(data, file)
+        +importData(file)
+    }
+
+    class CsvStrategy {
+        ...
+    }
+
+    class JsonStrategy {
+        ...
+    }
+
+    FileManagerImpl ..> FileStrategy : uses
+    FileStrategy <|.. CsvStrategy : implements
+    FileStrategy <|.. JsonStrategy : implements
 ```
+**Problema:**
+L'applicazione deve essere in grado di salvare i dati generati dalla prova, e di poter caricare i dati generati da prove precedenti. Inoltre, l'applicazione deve essere in grado di supportare diversi formati di file, con la possibilità di aggiungere nuovi formati supportati nel futuro.
+
+**Soluzione:**
+Per risolvere il problema, ho utilizzato il design pattern **Strategy**, così da separare la logica di gestione dei file dalla logica specifica di ogni formato. 
+`FileStrategy` definisce il contratto comune per tutte le strategie, che si specializzano nel gestire un solo formato, come `CsvStrategy` e `JsonStrategy`.
+`FileManager` è il Context per la Strategy, delegando alla strategia corrente l'esecuzione delle operazioni.
+
+```mermaid
+classDiagram
+    direction LR
+
+    class FileStrategyFactoryImpl {
+        +createStrategyFor(file): Optional~FileStrategy~
+    }
+
+    class FileStrategyFactory {
+        <<interface>>
+        +createStrategyFor(file): Optional~FileStrategy~
+    }
+    
+    class CsvStrategy {
+        ...
+    }
+
+    class JsonStrategy {
+        ...
+    }
+
+    FileStrategyFactory <|.. FileStrategyFactoryImpl : implements
+    FileStrategyFactoryImpl ..> CsvStrategy : creates
+    FileStrategyFactoryImpl ..> JsonStrategy : creates
+```
+
+**Problema:**
+Con l'introduzione di più Strategie, il client (Controller) deve contenere la logica condizionale su quale strategia creare in base all'estensione del file.
+
+**Soluzione:**
+Per risolvere il problema, ho utilizzato  il pattern **Factory**: `FileStrategyFactory` definisce un metodo per creare la strategia appropriata, e `FileStrategyFactoryImpl` la implementa, scegliendo la strategia (oggetto `FileStrategy`) in base all'estensione del file. Sarà quindi l'unica componente del Model da cambiare qualora si volesse aggiungere un nuovo  tipo di file
+
 
 # Capitolo 3 - Sviluppo
 ## 3.1 Testing automatizzato
@@ -559,6 +624,7 @@ Per tale scopo è stato adottato _JUnit_ e componenti derivate che, inoltre, ci 
 * `SimulatedDynoImplTest `: questa classe di test verifica il corretto funzionamento della simulazione del dinamometro, assicurandosi che le chiamate logiche su questo oggeto funzionino correttamente.
 Considerando l'utilizzo di un Thread separato per l'esecuzione della gerenazione di dati al suo interno, testare il corretto avvio, fermo e verifica dello stato risultava di fondamentale importanza.
 * `build-and-deploy`: questo test prevede l'esecuzione in remoto su 3 _GitHub runners_ con sistemi operativi diversi (Ubuntu, Windows e MacOs) dei test di JUnit per assicurarsi la compatibilità multipiattaforma. Se nessun test fallisce viene anche rilasciato nel repo github un _fat jar_ dell'applicazione nella sezione _Releases_. Si noti che tutto ciò avviene solo in caso di rilevamento di _git tag_ per gestire il controllo delle versioni dell'applicazione e per rispettare i consumi previsti dal piano gratuito di _GitHub_.
+* `JsonStrategy` e `CsvStrategy`: I test verificano la corretta serializzazione e deserializzazione dei dati (test di "round-trip"), assicurando che i dati esportati su file possano essere re-importati senza perdita o corruzione di informazioni. Vengono coperti anche casi limite (liste vuote, campi `Optional` assenti, file malformati o non esistenti), utilizzando la feature `@TempDir` di JUnit per garantire l'isolamento dei test (creando file e cartelle temporanei).
 
 Per quanto i componenti grafici, non si è optato per librerie di testing automatizzato, ma è stata piuttosto scelta la strada di creare una GUI minimale che veniva impostata come mainView dell'applicazione.  
 Su di essa venivano poi aggiunti i singoli componenti grafici da testare (anche in combinazione), in modo da poter verificare il corretto funzionamento di questi ultimi.  
@@ -603,13 +669,31 @@ Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/14b2e2312654e1
 #### Utilizzo della libreria **[Medusa](https://github.com/HanSolo/medusa)** per la visualizzazione dei gauges
 Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/7805a79e84493b5acd015c3e7004dadca600180e/src/main/java/it/unibo/javadyno/model/graph/impl/DefaultGaugeFactory.java#L18
 
-### 3.2.3 Surname Name
-#### Subject
+### 3.2.3 Crimaldi Ivan
+#### Utilizzo della libreria **[Jackson](https://github.com/FasterXML/jackson)**
+Usata per la conversione automatica tra oggetti Java e JSON. 
+L'ObjectMapper è stato configurato per supportare tipi moderni, in questo esempio Instant.
+Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/main/src/main/java/it/unibo/javadyno/model/filemanager/impl/JsonStrategy.java#L27-L30
 
-TODO
+#### Utilizzo della libreria **[opencsv](https://opencsv.sourceforge.net/)**
+Usata per leggere e scrivere i dati in formato CSV, gestendo la scrittura dell'header e la conversione da riga ad array di stringhe (e viceversa). Esempio utilizzo di CSVWriter e scrittura header
+Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/main/src/main/java/it/unibo/javadyno/model/filemanager/impl/CsvStrategy.java#L59-L60
 
-#### Subject
-TODO
+#### Utilizzo di `Optional` come return type per evitare null
+La Factory restituisce un `Optional<FileStrategy>` per indicare la possibilità che non esista/sia stata implementata una strategia per un dato tipo di file
+Permalink:https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/main/src/main/java/it/unibo/javadyno/model/filemanager/impl/FileStrategyFactoryImpl.java#L24-L41
+
+#### Utilizzo di Lambda Experessions e `Optional.map` per trasformaziono concise
+Utilizzato per gestire gli Optional e scrivere un valore di default se vuoti senza dover riempire il codice di statement if-else
+Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/main/src/main/java/it/unibo/javadyno/model/filemanager/impl/CsvStrategy.java#L65-L75
+
+#### Utilizzo di `TypeReference` per la deserializzazione di tipi generici
+Dato che Java a runtime 'dimentica' che una lista è una `List<ElaboratedData>` e la vede solo come una List, ho dovuto usare la classe `TypeReference` di Jackson. Questa classe permette a Jackson di deserializzare correttamente il JSON in una lista di oggetti ElaboratedData senza errori.
+Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/main/src/main/java/it/unibo/javadyno/model/filemanager/impl/JsonStrategy.java#L48-L50
+
+#### Uso di Riferimenti a Metodi come `Function`
+Utilizzato `parseOptional` come metodo generico riutilizzabile per parsare ogni tipo di dato dal CSV, che accetta la logica specifica di parsing come un parametro di tipo `Function`. Ho inoltre usato la sinstassi concisa (`Integer: :parseInt`).
+Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/main/src/main/java/it/unibo/javadyno/model/filemanager/impl/CsvStrategy.java#L112-L122
 
 # Capitolo 4 - Commenti finali
 ## 4.1 Autovalutazione e lavori futuri
@@ -625,8 +709,8 @@ Un altro aspetto che mi ha reso molto fiero è il fatto di utiizzare tecnologie 
 Un ultimo appunto che devo fare è che l'utilizzo di strumenti per migliorare la qualità del codice, come _Checkstyle_, _SpotBugs_ e _PMD_, mi ha permesso di scrivere in modo più pulito e mantenibile, facilitando quindi non soltanto la lettura del mio codice ad altri, ma anche la mia stessa comprensione del codice scritto in precedenza.
 Concludo dicendo che, come ad altri membri del gruppo, mi piacerebbe continuare a lavorare su questo progetto, in modo da poterlo rendere un prodotto aperto e utilizzabile da chiunque, cercando di generalizzare al massimo le funzionalità e rendendolo facilmente estendibile e personalizzabile.
 
-### 4.1.3 Surname Name
-TODO
+### 4.1.3 Crimaldi Ivan
+Il mio ruolo principale è stato quello di progettare ed implementare il sistema di gestione file ed assicurarmi che interagisse correttamente con il Controller e le strutture dati definite assieme al resto del gruppo, come ElaboratedData. Mi ritengo parzialmente soddisfatto del lavoro compiuto: è mancante la parte di preset e ripristino di preferenze, ma considero il filemanager molto robusto e facilmente estendibile (le operazioni necessarie per aggiungere nuovi formati di file richiede solo una minima modifica alla Factory). Nel gruppo c'è sempre stato un clima di collaborazione, e la fase di analisi svolta assieme ci ha permesso di iniziare il progetto con un'idea chiara su come partire e cosa fare. Ammetto che avrei dovuto passare alla fase di implementazione senza fermarmi più del dovuto sulla fase di design. Lavorare a questo progetto mi ha insegnato molto su cosa significa sviluppare qualcosa in gruppo, e l'importanza di rendere ogni componente quanto più indipendente possibile; inoltre mi ha insegnato l'importanza dell'utilizzo del SCM (Git), e degli strumenti come CheckStyle per migliorare la leggibilità e la qualità del codice. In futuro, per espandere il progetto, vorrei aggiungere la parte di preset impostazioni e preferenze, e supporto per nuovi formati.
 
 ### 4.1.4 Surname Name
 TODO
