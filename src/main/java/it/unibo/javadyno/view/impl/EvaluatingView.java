@@ -25,7 +25,7 @@ import javafx.stage.Stage;
  */
 public class EvaluatingView extends Application implements View {
 
-    public static final double EVALUATING_RATIO = 0.8; //percentage of screen width/height for new evaluating window
+    public static final double EVALUATING_RATIO = 0.8;
 
     private static final String CSS_FILE = "css/SimulationStyle.css";
     private static final String CSS_SETTINGS_PANEL_TAG = "left-column";

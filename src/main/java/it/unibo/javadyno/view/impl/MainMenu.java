@@ -24,8 +24,8 @@ import javafx.geometry.Rectangle2D;
  */
 public class MainMenu extends Application implements View {
 
-    public static final double WIDTH_RATIO = 0.3; //percentage of screen width
-    public static final double HEIGHT_RATIO = 0.5; //percentage of screen height
+    public static final double WIDTH_RATIO = 0.3;
+    public static final double HEIGHT_RATIO = 0.5;
     private static final String TITLE = "JavaDyno";
     private static final String SIMULATION_BUTTON = "Simulation";
     private static final String DYNO_BUTTON = "Dyno";

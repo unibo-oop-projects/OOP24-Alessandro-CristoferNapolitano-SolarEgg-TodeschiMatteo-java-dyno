@@ -24,8 +24,8 @@ import javafx.stage.Stage;
  */
 public class ChartsViewer extends Application implements View {
 
-    public static final double WIDTH_RATIO = 0.8; //percentage of screen width
-    public static final double HEIGHT_RATIO = 0.8; //percentage of screen height
+    public static final double WIDTH_RATIO = 0.8;
+    public static final double HEIGHT_RATIO = 0.8;
 
     private static final String STAGE_TITLE = "JavaDyno - Charts Viewer";
     private static final String CSS_FILE = "css/SimulationStyle.css";

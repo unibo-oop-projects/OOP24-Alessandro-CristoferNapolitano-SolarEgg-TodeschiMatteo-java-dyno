@@ -19,7 +19,6 @@ public final class GaugePanel extends HBox {
     private static final int COLUMN_SPACING = 5;
     private static final String CSS_GAUGE_PANEL_TAG = "gauge-panel";
 
-    // Constants for the gauges
     private static final String RPM_CHARTS_TITLE = "Tachometer";
     private static final String RPM_CHARTS_UNIT = "RPM";
     private static final int RPM_MAX_RANGE = 8000;

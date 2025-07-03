@@ -55,10 +55,7 @@ public final class ButtonsPanel extends VBox {
             controller.stopEvaluation();
             reachedEnd();
         });
-
-        // Uses a private method to handle file import properly.
         importDataButton.setOnAction(e -> IOUtility.handleImport(controller, primaryStage));
-        // Uses a private method to handle file export properly.
         saveDataButton.setOnAction(e -> IOUtility.handleExport(controller, primaryStage));
 
         reloadButton.setOnAction(e -> {

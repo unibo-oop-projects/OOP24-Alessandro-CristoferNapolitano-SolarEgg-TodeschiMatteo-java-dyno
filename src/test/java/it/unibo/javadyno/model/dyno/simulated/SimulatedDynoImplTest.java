@@ -41,7 +41,7 @@ class SimulatedDynoImplTest {
     @Test
     void testStopSimulationWhenNotStarted() {
         final SimulatedDyno dyno = new SimulatedDynoImpl(new ControllerImpl());
-        dyno.end(); // Exception should be suppressed
+        dyno.end();
         assertFalse(dyno.isActive(), "The simulation should still not be running.");
     }
 }
