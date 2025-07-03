@@ -424,6 +424,8 @@ public final class ControllerImpl implements Controller {
         private static final double THROTTLE_INCREASE_RATE = 1.5;
         private static final double MAX_THROTTLE_POSITION = 100.0;
         private static final double MIN_THROTTLE_POSITION = 5.0;
+        private static final double TRANSMISSION_RATIO = 0.3;
+        private static final double WHEEL_RADIUS = 0.3;
         private static final int MIN_DELAY_MILLIS = 200;
         private static final int MAX_DELAY_MILLIS = 400;
         private final int maxEngineRPM = (int) userSettings.getSimulationMaxRPM();
@@ -480,11 +482,15 @@ public final class ControllerImpl implements Controller {
                 + this.rand.nextDouble() * (MAX_DELAY_MILLIS - MIN_DELAY_MILLIS));
             final Instant newTimestamp = prevTimestamp.plusMillis(delayMillis);
 
+            final double speedMS = newRpm * TRANSMISSION_RATIO * WHEEL_RADIUS * 2 * Math.PI / 60.0;
+            final int speedKMH = (int) (speedMS * 3.6);
+
             final RawData rawData = RawData.builder()
                     .engineRPM(Optional.of(newRpm))
                     .torque(Optional.of(newTorque))
                     .engineTemperature(Optional.of(newTemperature))
                     .throttlePosition(Optional.of(newThrottlePosition))
+                    .vehicleSpeed(Optional.of(speedKMH))
                     .timestamp(Optional.of(newTimestamp))
                     .build();
 
