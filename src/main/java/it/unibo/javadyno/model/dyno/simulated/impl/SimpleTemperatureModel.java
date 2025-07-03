@@ -41,7 +41,10 @@ public class SimpleTemperatureModel implements TemperatureModel {
         final double dTHeat = heatGain * generatedPower * deltaTime;
         //exponential cooling
         final double dTCool = (-coolingFactor) * (temperature - ambientTemp) * deltaTime;
-        temperature += dTHeat + dTCool;
+        System.out.println("Thread: " + Thread.currentThread().getName());
+        System.out.println("Heating: " + dTHeat + " Cooling: " + dTCool);
+        temperature += (dTHeat + dTCool) / 100.0;
+        System.out.println("New temperature: " + temperature);
     }
 
     /**

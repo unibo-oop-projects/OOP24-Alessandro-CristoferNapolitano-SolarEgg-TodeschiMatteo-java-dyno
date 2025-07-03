@@ -19,8 +19,8 @@ public class SimulatedDynoImpl implements SimulatedDyno {
 
     private static final String SIMULATED_DYNO_THREAD_NAME = "SimulatedDynoThread";
     private static final double DEFAULT_TEMPERATURE = 20.0;
-    private static final double DEFAULT_THERMAL_CAPACITY = 100_000.0;
-    private static final double DEFAULT_THERMAL_RESISTANCE = 500.0;
+    private static final double DEFAULT_THERMAL_CAPACITY = 1.1;
+    private static final double DEFAULT_THERMAL_RESISTANCE = 1600.0;
     private static final double FULL_THROTTLE = 1.0;
     private static final double UPDATE_DELTA = 0.1;
     private final Controller controller;
