@@ -117,8 +117,8 @@ public final class ControllerImpl implements Controller {
         if (!Objects.nonNull(this.dyno) || !this.dyno.getDynoType().equals(dynoType)) {
             switch (dynoType) {
                 case SIMULATED_DYNO -> this.dyno = this.userSettings.getDynoType().equals(DataSource.REAL_DYNO)
-                    ? new SimulatedDynoBenchImpl(this.userSettings)
-                    : new SimulatedDynoImpl(this);
+                    ? new SimulatedDynoImpl(this)
+                    : new SimulatedDynoBenchImpl(this.userSettings);
                 case OBD2 -> this.dyno = new OBD2Dyno(new ELM327Communicator());
                 case REAL_DYNO -> this.dyno = new RealDynoImpl(new JsonWebSocketCommunicator());
             }
