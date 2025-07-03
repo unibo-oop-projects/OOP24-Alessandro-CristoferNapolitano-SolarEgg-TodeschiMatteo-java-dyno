@@ -114,7 +114,7 @@ public final class ControllerImpl implements Controller {
      */
     @Override
     public void startEvaluation(final DataSource dynoType) {
-        if (!Objects.nonNull(this.dyno) || !this.dyno.getDynoType().equals(dynoType)) {
+        if (Objects.isNull(this.dyno) || !this.dyno.getDynoType().equals(dynoType)) {
             switch (dynoType) {
                 case SIMULATED_DYNO -> this.dyno = this.userSettings.getDynoType().equals(DataSource.REAL_DYNO)
                     ? new SimulatedDynoImpl(this)

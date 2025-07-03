@@ -209,7 +209,7 @@ public class ChartsManagerImpl implements ChartsManager {
      * @return true if the dataset is valid, false otherwise
      */
     private boolean isDatasetValid(final XYSeriesCollection dataset, final String seriesName, final YAxisLevel level) {
-        if (!Objects.nonNull(dataset)) {
+        if (Objects.isNull(dataset)) {
             AlertMonitor.errorNotify(
                 "Error in dataset from charts",
                 Optional.of("Series '" + seriesName + "' does not exist in level " + level.getLevel())
@@ -228,7 +228,7 @@ public class ChartsManagerImpl implements ChartsManager {
      * @return true if the series is valid, false otherwise
      */
     private boolean isSeriesValid(final XYSeries series, final String seriesName, final YAxisLevel level) {
-        if (!Objects.nonNull(series)) {
+        if (Objects.isNull(series)) {
             AlertMonitor.errorNotify(
                 "Error in series from charts",
                 Optional.of("Series '" + seriesName + "' does not exist in level " + level.getLevel())
@@ -246,7 +246,7 @@ public class ChartsManagerImpl implements ChartsManager {
      * @return true if the renderer is valid, false otherwise
      */
     private boolean isRendererValid(final XYItemRenderer renderer, final YAxisLevel level) {
-        if (!Objects.nonNull(renderer)) {
+        if (Objects.isNull(renderer)) {
             AlertMonitor.errorNotify(
                 "Error in accessing the renderer from charts",
                 Optional.of("Level " + level.getLevel() + " does not exist.")
