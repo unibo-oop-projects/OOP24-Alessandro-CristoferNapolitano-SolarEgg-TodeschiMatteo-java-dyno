@@ -573,9 +573,7 @@ classDiagram
     FileStrategy <|.. CsvStrategy : implements
     FileStrategy <|.. JsonStrategy : implements
 ```
-<<<<<<< HEAD
 
-=======
 **Problema:**
 L'applicazione deve essere in grado di salvare i dati generati dalla prova, e di poter caricare i dati generati da prove precedenti. Inoltre, l'applicazione deve essere in grado di supportare diversi formati di file, con la possibilità di aggiungere nuovi formati supportati nel futuro.
 
@@ -584,6 +582,7 @@ Per risolvere il problema, ho utilizzato il design pattern **Strategy**, così d
 `FileStrategy` definisce il contratto comune per tutte le strategie, che si specializzano nel gestire un solo formato, come `CsvStrategy` e `JsonStrategy`.
 `FileManager` è il Context per la Strategy, delegando alla strategia corrente l'esecuzione delle operazioni.
 
+#### TODO TITOLO
 ```mermaid
 classDiagram
     direction LR
@@ -614,8 +613,8 @@ classDiagram
 Con l'introduzione di più Strategie, il client (Controller) deve contenere la logica condizionale su quale strategia creare in base all'estensione del file.
 
 **Soluzione:**
-Per risolvere il problema, ho utilizzato  il pattern **Factory**: `FileStrategyFactory` definisce un metodo per creare la strategia appropriata, e `FileStrategyFactoryImpl` la implementa, scegliendo la strategia (oggetto `FileStrategy`) in base all'estensione del file. Sarà quindi l'unica componente del Model da cambiare qualora si volesse aggiungere un nuovo  tipo di file
->>>>>>> main
+Per risolvere il problema, ho utilizzato  il pattern **Factory**: `FileStrategyFactory` definisce un metodo per creare la strategia appropriata, e `FileStrategyFactoryImpl` la implementa, scegliendo la strategia (oggetto `FileStrategy`) in base all'estensione del file. Sarà quindi l'unica componente del Model da cambiare qualora si volesse aggiungere un nuovo  tipo di file.
+
 ### 2.2.4 Napolitano Cristofer
 #### Vehicle Builder
 
