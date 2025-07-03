@@ -457,8 +457,7 @@ public final class UserSettings implements Serializable {
         copy.baseTorque = this.baseTorque;
         copy.torquePerRad = this.torquePerRad;
         copy.engineInertia = this.engineInertia;
-        copy.gearRatios = Objects.nonNull(gearRatios) ? gearRatios.clone() 
-            : new double[]{UserSettingDef.GEAR_RATIOS.getDefaultValue()};
+        copy.gearRatios = gearRatios.clone();
         copy.wheelMass = this.wheelMass;
         copy.wheelRadius = this.wheelRadius;
         copy.rollingCoeff = this.rollingCoeff;
