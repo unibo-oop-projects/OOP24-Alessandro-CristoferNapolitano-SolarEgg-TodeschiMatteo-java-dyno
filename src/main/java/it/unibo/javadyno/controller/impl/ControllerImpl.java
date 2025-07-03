@@ -129,13 +129,15 @@ public final class ControllerImpl implements Controller {
         if (!this.dyno.isActive()) {
             this.dataCollector.initialize(this.dyno, this.userSettings);
             this.dyno.begin();
-            try {
-                semaphore.await();
-            } catch (final InterruptedException e) {
-                AlertMonitor.errorNotify(
-                    "Simulation Thread error",
-                    Optional.of("The simulation was interrupted unexpectedly. Please try again.")
-                );
+            if (this.dyno instanceof SimulatedDynoImpl) {
+                try {
+                    semaphore.await();
+                } catch (final InterruptedException e) {
+                    AlertMonitor.errorNotify(
+                        "Simulation Thread error",
+                        Optional.of("The simulation wasn't able to syncronize. Please try again.")
+                    );
+                }
             }
             this.isRunning = true;
             Thread.ofVirtual()
