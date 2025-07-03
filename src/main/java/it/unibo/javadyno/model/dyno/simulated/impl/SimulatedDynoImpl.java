@@ -2,6 +2,7 @@ package it.unibo.javadyno.model.dyno.simulated.impl;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
 
 import it.unibo.javadyno.controller.api.Controller;
 import it.unibo.javadyno.controller.impl.AlertMonitor;
@@ -23,6 +24,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
     private static final double FULL_THROTTLE = 1.0;
     private static final double UPDATE_DELTA = 0.1;
     private final Controller controller;
+    private final CountDownLatch semaphore;
     private volatile Thread simulationThread;
     private volatile Vehicle vehicle;
     private volatile long updateTimeDelta;
@@ -34,8 +36,9 @@ public class SimulatedDynoImpl implements SimulatedDyno {
      *
      * @param controller the controller that will be used to retrieve user settings
      */
-    public SimulatedDynoImpl(final Controller controller) {
+    public SimulatedDynoImpl(final Controller controller, CountDownLatch latch) {
         this.controller = controller;
+        this.semaphore = latch;
         this.running = false;
         this.simulationThread = null;
         this.vehicle = null;
@@ -80,6 +83,9 @@ public class SimulatedDynoImpl implements SimulatedDyno {
      */
     @Override
     public void end() {
+        if (!this.running) {
+            return;
+        }
         if (Objects.nonNull(simulationThread)) {
             this.simulationThread.interrupt();
         }
@@ -102,6 +108,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
      */
     @Override
     public void run() {
+        this.semaphore.countDown();
         this.datas = vehicle.getRawData();
         while (this.running && Objects.nonNull(this.datas)
                 && this.datas.engineRPM().get() < controller.getUserSettings().getMaxRpmSimulation()
