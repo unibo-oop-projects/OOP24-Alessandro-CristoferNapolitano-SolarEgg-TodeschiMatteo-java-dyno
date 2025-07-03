@@ -24,6 +24,7 @@ import it.unibo.javadyno.model.dyno.api.Dyno;
 import it.unibo.javadyno.model.dyno.obd2.impl.OBD2Dyno;
 import it.unibo.javadyno.model.dyno.real.impl.RealDynoImpl;
 import it.unibo.javadyno.model.dyno.simulated.impl.SimulatedDynoBenchImpl;
+import it.unibo.javadyno.model.dyno.simulated.impl.SimulatedDynoImpl;
 import it.unibo.javadyno.model.filemanager.api.FileManager;
 import it.unibo.javadyno.model.filemanager.api.FileStrategyFactory;
 import it.unibo.javadyno.model.filemanager.impl.FileManagerImpl;
@@ -115,7 +116,9 @@ public final class ControllerImpl implements Controller {
     public void startEvaluation(final DataSource dynoType) {
         if (!Objects.nonNull(this.dyno) || !this.dyno.getDynoType().equals(dynoType)) {
             switch (dynoType) {
-                case SIMULATED_DYNO -> this.dyno = new SimulatedDynoBenchImpl(this.userSettings);
+                case SIMULATED_DYNO -> this.dyno = this.userSettings.getDynoType().equals(DataSource.REAL_DYNO)
+                    ? new SimulatedDynoBenchImpl(this.userSettings)
+                    : new SimulatedDynoImpl(this);
                 case OBD2 -> this.dyno = new OBD2Dyno(new ELM327Communicator());
                 case REAL_DYNO -> this.dyno = new RealDynoImpl(new JsonWebSocketCommunicator());
             }
