@@ -31,7 +31,6 @@ public class SimpleTorqueMap implements TorqueMap {
                 "BaseTorque and torquePerRad must be >=0",
                 Optional.empty()
             );
-            //throw new IllegalArgumentException("baseTorque and torquePerRad must be >=0");
         }
         this.baseTorque = baseTorque;
         this.torquePerRad = torquePerRad;
@@ -47,7 +46,6 @@ public class SimpleTorqueMap implements TorqueMap {
                 "Throttle must be between 0.0 and 1.0",
                 Optional.empty()
             );
-            //throw new IllegalArgumentException("throttle must be between 0.0 and 1.0");
         }
         return throttle * (baseTorque + this.torquePerRad * omega);
     }

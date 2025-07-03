@@ -65,26 +65,20 @@ public final class VehicleImpl implements Vehicle {
 
     @Override
     public RawData getRawData() {
-        //engine RPM [rev/min]
         final double engineOmega = drivetrain.getEngineOmega();
         final int engineRpm = (int) Math.round(engineOmega * 60.0 / (2 * Math.PI));
 
-        //engine temperature [°C]
         final double engineTemp = drivetrain.getEngineTemperature();
 
-        //compute wheel torque [Nm] from engine torque
         final double engineTorque = drivetrain.getGeneratedTorque();
         final double wheelOmega = drivetrain.getWheelOmega();
         //TorqueWheel = TorqueEngine / gear
         final double wheelTorque = engineOmega == 0 ? 0 : engineTorque * (wheelOmega / engineOmega);
 
-        //vehicle speed [km/h]
         final int speedKmh = (int) Math.round(wheelOmega * wheelRadius * 3.6);
 
-        //gas aperture [0-1]
         final double throttle = currentThrottle;
 
-        //ambient data
         final int ambientTemperature = (int) weatherStation.getTemperature();
         final int ambientPressure = weatherStation.getPressure();
         final int ambientHumidity = weatherStation.getHumidity();

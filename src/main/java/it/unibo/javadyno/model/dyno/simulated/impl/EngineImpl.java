@@ -34,7 +34,6 @@ public final class EngineImpl implements Engine {
                 "Inertia must be > 0",
                 Optional.empty()
             );
-            //throw new IllegalArgumentException("Inertia must be > 0");
         }
         this.inertia = inertia;
         this.map = Objects.requireNonNull(map, "TorqueMap required");
@@ -51,7 +50,6 @@ public final class EngineImpl implements Engine {
                 "throttle must be between 0.0 and 1.0",
                 Optional.empty()
             );
-            //throw new IllegalArgumentException("throttle must be between 0.0 and 1.0");
         }
         this.throttle = throttle;
     }
