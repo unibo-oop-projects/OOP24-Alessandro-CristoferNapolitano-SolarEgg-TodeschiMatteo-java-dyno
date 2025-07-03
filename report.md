@@ -419,86 +419,58 @@ UML TODO
 UML TODO
 ```
 ### 2.2.3 Napolitano Cristofer
-#### first
+#### Vehicle Builder
+
 ``` mermaid
 classDiagram
-    %% Dati
-    class RawData
-
-    %% Interfacce
-    class BrakeTorqueProvider {
-      <<interface>>
-    }
-    class LoadModel {
-      <<interface>>
-    }
-    class Engine {
-      <<interface>>
-    }
-    class Transmission {
-      <<interface>>
-    }
-    class DriveTrain {
-      <<interface>>
-    }
-    class Vehicle {
-      <<interface>>
-    }
-    class TorqueMap {
-      <<interface>>
-    }
-    class TemperatureModel {
-      <<interface>>
-    }
-    class WeatherStation {
-      <<interface>>
+    %% VehicleBuilder e dipendenze concrete
+    class VehicleBuilder {
+      <<Builder>>
+      +static VehicleBuilder builder()
+      +VehicleBuilder withBaseTorque(double baseTorqueValue)
+      +VehicleBuilder withTorquePerRad(double torquePerRadValue)
+      +VehicleBuilder withEngineInertia(double engineInertiaValue)
+      +VehicleBuilder withGearRatios(double... gearRatioValue)
+      +VehicleBuilder withWheel(double mass, double radius)
+      +VehicleBuilder withRollingResistance(boolean enable, double coeff)
+      +VehicleBuilder withBenchBrake(BrakeTorqueProvider provider)
+      +VehicleBuilder withWeatherStation(WeatherStation ws)
+      +VehicleBuilder withTemperatureModel(TemperatureModel model)
+      +VehicleBuilder withThermalParams(double targetTemp, double targetTimeCoeff)
+      +VehicleImpl buildVehiclewithRigidModel()
     }
 
-    %% Implementazioni concrete
-    class BenchBrakeTorqueHolder
-    class BenchLoad
-    class RollingResistance
-    class EngineImpl
-    class ManualTransmission
-    class SimpleTorqueMap
-    class TargetTemperatureModel
-    class WeatherStationImpl
-    class RigidDriveTrainSim
-    class VehicleImpl
-    class SimulatedDynoImpl
-    class VehicleBuilder
+    class EngineImpl {
+      +EngineImpl(double inertia, TorqueMap map, TemperatureModel temperatureModel)
+    }
+    class ManualTransmission {
+      +ManualTransmission(double[] gearRatio)
+    }
+    class SimpleTorqueMap {
+      +SimpleTorqueMap(double baseTorque, double torquePerRad)
+    }
+    class TargetTemperatureModel {
+      +TargetTemperatureModel(double targetTemperature, double temperature, double timeCoeff)
+    }
+    class WeatherStationImpl {
+      +WeatherStationImpl(double temperature, int pressure, int humidity)
+    }
+    class BenchLoad {
+      +BenchLoad(BrakeTorqueProvider provider)
+    }
+    class RollingResistance {
+      +RollingResistance(double coefficient)
+    }
+    class RigidDriveTrainSim {
+      +RigidDriveTrainSim(Engine engine, Transmission transmission, List<LoadModel> loads)
+    }
+    class VehicleImpl {
+      +VehicleImpl(DriveTrain drivetrain, WeatherStation weather, double wheelRadius, double currentThrottle)
+    }
+    class BenchBrakeTorqueHolder {
+    }
 
-    %% Realizzazioni
-    BrakeTorqueProvider <|-- BenchBrakeTorqueHolder
-    LoadModel         <|-- BenchLoad
-    LoadModel         <|-- RollingResistance
-    Engine            <|-- EngineImpl
-    Transmission      <|-- ManualTransmission
-    TorqueMap         <|-- SimpleTorqueMap
-    TemperatureModel  <|-- TargetTemperatureModel
-    WeatherStation    <|-- WeatherStationImpl
-    DriveTrain        <|-- RigidDriveTrainSim
-    Vehicle           <|-- VehicleImpl
-
-    %% Composizioni interne
-    RigidDriveTrainSim *-- Engine
-    RigidDriveTrainSim *-- Transmission
-    RigidDriveTrainSim *-- LoadModel
-
-    EngineImpl        *-- TorqueMap
-    EngineImpl        *-- TemperatureModel
-    EngineImpl        *-- WeatherStation
-
-    VehicleImpl       *-- DriveTrain
-    VehicleImpl       *-- WeatherStation
-
-    SimulatedDynoImpl *-- Vehicle
-
-    %% Flusso dati
-    VehicleImpl      --> RawData
-    SimulatedDynoImpl--> RawData
-
-    %% VehicleBuilder: dipende direttamente da TUTTE le implementazioni che istanzia
+    %% Dipendenze illustrate
     VehicleBuilder ..> EngineImpl
     VehicleBuilder ..> ManualTransmission
     VehicleBuilder ..> SimpleTorqueMap
@@ -508,9 +480,187 @@ classDiagram
     VehicleBuilder ..> RollingResistance
     VehicleBuilder ..> RigidDriveTrainSim
     VehicleBuilder ..> VehicleImpl
-    VehicleBuilder ..> BrakeTorqueProvider
+    VehicleBuilder ..> BenchBrakeTorqueHolder
+```
+
+**Problema:** la creazione di un oggetto `Vehicle` richiede la configurazione di numerosi parametri e dipendenze concrete (motore, trasmissione, modelli di carico, condizioni ambientali), e un costruttore monolitico impedirebbe l’estensibilità e violerebbe i principi SRP e DIP.
+
+**Soluzione:** si applica il Builder pattern: `VehicleBuilder` espone metodi `with…` per ogni parametro di configurazione, costruendo passo dopo passo le dipendenze concrete (`EngineImpl`, `ManualTransmission`, `SimpleTorqueMap`, `TargetTemperatureModel`, `WeatherStationImpl`, `BenchLoad`, `RollingResistance`, `RigidDriveTrainSim`) e infine invocando `buildVehiclewithRigidModel()` per ottenere un’istanza di `VehicleImpl`. Questa soluzione isola la logica di composizione, rispetta il DIP e consente di aggiungere nuove opzioni senza modificare il costruttore centrale.
+
+#### Drive Train
+
+``` mermaid
+classDiagram
+    %% Interfacce con metodi completi
+    class DriveTrain {
+      <<interface>>
+      +void step(double throttle, double deltatime)
+      +void shiftUp()
+      +void shiftDown()
+      +double getEngineOmega()
+      +double getWheelOmega()
+      +int getCurrentGear()
+      +double getEngineTemperature()
+      +double getGeneratedTorque()
+    }
+    class Engine {
+      <<interface>>
+      +void setThrottle(double throttle)
+      +void setAngularVelocity(double newEngineOmega)
+      +double getEngineTemperature()
+    }
+    class Transmission {
+      <<interface>>
+      +double getCurrentRatio()
+      +void shiftUp()
+      +void shiftDown()
+      +int getCurrentGear()
+    }
+    class LoadModel {
+      <<interface>>
+      +double getLoadTorque(double engineOmega, double gearRatio)
+    }
+
+    %% Classi concrete con soli costruttori
+    class RigidDriveTrainSim {
+      +RigidDriveTrainSim(Engine engine, Transmission transmission, List<LoadModel> loads)
+    }
+    class EngineImpl {
+      +EngineImpl(double inertia, TorqueMap map, TemperatureModel temperatureModel)
+    }
+    class ManualTransmission {
+      +ManualTransmission(double[] gearRatio)
+    }
+    class BenchLoad {
+      +BenchLoad(BrakeTorqueProvider provider)
+    }
+    class RollingResistance {
+      +RollingResistance(double coefficient)
+    }
+
+    %% Realizzazioni
+    DriveTrain    <|-- RigidDriveTrainSim
+    Engine        <|-- EngineImpl
+    Transmission  <|-- ManualTransmission
+    LoadModel     <|-- BenchLoad
+    LoadModel     <|-- RollingResistance
+
+    %% Composizioni
+    RigidDriveTrainSim "1" *-- "1" Engine
+    RigidDriveTrainSim "1" *-- "1" Transmission
+    RigidDriveTrainSim "1" *-- "*" LoadModel
 
 ```
+
+**Problema:** occorre modellare il gruppo moto in modo da eseguire il passo di simulazione, gestire i cambi di rapporto e calcolare la coppia netta sottraendo i vari carichi, il tutto garantendo flessibilità per diverse implementazioni di motore, trasmissione e carichi.
+
+**Soluzione:** `RigidDriveTrainSim` implementa l’interfaccia `DriveTrain` e realizza una composizione 'uno a molti' con `Engine`, `Transmission` e `LoadModel`. Grazie al DIP, ogni componente interagisce tramite le proprie interfacce, applicando SRP delegando a `EngineImpl`, `ManualTransmission`, `BenchLoad` e `RollingResistance` le rispettive responsabilità, e consentendo l’aggiunta di nuovi modelli di carico senza modificare il simulatore di base.
+
+#### Engine
+
+``` mermaid
+classDiagram
+    %% Interfacce con metodi completi
+    class TorqueMap {
+      <<interface>>
+      +double getTorque(double throttle, double omega)
+    }
+    class TemperatureModel {
+      <<interface>>
+      +void update(double deltaTime)
+      +double getTemperature()
+    }
+    class Engine {
+      <<interface>>
+      +void setThrottle(double throttle)
+      +void update(double loadTorque, double deltaTime)
+      +double getAngularVelocity()
+      +void setAngularVelocity(double newEngineOmega)
+      +double getGeneratedTorque()
+      +double getEngineTemperature()
+    }
+
+    %% Classi concrete con soli costruttori
+    class EngineImpl {
+      +EngineImpl(double inertia, TorqueMap map, TemperatureModel temperatureModel)
+    }
+    class SimpleTorqueMap {
+      +SimpleTorqueMap(double baseTorque, double torquePerRad)
+    }
+    class TargetTemperatureModel {
+      +TargetTemperatureModel(double targetTemperature, double temperature, double timeCoeff)
+    }
+
+    %% Realizzazioni
+    TorqueMap        <|-- SimpleTorqueMap
+    TemperatureModel <|-- TargetTemperatureModel
+    Engine           <|-- EngineImpl
+
+    %% Composizioni
+    EngineImpl *-- TorqueMap
+    EngineImpl *-- TemperatureModel
+
+```
+**Problema:** il motore deve generare coppia in funzione di apertura del gas e regime, e al tempo stesso gestire l’evoluzione termica, ma una classe monolitica risulterebbe rigida e difficile da estendere.
+
+**Soluzione:** si definiscono le interfacce `TorqueMap` e `TemperatureModel`; `EngineImpl` le compone e delega il calcolo della coppia a `SimpleTorqueMap` (Strategy pattern) e l’aggiornamento termico a `TargetTemperatureModel`. In tal modo si rispetta DIP, OCP e SRP: è immediato aggiungere nuove implementazioni di mappa coppia o modelli termici senza modificare `EngineImpl`.
+
+#### Vehicle e WeatherStation
+
+``` mermaid
+classDiagram
+    %% Dati
+    class RawData
+
+    %% Interfacce
+    class Vehicle {
+      <<interface>>
+      +void setThrottle(double throttle)
+      +void update(double deltaTime)
+      +void shiftUp()
+      +void shiftDown()
+      +int getCurrentGear()
+      +RawData getRawData()
+    }
+    class WeatherStation {
+      <<interface>>
+      +double getTemperature()
+      +int getPressure()
+      +int getHumidity()
+    }
+    class DriveTrain {
+      <<interface>>
+      +void step(double throttle, double deltaTime)
+      +void shiftUp()
+      +void shiftDown()
+      +double getEngineOmega()
+      +double getWheelOmega()
+      +int getCurrentGear()
+      +double getEngineTemperature()
+      +double getGeneratedTorque()
+    }
+
+    %% Implementazioni
+    class VehicleImpl {
+      +VehicleImpl(DriveTrain drivetrain, WeatherStation weather, double wheelRadius, double currentThrottle)
+    }
+    class WeatherStationImpl {
+      +WeatherStationImpl(double temperature, int pressure, int humidity)
+    }
+
+    %% Relazioni
+    Vehicle         <|-- VehicleImpl
+    WeatherStation  <|-- WeatherStationImpl
+    VehicleImpl     *-- DriveTrain
+    VehicleImpl     *-- WeatherStation
+
+    %% Flusso dati
+    VehicleImpl --> RawData
+```
+**Problema:** è necessario orchestrare l’interazione tra il veicolo, il drivetrain e la fonte dei dati ambientali, tuttociò per raccogliere i parametri operativi in un unico oggetto RawData per analisi e logging.
+
+**Soluzione:** `VehicleImpl` realizza l’interfaccia `Vehicle`, componendo `DriveTrain` e `WeatherStation`; delega la logica di guida e cambio marcia a `DriveTrain`, interroga `WeatherStationImpl` per le condizioni ambientali e aggrega tutti i dati in `RawData`. Questa architettura a componenti riutilizzabili rispetta SRP e DIP e garantisce facilmente estensibilità e testabilità.
+
 
 # Capitolo 3 - Sviluppo
 ## 3.1 Testing automatizzato
@@ -545,6 +695,10 @@ TODO
 #### Subject
 TODO
 
+### 3.2.4 Napolitano Cristofer
+#### Uso di stream in `RigidDriveTrainSim.step()`
+usato per sommare tutti i nuovi carichi dei LoadModel : https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/b751bbc65c9c86bf2315d438e0d5f4e200725a7c/src/main/java/it/unibo/javadyno/model/dyno/simulated/impl/RigidDriveTrainSim.java#L37C1-L46C1
+
 # Capitolo 4 - Commenti finali
 ## 4.1 Autovalutazione e lavori futuri
 ### Surname Name
@@ -556,11 +710,13 @@ TODO
 ### Surname Name
 TODO
 
-### Surname Name
-TODO
+### 4.1.4 Napolitano Cristofer
+L'idea di lavorare su un progetto che avrebbe avuto dei riscontri nel mondo reale sicuramente è stata una delle fonti di maggior stimolo per me, soprattutto nella ricerca di una soluzione che mi potesse dare in futuro la possibilità di espandere il progetto, proprio per questo le nozioni sui pattern e i principi di programmazione appresi durante il corso hanno subito trovato un luogo nel quale esser applicati e compresi appieno nelle nuove possibilità di espansione che offrono. Per appunto, la cosa che mi ha lasciato più soddisfatto dal lavoro svolto sono l'utilizzo estensivo di pattern come Strategy che mi daranno in futuro la possibilità di ampliare la soluzione.
+Dirigendomi verso le note di più amare dello sviluppo del progetto sicuramente c'è stata la fase di analisi e design architetturale, considerando la mia inesperienza, e quella del gruppo, avremmo potuto perder meno tempo ed esser molto più obiettivi nei nostri lavori iniziali, questo è stato il motivo principale per la consegna in ritardo. Se fossi stato meno vago nel mio design iniziale, e quindi se avessi avuto più esperienza, sarei sicuramente stato in grado finire con largo anticipo la mia parte di model e di dare una mano molto più concreta nelle implementazioni del controller e della view senza lasciare un onere troppo grande ai miei colleghi.
+Nel breve futuro spero vivamente di trovare il tempo di aggiungere implementazioni ulteriori al mio modello di simulazione, così da ricreare il comportamento di un veicolo con maggior fedeltà.
 
 ## 4.2 Difficoltà incontrate e commenti per i docenti
-TODO
+
 
 # Appendice A - Guida utente
 TODO
