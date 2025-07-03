@@ -348,7 +348,7 @@ public class SettingsView extends Application implements View {
 
         final Button resetButton = new Button("Reset to Defaults");
         resetButton.getStyleClass().addAll(BUTTON_STYLE, "reset-button");
-        resetButton.setOnAction(e -> resetToDefaults());
+        resetButton.setOnAction(e -> resetToDefaults(primaryStage));
 
         final Button backButton = new Button("Back to Menu");
         backButton.getStyleClass().addAll(BUTTON_STYLE, "back-button");
@@ -376,10 +376,16 @@ public class SettingsView extends Application implements View {
 
     /**
      * Resets all settings to their default values.
+     *
+     * @param primaryStage the primary stage of the application
      */
-    private void resetToDefaults() {
+    private void resetToDefaults(final Stage primaryStage) {
         this.controller.resetUserSettings();
         loadCurrentSettings();
+        this.controller.showMainMenu(primaryStage);
+        primaryStage.setWidth(Screen.getPrimary().getBounds().getWidth() * MainMenu.WIDTH_RATIO);
+        primaryStage.setHeight(Screen.getPrimary().getBounds().getHeight() * MainMenu.HEIGHT_RATIO);
+        primaryStage.centerOnScreen();
     }
 
     /**

@@ -14,7 +14,7 @@ public enum UserSettingDef {
     FRONTAL_AREA(2.2),
     AIR_DENSITY(1.225),
     DRIVE_TRAIN_EFFICIENCY(0.85),
-    DYNO_TYPE(DataSource.REAL_DYNO.ordinal()),
+    DYNO_TYPE(DataSource.OBD2.ordinal()),
     ROLLING_COEFF(0.012),
 
     BASE_TORQUE(120.0),
