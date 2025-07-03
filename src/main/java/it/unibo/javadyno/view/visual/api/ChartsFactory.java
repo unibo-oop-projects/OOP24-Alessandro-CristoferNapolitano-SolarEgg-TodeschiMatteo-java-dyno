@@ -1,4 +1,4 @@
-package it.unibo.javadyno.model.graph.api;
+package it.unibo.javadyno.view.visual.api;
 
 import org.jfree.chart.JFreeChart;
 

@@ -1,4 +1,4 @@
-package it.unibo.javadyno.model.graph.impl;
+package it.unibo.javadyno.view.visual.impl;
 
 import java.util.List;
 import java.util.Objects;
@@ -21,7 +21,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import it.unibo.javadyno.controller.impl.AlertMonitor;
-import it.unibo.javadyno.model.graph.api.ChartsManager;
+import it.unibo.javadyno.view.visual.api.ChartsManager;
 
 /**
  * Implementation of the ChartsManager interface for managing charts.

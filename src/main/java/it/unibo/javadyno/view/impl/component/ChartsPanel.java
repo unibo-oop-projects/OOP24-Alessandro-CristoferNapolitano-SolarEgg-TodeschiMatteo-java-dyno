@@ -7,10 +7,10 @@ import java.util.Map;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.fx.ChartViewer;
 
-import it.unibo.javadyno.model.graph.api.ChartsFactory;
-import it.unibo.javadyno.model.graph.api.ChartsManager;
-import it.unibo.javadyno.model.graph.impl.ChartsManagerImpl;
-import it.unibo.javadyno.model.graph.impl.DefaultChartsFactory;
+import it.unibo.javadyno.view.visual.api.ChartsFactory;
+import it.unibo.javadyno.view.visual.api.ChartsManager;
+import it.unibo.javadyno.view.visual.impl.ChartsManagerImpl;
+import it.unibo.javadyno.view.visual.impl.DefaultChartsFactory;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;

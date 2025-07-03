@@ -1,8 +1,8 @@
-package it.unibo.javadyno.model.graph.impl;
+package it.unibo.javadyno.view.visual.impl;
 
 import eu.hansolo.medusa.Gauge;
 import eu.hansolo.medusa.GaugeBuilder;
-import it.unibo.javadyno.model.graph.api.GaugeFactory;
+import it.unibo.javadyno.view.visual.api.GaugeFactory;
 import javafx.scene.paint.Color;
 
 /**

@@ -1,11 +1,11 @@
-package it.unibo.javadyno.model.graph.impl;
+package it.unibo.javadyno.view.visual.impl;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeriesCollection;
 
-import it.unibo.javadyno.model.graph.api.ChartsFactory;
+import it.unibo.javadyno.view.visual.api.ChartsFactory;
 
 /**
  * Default implementation of the ChartsFactory functional interface.
