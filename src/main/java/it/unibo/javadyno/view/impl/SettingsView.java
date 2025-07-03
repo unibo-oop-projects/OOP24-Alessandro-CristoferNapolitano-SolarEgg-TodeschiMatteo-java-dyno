@@ -353,7 +353,7 @@ public class SettingsView extends Application implements View {
         final Button backButton = new Button("Back to Menu");
         backButton.getStyleClass().addAll(BUTTON_STYLE, "back-button");
         backButton.setOnAction(e -> {
-            controller.showMainMenu(primaryStage);  
+            controller.showMainMenu(primaryStage);
             primaryStage.setWidth(Screen.getPrimary().getBounds().getWidth() * MainMenu.WIDTH_RATIO);
             primaryStage.setHeight(Screen.getPrimary().getBounds().getHeight() * MainMenu.HEIGHT_RATIO);
             primaryStage.centerOnScreen();
