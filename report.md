@@ -8,11 +8,11 @@ Relazione del progetto
 
 Alessandro Porcheddu  
 Matteo Todeschi  
-Christofer Napolitano  
+Cristofer Napolitano
 Ivan Crimaldi
 <br>
 
-29 giugno 2025
+3 luglio 2025
 </h2>
 
 </p>
@@ -30,17 +30,20 @@ Ivan Crimaldi
     - #### [2.2.1 Porcheddu Alessandro](#221-porcheddu-alessandro-1)
     - #### [2.2.2 Todeschi Matteo](#222-todeschi-matteo-1)
     - #### [2.2.3 Crimaldi Ivan](#223-crimaldi-ivan-1)
+    - #### [2.2.4 Napolitano Cristofer](#224-napolitano-cristofer-1) 
 ## [3. Sviluppo](#capitolo-3---sviluppo)
 - ### [3.1 Testing automatizzato](#31-testing-automatizzato-1)
 - ### [3.2 Note di sviluppo](#32-note-di-sviluppo-1)
     - #### [3.2.1 Porcheddu Alessandro](#321-porcheddu-alessandro-1)
     - #### [3.2.2 Todeschi Matteo](#322-todeschi-matteo-1)
     - #### [3.2.3 Crimaldi Ivan](#323-crimaldi-ivan-1)
+    - #### [3.2.4 Napolitano Cristofer](#324-napolitano-cristofer-1)
 ## [4. Commenti finali](#capitolo-4---commenti-finali)
 - ### [4.1 Autovalutazione e lavori futuri](#41-autovalutazione-e-lavori-futuri-1)
     - #### [4.1.1 Porcheddu Alessandro](#41-autovalutazione-e-lavori-futuri-1)
     - #### [4.1.2 Todeschi Matteo](#41-autovalutazione-e-lavori-futuri-1)
     - #### [4.1.3 Crimaldi Ivan](#41-autovalutazione-e-lavori-futuri-1)
+    - #### [4.1.4 Napolitano Cristofer](#41-autovalutazione-e-lavori-futuri-1)
 - ### [4.2 Difficoltà incontrate e commenti per i docenti](#42-difficoltà-incontrate-e-commenti-per-i-docenti-1)
     - #### [4.2.1 Porcheddu Alessandro](#42-difficoltà-incontrate-e-commenti-per-i-docenti-1)
 ## [Appendice A - Guida utente](#appendice-a---guida-utente-1)
@@ -51,9 +54,6 @@ Ivan Crimaldi
 ## [Appendice B - Esercitazioni di laboratorio](#appendice-b---esercitazioni-di-laboratorio-1)
 - ### [B.0.1 alessandro.porcheddu@studio.unibo.it](#b01-alessandroporcheddustudiouniboit-1)
 - ### [B.0.2 matteo.todeschi@studio.unibo.it](#b02-matteotodeschistudiouniboit-1)
-- ### [B.0.3 name.surname@studio.unibo.it](#b03-namesurnamestudiouniboit-1)
-- ### [B.0.4 name.surname@studio.unibo.it](#b04-namesurnamestudiouniboit-1)
-
 <br>
 
 # Capitolo 1 - Analisi
@@ -967,7 +967,6 @@ Concludo dicendo che, come ad altri membri del gruppo, mi piacerebbe continuare 
 ### 4.1.3 Crimaldi Ivan
 Il mio ruolo principale è stato quello di progettare ed implementare il sistema di gestione file ed assicurarmi che interagisse correttamente con il Controller e le strutture dati definite assieme al resto del gruppo, come ElaboratedData. Mi ritengo parzialmente soddisfatto del lavoro compiuto: è mancante la parte di preset e ripristino di preferenze, ma considero il filemanager molto robusto e facilmente estendibile (aggiungere nuovi formati di file richiede solo una minima modifica alla Factory). Nel gruppo c'è sempre stato un clima di collaborazione, e la fase di analisi svolta assieme ci ha permesso di iniziare il progetto con un'idea chiara su come partire e cosa fare. Ammetto che avrei dovuto passare alla fase di implementazione senza fermarmi più del dovuto sulla fase di design. Lavorare a questo progetto mi ha insegnato molto su cosa significa sviluppare in gruppo, e l'importanza di rendere ogni componente quanto più indipendente possibile dalle altre; inoltre mi ha insegnato l'importanza dell'utilizzo del SCM (Git), e degli strumenti per migliorare la leggibilità e la qualità del codice (come CheckStyle). In futuro, per espandere il progetto, vorrei aggiungere la parte di preset impostazioni e preferenze, e supporto per nuovi formati.
 
-<<<<<<< HEAD
 ### 4.1.4 Napolitano Cristofer
 L'idea di lavorare su un progetto che avrebbe avuto dei riscontri nel mondo reale sicuramente è stata una delle fonti di maggior stimolo per me, soprattutto nella ricerca di una soluzione che mi potesse dare in futuro la possibilità di espandere il progetto, proprio per questo le nozioni sui pattern e i principi di programmazione appresi durante il corso hanno subito trovato un luogo nel quale esser applicati e compresi appieno nelle nuove possibilità di espansione che offrono. Per appunto, la cosa che mi ha lasciato più soddisfatto dal lavoro svolto sono l'utilizzo estensivo di pattern come Strategy che mi daranno in futuro la possibilità di ampliare la soluzione.
 Dirigendomi verso le note di più amare dello sviluppo del progetto sicuramente c'è stata la fase di analisi e design architetturale, considerando la mia inesperienza, e quella del gruppo, avremmo potuto perder meno tempo ed esser molto più obiettivi nei nostri lavori iniziali, questo è stato il motivo principale per la consegna in ritardo. Se fossi stato meno vago nel mio design iniziale, e quindi se avessi avuto più esperienza, sarei sicuramente stato in grado finire con largo anticipo la mia parte di model e di dare una mano molto più concreta nelle implementazioni del controller e della view senza lasciare un onere troppo grande ai miei colleghi.
