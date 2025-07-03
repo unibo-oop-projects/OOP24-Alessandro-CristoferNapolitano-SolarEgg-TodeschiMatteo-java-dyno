@@ -41,7 +41,20 @@ class SimulatedDynoImplTest {
     @Test
     void testStopSimulationWhenNotStarted() {
         final SimulatedDyno dyno = new SimulatedDynoImpl(new ControllerImpl());
-        dyno.end(); // Exception should be suppressed
+        dyno.end();
         assertFalse(dyno.isActive(), "The simulation should still not be running.");
+    }
+
+    /**
+     * Test the isActive method of the SimulatedDyno.
+     */
+    @Test
+    void testIsActive() {
+        final SimulatedDyno dyno = new SimulatedDynoImpl(new ControllerImpl());
+        assertFalse(dyno.isActive(), "The simulation should not be active initially");
+        dyno.begin();
+        assertTrue(dyno.isActive(), "The simulation should be active after starting");
+        dyno.end();
+        assertFalse(dyno.isActive(), "The simulation should not be active after stopping");
     }
 }

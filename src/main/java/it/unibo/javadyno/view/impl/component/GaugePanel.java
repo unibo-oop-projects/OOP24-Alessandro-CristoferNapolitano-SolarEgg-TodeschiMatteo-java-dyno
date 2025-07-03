@@ -19,7 +19,6 @@ public final class GaugePanel extends HBox {
     private static final int COLUMN_SPACING = 5;
     private static final String CSS_GAUGE_PANEL_TAG = "gauge-panel";
 
-    // Constants for the gauges
     private static final String RPM_CHARTS_TITLE = "Tachometer";
     private static final String RPM_CHARTS_UNIT = "RPM";
     private static final int RPM_MAX_RANGE = 8000;
@@ -91,9 +90,9 @@ public final class GaugePanel extends HBox {
      * @param speed the current speed value
      * @param temperature the current temperature value
      */
-    public void updateGauges(final int rpm, final int speed, final double temperature) {
-        this.rpmGauge.setValue(rpm);
-        this.speedGauge.setValue(speed);
-        this.tempGauge.setValue(temperature);
+    public void updateGauges(final Number rpm, final Number speed, final Number temperature) {
+        this.rpmGauge.setValue(rpm.intValue());
+        this.speedGauge.setValue(speed.doubleValue());
+        this.tempGauge.setValue(temperature.doubleValue());
     }
 }

@@ -23,7 +23,6 @@ import java.util.Objects;
  */
 public final class JsonStrategy implements FileStrategy {
 
-    // A reusable ObjectMapper instance.
     private final ObjectMapper objectMapper = new ObjectMapper()
         .registerModule(new Jdk8Module()) // Enables Optional<T> support.
         .registerModule(new JavaTimeModule()) // Enables Instant and other time types support.
@@ -44,19 +43,16 @@ public final class JsonStrategy implements FileStrategy {
     public List<ElaboratedData> importData(final File file) throws IOException {
         try {
             // Uses TypeReference to tell Jackson the exact generic type to deserialize to.
-            // Handles the conversion to List<ElaboratedData> automatically.
             final List<ElaboratedData> importedData = objectMapper.readValue(
                 file, new TypeReference<>() { }
             );
 
-            // Returns the imported data or an empty list if the file is null.
             if (importedData != null) {
                 return importedData;
             } else {
                 return Collections.emptyList();
             }
         } catch (final IOException e) {
-            // Re-throw with additional context about which file failed
             throw new IOException("Failed to parse JSON file: " + file.getAbsolutePath(), e);
         }
     }

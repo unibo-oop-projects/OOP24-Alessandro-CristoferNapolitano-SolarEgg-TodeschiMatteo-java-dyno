@@ -34,17 +34,20 @@ import javafx.stage.Stage;
  * Settings view class for configuring user preferences in the JavaDyno application.
  */
 public class SettingsView extends Application implements View {
+    public static final double WIDTH_RATIO = 0.5;
+    public static final double HEIGHT_RATIO = 0.6;
     private static final String CSS_FILE = "css/SettingsStyle.css";
     private static final String TITLE = "Settings";
     private static final String SETTING_LABEL_STYLE = "setting-label";
     private static final String BUTTON_STYLE = "button";
-    private static final double WIDTH_RATIO = 0.5;
-    private static final double HEIGHT_RATIO = 0.6;
     private static final double MIN_VALUE = 0.01;
     private static final double MAX_VALUE = 10_000.0;
     private static final double STEP = 0.01;
     private static final double EFFICIENCY_MIN = 0.1;
     private static final double VEHICLE_MASS_STEP = 1.0;
+    private static final double RPM_MIN = 1000.0;
+    private static final double RPM_MAX = 10_500.0;
+    private static final double RPM_STEP = 100.0;
     private static final double CONTAINER_PADDING = 30.0;
     private static final double CONTAINER_SPACING = 20.0;
     private static final double BUTTON_PANEL_SPACING = 15.0;
@@ -56,6 +59,7 @@ public class SettingsView extends Application implements View {
     private Spinner<Double> loadcellLeverLengthSpinner;
     private Spinner<Double> vehicleMassSpinner;
     private Spinner<Double> driveTrainEfficiencySpinner;
+    private Spinner<Double> maxSimulationRpmSpinner;
     private ComboBox<DataSource> dynoTypeComboBox;
 
     /**
@@ -175,7 +179,8 @@ public class SettingsView extends Application implements View {
         addLoadcellLeverLengthSetting(grid, 0);
         addVehicleMassSetting(grid, 1);
         addDriveTrainEfficiencySetting(grid, 2);
-        addDynoTypeSetting(grid, 3);
+        addMaxSimulationRpmSetting(grid, 3);
+        addDynoTypeSetting(grid, 4);
 
         return grid;
     }
@@ -287,6 +292,27 @@ public class SettingsView extends Application implements View {
     }
 
     /**
+     * Adds the max simulation RPM setting to the grid.
+     *
+     * @param grid the GridPane to add to
+     * @param row the row index
+     */
+    private void addMaxSimulationRpmSetting(final GridPane grid, final int row) {
+        final Label label = new Label("Max Simulation RPM:");
+        label.getStyleClass().add(SETTING_LABEL_STYLE);
+
+        maxSimulationRpmSpinner = createDoubleSpinner(
+            this.userSettings.getSimulationMaxRPM(),
+            RPM_MIN,
+            RPM_MAX,
+            RPM_STEP
+        );
+
+        grid.add(label, 0, row);
+        grid.add(maxSimulationRpmSpinner, 1, row);
+    }
+
+    /**
      * Creates a double spinner with the specified parameters.
      *
      * @param initialValue the initial value
@@ -326,7 +352,12 @@ public class SettingsView extends Application implements View {
 
         final Button backButton = new Button("Back to Menu");
         backButton.getStyleClass().addAll(BUTTON_STYLE, "back-button");
-        backButton.setOnAction(e -> controller.showMainMenu(primaryStage));
+        backButton.setOnAction(e -> {
+            controller.showMainMenu(primaryStage);
+            primaryStage.setWidth(Screen.getPrimary().getBounds().getWidth() * MainMenu.WIDTH_RATIO);
+            primaryStage.setHeight(Screen.getPrimary().getBounds().getHeight() * MainMenu.HEIGHT_RATIO);
+            primaryStage.centerOnScreen();
+        });
 
         buttonPanel.getChildren().addAll(saveButton, resetButton, backButton);
         return buttonPanel;
@@ -340,6 +371,7 @@ public class SettingsView extends Application implements View {
         controller.updateSetting(UserSettingDef.VEHICLE_MASS, vehicleMassSpinner.getValue());
         controller.updateSetting(UserSettingDef.DRIVE_TRAIN_EFFICIENCY, driveTrainEfficiencySpinner.getValue());
         controller.updateSetting(UserSettingDef.DYNO_TYPE, dynoTypeComboBox.getValue().ordinal());
+        controller.updateSetting(UserSettingDef.SIMULATION_MAX_RPM, maxSimulationRpmSpinner.getValue());
     }
 
     /**
@@ -358,5 +390,6 @@ public class SettingsView extends Application implements View {
         vehicleMassSpinner.getValueFactory().setValue(this.userSettings.getVehicleMass());
         driveTrainEfficiencySpinner.getValueFactory().setValue(this.userSettings.getDriveTrainEfficiency());
         dynoTypeComboBox.setValue(this.userSettings.getDynoType());
+        maxSimulationRpmSpinner.getValueFactory().setValue(this.userSettings.getSimulationMaxRPM());
     }
 }

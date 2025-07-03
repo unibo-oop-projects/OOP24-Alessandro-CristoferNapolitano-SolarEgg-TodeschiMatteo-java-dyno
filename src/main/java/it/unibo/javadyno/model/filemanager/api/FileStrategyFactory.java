@@ -4,7 +4,8 @@ import java.io.File;
 import java.util.Optional;
 
 /**
- * An interface for a factory that creates FileStrategy objects.
+ * An interface for a Factory that creates FileStrategy objects.
+ * Hides how the FileStrategy is created from the client code.
  */
 @FunctionalInterface
 public interface FileStrategyFactory {

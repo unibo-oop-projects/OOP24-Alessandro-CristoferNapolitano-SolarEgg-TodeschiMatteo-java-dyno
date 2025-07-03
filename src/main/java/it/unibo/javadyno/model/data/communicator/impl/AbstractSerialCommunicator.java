@@ -80,7 +80,7 @@ public abstract class AbstractSerialCommunicator<T> implements MCUCommunicator<T
                         "No serial ports available for connection",
                         Optional.of("Verify USB connection or drivers.")
                     );
-                    //throw new IllegalStateException("No serial ports available for connection.");
+                    return;
                 }
                 for (final SerialPort serialPort : ports) {
                     if (serialPort.getVendorID() != INVALID_VENDOR_ID) {
@@ -90,10 +90,9 @@ public abstract class AbstractSerialCommunicator<T> implements MCUCommunicator<T
                 }
                 AlertMonitor.warningNotify(
                     "No valid serial ports found.", 
-                    Optional.empty()
+                    Optional.of("Check if the Dyno is connected or if the drivers are installed.")
                 );
-                //throw new IllegalStateException("No valid serial ports.");
-
+                return;
             } else {
                 this.commPort = SerialPort.getCommPort(this.suppliedPort);
 
@@ -107,7 +106,7 @@ public abstract class AbstractSerialCommunicator<T> implements MCUCommunicator<T
                     "Failed to setup the chip on port: " + this.commPort.getSystemPortName(),
                     Optional.empty()
                 );
-                //throw new IllegalStateException("Failed to setup the chip on port: " + this.commPort.getSystemPortName(), e);
+                return;
             }
             this.commPort.addDataListener(new DataListener());
             this.commPort.addDataListener(new DisconnectListener());
@@ -128,8 +127,7 @@ public abstract class AbstractSerialCommunicator<T> implements MCUCommunicator<T
                 AlertMonitor.warningNotify(
                     "Failed to close the serial port: " + this.commPort.getSystemPortName(),
                     Optional.empty()
-                    );
-                //throw new IllegalStateException("Failed to close the serial port: " + this.commPort.getSystemPortName());
+                );
             }
             this.messageListeners.clear();
             this.commPort.removeDataListener();
@@ -273,6 +271,9 @@ public abstract class AbstractSerialCommunicator<T> implements MCUCommunicator<T
                     "Serial port disconnected: " + commPort.getSystemPortName(),
                     Optional.empty()
                 );
+                for (final Consumer<T> listener : messageListeners) {
+                    listener.accept(null);
+                }
             }
         }
     }

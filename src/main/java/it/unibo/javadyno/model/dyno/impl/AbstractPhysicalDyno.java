@@ -44,7 +44,7 @@ public abstract class AbstractPhysicalDyno<T> implements Dyno, Runnable {
                 "Polling interval must be greater than zero",
                 Optional.empty()
             );
-            //throw new IllegalArgumentException("Polling interval must be greater than zero");
+            throw new IllegalArgumentException("Polling interval must be greater than zero");
         }
         this.polling = polling;
     }
@@ -56,7 +56,7 @@ public abstract class AbstractPhysicalDyno<T> implements Dyno, Runnable {
     public void begin() {
         if (!this.isActive()) {
             this.communicator.connect();
-            this.messageListener = this::handleMessage;
+            this.messageListener = this::listenForError;
             this.communicator.addMessageListener(this.messageListener);
             this.active = true;
             Thread.ofVirtual()
@@ -74,7 +74,6 @@ public abstract class AbstractPhysicalDyno<T> implements Dyno, Runnable {
             this.communicator.disconnect();
             this.active = false;
             this.communicator.removeMessageListener(this.messageListener);
-
         }
     }
 
@@ -93,8 +92,7 @@ public abstract class AbstractPhysicalDyno<T> implements Dyno, Runnable {
     public void run() {
         while (this.isActive()) {
             final String outgoingMessage = this.getOutgoingMessage();
-            Objects.requireNonNull(outgoingMessage, "Outgoing message cannot be null");
-            if (!outgoingMessage.isBlank() && this.communicator.isConnected()) {
+            if (Objects.nonNull(outgoingMessage) && !outgoingMessage.isBlank()) {
                 this.communicator.send(outgoingMessage);
             }
 
@@ -114,7 +112,7 @@ public abstract class AbstractPhysicalDyno<T> implements Dyno, Runnable {
      * Parses incoming messages from the MCUCommunicator and updates the stored data.
      * This method should be implemented by subclasses to process the message.
      *
-     * @param message the message received from the communicator
+     * @param message the message received from the communicator (can be null)
      */
     protected abstract void handleMessage(T message);
 
@@ -133,6 +131,14 @@ public abstract class AbstractPhysicalDyno<T> implements Dyno, Runnable {
      * @return the name of the thread
      */
     protected abstract String getThreadName();
+
+    private void listenForError(final T message) {
+        if (Objects.isNull(message)) {
+            this.end();
+            return;
+        }
+        handleMessage(message);
+    }
 
     private class WrapperCommunicator implements MCUCommunicator<T> {
         private final MCUCommunicator<T> wrapped;

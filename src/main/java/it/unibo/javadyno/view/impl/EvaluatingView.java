@@ -25,7 +25,7 @@ import javafx.stage.Stage;
  */
 public class EvaluatingView extends Application implements View {
 
-    public static final double EVALUATING_RATIO = 0.8; //percentage of screen width/height for new evaluating window
+    public static final double EVALUATING_RATIO = 0.8;
 
     private static final String CSS_FILE = "css/SimulationStyle.css";
     private static final String CSS_SETTINGS_PANEL_TAG = "left-column";
@@ -137,23 +137,22 @@ public class EvaluatingView extends Application implements View {
      */
     @Override
     public void update(final ElaboratedData data) {
-        if (controller.isPollingRunning()) {
-            chartsPanel.setBackgroundVisible(false);
-        } else {
+        if (!controller.isPollingRunning()) {
             Platform.runLater(buttonsPanel::reachedEnd);
-            chartsPanel.setBackgroundVisible(true);
             return;
         }
-        updateGauges(data.rawData().engineRPM().orElse(0),
-                     data.rawData().vehicleSpeed().orElse(0),
-                     data.rawData().engineTemperature().orElse(0.0));
-        updateGraph(data.rawData().engineRPM().orElse(0),
-                    data.enginePowerHP(),
-                    data.engineCorrectedTorque());
-        updateStats(data.rawData().engineRPM().orElse(0),
-                     data.engineCorrectedTorque(),
-                     data.enginePowerHP(),
-                     data.enginePowerKW());
+        Platform.runLater(() -> {
+            updateGauges(data.rawData().engineRPM().orElse(0),
+                        data.rawData().vehicleSpeed().orElse(0),
+                        data.rawData().engineTemperature().orElse(0.0));
+            updateGraph(data.rawData().engineRPM().orElse(0),
+                        data.enginePowerHP(),
+                        data.engineCorrectedTorque());
+            updateStats(data.rawData().engineRPM().orElse(0),
+                        data.engineCorrectedTorque(),
+                        data.enginePowerHP(),
+                        data.enginePowerKW());
+        });
     }
 
     /**
@@ -161,16 +160,19 @@ public class EvaluatingView extends Application implements View {
      */
     @Override
     public void update(final List<ElaboratedData> data) {
-        this.chartsPanel.addAllData(
-            data.stream()
-                .map(i -> (Number) i.rawData().engineRPM().orElse(0))
-                .toList(),
-            data.stream()
-                .map(i -> (Number) i.enginePowerHP())
-                .toList(),
-            data.stream()
-                .map(i -> (Number) i.engineCorrectedTorque())
-                .toList()
-            );
+        Platform.runLater(() -> {
+            this.chartsPanel.addAllData(
+                data.stream()
+                    .map(i -> (Number) i.rawData().engineRPM().orElse(0))
+                    .toList(),
+                data.stream()
+                    .map(i -> (Number) i.enginePowerHP())
+                    .toList(),
+                data.stream()
+                    .map(i -> (Number) i.engineCorrectedTorque())
+                    .toList()
+                );
+        });
     }
+
 }

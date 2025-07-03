@@ -1,6 +1,9 @@
 package it.unibo.javadyno.view.impl.component;
 
+import java.util.Optional;
+
 import it.unibo.javadyno.controller.api.Controller;
+import it.unibo.javadyno.controller.impl.AlertMonitor;
 import it.unibo.javadyno.model.data.api.DataSource;
 import it.unibo.javadyno.view.impl.EvaluatingView;
 import it.unibo.javadyno.view.impl.MainMenu;
@@ -52,16 +55,20 @@ public final class ButtonsPanel extends VBox {
             controller.stopEvaluation();
             reachedEnd();
         });
-
-        // Uses a private method to handle file import properly.
         importDataButton.setOnAction(e -> IOUtility.handleImport(controller, primaryStage));
-        // Uses a private method to handle file export properly.
         saveDataButton.setOnAction(e -> IOUtility.handleExport(controller, primaryStage));
 
         reloadButton.setOnAction(e -> {
             controller.showView(primaryStage, new EvaluatingView(controller, type, dataSource));
         });
         backToMenuButton.setOnAction(e -> {
+            if (controller.isPollingRunning()) {
+                AlertMonitor.warningNotify(
+                    "Polling in progress",
+                    Optional.of("Please stop the polling before returning to the main menu.")
+                );
+                return;
+            }
             controller.showMainMenu(primaryStage);
             primaryStage.setWidth(Screen.getPrimary().getBounds().getWidth() * MainMenu.WIDTH_RATIO);
             primaryStage.setHeight(Screen.getPrimary().getBounds().getHeight() * MainMenu.HEIGHT_RATIO);

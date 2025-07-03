@@ -47,7 +47,7 @@ class OBD2DynoTest {
         assertFalse(dyno.isActive());
         dyno.begin();
         assertTrue(dyno.isActive());
-        // Allow the run loop to start
+
         Thread.sleep(THREAD_SLEEP_MS);
         dyno.end();
         assertFalse(dyno.isActive());

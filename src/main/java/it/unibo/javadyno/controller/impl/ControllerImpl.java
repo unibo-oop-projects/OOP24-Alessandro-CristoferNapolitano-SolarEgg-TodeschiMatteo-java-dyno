@@ -8,7 +8,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.time.Instant;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -26,17 +25,14 @@ import it.unibo.javadyno.model.data.impl.DataCollectorImpl;
 import it.unibo.javadyno.model.dyno.api.Dyno;
 import it.unibo.javadyno.model.dyno.obd2.impl.OBD2Dyno;
 import it.unibo.javadyno.model.dyno.real.impl.RealDynoImpl;
-import it.unibo.javadyno.model.dyno.simulated.impl.SimulatedDynoImpl;
 import it.unibo.javadyno.model.filemanager.api.FileManager;
 import it.unibo.javadyno.model.filemanager.api.FileStrategyFactory;
 import it.unibo.javadyno.model.filemanager.impl.FileManagerImpl;
 import it.unibo.javadyno.model.filemanager.impl.FileStrategyFactoryImpl;
 import it.unibo.javadyno.view.api.View;
 import it.unibo.javadyno.view.impl.MainMenu;
+import it.unibo.javadyno.view.impl.component.AlertDisplayer;
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
 /**
@@ -44,15 +40,14 @@ import javafx.stage.Stage;
  */
 public final class ControllerImpl implements Controller {
 
-    private static final int MAX_RPM = 7000;
     private static final String SIMULATION_POLLING_THREAD_NAME = "SimulationPollingThread";
     private static final String SETTINGS_FILE_NAME = "user-settings.ser";
     private static final String PROJECT_DIR_NAME = "javadyno";
     private final DataCollector dataCollector;
-    private final Random rand = new Random();
     private final FileManager fileManager;
     private final FileStrategyFactory strategyFactory;
     private final UserSettings userSettings;
+    private final String appDir;
     private boolean isRunning;
     private Dyno dyno;
     private View view;
@@ -64,6 +59,8 @@ public final class ControllerImpl implements Controller {
         AlertMonitor.setController(this);
         this.dyno = null;
         this.view = null;
+        final String userHome = System.getProperty("user.home");
+        this.appDir = userHome + File.separator + PROJECT_DIR_NAME;
         this.dataCollector = new DataCollectorImpl();
         this.fileManager = new FileManagerImpl();
         this.strategyFactory = new FileStrategyFactoryImpl();
@@ -119,7 +116,7 @@ public final class ControllerImpl implements Controller {
     public void startEvaluation(final DataSource dynoType) {
         if (!Objects.nonNull(this.dyno) || !this.dyno.getDynoType().equals(dynoType)) {
             switch (dynoType) {
-                case SIMULATED_DYNO -> this.dyno = new SimulatedDynoImpl(this);
+                case SIMULATED_DYNO -> this.dyno = new TestRealDyno();
                 case OBD2 -> this.dyno = new OBD2Dyno();
                 case REAL_DYNO -> this.dyno = new RealDynoImpl(new JsonWebSocketCommunicator());
             }
@@ -159,7 +156,6 @@ public final class ControllerImpl implements Controller {
                 );
             }
             try {
-                // TODO sleep based on system performance (match to x fps)
                 Thread.sleep(100);
             } catch (final InterruptedException e) {
                 Thread.currentThread().interrupt();
@@ -299,17 +295,7 @@ public final class ControllerImpl implements Controller {
      */
     @Override
     public void showAlert(final NotificationType type, final String message, final Optional<String> explanation) {
-        Platform.runLater(() -> {
-            final Alert alert = new Alert(switch (type) {
-                case WARNING -> AlertType.WARNING;
-                case ERROR -> AlertType.ERROR;
-                default -> AlertType.INFORMATION;
-            });
-            alert.setTitle(type.getType());
-            alert.setHeaderText(message);
-            explanation.ifPresent(alert::setContentText);
-            alert.showAndWait();
-        });
+        AlertDisplayer.showAlert(type, message, explanation);
     }
 
     /**
@@ -319,6 +305,7 @@ public final class ControllerImpl implements Controller {
     public void updateSetting(final UserSettingDef setting, final double value) {
         switch (setting) {
             case SIMULATION_UPDATE_TIME_DELTA -> this.userSettings.setSimulationUpdateTimeDelta(value);
+            case SIMULATION_MAX_RPM -> this.userSettings.setSimulationMaxRPM(value);
             case LOADCELL_LEVER_LENGTH -> this.userSettings.setLoadcellLeverLength(value);
             case VEHICLE_MASS -> this.userSettings.setVehicleMass(value);
             case ROLLING_RESISTANCE_COEFFICIENT -> this.userSettings.setRollingResistanceCoefficient(value);
@@ -337,7 +324,6 @@ public final class ControllerImpl implements Controller {
             case AIR_TEMPERATURE -> this.userSettings.setAirTemperature(value);
             case AIR_PRESSURE -> this.userSettings.setAirPressure(value);
             case AIR_HUMIDITY -> this.userSettings.setAirHumidity(value);
-            case MAX_RPM_SIMULATION -> this.userSettings.setMaxRpmSimulation(value);
         }
         saveUserSettingsToFile(SETTINGS_FILE_NAME, this.userSettings);
     }
@@ -354,31 +340,6 @@ public final class ControllerImpl implements Controller {
     }
 
     /**
-     * {@inheritDoc}
-     * Updated to use the file import system instead of generating demo data.
-     */
-    @Override
-    public void importDataTest() {
-        // Kept for demo purposes
-        final List<ElaboratedData> list = new LinkedList<>();
-        for (int i = 0; i < MAX_RPM; i++) {
-            final RawData rawData = RawData.builder()
-                    .engineRPM(Optional.of(i))
-                    .vehicleSpeed(Optional.of(i / 10))
-                    .timestamp(Optional.of(Instant.now()))
-                    .build();
-            final ElaboratedData elaboratedData = new ElaboratedData(
-                rawData,
-                0.0,
-                i * 10 + rand.nextDouble() * 1000,
-                i * 15 - rand.nextDouble() * 1000
-            );
-            list.add(elaboratedData);
-        }
-        view.update(Collections.unmodifiableList(list));
-    }
-
-    /**
      * Loads user settings from a serialized file in the user home directory.
      * If the file doesn't exist or cannot be loaded, returns a new UserSettings with default values.
      *
@@ -386,8 +347,6 @@ public final class ControllerImpl implements Controller {
      * @return the loaded UserSettings or a new instance with defaults
      */
     private UserSettings loadUserSettingsFromFile(final String settingsFileName) {
-        final String userHome = System.getProperty("user.home");
-        final String appDir = userHome + File.separator + PROJECT_DIR_NAME;
         final String filePath = appDir + File.separator + settingsFileName;
         final File file = new File(filePath);
 
@@ -405,7 +364,6 @@ public final class ControllerImpl implements Controller {
             }
 
         } catch (final IOException | ClassNotFoundException e) {
-            // Error loading file or class not found, return default settings
             AlertMonitor.errorNotify(
                 "Could not load user settings",
                 Optional.of("Using default settings. Error: " + e.getMessage())
@@ -422,11 +380,8 @@ public final class ControllerImpl implements Controller {
      * @param settings the UserSettings object to save
      */
     private void saveUserSettingsToFile(final String settingsFileName, final UserSettings settings) {
-        final String userHome = System.getProperty("user.home");
-        final String appDir = userHome + File.separator + PROJECT_DIR_NAME;
         final File directory = new File(appDir);
 
-        // Create directory if it doesn't exist
         if (!directory.exists() && !directory.mkdirs()) {
             AlertMonitor.errorNotify(
                 "Could not create application directory",
@@ -443,7 +398,6 @@ public final class ControllerImpl implements Controller {
             objectOutputStream.flush();
 
         } catch (final IOException e) {
-            // Error saving file, show notification
             AlertMonitor.errorNotify(
                 "Could not save user settings",
                 Optional.of("Settings were not saved. Error: " + e.getMessage())
@@ -451,80 +405,102 @@ public final class ControllerImpl implements Controller {
         }
     }
 
-    private final class TestOBD2Dyno implements Dyno {
-        // Initial values
-        private static final Integer INITIAL_ENGINE_RPM = 500;
-        private static final Integer INITIAL_VEHICLE_SPEED = 2;
-        private static final Integer INITIAL_AMBIENT_TEMPERATURE = 20;
-        private static final Integer INITIAL_BARO_PRESSURE = 101;
-
-        // Engine RPM constants
-        private static final double RPM_INCREASE_FACTOR = 1.05;
-        private static final int MAX_ENGINE_RPM = 7000;
-
-        // Vehicle speed constants
-        private static final int MAX_VEHICLE_SPEED = 180;
-        private static final int MAX_SPEED_INCREASE = 8;
-        private static final int MIN_SPEED_INCREASE = 1;
-
-        // Timestamp constants
-        private static final int MIN_DELAY_MILLIS = 300;
-        private static final int MAX_DELAY_MILLIS = 500;
+    /**
+     * Test implementation of a Real Dyno for simulation purposes.
+     * This class generates realistic dyno data with torque and engine RPM
+     */
+    private final class TestRealDyno implements Dyno {
+        private static final Integer INITIAL_ENGINE_RPM = 1000;
+        private static final Double INITIAL_TORQUE = 50.0;
+        private static final Double INITIAL_ENGINE_TEMPERATURE = 85.0;
+        private static final Double INITIAL_THROTTLE_POSITION = 10.0;
+        private static final double RPM_INCREASE_FACTOR = 1.03;
+        private static final double MAX_TORQUE = 400.0;
+        private static final double TORQUE_PEAK_RPM = 3500.0;
+        private static final double TORQUE_VARIATION = 15.0;
+        private static final double TEMP_INCREASE_RATE = 0.1;
+        private static final double MAX_ENGINE_TEMPERATURE = 105.0;
+        private static final double MIN_ENGINE_TEMPERATURE = 80.0;
+        private static final double THROTTLE_INCREASE_RATE = 1.5;
+        private static final double MAX_THROTTLE_POSITION = 100.0;
+        private static final double MIN_THROTTLE_POSITION = 5.0;
+        private static final double TRANSMISSION_RATIO = 0.3;
+        private static final double WHEEL_RADIUS = 0.3;
+        private static final int MIN_DELAY_MILLIS = 200;
+        private static final int MAX_DELAY_MILLIS = 400;
+        private final int maxEngineRPM = (int) userSettings.getSimulationMaxRPM();
         private final Random rand = new Random();
         private RawData prevRawData;
         private boolean isActive;
 
-        TestOBD2Dyno() {
+        TestRealDyno() {
             this.prevRawData = RawData.builder()
                     .engineRPM(Optional.of(INITIAL_ENGINE_RPM))
-                    .vehicleSpeed(Optional.of(INITIAL_VEHICLE_SPEED))
-                    .ambientAirTemperature(Optional.of(INITIAL_AMBIENT_TEMPERATURE))
-                    .baroPressure(Optional.of(INITIAL_BARO_PRESSURE))
+                    .torque(Optional.of(INITIAL_TORQUE))
+                    .engineTemperature(Optional.of(INITIAL_ENGINE_TEMPERATURE))
+                    .throttlePosition(Optional.of(INITIAL_THROTTLE_POSITION))
                     .timestamp(Optional.of(Instant.now()))
                     .build();
         }
 
         @Override
         public RawData getRawData() {
-            if (prevRawData.engineRPM().get() >= MAX_ENGINE_RPM) {
-                this.isActive = false;
+            if (!isActive) {
+                return prevRawData;
             }
-            // Calculate dynamic engine RPM - increase by percentage each call, with max limit
+
             final int currentRpm = this.prevRawData.engineRPM().get();
-            final Integer newRpm = Math.min(MAX_ENGINE_RPM, (int) (currentRpm * RPM_INCREASE_FACTOR));
+            final Integer newRpm;
+            newRpm = Math.min(maxEngineRPM, (int) (currentRpm * RPM_INCREASE_FACTOR));
+            if (newRpm >= maxEngineRPM) {
+                isActive = false;
+            }
 
-            // Calculate dynamic vehicle speed - logarithmic growth for realistic acceleration
-            // Fast initial acceleration that slows down as it approaches max speed
-            final int currentSpeed = this.prevRawData.vehicleSpeed().get();
-            final double accelerationFactor = 1.0 - (double) currentSpeed / MAX_VEHICLE_SPEED;
-            final int speedIncrease = Math.max(MIN_SPEED_INCREASE, (int) (MAX_SPEED_INCREASE * accelerationFactor));
-            final Integer newSpeed = Math.min(MAX_VEHICLE_SPEED, currentSpeed + speedIncrease);
+            final double rpmRatio = newRpm / TORQUE_PEAK_RPM;
+            final double baseTorque;
+            if (rpmRatio <= 1.0) {
+                baseTorque = INITIAL_TORQUE + (MAX_TORQUE - INITIAL_TORQUE) * Math.sin(rpmRatio * Math.PI / 2);
+            } else {
+                baseTorque = MAX_TORQUE * Math.cos((rpmRatio - 1.0) * Math.PI / 4);
+            }
 
-            // Keep ambient temperature and barometric pressure constant
-            final Integer ambientTemp = this.prevRawData.ambientAirTemperature().get();
-            final Integer baroPressure = this.prevRawData.baroPressure().get();
+            final double torqueVariation = (rand.nextDouble() - 0.5) * TORQUE_VARIATION;
+            final Double newTorque = Math.max(10.0, baseTorque + torqueVariation);
 
-            // Generate realistic timestamp with variable delay between measurements
+            final double currentTemp = this.prevRawData.engineTemperature().get();
+            final double tempIncrease = (newRpm > 4000) ? TEMP_INCREASE_RATE : -TEMP_INCREASE_RATE * 0.3;
+            final Double newTemperature = Math.max(MIN_ENGINE_TEMPERATURE, 
+                Math.min(MAX_ENGINE_TEMPERATURE, currentTemp + tempIncrease + rand.nextGaussian() * 0.5));
+
+            final double currentThrottle = this.prevRawData.throttlePosition().get();
+            final double throttleChange = THROTTLE_INCREASE_RATE;
+            final Double newThrottlePosition = Math.max(MIN_THROTTLE_POSITION,
+                Math.min(MAX_THROTTLE_POSITION, currentThrottle + throttleChange + rand.nextGaussian() * 2.0));
+
             final Instant prevTimestamp = this.prevRawData.timestamp().get();
             final int delayMillis = (int) (MIN_DELAY_MILLIS
-                + this.rand.nextDouble()
-                * (MAX_DELAY_MILLIS - MIN_DELAY_MILLIS));
+                + this.rand.nextDouble() * (MAX_DELAY_MILLIS - MIN_DELAY_MILLIS));
             final Instant newTimestamp = prevTimestamp.plusMillis(delayMillis);
+
+            final double speedMS = newRpm * TRANSMISSION_RATIO * WHEEL_RADIUS * 2 * Math.PI / 60.0;
+            final int speedKMH = (int) (speedMS * 3.6);
 
             final RawData rawData = RawData.builder()
                     .engineRPM(Optional.of(newRpm))
-                    .vehicleSpeed(Optional.of(newSpeed))
-                    .ambientAirTemperature(Optional.of(ambientTemp))
-                    .baroPressure(Optional.of(baroPressure))
+                    .torque(Optional.of(newTorque))
+                    .engineTemperature(Optional.of(newTemperature))
+                    .throttlePosition(Optional.of(newThrottlePosition))
+                    .vehicleSpeed(Optional.of(speedKMH))
                     .timestamp(Optional.of(newTimestamp))
                     .build();
+
             this.prevRawData = rawData;
             return rawData;
         }
 
         @Override
         public DataSource getDynoType() {
-            return DataSource.OBD2;
+            return DataSource.REAL_DYNO;
         }
 
         @Override

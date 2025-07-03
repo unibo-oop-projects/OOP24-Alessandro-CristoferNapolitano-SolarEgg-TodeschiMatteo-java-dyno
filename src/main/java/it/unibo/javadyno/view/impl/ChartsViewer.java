@@ -9,6 +9,7 @@ import it.unibo.javadyno.view.impl.component.LabelsType;
 import it.unibo.javadyno.view.impl.component.ChartsPanel;
 import it.unibo.javadyno.view.impl.component.IOUtility;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
@@ -24,8 +25,8 @@ import javafx.stage.Stage;
  */
 public class ChartsViewer extends Application implements View {
 
-    public static final double WIDTH_RATIO = 0.8; //percentage of screen width
-    public static final double HEIGHT_RATIO = 0.8; //percentage of screen height
+    public static final double WIDTH_RATIO = 0.8;
+    public static final double HEIGHT_RATIO = 0.8;
 
     private static final String STAGE_TITLE = "JavaDyno - Charts Viewer";
     private static final String CSS_FILE = "css/SimulationStyle.css";
@@ -109,16 +110,18 @@ public class ChartsViewer extends Application implements View {
      */
     @Override
     public void update(final List<ElaboratedData> data) {
-        this.chartsPanel.addAllData(
-            data.stream()
-                .map(i -> (Number) i.rawData().engineRPM().orElse(0))
-                .toList(),
-            data.stream()
-                .map(i -> (Number) i.enginePowerHP())
-                .toList(),
-            data.stream()
-                .map(i -> (Number) i.engineCorrectedTorque())
-                .toList()
+        Platform.runLater(() -> {
+            this.chartsPanel.addAllData(
+                data.stream()
+                    .map(i -> (Number) i.rawData().engineRPM().orElse(0))
+                    .toList(),
+                data.stream()
+                    .map(i -> (Number) i.enginePowerHP())
+                    .toList(),
+                data.stream()
+                    .map(i -> (Number) i.engineCorrectedTorque())
+                    .toList()
             );
+        });
     }
 }

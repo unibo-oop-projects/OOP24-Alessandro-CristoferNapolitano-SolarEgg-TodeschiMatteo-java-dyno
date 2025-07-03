@@ -62,6 +62,10 @@ dependencies {
     // Serial communication library for USB multiplatform communication 
     implementation("com.fazecast:jSerialComm:[2.0.0,3.0.0)")
 
+    // SLF4J for logging
+    // This is a no-operation implementation, meaning it will not log anything.
+    implementation("org.slf4j:slf4j-nop:2.0.17")
+
     // GUI library for JavaFX Gauge components
     implementation("eu.hansolo:Medusa:11.7")
     implementation("org.jfree:jfreechart:1.5.6")

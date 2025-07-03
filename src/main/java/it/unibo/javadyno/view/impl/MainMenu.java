@@ -24,8 +24,8 @@ import javafx.geometry.Rectangle2D;
  */
 public class MainMenu extends Application implements View {
 
-    public static final double WIDTH_RATIO = 0.3; //percentage of screen width
-    public static final double HEIGHT_RATIO = 0.5; //percentage of screen height
+    public static final double WIDTH_RATIO = 0.3;
+    public static final double HEIGHT_RATIO = 0.5;
     private static final String TITLE = "JavaDyno";
     private static final String SIMULATION_BUTTON = "Simulation";
     private static final String DYNO_BUTTON = "Dyno";
@@ -65,7 +65,8 @@ public class MainMenu extends Application implements View {
             primaryStage.centerOnScreen();
         });
         realDynoButton.setOnAction(e -> {
-            controller.showView(primaryStage, new EvaluatingView(controller, LabelsType.REAL, DataSource.REAL_DYNO));
+            controller.showView(primaryStage,
+                new EvaluatingView(controller, LabelsType.REAL, controller.getUserSettings().getDynoType()));
             primaryStage.setWidth(Screen.getPrimary().getBounds().getWidth() * EvaluatingView.EVALUATING_RATIO);
             primaryStage.setHeight(Screen.getPrimary().getBounds().getHeight() * EvaluatingView.EVALUATING_RATIO);
             primaryStage.centerOnScreen();
@@ -78,6 +79,9 @@ public class MainMenu extends Application implements View {
         });
         settingsButton.setOnAction(e -> {
             controller.showView(primaryStage, new SettingsView(controller));
+            primaryStage.setWidth(Screen.getPrimary().getBounds().getWidth() * SettingsView.WIDTH_RATIO);
+            primaryStage.setHeight(Screen.getPrimary().getBounds().getHeight() * SettingsView.HEIGHT_RATIO);
+            primaryStage.centerOnScreen();
         });
 
         final Rectangle2D screenBounds = Screen.getPrimary().getBounds();

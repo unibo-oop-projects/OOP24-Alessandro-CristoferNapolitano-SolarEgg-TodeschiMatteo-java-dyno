@@ -101,8 +101,4 @@ public interface Controller {
      */
     void importDataFromFile(File file);
 
-    /**
-     * Test method for importing data.
-     */
-    void importDataTest();
 }

@@ -40,7 +40,6 @@ public final class ELM327Communicator extends AbstractSerialCommunicator<String>
                 "Serial port is not open: " + port.getSystemPortName(),
                 Optional.empty()
             );
-            //throw new IllegalStateException("Serial port is not open: " + port.getSystemPortName());
         }
     }
 

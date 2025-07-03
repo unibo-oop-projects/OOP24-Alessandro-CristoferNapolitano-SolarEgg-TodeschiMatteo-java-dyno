@@ -18,10 +18,15 @@ import it.unibo.javadyno.model.dyno.simulated.api.WeatherStation;
 public class SimulatedDynoImpl implements SimulatedDyno {
 
     private static final String SIMULATED_DYNO_THREAD_NAME = "SimulatedDynoThread";
+    private static final double DEFAULT_TEMPERATURE = 20.0;
+    private static final double DEFAULT_THERMAL_CAPACITY = 100_000.0;
+    private static final double DEFAULT_THERMAL_RESISTANCE = 500.0;
+    private static final double FULL_THROTTLE = 1.0;
+    private static final double UPDATE_DELTA = 0.1;
     private final Controller controller;
-    private long updateTimeDelta;
     private Thread simulationThread;
     private Vehicle vehicle;
+    private volatile long updateTimeDelta;
     private volatile boolean running;
     private volatile RawData datas;
 
@@ -62,9 +67,9 @@ public class SimulatedDynoImpl implements SimulatedDyno {
                     controller.getUserSettings().getWheelRadius())
                 .withBenchBrake(bench)
                 .withWeatherStation(weatherStation)
-                .withThermalParams(80, 20)
+                .withThermalParams(DEFAULT_TEMPERATURE, DEFAULT_THERMAL_CAPACITY, DEFAULT_THERMAL_RESISTANCE)
                 .buildVehiclewithRigidModel();
-            this.vehicle.setThrottle(1.0);
+            this.vehicle.setThrottle(FULL_THROTTLE);
             this.simulationThread = new Thread(this, SIMULATED_DYNO_THREAD_NAME);
             this.simulationThread.start();
         }
@@ -79,7 +84,6 @@ public class SimulatedDynoImpl implements SimulatedDyno {
         if (Objects.nonNull(simulationThread)) {
             this.simulationThread.interrupt();
         }
-        System.out.println("Simulation thread interrupted by thread: " + Thread.currentThread().getName());
         this.running = false;
     }
 
@@ -100,10 +104,10 @@ public class SimulatedDynoImpl implements SimulatedDyno {
     @Override
     public void run() {
         this.datas = vehicle.getRawData();
-        while ( this.running && Objects.nonNull(this.datas) &&
-                this.datas.engineRPM().get() < controller.getUserSettings().getMaxRpmSimulation()
+        while (this.running && Objects.nonNull(this.datas)
+                && this.datas.engineRPM().get() < controller.getUserSettings().getMaxRpmSimulation()
             ) {
-            this.vehicle.update(0.1);
+            this.vehicle.update(UPDATE_DELTA);
             this.datas = vehicle.getRawData();
             try {
                 Thread.sleep(this.updateTimeDelta);
@@ -111,7 +115,6 @@ public class SimulatedDynoImpl implements SimulatedDyno {
                 this.end();
             }
         }
-        System.out.println("Simulation ended.");
         this.end();
     }
 
@@ -129,7 +132,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
         } else {
             return this.datas;
         }
-        
+
     }
 
     /**

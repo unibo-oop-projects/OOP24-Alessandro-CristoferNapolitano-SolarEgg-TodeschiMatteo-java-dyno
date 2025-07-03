@@ -29,7 +29,8 @@ public final class CsvStrategy implements FileStrategy {
     // Defines the header of the CSV file.
     private static final String[] HEADER = {
         "timestamp", "engineRPM", "engineTemperature", "rollerRPM", "torque",
-        "vehicleSpeed", "throttlePosition", "baroPressure", "ambientAirTemperature", "exhaustGasTemperature",
+        "vehicleSpeed", "throttlePosition", "baroPressure", "ambientAirTemperature", 
+        "ambientHumidity", "exhaustGasTemperature",
         "enginePowerKW", "enginePowerHP", "engineCorrectedTorque",
     };
 
@@ -43,17 +44,17 @@ public final class CsvStrategy implements FileStrategy {
     private static final int INDEX_THROTTLE_POSITION = 6;
     private static final int INDEX_BARO_PRESSURE = 7;
     private static final int INDEX_AMBIENT_AIR_TEMPERATURE = 8;
-    private static final int INDEX_EXHAUST_GAS_TEMPERATURE = 9;
-    private static final int INDEX_ENGINE_POWER_KW = 10;
-    private static final int INDEX_ENGINE_POWER_HP = 11;
-    private static final int INDEX_ENGINE_CORRECTED_TORQUE = 12;
+    private static final int INDEX_AMBIENT_HUMIDITY = 9;
+    private static final int INDEX_EXHAUST_GAS_TEMPERATURE = 10;
+    private static final int INDEX_ENGINE_POWER_KW = 11;
+    private static final int INDEX_ENGINE_POWER_HP = 12;
+    private static final int INDEX_ENGINE_CORRECTED_TORQUE = 13;
 
     /**
      * {@inheritDoc}
      */
     @Override
     public void exportData(final List<ElaboratedData> data, final File file) throws IOException {
-       // Using try-with-resources to make sure the writer is automatically closed.
        try (CSVWriter writer = new CSVWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
         writer.writeNext(HEADER);
 
@@ -69,6 +70,7 @@ public final class CsvStrategy implements FileStrategy {
                     raw.throttlePosition().map(Object::toString).orElse(""),
                     raw.baroPressure().map(Object::toString).orElse(""),
                     raw.ambientAirTemperature().map(Object::toString).orElse(""),
+                    raw.ambientHumidity().map(Object::toString).orElse(""), 
                     raw.exhaustGasTemperature().map(Object::toString).orElse(""),
                     String.valueOf(elaborated.enginePowerKW()),
                     String.valueOf(elaborated.enginePowerHP()),
@@ -88,19 +90,16 @@ public final class CsvStrategy implements FileStrategy {
         try (CSVReader reader = new CSVReader(new FileReader(file, StandardCharsets.UTF_8))) {
             reader.skip(1); // Skip the header row.
 
-            // Continues reading infinitely until end of file.
-            // Adds each row as an element in the importedData list, and skips potentially malformed lines.
             while (true) {
                 final String[] fields = reader.readNext();
                 if (fields == null) {
-                    break; // End of file reached.
+                    break;
                 }
 
                 if (fields.length < HEADER.length) {
-                    continue; // Skip malformed lines.
+                    continue;
                 }
 
-                // Creates a RawData object from the rawdata fields.
                 final RawData rawData = RawData.builder()
                     .timestamp(parseOptional(fields[INDEX_TIMESTAMP], Instant::parse))
                     .engineRPM(parseOptional(fields[INDEX_ENGINE_RPM], Integer::parseInt))
@@ -111,10 +110,10 @@ public final class CsvStrategy implements FileStrategy {
                     .throttlePosition(parseOptional(fields[INDEX_THROTTLE_POSITION], Double::parseDouble))
                     .baroPressure(parseOptional(fields[INDEX_BARO_PRESSURE], Integer::parseInt))
                     .ambientAirTemperature(parseOptional(fields[INDEX_AMBIENT_AIR_TEMPERATURE], Integer::parseInt))
+                    .ambientHumidity(parseOptional(fields[INDEX_AMBIENT_HUMIDITY], Integer::parseInt))
                     .exhaustGasTemperature(parseOptional(fields[INDEX_EXHAUST_GAS_TEMPERATURE], Double::parseDouble))
                     .build();
 
-                // Parses the elaborateddata fields.
                 final double powerKW = Double.parseDouble(fields[INDEX_ENGINE_POWER_KW]);
                 final double powerHP = Double.parseDouble(fields[INDEX_ENGINE_POWER_HP]);
                 final double correctedTorque = Double.parseDouble(fields[INDEX_ENGINE_CORRECTED_TORQUE]);
@@ -144,7 +143,6 @@ public final class CsvStrategy implements FileStrategy {
         try {
             return Optional.of(parser.apply(value));
         } catch (final IllegalArgumentException e) {
-            // Catching a more specific exception for parsing errors (e.g., NumberFormatException).
             return Optional.empty();
         }
     }
