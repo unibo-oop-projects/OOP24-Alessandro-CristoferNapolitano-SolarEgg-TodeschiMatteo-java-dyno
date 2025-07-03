@@ -131,7 +131,7 @@ public final class ControllerImpl implements Controller {
             this.dyno.begin();
             try {
                 semaphore.await();
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
                 AlertMonitor.errorNotify(
                     "Simulation Thread error",
                     Optional.of("The simulation was interrupted unexpectedly. Please try again.")

@@ -35,8 +35,9 @@ public class SimulatedDynoImpl implements SimulatedDyno {
      * Constructor.
      *
      * @param controller the controller that will be used to retrieve user settings
+     * @param latch the latch to release when the simulation is ready
      */
-    public SimulatedDynoImpl(final Controller controller, CountDownLatch latch) {
+    public SimulatedDynoImpl(final Controller controller, final CountDownLatch latch) {
         this.controller = controller;
         this.semaphore = latch;
         this.running = false;
