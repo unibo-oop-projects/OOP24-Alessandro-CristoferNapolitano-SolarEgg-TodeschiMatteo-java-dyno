@@ -580,7 +580,7 @@ Per risolvere il problema, ho utilizzato il design pattern **Strategy**, così d
 `FileStrategy` definisce il contratto comune per tutte le strategie, che si specializzano nel gestire un solo formato, come `CsvStrategy` e `JsonStrategy`.
 `FileManager` è il Context per la Strategy, delegando alla strategia corrente l'esecuzione delle operazioni.
 
-#### TODO TITOLO
+#### Strategy Factory
 ```mermaid
 classDiagram
     direction LR
