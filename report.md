@@ -396,7 +396,7 @@ Far si che ogni implementazione di `SimulatedDyno` possa essere eseguita in modo
 Per risolvere il problema si è scelto di creare un interfaccia intemedia tra `Dyno` e `SimulatedDyno` che implementa l'interfaccia `Runnable`.  
 In questo modo ogni implementazione di `SimulatedDyno` deve essere eseguita in un thread separato, permettendo di generare i dati in modo asincrono.  
 La classe `SimulatedDynoImpl` implementa questa logica, gestendo la generazione dei dati e l'aggiornamento dello stato in modo concorrente.  
-Degno di nota è anche il fatto che a fare le chiamate al nuovo Thread generato è il `Controller` tramite un suo Thread virtuale, in modo da non bloccare l'interfaccia utente e permettere all'utente di interagire con l'applicazione mentre la simulazione è in corso.  
+Degno di nota è anche il fatto che a fare le chiamate al nuovo Thread generato è il `Controller` tramite un suo Thread virtuale, in modo da permettere all'utente di interagire con l'applicazione mentre la simulazione è in corso, opportunamente sincronizzato usando un `Latch` per evitare corse critiche.  
 Questa scelta permette inoltre di disaccoppiare il tempo di aggiornamento dello schermo da quello della generazione dei dati, permettendo di avere un'interfaccia utente sempre reattiva ma generando comunque tutti i dati necessari per l'elaborazione e il salvataggio.
 
 #### Gestione degli errori con Monitor dedicato 
@@ -483,15 +483,15 @@ classDiagram
 ```
 
 **Problema:**
-Le view vanno pensate in modo da essere facilmente costruibili e soprattutto il più scarne possibile.
+Le view vanno pensate in modo da essere facilmente personalizzabili e soprattutto il più scarne possibile.
 Esse infatti avranno diverse parti in comune e sarebbe sbagliato doverle riscrivere ogni volta che si vuole creare una nuova schermata.  
-Inoltre, la view deve essere facilmente estendibile.
-Sivorrebbe inoltre far si che una view possa in futoro essere estesa anche con altri componenti non ancora implementati.
+Si vorrebbe inoltre permettere future estensioni della view.
 
 **Soluzione:**
-Per risolvere il problema si è scelto di implementare un pattern compositivo per la view, in modo da poter riutilizzare i componenti della view in diverse schermate.  
-In particolare, sono stati creati diversi pannelli (`ButtonsPanel`, `ChartsPanel`, `GaugePanel`, `StatsPanel`) che possono essere combinati per creare diverse schermate.  
-Essi, nella nostra implementazione con JavaFX, estendono i componenti `VBox` e `HBox` (che a loro volta estendono `Pane`) in modo da poter essere facilmente inseriti in varie view.
+Per risolvere il problema si è scelto di implementare un pattern compositivo per la view, in modo da poter riutilizzare i componenti in diverse schermate.  
+In particolare, sono stati creati diversi pannelli (`ButtonsPanel`, `ChartsPanel`, `GaugePanel`, `StatsPanel`) che possono essere combinati per creare diverse associazioni visive.  
+Essi, nella nostra implementazione con JavaFX, estendono i componenti `VBox` e `HBox` (che a loro volta estendono `Pane`) in modo da poter essere facilmente inseriti in varie view.  
+Questo tipo di implementazione permette di avere una view modulare e facilmente estendibile, in cui i componenti possono essere riutilizzati e combinati in modi diversi senza dover riscrivere il codice.
 
 #### Visualizzazione di grafici multipli
 ```mermaid
@@ -534,13 +534,13 @@ classDiagram
 ```
 
 **Problema:**
-Permettere la personalizzazione degli elementi presenti in `GaugePanel` e `ChartsPanel` in modo da permettere un futuro una facile estensione e personalizzazione della view.
-Si vuole inoltre cercare di limitare le operazioni che l'utente può fare sui grafici, in modo da evitare errori e rendere l'interfaccia più intuitiva.
+Permettere la personalizzazione degli elementi presenti in `GaugePanel` e `ChartsPanel` in modo da facilitare in futuro una facile estensione e personalizzazione della view.  
+Si vuole inoltre cercare di semplificare e generalizzare le operazioni che l'utente può fare sui grafici, in modo da evitare errori e rendere la personalizzazione più intuitiva.
 
 **Soluzione:**
 Utilizzare il pattern **Factory** per creare i grafici e i gauge, creando dunque un interfaccia funzionale per ognuno di questi componenti.
 `GaugeFactory` e `ChartsFactory` sono quindi le interfacce che definiscono i metodi per creare i gauge e i grafici e possiedono anche una loro implementazione standard che verrà poi utilizzata per creare i componenti di default nella nostra applicazione ma nulla vieta in futuro di implementare nuove classi che estendono queste interfacce e che permettono di creare grafici e gauge personalizzati.  
-Per quanto riguarda la gestione dei grafici, è stato creato rispettando il pattern **Façade** un `ChartsManager` che permette di limitare e standardizzare le operazioni che l'utente può fare sui grafici, come ad esempio aggiungere ulteriori asse Y, creare nuove serie, disabilitare serie esistenti.
+Per quanto riguarda la gestione dei grafici, è stata implementata rispettando il pattern **Façade**, ovvero mediante un `ChartsManager` che permette di raccorpare sotto-operazioni in operazioni atomiche, come ad esempio aggiungere ulteriori assi Y, creare nuove serie, aggiungere un intera serie di dati in maniera più efficiente, disabilitare serie esistenti e altro.
 
 ### 2.2.3 Crimaldi Ivan
 #### Salvataggio e Caricamento dati da File
@@ -910,7 +910,7 @@ Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/0dd7871eb63943
 Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/14b2e2312654e1e15f3c6588bfa4c498117637f8/src/main/java/it/unibo/javadyno/view/impl/EvaluatingView.java#L61-L91
 
 #### Utilizzo della libreria **[JFreeChart](https://github.com/jfree/jfreechart)** per la visualizzazione dei grafici
-L'utilizzo della libreria `JFreeChart` è accompagnato da un modulo dedicato alla compatibilità con JavaFX per inglobarlo in un container compatibile
+L'utilizzo della libreria `JFreeChart` è accompagnato da un modulo dedicato alla compatibilità con JavaFX per inglobarlo in un container compatibile  
 Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/14b2e2312654e1e15f3c6588bfa4c498117637f8/src/main/java/it/unibo/javadyno/model/graph/impl/ChartsManagerImpl.java#L161-L176
 
 #### Utilizzo della libreria **[Medusa](https://github.com/HanSolo/medusa)** per la visualizzazione dei gauges
