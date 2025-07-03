@@ -9,6 +9,7 @@ import it.unibo.javadyno.view.impl.component.LabelsType;
 import it.unibo.javadyno.view.impl.component.ChartsPanel;
 import it.unibo.javadyno.view.impl.component.IOUtility;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
@@ -109,16 +110,18 @@ public class ChartsViewer extends Application implements View {
      */
     @Override
     public void update(final List<ElaboratedData> data) {
-        this.chartsPanel.addAllData(
-            data.stream()
-                .map(i -> (Number) i.rawData().engineRPM().orElse(0))
-                .toList(),
-            data.stream()
-                .map(i -> (Number) i.enginePowerHP())
-                .toList(),
-            data.stream()
-                .map(i -> (Number) i.engineCorrectedTorque())
-                .toList()
+        Platform.runLater(() -> {
+            this.chartsPanel.addAllData(
+                data.stream()
+                    .map(i -> (Number) i.rawData().engineRPM().orElse(0))
+                    .toList(),
+                data.stream()
+                    .map(i -> (Number) i.enginePowerHP())
+                    .toList(),
+                data.stream()
+                    .map(i -> (Number) i.engineCorrectedTorque())
+                    .toList()
             );
+        });
     }
 }
