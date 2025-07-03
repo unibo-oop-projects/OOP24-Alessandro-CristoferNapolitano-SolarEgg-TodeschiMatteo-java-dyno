@@ -57,4 +57,12 @@ public class ManualTransmission implements Transmission {
     public int getCurrentGear() {
         return currentGearIndex + 1;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Transmission copy() {
+        return new ManualTransmission(this.gearRatio);
+    }
 }

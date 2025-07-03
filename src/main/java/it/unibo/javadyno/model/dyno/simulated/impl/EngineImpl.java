@@ -105,4 +105,12 @@ public final class EngineImpl implements Engine {
     public double getEngineTemperature() {
        return this.temperatureModel.getTemperature();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Engine copy() {
+        return new EngineImpl(this.inertia, this.map, this.temperatureModel);
+    }
 }
