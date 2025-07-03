@@ -51,8 +51,6 @@ Ivan Crimaldi
 ## [Appendice B - Esercitazioni di laboratorio](#appendice-b---esercitazioni-di-laboratorio-1)
 - ### [B.0.1 alessandro.porcheddu@studio.unibo.it](#b01-alessandroporcheddustudiouniboit-1)
 - ### [B.0.2 matteo.todeschi@studio.unibo.it](#b02-matteotodeschistudiouniboit-1)
-- ### [B.0.3 name.surname@studio.unibo.it](#b03-namesurnamestudiouniboit-1)
-- ### [B.0.4 name.surname@studio.unibo.it](#b04-namesurnamestudiouniboit-1)
 
 <br>
 
@@ -967,7 +965,6 @@ Concludo dicendo che, come ad altri membri del gruppo, mi piacerebbe continuare 
 ### 4.1.3 Crimaldi Ivan
 Il mio ruolo principale è stato quello di progettare ed implementare il sistema di gestione file ed assicurarmi che interagisse correttamente con il Controller e le strutture dati definite assieme al resto del gruppo, come ElaboratedData. Mi ritengo parzialmente soddisfatto del lavoro compiuto: è mancante la parte di preset e ripristino di preferenze, ma considero il filemanager molto robusto e facilmente estendibile (aggiungere nuovi formati di file richiede solo una minima modifica alla Factory). Nel gruppo c'è sempre stato un clima di collaborazione, e la fase di analisi svolta assieme ci ha permesso di iniziare il progetto con un'idea chiara su come partire e cosa fare. Ammetto che avrei dovuto passare alla fase di implementazione senza fermarmi più del dovuto sulla fase di design. Lavorare a questo progetto mi ha insegnato molto su cosa significa sviluppare in gruppo, e l'importanza di rendere ogni componente quanto più indipendente possibile dalle altre; inoltre mi ha insegnato l'importanza dell'utilizzo del SCM (Git), e degli strumenti per migliorare la leggibilità e la qualità del codice (come CheckStyle). In futuro, per espandere il progetto, vorrei aggiungere la parte di preset impostazioni e preferenze, e supporto per nuovi formati.
 
-<<<<<<< HEAD
 ### 4.1.4 Napolitano Cristofer
 L'idea di lavorare su un progetto che avrebbe avuto dei riscontri nel mondo reale sicuramente è stata una delle fonti di maggior stimolo per me, soprattutto nella ricerca di una soluzione che mi potesse dare in futuro la possibilità di espandere il progetto, proprio per questo le nozioni sui pattern e i principi di programmazione appresi durante il corso hanno subito trovato un luogo nel quale esser applicati e compresi appieno nelle nuove possibilità di espansione che offrono. Per appunto, la cosa che mi ha lasciato più soddisfatto dal lavoro svolto sono l'utilizzo estensivo di pattern come Strategy che mi daranno in futuro la possibilità di ampliare la soluzione.
 Dirigendomi verso le note di più amare dello sviluppo del progetto sicuramente c'è stata la fase di analisi e design architetturale, considerando la mia inesperienza, e quella del gruppo, avremmo potuto perder meno tempo ed esser molto più obiettivi nei nostri lavori iniziali, questo è stato il motivo principale per la consegna in ritardo. Se fossi stato meno vago nel mio design iniziale, e quindi se avessi avuto più esperienza, sarei sicuramente stato in grado finire con largo anticipo la mia parte di model e di dare una mano molto più concreta nelle implementazioni del controller e della view senza lasciare un onere troppo grande ai miei colleghi.
@@ -984,7 +981,6 @@ Una conseguente difficoltà è stata quella di trovarsi a iniziare a scrivere il
 Credo infatti che sia stato impiegato troppo tempo nella fase di analisi e progettazione, che sebbene sia stata molto utile per avere una visione chiara del progetto, avrebbe potuto essere fatta in modo più rapido.
 Inoltre il dover partecipare alle numerose lezioni del secondo semestre e iniziare la sessione estiva ha fatto slittare di molto la data che ci eravamo prefissati per l'inizio dell'implementazione.
 Come consiglio per i docenti, oltre che concordare con il collega Alessandro su delle eventuali _check list_ da seguire, chiederei di rivalutare la scelta di non far coincidere la deadline con il periodo delle lezioni: capisco i motivi che hanno portato a questa scelta, ma credo che sarebbe più motivante per gli studenti poter lavorare al progetto nel periodo che preferiscono.
->>>>>>> main
 
 # Appendice A - Guida utente
 ## A.1 Schermata Home
@@ -1037,9 +1033,3 @@ Una volta importato almeno un grafico si potrà scegliere di nascondere o rivela
 - Laboratorio 10: https://virtuale.unibo.it/mod/forum/discuss.php?d=180101#p249647
 - Laboratorio 11: https://virtuale.unibo.it/mod/forum/discuss.php?d=181206#p250772
 - Laboratorio 12: https://github.com/TodeschiMatteo/oop-lab12.git
-
-## B.0.3 name.surname@studio.unibo.it
-- Laboratorio XX:
-
-## B.0.4 name.surname@studio.unibo.it
-- Laboratorio XX:
