@@ -900,7 +900,10 @@ Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/7805a79e84493b
 Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/7805a79e84493b5acd015c3e7004dadca600180e/src/main/java/it/unibo/javadyno/model/graph/impl/ChartsManagerImpl.java#L47-L54
 
 #### Utilizzo di `Thread` mediante implementazione di `Runnable`
-Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/14b2e2312654e1e15f3c6588bfa4c498117637f8/src/main/java/it/unibo/javadyno/model/dyno/simulated/impl/SimulatedDynoImpl.java#L89-L103
+Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/0dd7871eb63943128fb35892a28813f12a068646/src/main/java/it/unibo/javadyno/model/dyno/simulated/impl/SimulatedDynoImpl.java#L111-L126
+
+#### Utilizzo di `Latch` per sincronizzazione tra thread (reale e virtuale)
+Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/0dd7871eb63943128fb35892a28813f12a068646/src/main/java/it/unibo/javadyno/controller/impl/ControllerImpl.java#L119-L141
 
 #### Utilizzo di `JavaFX` per la GUI
 Permalink: https://github.com/TodeschiMatteo/OOP24-java-dyno/blob/14b2e2312654e1e15f3c6588bfa4c498117637f8/src/main/java/it/unibo/javadyno/view/impl/EvaluatingView.java#L61-L91
