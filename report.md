@@ -375,12 +375,12 @@ classDiagram
     }
 
     class SimulatedDynoImpl {
-        +begin()
-        +end()
-        +isActive() boolean
-        +run()
-        +getRawData() RawData
-        +getDynoType() DataSource
+      +getRawData() RawData
+      +getDynoType() DataSource
+      +begin()
+      +end()
+      +isActive() boolean
+      +run()
     }
 
     Dyno <|-- SimulatedDyno
@@ -526,7 +526,8 @@ classDiagram
 
     GaugePanel --> GaugeFactory : uses
     ChartsPanel --> ChartsFactory : uses
-    ChartsPanel --> ChartsManager : controlled by
+    ChartsManager--> ChartsPanel : controls
+    ChartsPanel *-- ChartsManager
     View *-- GaugePanel
     View *-- ChartsPanel
 
