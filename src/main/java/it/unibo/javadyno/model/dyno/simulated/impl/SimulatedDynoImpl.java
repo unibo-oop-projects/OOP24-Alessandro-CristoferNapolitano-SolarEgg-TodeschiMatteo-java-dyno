@@ -18,9 +18,8 @@ import it.unibo.javadyno.model.dyno.simulated.api.WeatherStation;
 public class SimulatedDynoImpl implements SimulatedDyno {
 
     private static final String SIMULATED_DYNO_THREAD_NAME = "SimulatedDynoThread";
-    private static final double DEFAULT_TEMPERATURE = 20.0;
-    private static final double DEFAULT_THERMAL_CAPACITY = 100_000.0;
-    private static final double DEFAULT_THERMAL_RESISTANCE = 500.0;
+    private static final double DEFAULT_TARGET_TEMPERATURE = 80.0;
+    private static final double DEFAULT_TARGET_TIME_TEMP = 40.0;
     private static final double FULL_THROTTLE = 1.0;
     private static final double UPDATE_DELTA = 0.1;
     private final Controller controller;
@@ -67,7 +66,7 @@ public class SimulatedDynoImpl implements SimulatedDyno {
                     controller.getUserSettings().getWheelRadius())
                 .withBenchBrake(bench)
                 .withWeatherStation(weatherStation)
-                .withThermalParams(DEFAULT_TEMPERATURE, DEFAULT_THERMAL_CAPACITY, DEFAULT_THERMAL_RESISTANCE)
+                .withThermalParams(DEFAULT_TARGET_TEMPERATURE, DEFAULT_TARGET_TIME_TEMP)
                 .buildVehiclewithRigidModel();
             this.vehicle.setThrottle(FULL_THROTTLE);
             this.simulationThread = new Thread(this, SIMULATED_DYNO_THREAD_NAME);
