@@ -79,6 +79,9 @@ public class MainMenu extends Application implements View {
         });
         settingsButton.setOnAction(e -> {
             controller.showView(primaryStage, new SettingsView(controller));
+            primaryStage.setWidth(Screen.getPrimary().getBounds().getWidth() * SettingsView.WIDTH_RATIO);
+            primaryStage.setHeight(Screen.getPrimary().getBounds().getHeight() * SettingsView.HEIGHT_RATIO);
+            primaryStage.centerOnScreen();
         });
 
         final Rectangle2D screenBounds = Screen.getPrimary().getBounds();

@@ -34,12 +34,12 @@ import javafx.stage.Stage;
  * Settings view class for configuring user preferences in the JavaDyno application.
  */
 public class SettingsView extends Application implements View {
+    public static final double WIDTH_RATIO = 0.5;
+    public static final double HEIGHT_RATIO = 0.6;
     private static final String CSS_FILE = "css/SettingsStyle.css";
     private static final String TITLE = "Settings";
     private static final String SETTING_LABEL_STYLE = "setting-label";
     private static final String BUTTON_STYLE = "button";
-    private static final double WIDTH_RATIO = 0.5;
-    private static final double HEIGHT_RATIO = 0.6;
     private static final double MIN_VALUE = 0.01;
     private static final double MAX_VALUE = 10_000.0;
     private static final double STEP = 0.01;
@@ -352,7 +352,12 @@ public class SettingsView extends Application implements View {
 
         final Button backButton = new Button("Back to Menu");
         backButton.getStyleClass().addAll(BUTTON_STYLE, "back-button");
-        backButton.setOnAction(e -> controller.showMainMenu(primaryStage));
+        backButton.setOnAction(e -> {
+            controller.showMainMenu(primaryStage);  
+            primaryStage.setWidth(Screen.getPrimary().getBounds().getWidth() * MainMenu.WIDTH_RATIO);
+            primaryStage.setHeight(Screen.getPrimary().getBounds().getHeight() * MainMenu.HEIGHT_RATIO);
+            primaryStage.centerOnScreen();
+        });
 
         buttonPanel.getChildren().addAll(saveButton, resetButton, backButton);
         return buttonPanel;
