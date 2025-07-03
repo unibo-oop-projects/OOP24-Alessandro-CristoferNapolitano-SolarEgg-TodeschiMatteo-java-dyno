@@ -55,7 +55,7 @@ public class SettingsView extends Application implements View {
     private static final double LABEL_MIN_WIDTH = 200.0;
     private static final double TITLE_FONT_SIZE = 24.0;
     private final Controller controller;
-    private final UserSettings userSettings;
+    private UserSettings userSettings;
     private Spinner<Double> loadcellLeverLengthSpinner;
     private Spinner<Double> vehicleMassSpinner;
     private Spinner<Double> driveTrainEfficiencySpinner;
@@ -382,16 +382,13 @@ public class SettingsView extends Application implements View {
     private void resetToDefaults(final Stage primaryStage) {
         this.controller.resetUserSettings();
         loadCurrentSettings();
-        this.controller.showMainMenu(primaryStage);
-        primaryStage.setWidth(Screen.getPrimary().getBounds().getWidth() * MainMenu.WIDTH_RATIO);
-        primaryStage.setHeight(Screen.getPrimary().getBounds().getHeight() * MainMenu.HEIGHT_RATIO);
-        primaryStage.centerOnScreen();
     }
 
     /**
      * Loads current settings into the UI controls.
      */
     private void loadCurrentSettings() {
+        this.userSettings = controller.getUserSettings();
         loadcellLeverLengthSpinner.getValueFactory().setValue(this.userSettings.getLoadcellLeverLength());
         vehicleMassSpinner.getValueFactory().setValue(this.userSettings.getVehicleMass());
         driveTrainEfficiencySpinner.getValueFactory().setValue(this.userSettings.getDriveTrainEfficiency());
