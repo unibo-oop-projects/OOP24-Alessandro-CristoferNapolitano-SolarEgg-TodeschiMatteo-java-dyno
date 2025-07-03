@@ -8,11 +8,11 @@ Relazione del progetto
 
 Alessandro Porcheddu  
 Matteo Todeschi  
-Christofer Napolitano  
+Cristofer Napolitano   
 Ivan Crimaldi
 <br>
 
-29 giugno 2025
+3 luglio 2025
 </h2>
 
 </p>
@@ -30,17 +30,20 @@ Ivan Crimaldi
     - #### [2.2.1 Porcheddu Alessandro](#221-porcheddu-alessandro-1)
     - #### [2.2.2 Todeschi Matteo](#222-todeschi-matteo-1)
     - #### [2.2.3 Crimaldi Ivan](#223-crimaldi-ivan-1)
+    - #### [2.2.4 Napolitano Cristofer](#224-napolitano-cristofer-1) 
 ## [3. Sviluppo](#capitolo-3---sviluppo)
 - ### [3.1 Testing automatizzato](#31-testing-automatizzato-1)
 - ### [3.2 Note di sviluppo](#32-note-di-sviluppo-1)
     - #### [3.2.1 Porcheddu Alessandro](#321-porcheddu-alessandro-1)
     - #### [3.2.2 Todeschi Matteo](#322-todeschi-matteo-1)
     - #### [3.2.3 Crimaldi Ivan](#323-crimaldi-ivan-1)
+    - #### [3.2.4 Napolitano Cristofer](#324-napolitano-cristofer-1)
 ## [4. Commenti finali](#capitolo-4---commenti-finali)
 - ### [4.1 Autovalutazione e lavori futuri](#41-autovalutazione-e-lavori-futuri-1)
     - #### [4.1.1 Porcheddu Alessandro](#41-autovalutazione-e-lavori-futuri-1)
     - #### [4.1.2 Todeschi Matteo](#41-autovalutazione-e-lavori-futuri-1)
     - #### [4.1.3 Crimaldi Ivan](#41-autovalutazione-e-lavori-futuri-1)
+    - #### [4.1.4 Napolitano Cristofer](#41-autovalutazione-e-lavori-futuri-1)
 - ### [4.2 Difficoltà incontrate e commenti per i docenti](#42-difficoltà-incontrate-e-commenti-per-i-docenti-1)
     - #### [4.2.1 Porcheddu Alessandro](#42-difficoltà-incontrate-e-commenti-per-i-docenti-1)
 ## [Appendice A - Guida utente](#appendice-a---guida-utente-1)
@@ -51,7 +54,6 @@ Ivan Crimaldi
 ## [Appendice B - Esercitazioni di laboratorio](#appendice-b---esercitazioni-di-laboratorio-1)
 - ### [B.0.1 alessandro.porcheddu@studio.unibo.it](#b01-alessandroporcheddustudiouniboit-1)
 - ### [B.0.2 matteo.todeschi@studio.unibo.it](#b02-matteotodeschistudiouniboit-1)
-
 <br>
 
 # Capitolo 1 - Analisi
