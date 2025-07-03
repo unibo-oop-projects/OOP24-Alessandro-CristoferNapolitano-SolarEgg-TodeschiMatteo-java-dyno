@@ -27,4 +27,11 @@ public interface Transmission {
      * @return actual gear number
      */
     int getCurrentGear();
+
+    /**
+     * method for copying an instance of Transmission.
+     *
+     * @return Transmission copy
+     */
+    Transmission copy();
 }
