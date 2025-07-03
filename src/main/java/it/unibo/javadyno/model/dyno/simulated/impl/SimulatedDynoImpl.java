@@ -24,9 +24,9 @@ public class SimulatedDynoImpl implements SimulatedDyno {
     private static final double FULL_THROTTLE = 1.0;
     private static final double UPDATE_DELTA = 0.1;
     private final Controller controller;
-    private long updateTimeDelta;
     private Thread simulationThread;
     private Vehicle vehicle;
+    private volatile long updateTimeDelta;
     private volatile boolean running;
     private volatile RawData datas;
 

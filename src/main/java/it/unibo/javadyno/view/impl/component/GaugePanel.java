@@ -91,8 +91,8 @@ public final class GaugePanel extends HBox {
      * @param temperature the current temperature value
      */
     public void updateGauges(final Number rpm, final Number speed, final Number temperature) {
-        this.rpmGauge.setValue((int) rpm);
-        this.speedGauge.setValue((int) speed);
-        this.tempGauge.setValue((double) temperature);
+        this.rpmGauge.setValue(rpm.intValue());
+        this.speedGauge.setValue(speed.doubleValue());
+        this.tempGauge.setValue(temperature.doubleValue());
     }
 }
