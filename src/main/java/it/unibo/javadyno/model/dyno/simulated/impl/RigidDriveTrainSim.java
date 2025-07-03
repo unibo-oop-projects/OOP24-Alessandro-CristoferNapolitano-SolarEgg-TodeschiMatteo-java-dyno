@@ -25,8 +25,8 @@ public class RigidDriveTrainSim implements DriveTrain {
      * @param loads list of LoadModel for the drive train
      */
     public RigidDriveTrainSim(final Engine engine, final Transmission transmission, final List<LoadModel> loads) {
-        this.engine = Objects.requireNonNull(engine);
-        this.transmission = Objects.requireNonNull(transmission);
+        this.engine = Objects.requireNonNull(engine.copy());
+        this.transmission = Objects.requireNonNull(transmission.copy());
         this.loads = List.copyOf(loads);
     }
 
