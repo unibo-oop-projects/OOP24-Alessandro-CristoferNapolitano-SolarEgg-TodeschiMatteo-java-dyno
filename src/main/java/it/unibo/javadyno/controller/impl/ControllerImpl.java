@@ -10,6 +10,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
+
 import it.unibo.javadyno.controller.api.Controller;
 import it.unibo.javadyno.controller.api.NotificationType;
 import it.unibo.javadyno.model.data.api.DataCollector;
@@ -114,10 +116,11 @@ public final class ControllerImpl implements Controller {
      */
     @Override
     public void startEvaluation(final DataSource dynoType) {
-        if (!Objects.nonNull(this.dyno) || !this.dyno.getDynoType().equals(dynoType)) {
+        final CountDownLatch semaphore = new CountDownLatch(1);
+        if (Objects.isNull(this.dyno) || !this.dyno.isActive()) {
             switch (dynoType) {
                 case SIMULATED_DYNO -> this.dyno = this.userSettings.getDynoType().equals(DataSource.REAL_DYNO)
-                    ? new SimulatedDynoImpl(this)
+                    ? new SimulatedDynoImpl(this, semaphore)
                     : new SimulatedDynoBenchImpl(this.userSettings);
                 case OBD2 -> this.dyno = new OBD2Dyno(new ELM327Communicator());
                 case REAL_DYNO -> this.dyno = new RealDynoImpl(new JsonWebSocketCommunicator());
@@ -126,6 +129,14 @@ public final class ControllerImpl implements Controller {
         if (!this.dyno.isActive()) {
             this.dataCollector.initialize(this.dyno, this.userSettings);
             this.dyno.begin();
+            try {
+                semaphore.await();
+            } catch (final InterruptedException e) {
+                AlertMonitor.errorNotify(
+                    "Simulation Thread error",
+                    Optional.of("The simulation was interrupted unexpectedly. Please try again.")
+                );
+            }
             this.isRunning = true;
             Thread.ofVirtual()
                 .start(this::polling)

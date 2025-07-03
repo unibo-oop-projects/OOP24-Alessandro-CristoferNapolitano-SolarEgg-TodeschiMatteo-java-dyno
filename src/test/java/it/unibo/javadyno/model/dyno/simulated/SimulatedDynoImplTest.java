@@ -9,6 +9,8 @@ import it.unibo.javadyno.model.dyno.simulated.impl.SimulatedDynoImpl;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.concurrent.CountDownLatch;
+
 /**
  * Test class for SimulatedDynoImpl.
  * It tests the initial state of the SimulatedDyno.
@@ -19,7 +21,7 @@ class SimulatedDynoImplTest {
      */
     @Test
     void testBeginning() {
-        final SimulatedDyno dyno = new SimulatedDynoImpl(new ControllerImpl());
+        final SimulatedDyno dyno = new SimulatedDynoImpl(new ControllerImpl(), new CountDownLatch(1));
         assertFalse(dyno.isActive(), "The simulation shouldn't run at the start");
     }
 
@@ -28,7 +30,7 @@ class SimulatedDynoImplTest {
      */
     @Test
     void testStartAndStopSimulation() {
-        final SimulatedDyno dyno = new SimulatedDynoImpl(new ControllerImpl());
+        final SimulatedDyno dyno = new SimulatedDynoImpl(new ControllerImpl(), new CountDownLatch(1));
         dyno.begin();
         assertTrue(dyno.isActive(), "The simulation should run after start");
         dyno.end();
@@ -40,7 +42,7 @@ class SimulatedDynoImplTest {
      */
     @Test
     void testStopSimulationWhenNotStarted() {
-        final SimulatedDyno dyno = new SimulatedDynoImpl(new ControllerImpl());
+        final SimulatedDyno dyno = new SimulatedDynoImpl(new ControllerImpl(), new CountDownLatch(1));
         dyno.end();
         assertFalse(dyno.isActive(), "The simulation should still not be running.");
     }
@@ -50,7 +52,7 @@ class SimulatedDynoImplTest {
      */
     @Test
     void testIsActive() {
-        final SimulatedDyno dyno = new SimulatedDynoImpl(new ControllerImpl());
+        final SimulatedDyno dyno = new SimulatedDynoImpl(new ControllerImpl(), new CountDownLatch(1));
         assertFalse(dyno.isActive(), "The simulation should not be active initially");
         dyno.begin();
         assertTrue(dyno.isActive(), "The simulation should be active after starting");
