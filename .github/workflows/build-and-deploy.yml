@@ -1,106 +1,124 @@
-name: Test and Release
-
+name: CI/CD Process
 on:
-  push:
-    tags:
-      - '*'          # Run on any tag push (for release)
-    paths-ignore:
-      - 'CHANGELOG.md'
-      - 'LICENSE'
-      - 'README.md'
-      - 'report.md'
-      - 'renovate.json'
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  workflow_call:
+  workflow_dispatch:
 
 jobs:
-  test:
-    name: Run Tests on All Platforms
-    runs-on: ${{ matrix.os }}
+  branch:
+    runs-on: ubuntu-24.04
+    outputs:
+      is_default: ${{ steps.branch-name.outputs.is_default }}
+    steps:
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v8
+  version:
+    runs-on: ubuntu-24.04
+    outputs:
+       version_tag: ${{ steps.version.outputs.version_tag }}
+    steps:
+      - name: Checkout
+        uses: DanySK/action-checkout@0.2.22
+      - uses: paulhatch/semantic-version@v5.4.0
+        id: version
+        with:
+          tag_prefix: ""
+          major_pattern: '/\w+(\(\w+\))?\!:\s.+/'
+          minor_pattern: '/feat(\(\w+\))?:\s.+/'
+          version_format: "${major}.${minor}.${patch}-dev${increment}"
+          namespace: 'grading'
+          bump_each_commit: true
+          search_commit_body: false
+      - run: '[ -n "${{ steps.version.outputs.version_tag }}" ]'
+  build:
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - windows-2025
-          - macos-14
-          - ubuntu-24.04
-        jvm_version:
-            - 21
+        os: [ windows-2025, macos-14, ubuntu-24.04 ]
+    runs-on: ${{ matrix.os }}
+    needs:
+      - version
+      - branch
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: ${{ matrix.jvm_version }}
-
-      - name: Cache Gradle dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            gradle-${{ runner.os }}-
-
-      - name: Grant execute permissions to gradlew (Linux/macOS only)
-        if: runner.os != 'Windows'
-        run: chmod +x ./gradlew
-
-      - name: Run tests (Linux/macOS)
-        if: runner.os != 'Windows'
-        run: ./gradlew test
-
-      - name: Run tests (Windows)
+      - name: Support longpaths
         if: runner.os == 'Windows'
-        run: .\gradlew test
-
-  release:
-    name: Build and Release JavaDyno Fat JAR
-    runs-on: ubuntu-24.04
-    needs: test
-    if: startsWith(github.ref, 'refs/tags/')  # Run release only on tag pushes
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '21'
-
-      - name: Cache Gradle dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            gradle-${{ runner.os }}-
-
-      - name: Grant execute permissions to gradlew
-        run: chmod +x ./gradlew
-
-      - name: Build fat JAR
-        run: ./gradlew shadowJar
-
-      - name: Rename JAR
+        run: git config --system core.longpaths true
+      - name: Checkout
+        uses: DanySK/action-checkout@0.2.22
+      - name: Compute the git stats
+        if: runner.os == 'Linux'
         run: |
-          mkdir -p release
-          cp build/libs/*-all.jar release/JavaDyno-${{ github.ref_name }}.jar
-
-      - name: Upload JAR to GitHub Release
-        uses: softprops/action-gh-release@v2
+          (curl https://raw.githubusercontent.com/arzzen/git-quick-stats/master/git-quick-stats | bash -s -- -T) > git-stats.txt
+      - uses: DanySK/build-check-deploy-gradle-action@4.0.1
         with:
-          files: release/JavaDyno-${{ github.ref_name }}.jar
-          tag_name: ${{ github.ref_name }}
-          generate_release_notes: true
+          build-command: ./gradlew blame
+          check-command: ./gradlew test blame || true
+          should-run-codecov: false
+          should-deploy: false
+          java-version: 17
+      - name: Release
+        if: contains('Linux', runner.os) && needs.branch.outputs.is_default
+        uses: ncipollo/release-action@v1.18.0
+        with:
+          tag: ${{ needs.version.outputs.version_tag }}
+          artifacts: "**/*blame*.md,git-stats.txt,scan-journal.log"
+          allowUpdates: true
+          replacesArtifacts: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+  anti-plagiarism:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    needs:
+      - version
+      - branch
+    steps:
+      - name: Compute the version of the detector
+        id: version
+        shell: bash
+        run: |
+          USES=$(cat <<TRICK_RENOVATE
+          - uses: DanySK/code-plagiarism-detector@9.1.1
+          TRICK_RENOVATE
+          )
+          echo "Scripts update line: \"$USES\""
+          echo "Computed version: \"${USES#*@}\""
+          echo "version=${USES#*@}" >> $GITHUB_OUTPUT
+      - name: Download
+        run: curl -sL https://github.com/DanySK/code-plagiarism-detector/releases/download/${{ steps.version.outputs.version }}/code-plagiarism-detector-${{ steps.version.outputs.version }}-all.jar -o plagiarism.jar
+      - name: Run
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BB_USER: danysk
+          BB_TOKEN: ${{ secrets.BB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p plagiarism-report
+          java -jar plagiarism.jar --output-dir plagiarism-report \
+            submission \
+              --service github:${{ github.repository_owner }}/${{ github.event.repository.name }} \
+            corpus \
+              --service github:unibo-oop-projects,bitbucket:danysk/oop1,github:AlmasB/FXGLGames,github:DanySK/libgdx-examples,github:aricci303/game-as-a-lab,github:pslab-unibo/oop-game,github:k3vonk/UCD-Cluedo
+      - name: Release
+        if: needs.branch.outputs.is_default
+        uses: ncipollo/release-action@v1.18.0
+        with:
+          tag: ${{ needs.version.outputs.version_tag }}
+          artifacts: "plagiarism-report/*"
+          allowUpdates: true
+          replacesArtifacts: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+  success:
+    runs-on: ubuntu-24.04
+    needs:
+      - build
+      - anti-plagiarism
+    if: >-
+      always() && (
+        contains(join(needs.*.result, ','), 'failure')
+        || !contains(join(needs.*.result, ','), 'cancelled')
+      )
+    steps:
+      - name: Verify that there were no failures
+        run: ${{ !contains(join(needs.*.result, ','), 'failure') }}
